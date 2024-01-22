@@ -30,8 +30,6 @@ const AppChat = () => {
   // ** Hook
   const { t } = useTranslation()
 
-  const userId = 1
-
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
   const [knowledge, setKnowledge] = useState<any>(null)
   const [knowledgeId, setKnowledgeId] = useState<number>(0)

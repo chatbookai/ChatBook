@@ -47,7 +47,7 @@ const SettingApiModelAPP = () => {
 
   useEffect(() => {
     fetchData()  
-  }, [refreshChatCounter])
+  }, [refreshChatCounter, userId])
 
   // ** Vars
   const { skin } = settings

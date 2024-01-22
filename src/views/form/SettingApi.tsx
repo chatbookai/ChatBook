@@ -34,6 +34,13 @@ const SettingForm = (props: any) => {
   const [uploadingButton, setUploadingButton] = useState<string>(`${t('Submit')}`)
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
   
+  const [openApiBase, setOpenApiBase] = useState<string>("")
+  const [openApiBaseError, setOpenApiBaseError] = useState<string | null>(null)
+  const handleopenApiBaseChange = (event: any) => {
+    setOpenApiBase(event.target.value);
+    setOpenApiBaseError("")
+  };
+
   const [openApiKey, setOpenApiKey] = useState<string>("")
   const [openApiKeyError, setOpenApiKeyError] = useState<string | null>(null)
   const handleOpenApiKeyChange = (event: any) => {
@@ -74,17 +81,18 @@ const SettingForm = (props: any) => {
   };
 
   const handleGetData = async () => {
-    const GetData: any = await axios.get(authConfig.backEndApi + '/getopenai', {}).then(res => res.data)
+    const GetData: any = await axios.get(authConfig.backEndApi + '/getopenai/' + knowledgeId, {}).then(res => res.data)
     console.log("GetData:", GetData)
-    setOpenApiKey(GetData.OPENAI_API_KEY)
-    setInputTemperature(GetData.Temperature)
-    setInputModelName(GetData.ModelName)
+    setOpenApiBase(GetData?.OPENAI_API_BASE ?? '')
+    setOpenApiKey(GetData?.OPENAI_API_KEY ?? '')
+    setInputTemperature(GetData.Temperature ?? '0')
+    setInputModelName(GetData.ModelName || 'gpt-3.5-turbo')
   }
 
   useEffect(()=>{
     handleGetData()
-  }, [])
-
+  }, [knowledgeId])
+  
   const handleSubmit = async () => {
     if(openApiKey == "") {
         toast.error("Open AI Api cannot be empty", { duration: 4000 })
@@ -108,7 +116,7 @@ const SettingForm = (props: any) => {
         return
     }
 
-    const PostParams = {OPENAI_API_KEY: openApiKey, ModelName: inputModelName, Temperature: inputTemperature, userId: userId, knowledgeId: knowledgeId }
+    const PostParams = {OPENAI_API_BASE: openApiBase, OPENAI_API_KEY: openApiKey, ModelName: inputModelName, Temperature: inputTemperature, userId: userId, knowledgeId: knowledgeId }
     const FormSubmit: any = await axios.post(authConfig.backEndApi + '/setopenai', PostParams).then(res => res.data)
     console.log("FormSubmit:", FormSubmit)
     if(FormSubmit?.status == "ok") {
@@ -123,9 +131,27 @@ const SettingForm = (props: any) => {
   return (
     <Fragment>
         <Card>
-        <CardHeader title={`${t('Open API & Pinecone')}`} />
+        <CardHeader title={`${knowledgeName} ${t('Open API & Pinecone')}`} />
         <CardContent>
             <Grid container spacing={5}>
+                <Grid item xs={12}>
+                    <TextField
+                        fullWidth
+                        label={`${t('OPENAI_API_BASE')}`}
+                        placeholder={`${t('OPENAI_API_BASE')}`}
+                        value={openApiBase}
+                        onChange={handleopenApiBaseChange}
+                        InputProps={{
+                            startAdornment: (
+                                <InputAdornment position='start'>
+                                <Icon icon='mdi:account-outline' />
+                                </InputAdornment>
+                            )
+                        }}
+                        error={!!openApiBaseError}
+                        helperText={openApiBaseError}
+                    />
+                </Grid>
                 <Grid item xs={12}>
                     <TextField
                         fullWidth
@@ -179,80 +205,6 @@ const SettingForm = (props: any) => {
                         }}
                         error={!!inputModelNameError}
                         helperText={inputModelNameError}
-                    />
-                </Grid>
-
-                
-                <Grid item xs={6}>
-                    <TextField
-                        fullWidth
-                        label={`${t('PINECONE_API_KEY')}`}
-                        placeholder={`${t('PINECONE_API_KEY')}`}
-                        value={pinecoinApiKey}
-                        onChange={handlePinecoinApiKeyChange}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position='start'>
-                                <Icon icon='mdi:account-outline' />
-                                </InputAdornment>
-                            )
-                        }}
-                        error={!!pinecoinApiKeyError}
-                        helperText={pinecoinApiKeyError}
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        fullWidth
-                        label={`${t('PINECONE_ENVIRONMENT')}`}
-                        placeholder={`${t('PINECONE_ENVIRONMENT')}`}
-                        value={inputPINECONE_ENVIRONMENT}
-                        onChange={handleInputPINECONE_ENVIRONMENTChange}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position='start'>
-                                <Icon icon='mdi:account-outline' />
-                                </InputAdornment>
-                            )
-                        }}
-                        error={!!inputPINECONE_ENVIRONMENTError}
-                        helperText={inputPINECONE_ENVIRONMENTError}
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        fullWidth
-                        label={`${t('PINECONE_INDEX_NAME')}`}
-                        placeholder={`${t('PINECONE_INDEX_NAME')}`}
-                        value={inputPINECONE_INDEX_NAME}
-                        onChange={handleInputPINECONE_INDEX_NAMEChange}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position='start'>
-                                <Icon icon='mdi:account-outline' />
-                                </InputAdornment>
-                            )
-                        }}
-                        error={!!inputPINECONE_INDEX_NAMEError}
-                        helperText={inputPINECONE_INDEX_NAMEError}
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        fullWidth
-                        label={`${t('PINECONE_NAME_SPACE')}`}
-                        placeholder={`${t('PINECONE_NAME_SPACE')}`}
-                        value={inputPINECONE_NAME_SPACE}
-                        onChange={handleInputPINECONE_NAME_SPACEChange}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position='start'>
-                                <Icon icon='mdi:account-outline' />
-                                </InputAdornment>
-                            )
-                        }}
-                        error={!!inputPINECONE_NAME_SPACEError}
-                        helperText={inputPINECONE_NAME_SPACEError}
                     />
                 </Grid>
 

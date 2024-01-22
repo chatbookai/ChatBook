@@ -72,7 +72,7 @@ const FilesApp = () => {
         setActiveId={setActiveId}
         hidden={false}
       />
-      <Files knowledgeId={knowledgeId} knowledgeName={knowledgeName userId={userId}/>
+      <Files knowledgeId={knowledgeId} knowledgeName={knowledgeName} userId={userId}/>
     </Box>
   )
 }

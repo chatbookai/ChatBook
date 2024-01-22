@@ -57,7 +57,7 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
 
 const FileUploaderMultiple = (props: any) => {
   // ** Props
-  const { knowledgeId, knowledgeName } = props
+  const { knowledgeId, knowledgeName, userId } = props
 
   // ** Hook
   const { t } = useTranslation()

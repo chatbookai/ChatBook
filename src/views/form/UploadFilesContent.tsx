@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next'
 
 const UploadFilesContent = (props: any) => {
   // ** Props
-  const { knowledgeId, knowledgeName } = props
+  const { knowledgeId, knowledgeName, userId } = props
 
   // ** Hook
   const { t } = useTranslation()
@@ -33,7 +33,7 @@ const UploadFilesContent = (props: any) => {
           subtitle={<Typography variant='body2' sx={{pt:2}}>{`${t('You can choose multiple files for simultaneous uploading.')}`}</Typography>}
         />
         <Grid item xs={12}>
-            <FileUploaderMultiple knowledgeId={knowledgeId} knowledgeName={knowledgeName} />
+            <FileUploaderMultiple knowledgeId={knowledgeId} knowledgeName={knowledgeName} userId={userId} />
         </Grid>
       </Grid>
     </DropzoneWrapper>

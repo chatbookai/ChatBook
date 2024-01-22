@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next'
 
 const TemplateModelForm = (props: any) => {
   // ** Props
-  const { knowledgeId, knowledgeName } = props
+  const { knowledgeId, knowledgeName, userId } = props
 
   // ** Hook
   const { t } = useTranslation()

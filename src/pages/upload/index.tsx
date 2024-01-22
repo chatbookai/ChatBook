@@ -25,6 +25,7 @@ const UploadFilesApp = () => {
   const [knowledge, setKnowledge] = useState<any>(null)
   const [knowledgeId, setKnowledgeId] = useState<number>(0)
   const [knowledgeName, setKnowledgeName] = useState<string>("")
+  const userId = 1
 
   // ** Hooks
   const theme = useTheme()
@@ -72,7 +73,7 @@ const UploadFilesApp = () => {
         setActiveId={setActiveId}
         hidden={false}
       />
-      <UploadFiles knowledgeId={knowledgeId} knowledgeName={knowledgeName}/>
+      <UploadFiles knowledgeId={knowledgeId} knowledgeName={knowledgeName} userId={userId}/>
     </Box>
   )
 }

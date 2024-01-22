@@ -113,7 +113,7 @@ const ChatContent = (props: any) => {
             </Box>
 
             {selectedChat && store.userProfile ? (
-              <ChatLog hidden={hidden} data={{ ...selectedChat, userContact: store.userProfile }} knowledgeId={knowledgeId} knowledgeName={knowledgeName}/>
+              <ChatLog hidden={hidden} data={{ ...selectedChat, userContact: store.userProfile }} knowledgeId={knowledgeId} knowledgeName={knowledgeName} userId={userId}/>
             ) : null}
 
             <SendMsgForm store={store} sendMsg={sendMsg} sendButtonDisable={sendButtonDisable} sendButtonText={sendButtonText} sendInputText={sendInputText}/>

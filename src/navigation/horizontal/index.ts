@@ -10,14 +10,14 @@ const navigation = (): HorizontalNavItemsType => {
       path: '/chat'
     },
     {
-      title: 'Settings',
-      icon: 'mingcute:openai-fill',
-      path: '/settings'
-    },
-    {
       title: 'Knowledge Base',
       icon: 'carbon:ibm-watson-knowledge-studio',
       path: '/knowledge'
+    },
+    {
+      title: 'Settings',
+      icon: 'mingcute:openai-fill',
+      path: '/settings'
     },
     {
       title: 'Template',

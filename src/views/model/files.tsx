@@ -25,7 +25,7 @@ import { isMobile } from 'src/configs/functions'
 
 const Files = (props: any) => {
   // ** Props
-  const { knowledgeId, knowledgeName } = props
+  const { knowledgeId, knowledgeName, userId } = props
 
   // ** Hook
   const { t } = useTranslation()

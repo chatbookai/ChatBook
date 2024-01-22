@@ -25,6 +25,7 @@ const TemplateModelAPP = () => {
   const [knowledge, setKnowledge] = useState<any>(null)
   const [knowledgeId, setKnowledgeId] = useState<number>(1)
   const [knowledgeName, setKnowledgeName] = useState<string>("")
+  const userId = 1
 
   // ** Hooks
   const theme = useTheme()
@@ -72,7 +73,7 @@ const TemplateModelAPP = () => {
         setActiveId={setActiveId}
         hidden={false}
       />
-      <TemplateModel knowledgeId={knowledgeId} knowledgeName={knowledgeName}/>
+      <TemplateModel knowledgeId={knowledgeId} knowledgeName={knowledgeName} userId={userId}/>
     </Box>
   )
 }

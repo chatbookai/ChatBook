@@ -23,7 +23,10 @@ import toast from 'react-hot-toast'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
-const SendOutForm = () => {
+const SettingForm = (props: any) => {
+  // ** Props
+  const { knowledgeId, knowledgeName, userId } = props
+  
   // ** Hook
   const { t } = useTranslation()
     
@@ -70,64 +73,12 @@ const SendOutForm = () => {
     }
   };
 
-  const [pinecoinApiKey, setPinecoinApiKey] = useState<string>("")
-  const [pinecoinApiKeyError, setPinecoinApiKeyError] = useState<string | null>(null)
-  const handlePinecoinApiKeyChange = (event: any) => {
-    setPinecoinApiKey(event.target.value);
-    if(event.target.value == "") {
-        setPinecoinApiKeyError(`${t('This field cannot be empty')}`)
-    }
-    else {
-        setPinecoinApiKeyError("")
-    }
-  };
-  
-  const [inputPINECONE_ENVIRONMENT, setInputPINECONE_ENVIRONMENT] = useState<string>("gcp-starter")
-  const [inputPINECONE_ENVIRONMENTError, setInputPINECONE_ENVIRONMENTError] = useState<string | null>(null)
-  const handleInputPINECONE_ENVIRONMENTChange = (event: any) => {
-    setInputPINECONE_ENVIRONMENT(event.target.value);
-    if(event.target.value == "") {
-        setInputPINECONE_ENVIRONMENTError(`${t('This field cannot be empty')}`)
-    }
-    else {
-        setInputPINECONE_ENVIRONMENTError("")
-    }
-  };
-
-  const [inputPINECONE_INDEX_NAME, setInputPINECONE_INDEX_NAME] = useState<string>("")
-  const [inputPINECONE_INDEX_NAMEError, setInputPINECONE_INDEX_NAMEError] = useState<string | null>(null)
-  const handleInputPINECONE_INDEX_NAMEChange = (event: any) => {
-    setInputPINECONE_INDEX_NAME(event.target.value);
-    if(event.target.value == "") {
-        setInputPINECONE_INDEX_NAMEError(`${t('This field cannot be empty')}`)
-    }
-    else {
-        setInputPINECONE_INDEX_NAMEError("")
-    }
-  };
-
-  const [inputPINECONE_NAME_SPACE, setInputPINECONE_NAME_SPACE] = useState<string>("")
-  const [inputPINECONE_NAME_SPACEError, setInputPINECONE_NAME_SPACEError] = useState<string | null>(null)
-  const handleInputPINECONE_NAME_SPACEChange = (event: any) => {
-    setInputPINECONE_NAME_SPACE(event.target.value);
-    if(event.target.value == "") {
-        setInputPINECONE_NAME_SPACEError(`${t('This field cannot be empty')}`)
-    }
-    else {
-        setInputPINECONE_NAME_SPACEError("")
-    }
-  };
-
   const handleGetData = async () => {
     const GetData: any = await axios.get(authConfig.backEndApi + '/getopenai', {}).then(res => res.data)
     console.log("GetData:", GetData)
     setOpenApiKey(GetData.OPENAI_API_KEY)
     setInputTemperature(GetData.Temperature)
     setInputModelName(GetData.ModelName)
-    setPinecoinApiKey(GetData.PINECONE_API_KEY)
-    setInputPINECONE_ENVIRONMENT(GetData.PINECONE_ENVIRONMENT)
-    setInputPINECONE_INDEX_NAME(GetData.PINECONE_INDEX_NAME)
-    setInputPINECONE_NAME_SPACE(GetData.PINECONE_NAME_SPACE)
   }
 
   useEffect(()=>{
@@ -156,36 +107,8 @@ const SendOutForm = () => {
 
         return
     }
-    if(pinecoinApiKey == "") {
-        toast.error("Pinecoin Api cannot be empty", { duration: 4000 })
-        setIsDisabledButton(false)
-        setUploadingButton(`${t('Submit')}`)
 
-        return
-    }
-    if(inputPINECONE_ENVIRONMENT == "") {
-        toast.error("Pinecoin Environment cannot be empty", { duration: 4000 })
-        setIsDisabledButton(false)
-        setUploadingButton(`${t('Submit')}`)
-
-        return
-    }
-    if(inputPINECONE_INDEX_NAME == "") {
-        toast.error("Pinecoin Index Name cannot be empty", { duration: 4000 })
-        setIsDisabledButton(false)
-        setUploadingButton(`${t('Submit')}`)
-
-        return
-    }
-    if(inputPINECONE_NAME_SPACE == "") {
-        toast.error("Pinecoin Index Name cannot be empty", { duration: 4000 })
-        setIsDisabledButton(false)
-        setUploadingButton(`${t('Submit')}`)
-
-        return
-    }
-
-    const PostParams = {OPENAI_API_KEY: openApiKey, ModelName: inputModelName, Temperature: inputTemperature, PINECONE_API_KEY: pinecoinApiKey, PINECONE_ENVIRONMENT: inputPINECONE_ENVIRONMENT, PINECONE_INDEX_NAME: inputPINECONE_INDEX_NAME, PINECONE_NAME_SPACE: inputPINECONE_NAME_SPACE }
+    const PostParams = {OPENAI_API_KEY: openApiKey, ModelName: inputModelName, Temperature: inputTemperature, userId: userId, knowledgeId: knowledgeId }
     const FormSubmit: any = await axios.post(authConfig.backEndApi + '/setopenai', PostParams).then(res => res.data)
     console.log("FormSubmit:", FormSubmit)
     if(FormSubmit?.status == "ok") {
@@ -347,4 +270,4 @@ const SendOutForm = () => {
 }
 
 
-export default SendOutForm
+export default SettingForm

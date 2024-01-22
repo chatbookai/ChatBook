@@ -14,14 +14,14 @@ const MenuList = [
     sectionTitle: 'Settings'
   },
   {
-    title: 'Settings',
-    icon: 'mingcute:openai-fill',
-    path: '/settings'
-  },
-  {
     title: 'Knowledge Base',
     icon: 'carbon:ibm-watson-knowledge-studio',
     path: '/knowledge'
+  },
+  {
+    title: 'Settings',
+    icon: 'mingcute:openai-fill',
+    path: '/settings'
   },
   {
     title: 'Template',

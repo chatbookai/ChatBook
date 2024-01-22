@@ -24,6 +24,7 @@ const FilesApp = () => {
   const [knowledge, setKnowledge] = useState<any>(null)
   const [knowledgeId, setKnowledgeId] = useState<number>(0)
   const [knowledgeName, setKnowledgeName] = useState<string>("")
+  const userId = 1
 
   // ** Hooks
   const theme = useTheme()
@@ -71,7 +72,7 @@ const FilesApp = () => {
         setActiveId={setActiveId}
         hidden={false}
       />
-      <Files knowledgeId={knowledgeId} knowledgeName={knowledgeName}/>
+      <Files knowledgeId={knowledgeId} knowledgeName={knowledgeName userId={userId}/>
     </Box>
   )
 }

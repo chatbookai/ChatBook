@@ -30,12 +30,11 @@ const AppChat = () => {
   // ** Hook
   const { t } = useTranslation()
 
-  const userId = 1
-
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
   const [knowledge, setKnowledge] = useState<any>(null)
   const [knowledgeId, setKnowledgeId] = useState<number>(0)
   const [knowledgeName, setKnowledgeName] = useState<string>("")
+  const userId = 1
 
   const getAllKnowledgeList = async function () {
     const RS = await axios.get(authConfig.backEndApi + '/knowledge/0/100').then(res=>res.data)

@@ -26,8 +26,8 @@ const ChatContent = (props: any) => {
     sendButtonDisable,
     sendButtonText,
     sendInputText,
-    knowledgeId,
-    knowledgeName
+    chatId,
+    chatName
   } = props
 
   const renderContent = () => {
@@ -82,14 +82,14 @@ const ChatContent = (props: any) => {
                     }
                   >
                     <MuiAvatar
-                      src={"/images/avatars/"+((knowledgeId%8)+1)+".png"}
-                      alt={knowledgeName}
+                      src={"/images/avatars/"+((chatId%8)+1)+".png"}
+                      alt={chatName}
                       sx={{ width: '2.375rem', height: '2.375rem' }}
                     />
                   </Badge>
                   <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                     <Typography sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
-                      {knowledgeName} {knowledgeId}
+                      {chatName}
                     </Typography>
                     <Typography variant='caption' sx={{ color: 'text.disabled' }}>
                       Summary
@@ -113,7 +113,7 @@ const ChatContent = (props: any) => {
             </Box>
 
             {selectedChat && store.userProfile ? (
-              <ChatLog hidden={hidden} data={{ ...selectedChat, userContact: store.userProfile }} knowledgeId={knowledgeId} knowledgeName={knowledgeName} />
+              <ChatLog hidden={hidden} data={{ ...selectedChat, userContact: store.userProfile }} chatId={chatId} chatName={chatName} />
             ) : null}
 
             <SendMsgForm store={store} sendMsg={sendMsg} sendButtonDisable={sendButtonDisable} sendButtonText={sendButtonText} sendInputText={sendInputText}/>

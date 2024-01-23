@@ -1,11 +1,14 @@
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
 
-const ChatBook = "ChatBook"
+const ChatKnowledge = "ChatKnowledge"
+const ChatChat = "ChatChat"
+const ChatChatName = "ChatChatName"
+const ChatKnowledgeHistory = "ChatKnowledgeHistory"
+const ChatChatHistory = "ChatChatHistory"
 const ChatBookLanguage = "ChatBookLanguage"
-const ChatBookHistory = "ChatBookHistory"
 
-export function ChatBookInit(MsgList: any) {
+export function ChatKnowledgeInit(MsgList: any) {
     const ChatLogList: any = []
     MsgList.map((Item: any)=>{
         ChatLogList.push({
@@ -29,15 +32,15 @@ export function ChatBookInit(MsgList: any) {
             }
           })
     })
-    window.localStorage.setItem(ChatBook, JSON.stringify(ChatLogList))
+    window.localStorage.setItem(ChatKnowledge, JSON.stringify(ChatLogList))
 
     return ChatLogList
 }
 
-export function ChatBookInput(Message: string, UserId: number, KnowledgeId: number) {
-	const ChatBookText = window.localStorage.getItem(ChatBook)      
-    const ChatBookList = ChatBookText ? JSON.parse(ChatBookText) : []
-    ChatBookList.push({
+export function ChatKnowledgeInput(Message: string, UserId: number, KnowledgeId: number) {
+	const ChatKnowledgeText = window.localStorage.getItem(ChatKnowledge)      
+    const ChatKnowledgeList = ChatKnowledgeText ? JSON.parse(ChatKnowledgeText) : []
+    ChatKnowledgeList.push({
       "message": Message,
       "time": String(Date.now()),
       "senderId": UserId,
@@ -48,16 +51,16 @@ export function ChatBookInput(Message: string, UserId: number, KnowledgeId: numb
           "isSeen": true
       }
     })
-    window.localStorage.setItem(ChatBook, JSON.stringify(ChatBookList))
+    window.localStorage.setItem(ChatKnowledge, JSON.stringify(ChatKnowledgeList))
 }
 
-export async function ChatBookOutput(Message: string, UserId: number, KnowledgeId: number) {
-    const ChatBookHistoryText = window.localStorage.getItem(ChatBookHistory)      
-    const ChatBookList = ChatBookHistoryText ? JSON.parse(ChatBookHistoryText) : []
+export async function ChatKnowledgeOutput(Message: string, UserId: number, KnowledgeId: number) {
+    const ChatKnowledgeHistoryText = window.localStorage.getItem(ChatKnowledgeHistory)      
+    const ChatKnowledgeList = ChatKnowledgeHistoryText ? JSON.parse(ChatKnowledgeHistoryText) : []
     const History: any = []
-    if(ChatBookList && ChatBookList[UserId] && ChatBookList[UserId][KnowledgeId]) {
-        const ChatBookListLast10 = ChatBookList[UserId][KnowledgeId].slice(-10)
-        ChatBookListLast10.map((Item: any)=>{
+    if(ChatKnowledgeList && ChatKnowledgeList[UserId] && ChatKnowledgeList[UserId][KnowledgeId]) {
+        const ChatKnowledgeListLast10 = ChatKnowledgeList[UserId][KnowledgeId].slice(-10)
+        ChatKnowledgeListLast10.map((Item: any)=>{
             if(Item.question && Item.answer) {
                 History.push([Item.question,Item.answer.substring(0, 200)])
             }
@@ -66,14 +69,14 @@ export async function ChatBookOutput(Message: string, UserId: number, KnowledgeI
     const response: any = await axios.post(authConfig.backEndApi + "/chat/chat", { question: Message, history: History, KnowledgeId: KnowledgeId }).then((res) => res.data)
     if(response && response.text) {
         console.log("OpenAI Response:", response)
-        ChatBookInput(response.text, 999999, KnowledgeId)
-        ChatBookHistoryInput(Message, response.text, UserId, KnowledgeId)
+        ChatKnowledgeInput(response.text, 999999, KnowledgeId)
+        ChatKnowledgeHistoryInput(Message, response.text, UserId, KnowledgeId)
 
         return true
     }
     else if(response && response.error) {
         console.log("OpenAI Error:", response)
-        ChatBookInput(response.error, 999999, KnowledgeId)
+        ChatKnowledgeInput(response.error, 999999, KnowledgeId)
         
         return true
     }
@@ -82,27 +85,133 @@ export async function ChatBookOutput(Message: string, UserId: number, KnowledgeI
     }
 }
 
-export function ChatBookHistoryInput(question: string, answer: string, UserId: number, KnowledgeId: number) {
-    console.log("ChatBookHistoryList", question, answer, UserId)
-	const ChatBookHistoryText = window.localStorage.getItem(ChatBookHistory)      
-    const ChatBookHistoryList = ChatBookHistoryText ? JSON.parse(ChatBookHistoryText) : {}
-    if(ChatBookHistoryList && ChatBookHistoryList[UserId] && ChatBookHistoryList[UserId][KnowledgeId]) {
-        ChatBookHistoryList[UserId][KnowledgeId].push({
+export function ChatKnowledgeHistoryInput(question: string, answer: string, UserId: number, KnowledgeId: number) {
+    console.log("ChatKnowledgeHistoryList", question, answer, UserId)
+	const ChatKnowledgeHistoryText = window.localStorage.getItem(ChatKnowledgeHistory)      
+    const ChatKnowledgeHistoryList = ChatKnowledgeHistoryText ? JSON.parse(ChatKnowledgeHistoryText) : {}
+    if(ChatKnowledgeHistoryList && ChatKnowledgeHistoryList[UserId] && ChatKnowledgeHistoryList[UserId][KnowledgeId]) {
+        ChatKnowledgeHistoryList[UserId][KnowledgeId].push({
             "question": question,
             "time": String(Date.now()),
             "answer": answer,
         })
     }
     else {
-        ChatBookHistoryList[UserId] = {}
-        ChatBookHistoryList[UserId][KnowledgeId] = [{
+        ChatKnowledgeHistoryList[UserId] = {}
+        ChatKnowledgeHistoryList[UserId][KnowledgeId] = [{
             "question": question,
             "time": String(Date.now()),
             "answer": answer,
         }]
     }
-    console.log("ChatBookHistoryList", ChatBookHistoryList)
-    window.localStorage.setItem(ChatBookHistory, JSON.stringify(ChatBookHistoryList))
+    console.log("ChatKnowledgeHistoryList", ChatKnowledgeHistoryList)
+    window.localStorage.setItem(ChatKnowledgeHistory, JSON.stringify(ChatKnowledgeHistoryList))
+}
+
+export function ChatChatList() {
+    const ChatChatText = window.localStorage.getItem(ChatChat)      
+    const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
+    return ChatChatList
+}
+
+export function ChatChatNameList() {
+	const ChatChatText = window.localStorage.getItem(ChatChatName)      
+    const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
+    return ChatChatList
+}
+
+export function SetChatChatName(Id: number, Name: string) {
+	const ChatChatText = window.localStorage.getItem(ChatChatName)      
+    const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
+    ChatChatList[Id] = Name
+    window.localStorage.setItem(ChatChatName, JSON.stringify(ChatChatList))
+}
+
+export function AddChatChatName(Name: string) {
+	const ChatChatText = window.localStorage.getItem(ChatChatName)      
+    const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
+    ChatChatList.push(Name)
+    window.localStorage.setItem(ChatChatName, JSON.stringify(ChatChatList))
+}
+
+export function DeleteChatChatName(Id: number) {
+	const ChatChatText = window.localStorage.getItem(ChatChatName)      
+    const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
+    if (Id >= 0 && Id < ChatChatList.length) {
+        ChatChatList.splice(Id, 1);
+    }
+    window.localStorage.setItem(ChatChatName, JSON.stringify(ChatChatList))
+}
+
+export function ChatChatInput(Message: string, UserId: number, KnowledgeId: number) {
+	const ChatChatText = window.localStorage.getItem(ChatChat)      
+    const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
+    ChatChatList.push({
+      "message": Message,
+      "time": String(Date.now()),
+      "senderId": UserId,
+      "KnowledgeId": KnowledgeId,
+      "feedback": {
+          "isSent": true,
+          "isDelivered": true,
+          "isSeen": true
+      }
+    })
+    window.localStorage.setItem(ChatChat, JSON.stringify(ChatChatList))
+}
+
+export async function ChatChatOutput(Message: string, UserId: number, KnowledgeId: number) {
+    const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
+    const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []
+    const History: any = []
+    if(ChatChatList && ChatChatList[UserId] && ChatChatList[UserId][KnowledgeId]) {
+        const ChatChatListLast10 = ChatChatList[UserId][KnowledgeId].slice(-10)
+        ChatChatListLast10.map((Item: any)=>{
+            if(Item.question && Item.answer) {
+                History.push([Item.question,Item.answer.substring(0, 200)])
+            }
+        })
+    }
+    const response: any = await axios.post(authConfig.backEndApi + "/chat/chat", { question: Message, history: History, KnowledgeId: KnowledgeId }).then((res) => res.data)
+    if(response && response.text) {
+        console.log("OpenAI Response:", response)
+        ChatChatInput(response.text, 999999, KnowledgeId)
+        ChatChatHistoryInput(Message, response.text, UserId, KnowledgeId)
+
+        return true
+    }
+    else if(response && response.error) {
+        console.log("OpenAI Error:", response)
+        ChatChatInput(response.error, 999999, KnowledgeId)
+        
+        return true
+    }
+    else {
+        return false
+    }
+}
+
+export function ChatChatHistoryInput(question: string, answer: string, UserId: number, KnowledgeId: number) {
+    console.log("ChatChatHistoryList", question, answer, UserId)
+	const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
+    const ChatChatHistoryList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : {}
+    if(ChatChatHistoryList && ChatChatHistoryList[UserId] && ChatChatHistoryList[UserId][KnowledgeId]) {
+        ChatChatHistoryList[UserId][KnowledgeId].push({
+            "question": question,
+            "time": String(Date.now()),
+            "answer": answer,
+        })
+    }
+    else {
+        ChatChatHistoryList[UserId] = {}
+        ChatChatHistoryList[UserId][KnowledgeId] = [{
+            "question": question,
+            "time": String(Date.now()),
+            "answer": answer,
+        }]
+    }
+    console.log("ChatChatHistoryList", ChatChatHistoryList)
+    window.localStorage.setItem(ChatChatHistory, JSON.stringify(ChatChatHistoryList))
 }
 
 export function getChatBookLanguage() {

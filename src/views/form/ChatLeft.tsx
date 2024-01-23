@@ -15,6 +15,9 @@ import Typography from '@mui/material/Typography'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
 import ListItemButton from '@mui/material/ListItemButton'
+import Fab from '@mui/material/Fab'
+import Icon from 'src/@core/components/icon'
+import IconButton from '@mui/material/IconButton'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
@@ -31,15 +34,16 @@ const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: bool
 }
 
 
-const KnowledgeLeft = (props: any) => {
+const ChatLeft = (props: any) => {
   // ** Hook
   const { t } = useTranslation()
 
   // ** Props
   const {
-    knowledge,
+    chatList,
     hidden,
-    setActiveId
+    setActiveId,
+    handleAddChatChatName
   } = props
 
   const [active, setActive] = useState<null | { type: string; id: string | number }>(null)
@@ -50,16 +54,6 @@ const KnowledgeLeft = (props: any) => {
   const handleChatClick = (id: number, name: string) => {
     setActiveId(id, name)
   }
-
-  useEffect(() => {
-    if (knowledge && knowledge.chats) {
-      if (active !== null) {
-        if (active.type === 'contact' && active.id === knowledge.chats[0].id) {
-          setActive({ type: 'chat', id: active.id })
-        }
-      }
-    }
-  }, [knowledge, active])
 
   useEffect(() => {
     router.events.on('routeChangeComplete', () => {
@@ -73,17 +67,16 @@ const KnowledgeLeft = (props: any) => {
   }, [])
 
   const renderChats = () => {
-    if (knowledge && knowledge.data && knowledge.data.length) {
-      const arrToMap = knowledge.data
+    if (chatList && chatList.length) {
 
-      return arrToMap.map((Item: any, index: number) => {
+      return chatList.map((Item: any, index: number) => {
         const activeCondition = false
 
         return (
           <ListItem key={index} disablePadding sx={{ '&:not(:last-child)': { mb: 1.5 } }}>
             <ListItemButton
               disableRipple
-              onClick={() => handleChatClick(Item.id, Item.name)}
+              onClick={() => handleChatClick(index, Item)}
               sx={{
                 px: 3,
                 py: 2.5,
@@ -118,8 +111,8 @@ const KnowledgeLeft = (props: any) => {
                   }
                 >
                   <MuiAvatar
-                    src={"/images/avatars/"+((Item.id%8)+1)+".png"}
-                    alt={Item.name}
+                    src={"/images/avatars/"+((index%8)+1)+".png"}
+                    alt={Item}
                     sx={{
                       width: 38,
                       height: 38,
@@ -135,7 +128,7 @@ const KnowledgeLeft = (props: any) => {
                 }}
                 primary={
                   <Typography noWrap sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
-                    {Item.name}
+                    {Item}
                   </Typography>
                 }
                 secondary={
@@ -188,9 +181,16 @@ const KnowledgeLeft = (props: any) => {
             borderBottom: theme => `1px solid ${theme.palette.divider}`
           }}
         >
-          <Typography variant='h6' sx={{ ml: 3, mb: 1}}>
-            {`${t('Knowledge Base')}`}
-          </Typography>
+          <Box sx={{ display: 'flex', alignItems: 'center'}} >
+            <Typography variant='h6' sx={{ ml: 3, mb: 1}}>
+                {`${t('Chat')}`}
+            </Typography>
+          </Box>
+          <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
+            <IconButton aria-label='capture screenshot' onClick={handleAddChatChatName}>
+                <Icon icon='mdi:plus'/>
+            </IconButton>
+          </Box>
         </Box>
 
         <Box sx={{ height: `calc(100% - 4.125rem)` }}>
@@ -206,4 +206,4 @@ const KnowledgeLeft = (props: any) => {
   )
 }
 
-export default KnowledgeLeft
+export default ChatLeft

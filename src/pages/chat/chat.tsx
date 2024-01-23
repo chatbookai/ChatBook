@@ -13,7 +13,7 @@ import { StatusObjType } from 'src/types/apps/chatTypes'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Chat App Components Imports
-import KnowledgeLeft from 'src/views/form/KnowledgeLeft'
+import ChatLeft from 'src/views/form/ChatLeft'
 import ChatContent from 'src/views/chat/Chat/ChatContent'
 
 // ** Third Party Import
@@ -23,38 +23,38 @@ import { useTranslation } from 'react-i18next'
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
 
-import { ChatBookInit, ChatBookInput, ChatBookOutput } from 'src/functions/ChatBook'
+import { ChatChatList, ChatChatNameList, SetChatChatName, AddChatChatName, DeleteChatChatName, ChatChatInput, ChatChatOutput  } from 'src/functions/ChatBook'
 
 const AppChat = () => {
 
   // ** Hook
   const { t } = useTranslation()
 
-  const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
-  const [knowledge, setKnowledge] = useState<any>(null)
-  const [knowledgeId, setKnowledgeId] = useState<number>(0)
-  const [knowledgeName, setKnowledgeName] = useState<string>("")
+  const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
+  const [chatList, setChatList] = useState<any>(null)
+  const [chatId, setChatId] = useState<number>(-1)
+  const [chatName, setChatName] = useState<string>("")
   const userId = 1
 
-  const getAllKnowledgeList = async function () {
-    const RS = await axios.get(authConfig.backEndApi + '/knowledge/0/100').then(res=>res.data)
-    setKnowledge(RS)
-    if(RS && RS['data'] && RS['data'][0] && RS['data'][0].id && knowledgeId == 0) {
-      setKnowledgeId(RS['data'][0].id)
-      setKnowledgeName(RS['data'][0].name)
+  const getAllChatList = function () {
+    const ChatChatNameListData: string[] = ChatChatNameList()
+    setChatList(ChatChatNameListData)
+    if(ChatChatNameListData && ChatChatNameListData.length > 0 && chatId == -1) {
+      setChatId(0)
+      setChatName(ChatChatNameListData[0])
     }
   }
 
-  const getChatLogList = async function (knowledgeId: number) {
-    const RS = await axios.get(authConfig.backEndApi + '/chatlog/' + knowledgeId + '/' + userId + '/0/100').then(res=>res.data)
-    const ChatBookInitList = ChatBookInit(RS['data'].reverse())
-    console.log("ChatBookInitList", ChatBookInitList)
+  const getChatLogList = async function (chatId: number) {
+    const RS = await axios.get(authConfig.backEndApi + '/chatlog/' + chatId + '/' + userId + '/0/100').then(res=>res.data)
+    const ChatChatListData = ChatChatList()
+    console.log("ChatChatListData", ChatChatListData)
     const selectedChat = {
       "chat": {
           "id": 1,
           "userId": 1,
           "unseenMsgs": 0,
-          "chat": ChatBookInitList
+          "chat": ChatChatListData
       }
     }
     const storeInit = {
@@ -70,9 +70,15 @@ const AppChat = () => {
   }
 
   const setActiveId = function (Id: number, Name: string) {
-    setKnowledgeId(Id)
-    setKnowledgeName(Name)
+    setChatId(Id)
+    setChatName(Name)
     getChatLogList(Id)
+    setRefreshChatCounter(refreshChatCounter + 1)
+  }
+
+  const handleAddChatChatName = function () {
+    const ChatChatNameListData: string[] = ChatChatNameList()
+    AddChatChatName('New Chat(' + (ChatChatNameListData.length + 1) + ')')
     setRefreshChatCounter(refreshChatCounter + 1)
   }
 
@@ -88,14 +94,14 @@ const AppChat = () => {
   const hidden = useMediaQuery(theme.breakpoints.down('lg'))
 
   useEffect(() => {
-    const ChatBookText = window.localStorage.getItem("ChatBook")      
-    const ChatBookList = ChatBookText ? JSON.parse(ChatBookText) : []
+    const ChatChatText = window.localStorage.getItem("ChatChat")      
+    const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
     const selectedChat = {
       "chat": {
           "id": 1,
           "userId": 1,
           "unseenMsgs": 0,
-          "chat": ChatBookList
+          "chat": ChatChatList
       }
     }
     const storeInit = {
@@ -108,10 +114,11 @@ const AppChat = () => {
       "selectedChat": selectedChat
     }
     setStore(storeInit)
+    getAllChatList()
   }, [refreshChatCounter])
 
   useEffect(() => {
-    getAllKnowledgeList()  
+    getAllChatList()  
     setSendButtonText(t("Send") as string)
     setSendInputText(t("Type your message here...") as string)    
   }, [])
@@ -120,10 +127,10 @@ const AppChat = () => {
     setSendButtonDisable(true)
     setSendButtonText(t("Sending") as string)
     setSendInputText(t("Generating the answer...") as string)
-    ChatBookInput(Obj.message, userId, knowledgeId)
+    ChatChatInput(Obj.message, userId, chatId)
     setRefreshChatCounter(refreshChatCounter + 1)
-    const ChatBookOutputStatus = await ChatBookOutput(Obj.message, 1, knowledgeId)
-    if(ChatBookOutputStatus) {
+    const ChatChatOutputStatus = await ChatChatOutput(Obj.message, 1, chatId)
+    if(ChatChatOutputStatus) {
       setSendButtonDisable(false)
       setRefreshChatCounter(refreshChatCounter + 2)
       setSendButtonText(t("Send") as string)
@@ -155,10 +162,11 @@ const AppChat = () => {
         ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
       }}
     >
-      <KnowledgeLeft
-        knowledge={knowledge}
+      <ChatLeft
+        chatList={chatList}
         setActiveId={setActiveId}
         hidden={false}
+        handleAddChatChatName={handleAddChatChatName}
       />
       <ChatContent
         store={store}
@@ -169,8 +177,8 @@ const AppChat = () => {
         sendButtonDisable={sendButtonDisable}
         sendButtonText={sendButtonText}
         sendInputText={sendInputText}
-        knowledgeId={knowledgeId}
-        knowledgeName={knowledgeName}
+        chatId={chatId}
+        chatName={chatName}
       />
     </Box>
   )

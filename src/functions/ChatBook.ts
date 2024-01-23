@@ -66,7 +66,7 @@ export async function ChatKnowledgeOutput(Message: string, UserId: number, Knowl
             }
         })
     }
-    const response: any = await axios.post(authConfig.backEndApi + "/chat/chat", { question: Message, history: History, KnowledgeId: KnowledgeId }).then((res) => res.data)
+    const response: any = await axios.post(authConfig.backEndApi + "/chat/knowledge", { question: Message, history: History, KnowledgeId: KnowledgeId }).then((res) => res.data)
     if(response && response.text) {
         console.log("OpenAI Response:", response)
         ChatKnowledgeInput(response.text, 999999, KnowledgeId)
@@ -160,7 +160,7 @@ export function ChatChatInput(Message: string, UserId: number, KnowledgeId: numb
     window.localStorage.setItem(ChatChat, JSON.stringify(ChatChatList))
 }
 
-export async function ChatChatOutput(Message: string, UserId: number, chatId: number) {
+export async function ChatChatOutput(Message: string, UserId: number, chatId: number, setLastMessage:any) {
     const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []
     const History: any = []
@@ -172,23 +172,50 @@ export async function ChatChatOutput(Message: string, UserId: number, chatId: nu
             }
         })
     }
-    const response: any = await axios.post(authConfig.backEndApi + "/chat/chat", { question: Message, history: History }).then((res) => res.data)
-    if(response && response.text) {
-        console.log("OpenAI Response:", response)
-        ChatChatInput(response.text, 999999, chatId)
-        ChatChatHistoryInput(Message, response.text, UserId, chatId)
+    try {
+        setLastMessage('')
+        const response = await fetch(`${authConfig.backEndApi}/chat/chat`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ question: Message, history: History }),
+        });
+        if (!response.body) {
+          throw new Error('Response body is not readable as a stream');
+        }
+        const reader = response.body.getReader();
+        let responseText = "";
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) {
+            setLastMessage('')
+            break;
+          }
+          const text = new TextDecoder('utf-8').decode(value);
+          setLastMessage((prevText: string) => prevText + text);
+          responseText = responseText + text;
+        }
+        if(responseText) {
+            console.log("OpenAI Response:", responseText)
+            ChatChatInput(responseText, 999999, chatId)
+            ChatChatHistoryInput(Message, responseText, UserId, chatId)
+    
+            return true
+        }
+        else {
+            return false
+        }
 
-        return true
-    }
-    else if(response && response.error) {
-        console.log("OpenAI Error:", response)
-        ChatChatInput(response.error, 999999, chatId)
+    } catch (error: any) {
+        console.log('Error:', error.message);
         
-        return true
-    }
-    else {
         return false
     }
+      
+    
+    
+    
 }
 
 export function ChatChatHistoryInput(question: string, answer: string, UserId: number, KnowledgeId: number) {

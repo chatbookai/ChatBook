@@ -87,6 +87,18 @@ const AppChat = () => {
   const [sendButtonDisable, setSendButtonDisable] = useState<boolean>(false)
   const [sendButtonText, setSendButtonText] = useState<string>('')
   const [sendInputText, setSendInputText] = useState<string>('')
+  const [lastMessage, setLastMessage] = useState("")
+  const lastChat = {
+    "message": lastMessage,
+    "time": String(Date.now()),
+    "senderId": 999999,
+    "KnowledgeId": 0,
+    "feedback": {
+        "isSent": true,
+        "isDelivered": false,
+        "isSeen": false
+    }
+  }
 
   // ** Hooks
   const theme = useTheme()
@@ -96,6 +108,9 @@ const AppChat = () => {
   useEffect(() => {
     const ChatChatText = window.localStorage.getItem("ChatChat")      
     const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
+    if(lastMessage && lastMessage!="") {
+      ChatChatList.push(lastChat)
+    }
     const selectedChat = {
       "chat": {
           "id": 1,
@@ -115,7 +130,7 @@ const AppChat = () => {
     }
     setStore(storeInit)
     getAllChatList()
-  }, [refreshChatCounter])
+  }, [refreshChatCounter, lastMessage])
 
   useEffect(() => {
     getAllChatList()  
@@ -123,13 +138,14 @@ const AppChat = () => {
     setSendInputText(t("Type your message here...") as string)    
   }, [])
 
+
   const sendMsg = async (Obj: any) => {
     setSendButtonDisable(true)
     setSendButtonText(t("Sending") as string)
     setSendInputText(t("Generating the answer...") as string)
     ChatChatInput(Obj.message, userId, chatId)
     setRefreshChatCounter(refreshChatCounter + 1)
-    const ChatChatOutputStatus = await ChatChatOutput(Obj.message, 1, chatId)
+    const ChatChatOutputStatus = await ChatChatOutput(Obj.message, userId, chatId, setLastMessage)
     if(ChatChatOutputStatus) {
       setSendButtonDisable(false)
       setRefreshChatCounter(refreshChatCounter + 2)
@@ -137,6 +153,10 @@ const AppChat = () => {
       setSendInputText(t("Type your message here...") as string)  
     }
   }
+
+  useEffect(() => {
+    //console.log("lastMessage", lastMessage)
+  }, [lastMessage])
 
   // ** Vars
   const { skin } = settings
@@ -147,7 +167,6 @@ const AppChat = () => {
     online: 'success',
     offline: 'secondary'
   }
-
   return (
     <Box
       className='app-chat'

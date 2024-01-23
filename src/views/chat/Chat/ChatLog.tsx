@@ -162,14 +162,13 @@ const ChatLog = (props: any) => {
                   }
                 : {})}
             >
-              33
+              {chatName}
             </CustomAvatar>
           </div>
 
           <Box className='chat-body' sx={{ maxWidth: ['calc(100% - 5.75rem)', '75%', '65%'] }}>
             {item.messages.map((chat: ChatLogChatType, index: number, { length }: { length: number }) => {
-              const time = new Date(chat.time)
-              
+
               return (
                 <Box key={index} sx={{ '&:not(:last-of-type)': { mb: 3.5 } }}>
                   <div>
@@ -201,7 +200,7 @@ const ChatLog = (props: any) => {
                     >
                       {renderMsgFeedback(isSender, chat.feedback)}
                       <Typography variant='caption'>
-                        {time
+                        {chat.time
                           ? new Date(Number(chat.time)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
                           : null}
                       </Typography>

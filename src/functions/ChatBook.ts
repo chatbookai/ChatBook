@@ -63,7 +63,7 @@ export async function ChatBookOutput(Message: string, UserId: number, KnowledgeI
             }
         })
     }
-    const response: any = await axios.post(authConfig.backEndApi + "/chat", { question: Message, history: History, KnowledgeId: KnowledgeId }).then((res) => res.data)
+    const response: any = await axios.post(authConfig.backEndApi + "/chat/chat", { question: Message, history: History, KnowledgeId: KnowledgeId }).then((res) => res.data)
     if(response && response.text) {
         console.log("OpenAI Response:", response)
         ChatBookInput(response.text, 999999, KnowledgeId)

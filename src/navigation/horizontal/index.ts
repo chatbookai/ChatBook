@@ -7,7 +7,7 @@ const navigation = (): HorizontalNavItemsType => {
     {
       title: 'Chat',
       icon: 'mdi:message-outline',
-      path: '/chat'
+      path: '/chat/chat'
     },
     {
       title: 'Knowledge Base',

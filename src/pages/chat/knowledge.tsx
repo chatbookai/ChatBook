@@ -14,7 +14,7 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Chat App Components Imports
 import KnowledgeLeft from 'src/views/form/KnowledgeLeft'
-import ChatContent from 'src/views/chat/ChatContent'
+import ChatContent from 'src/views/chat/Knowledge/ChatContent'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'

@@ -13,7 +13,7 @@ import Icon from 'src/@core/components/icon'
 
 // ** Custom Components Import
 import ChatLog from './ChatLog'
-import SendMsgForm from 'src/views/chat/SendMsgForm'
+import SendMsgForm from 'src/views/chat/Knowledge/SendMsgForm'
 import OptionsMenu from 'src/@core/components/option-menu'
 
 const ChatContent = (props: any) => {

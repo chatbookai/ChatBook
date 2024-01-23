@@ -160,29 +160,29 @@ export function ChatChatInput(Message: string, UserId: number, KnowledgeId: numb
     window.localStorage.setItem(ChatChat, JSON.stringify(ChatChatList))
 }
 
-export async function ChatChatOutput(Message: string, UserId: number, KnowledgeId: number) {
+export async function ChatChatOutput(Message: string, UserId: number, chatId: number) {
     const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []
     const History: any = []
-    if(ChatChatList && ChatChatList[UserId] && ChatChatList[UserId][KnowledgeId]) {
-        const ChatChatListLast10 = ChatChatList[UserId][KnowledgeId].slice(-10)
+    if(ChatChatList && ChatChatList[UserId] && ChatChatList[UserId][chatId]) {
+        const ChatChatListLast10 = ChatChatList[UserId][chatId].slice(-10)
         ChatChatListLast10.map((Item: any)=>{
             if(Item.question && Item.answer) {
                 History.push([Item.question,Item.answer.substring(0, 200)])
             }
         })
     }
-    const response: any = await axios.post(authConfig.backEndApi + "/chat/chat", { question: Message, history: History, KnowledgeId: KnowledgeId }).then((res) => res.data)
+    const response: any = await axios.post(authConfig.backEndApi + "/chat/chat", { question: Message, history: History }).then((res) => res.data)
     if(response && response.text) {
         console.log("OpenAI Response:", response)
-        ChatChatInput(response.text, 999999, KnowledgeId)
-        ChatChatHistoryInput(Message, response.text, UserId, KnowledgeId)
+        ChatChatInput(response.text, 999999, chatId)
+        ChatChatHistoryInput(Message, response.text, UserId, chatId)
 
         return true
     }
     else if(response && response.error) {
         console.log("OpenAI Error:", response)
-        ChatChatInput(response.error, 999999, KnowledgeId)
+        ChatChatInput(response.error, 999999, chatId)
         
         return true
     }

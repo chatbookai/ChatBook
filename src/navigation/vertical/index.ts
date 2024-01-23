@@ -44,6 +44,11 @@ const MenuList = [
     path: '/files'
   },
   {
+    title: 'Chat Settings',
+    icon: 'mingcute:openai-fill',
+    path: '/settings/chat'
+  },
+  {
     title: 'Logs',
     icon: 'mdi:web-sync',
     path: '/logs'

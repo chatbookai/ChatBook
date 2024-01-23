@@ -133,7 +133,7 @@ const SettingForm = (props: any) => {
   return (
     <Fragment>
         <Card>
-        <CardHeader title={`${knowledgeName} ${t('Open API & Pinecone')}`} />
+        <CardHeader title={`${knowledgeName}`} />
         <CardContent>
             <Grid container spacing={5}>
                 <Grid item xs={12}>

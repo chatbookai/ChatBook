@@ -31,7 +31,7 @@ const PerfectScrollbar = styled(PerfectScrollbarComponent)<ScrollBarProps & { re
 
 const ChatLog = (props: any) => {
   // ** Props
-  const { data, hidden, knowledgeId, knowledgeName } = props
+  const { data, hidden, chatId, chatName } = props
 
   // ** Ref
   const chatArea = useRef(null)
@@ -151,8 +151,8 @@ const ChatLog = (props: any) => {
               }}
               {...(!isSender
                 ? {
-                    src: "/images/avatars/"+((knowledgeId%8)+1)+".png",
-                    alt: knowledgeName
+                    src: "/images/avatars/"+((chatId%8)+1)+".png",
+                    alt: chatName
                   }
                 : {})}
               {...(isSender

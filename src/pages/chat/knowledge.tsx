@@ -23,7 +23,7 @@ import { useTranslation } from 'react-i18next'
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
 
-import { ChatBookInit, ChatBookInput, ChatBookOutput } from 'src/functions/ChatBook'
+import { ChatKnowledgeInit, ChatKnowledgeInput, ChatKnowledgeOutput } from 'src/functions/ChatBook'
 
 const AppChat = () => {
 
@@ -47,14 +47,14 @@ const AppChat = () => {
 
   const getChatLogList = async function (knowledgeId: number) {
     const RS = await axios.get(authConfig.backEndApi + '/chatlog/' + knowledgeId + '/' + userId + '/0/100').then(res=>res.data)
-    const ChatBookInitList = ChatBookInit(RS['data'].reverse())
-    console.log("ChatBookInitList", ChatBookInitList)
+    const ChatKnowledgeInitList = ChatKnowledgeInit(RS['data'].reverse())
+    console.log("ChatKnowledgeInitList", ChatKnowledgeInitList)
     const selectedChat = {
       "chat": {
           "id": 1,
           "userId": 1,
           "unseenMsgs": 0,
-          "chat": ChatBookInitList
+          "chat": ChatKnowledgeInitList
       }
     }
     const storeInit = {
@@ -88,14 +88,14 @@ const AppChat = () => {
   const hidden = useMediaQuery(theme.breakpoints.down('lg'))
 
   useEffect(() => {
-    const ChatBookText = window.localStorage.getItem("ChatBook")      
-    const ChatBookList = ChatBookText ? JSON.parse(ChatBookText) : []
+    const ChatKnowledgeText = window.localStorage.getItem("ChatKnowledge")      
+    const ChatKnowledgeList = ChatKnowledgeText ? JSON.parse(ChatKnowledgeText) : []
     const selectedChat = {
       "chat": {
           "id": 1,
           "userId": 1,
           "unseenMsgs": 0,
-          "chat": ChatBookList
+          "chat": ChatKnowledgeList
       }
     }
     const storeInit = {
@@ -120,10 +120,10 @@ const AppChat = () => {
     setSendButtonDisable(true)
     setSendButtonText(t("Sending") as string)
     setSendInputText(t("Generating the answer...") as string)
-    ChatBookInput(Obj.message, userId, knowledgeId)
+    ChatKnowledgeInput(Obj.message, userId, knowledgeId)
     setRefreshChatCounter(refreshChatCounter + 1)
-    const ChatBookOutputStatus = await ChatBookOutput(Obj.message, 1, knowledgeId)
-    if(ChatBookOutputStatus) {
+    const ChatKnowledgeOutputStatus = await ChatKnowledgeOutput(Obj.message, 1, knowledgeId)
+    if(ChatKnowledgeOutputStatus) {
       setSendButtonDisable(false)
       setRefreshChatCounter(refreshChatCounter + 2)
       setSendButtonText(t("Send") as string)

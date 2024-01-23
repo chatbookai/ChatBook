@@ -81,6 +81,18 @@ const AppChat = () => {
   const [sendButtonDisable, setSendButtonDisable] = useState<boolean>(false)
   const [sendButtonText, setSendButtonText] = useState<string>('')
   const [sendInputText, setSendInputText] = useState<string>('')
+  const [lastMessage, setLastMessage] = useState("")
+  const lastChat = {
+    "message": lastMessage,
+    "time": String(Date.now()),
+    "senderId": 999999,
+    "KnowledgeId": 0,
+    "feedback": {
+        "isSent": true,
+        "isDelivered": false,
+        "isSeen": false
+    }
+  }
 
   // ** Hooks
   const theme = useTheme()
@@ -90,6 +102,9 @@ const AppChat = () => {
   useEffect(() => {
     const ChatKnowledgeText = window.localStorage.getItem("ChatKnowledge")      
     const ChatKnowledgeList = ChatKnowledgeText ? JSON.parse(ChatKnowledgeText) : []
+    if(lastMessage && lastMessage!="") {
+      ChatKnowledgeList.push(lastChat)
+    }
     const selectedChat = {
       "chat": {
           "id": 1,
@@ -108,7 +123,7 @@ const AppChat = () => {
       "selectedChat": selectedChat
     }
     setStore(storeInit)
-  }, [refreshChatCounter])
+  }, [refreshChatCounter, lastMessage])
 
   useEffect(() => {
     getAllKnowledgeList()  
@@ -122,7 +137,7 @@ const AppChat = () => {
     setSendInputText(t("Generating the answer...") as string)
     ChatKnowledgeInput(Obj.message, userId, knowledgeId)
     setRefreshChatCounter(refreshChatCounter + 1)
-    const ChatKnowledgeOutputStatus = await ChatKnowledgeOutput(Obj.message, 1, knowledgeId)
+    const ChatKnowledgeOutputStatus = await ChatKnowledgeOutput(Obj.message, userId, knowledgeId, setLastMessage)
     if(ChatKnowledgeOutputStatus) {
       setSendButtonDisable(false)
       setRefreshChatCounter(refreshChatCounter + 2)

@@ -9,7 +9,7 @@ import { useTheme } from '@mui/material/styles'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Chat App Components Imports
-import UploadFilesLeft from 'src/views/form/UploadFilesLeft'
+import KnowledgeLeft from 'src/views/form/KnowledgeLeft'
 
 import SettingApiModel from 'src/views/form/SettingApi';
 
@@ -67,7 +67,7 @@ const SettingApiModelAPP = () => {
         ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
       }}
     >
-      <UploadFilesLeft
+      <KnowledgeLeft
         knowledge={knowledge}
         setActiveId={setActiveId}
         hidden={false}

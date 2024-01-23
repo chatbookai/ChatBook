@@ -13,7 +13,7 @@ import { StatusObjType } from 'src/types/apps/chatTypes'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Chat App Components Imports
-import UploadFilesLeft from 'src/views/form/UploadFilesLeft'
+import KnowledgeLeft from 'src/views/form/KnowledgeLeft'
 import ChatContent from 'src/views/chat/ChatContent'
 
 // ** Third Party Import
@@ -155,7 +155,7 @@ const AppChat = () => {
         ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
       }}
     >
-      <UploadFilesLeft
+      <KnowledgeLeft
         knowledge={knowledge}
         setActiveId={setActiveId}
         hidden={false}

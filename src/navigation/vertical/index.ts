@@ -11,6 +11,11 @@ const MenuList = [
     path: '/chat'
   },
   {
+    title: 'Knowledge Chat',
+    icon: 'material-symbols:chat',
+    path: '/chat/knowledge'
+  },
+  {
     sectionTitle: 'Settings'
   },
   {

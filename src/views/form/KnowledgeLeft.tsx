@@ -31,7 +31,7 @@ const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: bool
 }
 
 
-const UploadFilesLeft = (props: any) => {
+const KnowledgeLeft = (props: any) => {
   // ** Hook
   const { t } = useTranslation()
 
@@ -206,4 +206,4 @@ const UploadFilesLeft = (props: any) => {
   )
 }
 
-export default UploadFilesLeft
+export default KnowledgeLeft

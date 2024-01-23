@@ -29,6 +29,8 @@ const SettingForm = (props: any) => {
   
   // ** Hook
   const { t } = useTranslation()
+
+  const openApiBaseText = "Example: https://api.openai.com/v1";
     
   // ** State
   const [uploadingButton, setUploadingButton] = useState<string>(`${t('Submit')}`)
@@ -149,7 +151,7 @@ const SettingForm = (props: any) => {
                             )
                         }}
                         error={!!openApiBaseError}
-                        helperText={openApiBaseError}
+                        helperText={openApiBaseText}
                     />
                 </Grid>
                 <Grid item xs={12}>

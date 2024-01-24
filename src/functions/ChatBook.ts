@@ -1,4 +1,3 @@
-import axios from 'axios'
 import authConfig from 'src/configs/auth'
 
 const ChatKnowledge = "ChatKnowledge"
@@ -135,12 +134,14 @@ export function ChatKnowledgeHistoryInput(question: string, answer: string, User
 export function ChatChatList() {
     const ChatChatText = window.localStorage.getItem(ChatChat)      
     const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
+    
     return ChatChatList
 }
 
 export function ChatChatNameList() {
 	const ChatChatText = window.localStorage.getItem(ChatChatName)      
     const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
+    
     return ChatChatList
 }
 

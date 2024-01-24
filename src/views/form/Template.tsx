@@ -52,6 +52,7 @@ const TemplateModelForm = (props: any) => {
     else {
         setQA_TEMPLATEError("")
     }
+    console.log("userId", userId)
   };
 
   const handleGetData = async () => {

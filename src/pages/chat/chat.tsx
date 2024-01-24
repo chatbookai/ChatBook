@@ -19,11 +19,7 @@ import ChatContent from 'src/views/chat/Chat/ChatContent'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
-// ** Axios Imports
-import axios from 'axios'
-import authConfig from 'src/configs/auth'
-
-import { ChatChatList, ChatChatNameList, SetChatChatName, AddChatChatName, DeleteChatChatName, ChatChatInput, ChatChatOutput  } from 'src/functions/ChatBook'
+import { ChatChatList, ChatChatNameList, AddChatChatName, ChatChatInput, ChatChatOutput  } from 'src/functions/ChatBook'
 
 const AppChat = () => {
 
@@ -46,7 +42,7 @@ const AppChat = () => {
   }
 
   const getChatLogList = async function (chatId: number) {
-    const RS = await axios.get(authConfig.backEndApi + '/chatlog/' + chatId + '/' + userId + '/0/100').then(res=>res.data)
+    console.log("chatId", chatId)
     const ChatChatListData = ChatChatList()
     console.log("ChatChatListData", ChatChatListData)
     const selectedChat = {
@@ -168,6 +164,7 @@ const AppChat = () => {
     online: 'success',
     offline: 'secondary'
   }
+
   return (
     <Box
       className='app-chat'

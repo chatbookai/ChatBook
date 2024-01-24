@@ -40,7 +40,7 @@ const Files = (props: any) => {
   const [store, setStore] = useState<any>(null);
 
   useEffect(() => {
-    console.log(id, isMobileData)
+    console.log(id, isMobileData, userId)
   }, [])
 
   useEffect(() => {

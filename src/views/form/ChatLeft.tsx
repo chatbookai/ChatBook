@@ -1,8 +1,5 @@
 // ** React Imports
-import { useState, useEffect, ReactNode } from 'react'
-
-// ** Next Imports
-import { useRouter } from 'next/router'
+import { ReactNode } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -15,7 +12,6 @@ import Typography from '@mui/material/Typography'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
 import ListItemButton from '@mui/material/ListItemButton'
-import Fab from '@mui/material/Fab'
 import Icon from 'src/@core/components/icon'
 import IconButton from '@mui/material/IconButton'
 
@@ -46,25 +42,9 @@ const ChatLeft = (props: any) => {
     handleAddChatChatName
   } = props
 
-  const [active, setActive] = useState<null | { type: string; id: string | number }>(null)
-
-  // ** Hooks
-  const router = useRouter()
-
   const handleChatClick = (id: number, name: string) => {
     setActiveId(id, name)
   }
-
-  useEffect(() => {
-    router.events.on('routeChangeComplete', () => {
-      setActive(null)
-    })
-
-    return () => {
-      setActive(null)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
 
   const renderChats = () => {
     if (chatList && chatList.length) {

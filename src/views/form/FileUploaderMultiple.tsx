@@ -106,6 +106,7 @@ const FileUploaderMultiple = (props: any) => {
     const uploadedFiles = files
     const filtered = uploadedFiles.filter((i: FileProp) => i.name !== file.name)
     setFiles([...filtered])
+    console.log("userId", userId)
   }
   
   const fileList = files.map((file: FileProp) => (

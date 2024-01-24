@@ -168,7 +168,7 @@ export function DeleteChatChatName(Id: number) {
     window.localStorage.setItem(ChatChatName, JSON.stringify(ChatChatList))
 }
 
-export function ChatChatInput(Message: string, UserId: number, knowledgeId: number) {
+export function ChatChatInput(Message: string, UserId: number, knowledgeId: number | string) {
 	const ChatChatText = window.localStorage.getItem(ChatChat)      
     const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
     ChatChatList.push({
@@ -199,37 +199,55 @@ export async function ChatChatOutput(Message: string, UserId: number, chatId: nu
     }
     try {
         setLastMessage('')
-        const response = await fetch(`${authConfig.backEndApi}/chat/chat/gemini`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ question: Message, history: History, knowledgeId: chatId }),
-        });
-        if (!response.body) {
-          throw new Error('Response body is not readable as a stream');
+        let modelName = ''
+        switch(chatId) {
+            case 'ChatGPT3.5':
+                modelName = 'openai'
+                break;
+            case 'ChatGPT4':
+                modelName = 'openai'
+                break;
+            case 'Gemini':
+                modelName = 'gemini'
+                break;
         }
-        const reader = response.body.getReader();
-        let responseText = "";
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) {
-            setLastMessage('')
-            break;
-          }
-          const text = new TextDecoder('utf-8').decode(value);
-          setLastMessage((prevText: string) => prevText + text);
-          responseText = responseText + text;
-        }
-        if(responseText) {
-            console.log("OpenAI Response:", responseText)
-            ChatChatInput(responseText, 999999, chatId)
-            ChatChatHistoryInput(Message, responseText, UserId, chatId)
-    
-            return true
+        console.log("chatId", chatId)
+        if(modelName != '')  {
+            const response = await fetch(`${authConfig.backEndApi}/chat/chat/` + modelName, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ question: Message, history: History, knowledgeId: chatId }),
+            });
+            if (!response.body) {
+            throw new Error('Response body is not readable as a stream');
+            }
+            const reader = response.body.getReader();
+            let responseText = "";
+            while (true) {
+            const { done, value } = await reader.read();
+            if (done) {
+                setLastMessage('')
+                break;
+            }
+            const text = new TextDecoder('utf-8').decode(value);
+            setLastMessage((prevText: string) => prevText + text);
+            responseText = responseText + text;
+            }
+            if(responseText) {
+                console.log("OpenAI Response:", responseText)
+                ChatChatInput(responseText, 999999, chatId)
+                ChatChatHistoryInput(Message, responseText, UserId, chatId)
+        
+                return true
+            }
+            else {
+                return true
+            }
         }
         else {
-            return true
+            return false
         }
 
     } 
@@ -244,7 +262,7 @@ export async function ChatChatOutput(Message: string, UserId: number, chatId: nu
     
 }
 
-export function ChatChatHistoryInput(question: string, answer: string, UserId: number, knowledgeId: number) {
+export function ChatChatHistoryInput(question: string, answer: string, UserId: number, knowledgeId: number | string) {
     console.log("ChatChatHistoryList", question, answer, UserId)
 	const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatHistoryList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : {}

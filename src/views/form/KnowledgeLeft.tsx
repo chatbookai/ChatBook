@@ -1,9 +1,6 @@
 // ** React Imports
 import { useState, useEffect, ReactNode } from 'react'
 
-// ** Next Imports
-import { useRouter } from 'next/router'
-
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import List from '@mui/material/List'
@@ -46,9 +43,7 @@ const KnowledgeLeft = (props: any) => {
   const [active, setActive] = useState<number | null>(knowledgeId)
 
   console.log("knowledgeId", knowledgeId, active)
-  // ** Hooks
-  const router = useRouter()
-
+  
   const handleChatClick = (id: number, name: string) => {
     setActiveId(id, name)
     setActive(id)

@@ -33,8 +33,7 @@ const AppChat = () => {
   const { t } = useTranslation()
 
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
-  const [chatList, setChatList] = useState<any>(null)
-  const [llms, setLlms] = useState<any>(null)
+  const [llms, setLlms] = useState<any>([])
   const [chatId, setChatId] = useState<number | string>(-1)
   const [chatName, setChatName] = useState<string>("")
   const userId = 1
@@ -43,9 +42,13 @@ const AppChat = () => {
 
   useEffect(() => {
     setLlms(AllLLMS)
-  }, [refreshChatCounter, userId])
+    setChatId(AllLLMS[0].id)
+    setChatName(AllLLMS[0].name)
+    getChatLogList(AllLLMS[0].id)
+    console.log("AllLLMS", AllLLMS)
+  }, [])
 
-  const getChatLogList = async function (knowledgeId: string) {
+  const getChatLogList = async function (knowledgeId: number | string) {
     const RS = await axios.get(authConfig.backEndApi + '/chatlog/' + knowledgeId + '/' + userId + '/0/90').then(res=>res.data)
     const ChatKnowledgeInitList = ChatKnowledgeInit(RS['data'].reverse())
     console.log("ChatKnowledgeInitList", ChatKnowledgeInitList)
@@ -69,7 +72,7 @@ const AppChat = () => {
     setStore(storeInit)
   }
 
-  const setActiveId = function (Id: number, Name: string) {
+  const setActiveId = function (Id: string, Name: string) {
     setChatId(Id)
     setChatName(Name)
     getChatLogList(Id)
@@ -178,6 +181,8 @@ const AppChat = () => {
         llms={llms}
         setActiveId={setActiveId}
         hidden={false}
+        chatId={chatId}
+        chatName={chatName}
       />
       <ChatContent
         store={store}

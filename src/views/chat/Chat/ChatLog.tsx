@@ -31,7 +31,7 @@ const PerfectScrollbar = styled(PerfectScrollbarComponent)<ScrollBarProps & { re
 
 const ChatLog = (props: any) => {
   // ** Props
-  const { data, hidden, chatId, chatName, LLMS } = props
+  const { data, hidden, chatName, LLMS } = props
 
   // ** Ref
   const chatArea = useRef(null)
@@ -139,6 +139,7 @@ const ChatLog = (props: any) => {
           }}
         >
           <div>
+            {LLMS && LLMS[0] && LLMS[0].avatar ?
             <CustomAvatar
               skin='light'
               color={'primary'}
@@ -164,6 +165,9 @@ const ChatLog = (props: any) => {
             >
               {chatName}
             </CustomAvatar>
+            :
+            null
+            }
           </div>
 
           <Box className='chat-body' sx={{ maxWidth: ['calc(100% - 5.75rem)', '75%', '65%'] }}>

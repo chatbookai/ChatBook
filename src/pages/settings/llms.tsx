@@ -32,10 +32,6 @@ const SettingApiModelAPP = () => {
   
   const fetchData = function () {
     setLlms(AllLLMS)
-    //if(RS && RS['data'] && RS['data'][0] && RS['data'][0].id) {
-      //setLlmsId(RS['data'][0].id)
-      //setLlmsName(RS['data'][0].name)
-    //}
   }
 
   const setActiveId = function (Id: number, Name: string) {

@@ -12,8 +12,6 @@ import Typography from '@mui/material/Typography'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
 import ListItemButton from '@mui/material/ListItemButton'
-import Icon from 'src/@core/components/icon'
-import IconButton from '@mui/material/IconButton'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'

@@ -1,8 +1,5 @@
 // ** React Imports
-import { useState, useEffect, ReactNode } from 'react'
-
-// ** Next Imports
-import { useRouter } from 'next/router'
+import { useState, ReactNode, useEffect } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -39,24 +36,24 @@ const LLMSLeft = (props: any) => {
   const {
     llms,
     hidden,
-    setActiveId
+    setActiveId,
+    chatId
   } = props
 
-  const [active, setActive] = useState<string>("")
-
-  // ** Hooks
-  const router = useRouter()
+  const [active, setActive] = useState<string>('')
+  console.log("chatIdchatIdchatId****", active, chatId)
 
   const handleChatClick = (id: string, name: string) => {
     setActiveId(id, name)
     setActive(id)
   }
 
+  useEffect(() => {
+    setActive(chatId)
+  }, [chatId])
+
   const renderChats = () => {
-    if (llms && llms.length) {
-      const arrToMap = llms
-      console.log("llms", llms)
-      return arrToMap.map((Item: any, index: number) => {
+      return llms.map((Item: any, index: number) => {
         const activeCondition = active === Item.id
 
         return (
@@ -133,7 +130,6 @@ const LLMSLeft = (props: any) => {
           </ListItem>
         )
       })
-    }
   }
 
   return (
@@ -181,12 +177,11 @@ const LLMSLeft = (props: any) => {
         <Box sx={{ height: `calc(100% - 4.125rem)` }}>
           <ScrollWrapper hidden={hidden}>
             <Box sx={{ p: theme => theme.spacing(7, 3, 3) }}>
-              <List sx={{ mb: 4, p: 0 }}>{renderChats()}</List>
+              <List sx={{ mb: 4, p: 0 }}>{llms ? renderChats() : null}</List>
             </Box>
           </ScrollWrapper>
         </Box>
       </Drawer>
-
     </div>
   )
 }

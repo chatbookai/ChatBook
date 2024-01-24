@@ -42,6 +42,7 @@ const AppChat = () => {
     if(RS && RS['data'] && RS['data'][0] && RS['data'][0].id && knowledgeId == 0) {
       setKnowledgeId(RS['data'][0].id)
       setKnowledgeName(RS['data'][0].name)
+      getChatLogList(RS['data'][0].id)
     }
   }
 
@@ -174,6 +175,7 @@ const AppChat = () => {
         knowledge={knowledge}
         setActiveId={setActiveId}
         hidden={false}
+        knowledgeId={knowledgeId}
       />
       <ChatContent
         store={store}

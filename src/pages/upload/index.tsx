@@ -23,7 +23,7 @@ const UploadFilesApp = () => {
   // ** States
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
   const [knowledge, setKnowledge] = useState<any>(null)
-  const [knowledgeId, setKnowledgeId] = useState<number>(0)
+  const [knowledgeId, setKnowledgeId] = useState<number>(-1)
   const [knowledgeName, setKnowledgeName] = useState<string>("")
   const userId = 1
 
@@ -72,6 +72,7 @@ const UploadFilesApp = () => {
         knowledge={knowledge}
         setActiveId={setActiveId}
         hidden={false}
+        knowledgeId={knowledgeId}
       />
       <UploadFiles knowledgeId={knowledgeId} knowledgeName={knowledgeName} userId={userId}/>
     </Box>

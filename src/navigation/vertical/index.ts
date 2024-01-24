@@ -8,7 +8,7 @@ const MenuList = [
   {
     title: 'Chat',
     icon: 'mdi:message-outline',
-    path: '/chat/knowledge'
+    path: '/chat/chat'
   },
   {
     title: 'Knowledge Chat',

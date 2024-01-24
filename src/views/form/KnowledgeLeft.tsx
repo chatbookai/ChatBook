@@ -39,45 +39,31 @@ const KnowledgeLeft = (props: any) => {
   const {
     knowledge,
     hidden,
-    setActiveId
+    setActiveId,
+    knowledgeId
   } = props
 
-  const [active, setActive] = useState<null | { type: string; id: string | number }>(null)
+  const [active, setActive] = useState<number | null>(knowledgeId)
 
+  console.log("knowledgeId", knowledgeId, active)
   // ** Hooks
   const router = useRouter()
 
   const handleChatClick = (id: number, name: string) => {
     setActiveId(id, name)
+    setActive(id)
   }
 
   useEffect(() => {
-    if (knowledge && knowledge.chats) {
-      if (active !== null) {
-        if (active.type === 'contact' && active.id === knowledge.chats[0].id) {
-          setActive({ type: 'chat', id: active.id })
-        }
-      }
-    }
-  }, [knowledge, active])
-
-  useEffect(() => {
-    router.events.on('routeChangeComplete', () => {
-      setActive(null)
-    })
-
-    return () => {
-      setActive(null)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    setActive(knowledgeId)
+  }, [knowledgeId])
 
   const renderChats = () => {
     if (knowledge && knowledge.data && knowledge.data.length) {
       const arrToMap = knowledge.data
 
       return arrToMap.map((Item: any, index: number) => {
-        const activeCondition = false
+        const activeCondition = active === Item.id
 
         return (
           <ListItem key={index} disablePadding sx={{ '&:not(:last-child)': { mb: 1.5 } }}>
@@ -90,7 +76,10 @@ const KnowledgeLeft = (props: any) => {
                 width: '100%',
                 borderRadius: 1,
                 alignItems: 'flex-start',
-                
+                ...(activeCondition && {
+                  backgroundImage: theme =>
+                    `linear-gradient(98deg, ${theme.palette.customColors.primaryGradient}, ${theme.palette.primary.main} 94%)`
+                })
               }}
             >
               <ListItemAvatar sx={{ m: 0 }}>
@@ -123,6 +112,7 @@ const KnowledgeLeft = (props: any) => {
                     sx={{
                       width: 38,
                       height: 38,
+                      ...(activeCondition && { border: theme => `2px solid ${theme.palette.common.white}` })
                     }}
                   />
                 </Badge>

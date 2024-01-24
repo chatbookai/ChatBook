@@ -55,7 +55,7 @@ const LLMSLeft = (props: any) => {
   const renderChats = () => {
     if (llms && llms.length) {
       const arrToMap = llms
-
+      console.log("llms", llms)
       return arrToMap.map((Item: any, index: number) => {
         const activeCondition = active === Item.id
 
@@ -174,7 +174,7 @@ const LLMSLeft = (props: any) => {
           }}
         >
           <Typography variant='h6' sx={{ ml: 3, mb: 1}}>
-            {`${t('LLMS')}`}
+            {`${t('Chat')}`}
           </Typography>
         </Box>
 

@@ -16,6 +16,8 @@ import ChatLog from './ChatLog'
 import SendMsgForm from 'src/views/chat/Knowledge/SendMsgForm'
 import OptionsMenu from 'src/@core/components/option-menu'
 
+import { GetAllLLM, GetAllLLMById } from 'src/configs/functions'
+
 const ChatContent = (props: any) => {
   // ** Props
   const {
@@ -29,6 +31,8 @@ const ChatContent = (props: any) => {
     chatId,
     chatName
   } = props
+
+  const LLMS = GetAllLLMById(chatId)
 
   const renderContent = () => {
     if (store) {
@@ -82,7 +86,7 @@ const ChatContent = (props: any) => {
                     }
                   >
                     <MuiAvatar
-                      src={"/images/avatars/"+((chatId%8)+1)+".png"}
+                      src={LLMS[0].avatar}
                       alt={chatName}
                       sx={{ width: '2.375rem', height: '2.375rem' }}
                     />
@@ -92,7 +96,7 @@ const ChatContent = (props: any) => {
                       {chatName}
                     </Typography>
                     <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                      Summary
+                      {LLMS[0].summary}
                     </Typography>
                   </Box>
                 </Box>

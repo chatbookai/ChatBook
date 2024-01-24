@@ -11,11 +11,9 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 // ** Chat App Components Imports
 import LLMSLeft from 'src/views/form/LLMSLeft'
 
-import SettingApiModel from 'src/views/form/SettingApi';
+import SettingLLMSOpenAI from 'src/views/form/SettingLLMSOpenAI';
 
-// ** Axios Imports
-import axios from 'axios'
-import authConfig from 'src/configs/auth'
+import { GetAllLLMS } from 'src/configs/functions'
 
 const SettingApiModelAPP = () => {
 
@@ -30,12 +28,7 @@ const SettingApiModelAPP = () => {
   const theme = useTheme()
   const { settings } = useSettings()
 
-  const AllLLMS: any[] = []
-  AllLLMS.push({name:"ChatGPT 3.5", id:"ChatGPT3.5", avatar:"/images/llms/ChatGPT.webp", summary:'OpenAI'})
-  AllLLMS.push({name:"ChatGPT 4", id:"ChatGPT4", avatar:"/images/llms/ChatGPT-4.webp", summary:'OpenAI'})
-  AllLLMS.push({name:"Gemini", id:"Gemini", avatar:"/images/llms/Gemini.webp", summary:'Google'})
-  AllLLMS.push({name:"Llama 2", id:"Llama2", avatar:"/images/llms/llama2.webp", summary:'Facebook'})
-
+  const AllLLMS: any[] = GetAllLLMS()
   
   const fetchData = function () {
     setLlms(AllLLMS)
@@ -78,7 +71,7 @@ const SettingApiModelAPP = () => {
         setActiveId={setActiveId}
         hidden={false}
       />
-      <SettingApiModel llmsId={llmsId} llmsName={llmsName} userId={userId}/>
+      <SettingLLMSOpenAI llmsId={llmsId} llmsName={llmsName} userId={userId}/>
     </Box>
   )
 }

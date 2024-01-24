@@ -38,8 +38,7 @@ const ChatLeft = (props: any) => {
   const {
     chatList,
     hidden,
-    setActiveId,
-    handleAddChatChatName
+    setActiveId
   } = props
 
   const handleChatClick = (id: number, name: string) => {
@@ -165,11 +164,6 @@ const ChatLeft = (props: any) => {
             <Typography variant='h6' sx={{ ml: 3, mb: 1}}>
                 {`${t('Chat')}`}
             </Typography>
-          </Box>
-          <Box sx={{ display: 'flex', alignItems: 'center', marginLeft: 'auto' }}>
-            <IconButton aria-label='capture screenshot' onClick={handleAddChatChatName}>
-                <Icon icon='mdi:plus'/>
-            </IconButton>
           </Box>
         </Box>
 

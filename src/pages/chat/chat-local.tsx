@@ -13,15 +13,13 @@ import { StatusObjType } from 'src/types/apps/chatTypes'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Chat App Components Imports
-import LLMSLeft from 'src/views/form/LLMSLeft'
+import ChatLeft from 'src/views/form/ChatLeft'
 import ChatContent from 'src/views/chat/Chat/ChatContent'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
-import { GetAllLLMS } from 'src/configs/functions'
-
-import { ChatChatList, ChatChatNameList, ChatChatInput, ChatChatOutput  } from 'src/functions/ChatBook'
+import { ChatChatList, ChatChatNameList, SetChatChatName, AddChatChatName, DeleteChatChatName, ChatChatInput, ChatChatOutput  } from 'src/functions/ChatBook'
 
 const AppChat = () => {
 
@@ -30,16 +28,18 @@ const AppChat = () => {
 
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
   const [chatList, setChatList] = useState<any>(null)
-  const [llms, setLlms] = useState<any>(null)
   const [chatId, setChatId] = useState<number>(-1)
   const [chatName, setChatName] = useState<string>("")
   const userId = 1
 
-  const AllLLMS: any[] = GetAllLLMS()
-
-  useEffect(() => {
-    setLlms(AllLLMS)
-  }, [refreshChatCounter, userId])
+  const getAllChatList = function () {
+    const ChatChatNameListData: string[] = ChatChatNameList()
+    setChatList(ChatChatNameListData)
+    if(ChatChatNameListData && ChatChatNameListData.length > 0 && chatId == -1) {
+      setChatId(0)
+      setChatName(ChatChatNameListData[0])
+    }
+  }
 
   const getChatLogList = async function (chatId: number) {
     console.log("chatId", chatId)
@@ -69,6 +69,12 @@ const AppChat = () => {
     setChatId(Id)
     setChatName(Name)
     getChatLogList(Id)
+    setRefreshChatCounter(refreshChatCounter + 1)
+  }
+
+  const handleAddChatChatName = function () {
+    const ChatChatNameListData: string[] = ChatChatNameList()
+    AddChatChatName('New Chat(' + (ChatChatNameListData.length + 1) + ')')
     setRefreshChatCounter(refreshChatCounter + 1)
   }
 
@@ -119,13 +125,16 @@ const AppChat = () => {
       "selectedChat": selectedChat
     }
     setStore(storeInit)
+    getAllChatList()
   }, [refreshChatCounter, lastMessage])
 
   useEffect(() => {
     const ChatChatNameListData: string[] = ChatChatNameList()
     if(ChatChatNameListData.length == 0) {
+      AddChatChatName('New Chat(' + (ChatChatNameListData.length + 1) + ')')
       setRefreshChatCounter(refreshChatCounter + 1)
     }
+    getAllChatList()  
     setSendButtonText(t("Send") as string)
     setSendInputText(t("Type your message here...") as string)    
   }, [])
@@ -170,10 +179,11 @@ const AppChat = () => {
         ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
       }}
     >
-      <LLMSLeft
-        llms={llms}
+      <ChatLeft
+        chatList={chatList}
         setActiveId={setActiveId}
         hidden={false}
+        handleAddChatChatName={handleAddChatChatName}
       />
       <ChatContent
         store={store}

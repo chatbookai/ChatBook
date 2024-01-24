@@ -67,7 +67,7 @@ export async function ChatKnowledgeOutput(Message: string, UserId: number, Knowl
     }
     try {
         setLastMessage('')
-        const response = await fetch(`${authConfig.backEndApi}/chat/knowledge`, {
+        const response = await fetch(`${authConfig.backEndApi}/chat/knowledge/openai`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -199,7 +199,7 @@ export async function ChatChatOutput(Message: string, UserId: number, chatId: nu
     }
     try {
         setLastMessage('')
-        const response = await fetch(`${authConfig.backEndApi}/chat/chat`, {
+        const response = await fetch(`${authConfig.backEndApi}/chat/chat/gemini`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -133,6 +133,11 @@ const AppChat = () => {
   }, [refreshChatCounter, lastMessage])
 
   useEffect(() => {
+    const ChatChatNameListData: string[] = ChatChatNameList()
+    if(ChatChatNameListData.length == 0) {
+      AddChatChatName('New Chat(' + (ChatChatNameListData.length + 1) + ')')
+      setRefreshChatCounter(refreshChatCounter + 1)
+    }
     getAllChatList()  
     setSendButtonText(t("Send") as string)
     setSendInputText(t("Type your message here...") as string)    
@@ -153,10 +158,6 @@ const AppChat = () => {
       setSendInputText(t("Type your message here...") as string)  
     }
   }
-
-  useEffect(() => {
-    //console.log("lastMessage", lastMessage)
-  }, [lastMessage])
 
   // ** Vars
   const { skin } = settings

@@ -228,14 +228,14 @@ export async function ChatChatOutput(Message: string, UserId: number, chatId: nu
             return true
         }
         else {
-            return false
+            return true
         }
 
     } 
     catch (error: any) {
         console.log('Error:', error.message);
         
-        return false
+        return true
     }
       
     

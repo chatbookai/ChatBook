@@ -36,14 +36,14 @@ export function ChatKnowledgeInit(MsgList: any) {
     return ChatLogList
 }
 
-export function ChatKnowledgeInput(Message: string, UserId: number, KnowledgeId: number) {
+export function ChatKnowledgeInput(Message: string, UserId: number, knowledgeId: number) {
 	const ChatKnowledgeText = window.localStorage.getItem(ChatKnowledge)      
     const ChatKnowledgeList = ChatKnowledgeText ? JSON.parse(ChatKnowledgeText) : []
     ChatKnowledgeList.push({
       "message": Message,
       "time": String(Date.now()),
       "senderId": UserId,
-      "KnowledgeId": KnowledgeId,
+      "knowledgeId": knowledgeId,
       "feedback": {
           "isSent": true,
           "isDelivered": true,
@@ -53,12 +53,12 @@ export function ChatKnowledgeInput(Message: string, UserId: number, KnowledgeId:
     window.localStorage.setItem(ChatKnowledge, JSON.stringify(ChatKnowledgeList))
 }
 
-export async function ChatKnowledgeOutput(Message: string, UserId: number, KnowledgeId: number, setLastMessage:any) {
+export async function ChatKnowledgeOutput(Message: string, UserId: number, knowledgeId: number, setLastMessage:any) {
     const ChatKnowledgeHistoryText = window.localStorage.getItem(ChatKnowledgeHistory)      
     const ChatKnowledgeList = ChatKnowledgeHistoryText ? JSON.parse(ChatKnowledgeHistoryText) : []
     const History: any = []
-    if(ChatKnowledgeList && ChatKnowledgeList[UserId] && ChatKnowledgeList[UserId][KnowledgeId]) {
-        const ChatKnowledgeListLast10 = ChatKnowledgeList[UserId][KnowledgeId].slice(-10)
+    if(ChatKnowledgeList && ChatKnowledgeList[UserId] && ChatKnowledgeList[UserId][knowledgeId]) {
+        const ChatKnowledgeListLast10 = ChatKnowledgeList[UserId][knowledgeId].slice(-10)
         ChatKnowledgeListLast10.map((Item: any)=>{
             if(Item.question && Item.answer) {
                 History.push([Item.question,Item.answer.substring(0, 200)])
@@ -72,7 +72,7 @@ export async function ChatKnowledgeOutput(Message: string, UserId: number, Knowl
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ question: Message, history: History, KnowledgeId: KnowledgeId }),
+          body: JSON.stringify({ question: Message, history: History, knowledgeId: knowledgeId }),
         });
         if (!response.body) {
           throw new Error('Response body is not readable as a stream');
@@ -91,8 +91,8 @@ export async function ChatKnowledgeOutput(Message: string, UserId: number, Knowl
         }
         if(responseText) {
             console.log("OpenAI Response:", responseText)
-            ChatKnowledgeInput(responseText, 999999, KnowledgeId)
-            ChatKnowledgeHistoryInput(Message, responseText, UserId, KnowledgeId)
+            ChatKnowledgeInput(responseText, 999999, knowledgeId)
+            ChatKnowledgeHistoryInput(Message, responseText, UserId, knowledgeId)
     
             return true
         }
@@ -108,12 +108,12 @@ export async function ChatKnowledgeOutput(Message: string, UserId: number, Knowl
     }
 }
 
-export function ChatKnowledgeHistoryInput(question: string, answer: string, UserId: number, KnowledgeId: number) {
+export function ChatKnowledgeHistoryInput(question: string, answer: string, UserId: number, knowledgeId: number) {
     console.log("ChatKnowledgeHistoryList", question, answer, UserId)
 	const ChatKnowledgeHistoryText = window.localStorage.getItem(ChatKnowledgeHistory)      
     const ChatKnowledgeHistoryList = ChatKnowledgeHistoryText ? JSON.parse(ChatKnowledgeHistoryText) : {}
-    if(ChatKnowledgeHistoryList && ChatKnowledgeHistoryList[UserId] && ChatKnowledgeHistoryList[UserId][KnowledgeId]) {
-        ChatKnowledgeHistoryList[UserId][KnowledgeId].push({
+    if(ChatKnowledgeHistoryList && ChatKnowledgeHistoryList[UserId] && ChatKnowledgeHistoryList[UserId][knowledgeId]) {
+        ChatKnowledgeHistoryList[UserId][knowledgeId].push({
             "question": question,
             "time": String(Date.now()),
             "answer": answer,
@@ -121,7 +121,7 @@ export function ChatKnowledgeHistoryInput(question: string, answer: string, User
     }
     else {
         ChatKnowledgeHistoryList[UserId] = {}
-        ChatKnowledgeHistoryList[UserId][KnowledgeId] = [{
+        ChatKnowledgeHistoryList[UserId][knowledgeId] = [{
             "question": question,
             "time": String(Date.now()),
             "answer": answer,
@@ -168,14 +168,14 @@ export function DeleteChatChatName(Id: number) {
     window.localStorage.setItem(ChatChatName, JSON.stringify(ChatChatList))
 }
 
-export function ChatChatInput(Message: string, UserId: number, KnowledgeId: number) {
+export function ChatChatInput(Message: string, UserId: number, knowledgeId: number) {
 	const ChatChatText = window.localStorage.getItem(ChatChat)      
     const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
     ChatChatList.push({
       "message": Message,
       "time": String(Date.now()),
       "senderId": UserId,
-      "KnowledgeId": KnowledgeId,
+      "knowledgeId": knowledgeId,
       "feedback": {
           "isSent": true,
           "isDelivered": true,
@@ -185,7 +185,7 @@ export function ChatChatInput(Message: string, UserId: number, KnowledgeId: numb
     window.localStorage.setItem(ChatChat, JSON.stringify(ChatChatList))
 }
 
-export async function ChatChatOutput(Message: string, UserId: number, chatId: number, setLastMessage:any) {
+export async function ChatChatOutput(Message: string, UserId: number, chatId: number | string, setLastMessage:any) {
     const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []
     const History: any = []
@@ -204,7 +204,7 @@ export async function ChatChatOutput(Message: string, UserId: number, chatId: nu
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ question: Message, history: History }),
+          body: JSON.stringify({ question: Message, history: History, knowledgeId: chatId }),
         });
         if (!response.body) {
           throw new Error('Response body is not readable as a stream');
@@ -244,12 +244,12 @@ export async function ChatChatOutput(Message: string, UserId: number, chatId: nu
     
 }
 
-export function ChatChatHistoryInput(question: string, answer: string, UserId: number, KnowledgeId: number) {
+export function ChatChatHistoryInput(question: string, answer: string, UserId: number, knowledgeId: number) {
     console.log("ChatChatHistoryList", question, answer, UserId)
 	const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatHistoryList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : {}
-    if(ChatChatHistoryList && ChatChatHistoryList[UserId] && ChatChatHistoryList[UserId][KnowledgeId]) {
-        ChatChatHistoryList[UserId][KnowledgeId].push({
+    if(ChatChatHistoryList && ChatChatHistoryList[UserId] && ChatChatHistoryList[UserId][knowledgeId]) {
+        ChatChatHistoryList[UserId][knowledgeId].push({
             "question": question,
             "time": String(Date.now()),
             "answer": answer,
@@ -257,7 +257,7 @@ export function ChatChatHistoryInput(question: string, answer: string, UserId: n
     }
     else {
         ChatChatHistoryList[UserId] = {}
-        ChatChatHistoryList[UserId][KnowledgeId] = [{
+        ChatChatHistoryList[UserId][knowledgeId] = [{
             "question": question,
             "time": String(Date.now()),
             "answer": answer,

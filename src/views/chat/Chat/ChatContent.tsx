@@ -16,7 +16,7 @@ import ChatLog from './ChatLog'
 import SendMsgForm from 'src/views/chat/Knowledge/SendMsgForm'
 import OptionsMenu from 'src/@core/components/option-menu'
 
-import { GetAllLLM, GetAllLLMById } from 'src/configs/functions'
+import { GetAllLLMById } from 'src/configs/functions'
 
 const ChatContent = (props: any) => {
   // ** Props
@@ -37,7 +37,7 @@ const ChatContent = (props: any) => {
   const renderContent = () => {
     if (store) {
       const selectedChat = store.selectedChat
-      if (true) {
+      if (LLMS && LLMS[0]) {
         return (
           <Box
             sx={{
@@ -117,7 +117,7 @@ const ChatContent = (props: any) => {
             </Box>
 
             {selectedChat && store.userProfile ? (
-              <ChatLog hidden={hidden} data={{ ...selectedChat, userContact: store.userProfile }} chatId={chatId} chatName={chatName} />
+              <ChatLog hidden={hidden} data={{ ...selectedChat, userContact: store.userProfile }} chatId={chatId} chatName={chatName} LLMS={LLMS} />
             ) : null}
 
             <SendMsgForm store={store} sendMsg={sendMsg} sendButtonDisable={sendButtonDisable} sendButtonText={sendButtonText} sendInputText={sendInputText}/>

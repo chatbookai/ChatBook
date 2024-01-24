@@ -31,7 +31,7 @@ const AppChat = () => {
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
   const [chatList, setChatList] = useState<any>(null)
   const [llms, setLlms] = useState<any>(null)
-  const [chatId, setChatId] = useState<number>(-1)
+  const [chatId, setChatId] = useState<number | string>(-1)
   const [chatName, setChatName] = useState<string>("")
   const userId = 1
 
@@ -41,7 +41,7 @@ const AppChat = () => {
     setLlms(AllLLMS)
   }, [refreshChatCounter, userId])
 
-  const getChatLogList = async function (chatId: number) {
+  const getChatLogList = async function (chatId: number | string) {
     console.log("chatId", chatId)
     const ChatChatListData = ChatChatList()
     console.log("ChatChatListData", ChatChatListData)
@@ -82,7 +82,7 @@ const AppChat = () => {
     "message": lastMessage,
     "time": String(Date.now()),
     "senderId": 999999,
-    "KnowledgeId": 0,
+    "knowledgeId": 0,
     "feedback": {
         "isSent": true,
         "isDelivered": false,

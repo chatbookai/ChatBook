@@ -87,7 +87,7 @@ const AppChat = () => {
     "message": lastMessage,
     "time": String(Date.now()),
     "senderId": 999999,
-    "KnowledgeId": 0,
+    "knowledgeId": 0,
     "feedback": {
         "isSent": true,
         "isDelivered": false,

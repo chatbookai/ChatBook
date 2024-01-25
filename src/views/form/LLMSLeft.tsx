@@ -41,7 +41,6 @@ const LLMSLeft = (props: any) => {
   } = props
 
   const [active, setActive] = useState<string>('')
-  console.log("chatIdchatIdchatId****", active, chatId)
 
   const handleChatClick = (id: string, name: string) => {
     setActiveId(id, name)

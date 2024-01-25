@@ -130,7 +130,7 @@ let ChatBaiduWenxinModel: any = null
     res.end();
   }
 
-  export async function chatKnowledgeOpenAI(res: NextApiResponse, knowledgeId: number | string, userId: number, question: string, history: any[]) {
+  export async function chatKnowledgeOpenAI(res: NextApiResponse, knowledgeId: number | string, question: string, history: any[]) {
     await initChatBookOpenAIStream(res, knowledgeId)
     const CONDENSE_TEMPLATE: string | unknown = await GetSetting("CONDENSE_TEMPLATE", knowledgeId, userId);
     const QA_TEMPLATE: string | unknown = await GetSetting("QA_TEMPLATE", knowledgeId, userId);
@@ -432,7 +432,7 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function chatChatBaiduWenxin(knowledgeId: number | string, userId: number, question: string, history: any[]) {
+  export async function chatChatBaiduWenxin(knowledgeId: number | string, question: string, history: any[]) {
     await initChatBookBaiduWenxinStream(knowledgeId);
     const input2 = [new HumanMessage(question)];
     const response = await ChatBaiduWenxinModel.call(input2);

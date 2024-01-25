@@ -20,7 +20,7 @@ const SettingApiModelAPP = () => {
   // ** States
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
   const [llms, setLlms] = useState<any>(null)
-  const [llmsId, setLlmsId] = useState<number>(1)
+  const [llmsId, setLlmsId] = useState<number>(-1)
   const [llmsName, setLlmsName] = useState<string>("")
   const userId = 1
 
@@ -32,6 +32,10 @@ const SettingApiModelAPP = () => {
   
   const fetchData = function () {
     setLlms(AllLLMS)
+    if(llmsId == -1 && AllLLMS && AllLLMS[0] && AllLLMS[0].id) {
+      setLlmsId(AllLLMS[0].id)
+      setLlmsName(AllLLMS[0].name)
+    }
   }
 
   const setActiveId = function (Id: number, Name: string) {
@@ -66,6 +70,7 @@ const SettingApiModelAPP = () => {
         llms={llms}
         setActiveId={setActiveId}
         hidden={false}
+        chatId={llmsId}
       />
       <SettingLLMSOpenAI llmsId={llmsId} llmsName={llmsName} userId={userId}/>
     </Box>

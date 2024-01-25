@@ -16,7 +16,7 @@ import ChatLog from './ChatLog'
 import SendMsgForm from 'src/views/chat/Knowledge/SendMsgForm'
 import OptionsMenu from 'src/@core/components/option-menu'
 
-import { GetAllLLMById } from 'src/configs/functions'
+import { GetAllLLMById } from 'src/functions/ChatBook'
 
 const ChatContent = (props: any) => {
   // ** Props

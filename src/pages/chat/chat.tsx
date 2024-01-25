@@ -19,9 +19,7 @@ import ChatContent from 'src/views/chat/Chat/ChatContent'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
-import { GetAllLLMS } from 'src/configs/functions'
-
-import { ChatKnowledgeInit, ChatChatNameList, ChatChatInput, ChatChatOutput  } from 'src/functions/ChatBook'
+import { GetAllLLMS, ChatKnowledgeInit, ChatChatNameList, ChatChatInput, ChatChatOutput  } from 'src/functions/ChatBook'
 
 // ** Axios Imports
 import axios from 'axios'

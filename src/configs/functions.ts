@@ -119,19 +119,3 @@ export function isMobile(): boolean {
   return false;
 }
 
-export function GetAllLLMS(): any[] {
-  const AllLLMS: any[] = []
-  AllLLMS.push({name:"ChatGPT 3.5", id:"ChatGPT3.5", avatar:"/images/llms/ChatGPT.webp", summary:'OpenAI'})
-  AllLLMS.push({name:"ChatGPT 4", id:"ChatGPT4", avatar:"/images/llms/ChatGPT-4.webp", summary:'OpenAI'})
-  AllLLMS.push({name:"Gemini", id:"Gemini", avatar:"/images/llms/Gemini.webp", summary:'Google'})
-  AllLLMS.push({name:"Llama 2", id:"Llama2", avatar:"/images/llms/llama2.webp", summary:'Facebook'})
-  
-  return AllLLMS
-}
-
-export function GetAllLLMById(id: string): any[] {
-  const GetAllLLMSData = GetAllLLMS()
-  
-  return GetAllLLMSData.filter((Item: any)=>Item.id == id)
-}
-

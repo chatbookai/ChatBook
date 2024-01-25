@@ -13,7 +13,7 @@ import LLMSLeft from 'src/views/form/LLMSLeft'
 
 import SettingLLMSOpenAI from 'src/views/form/SettingLLMSOpenAI';
 
-import { GetAllLLMS } from 'src/configs/functions'
+import { GetAllLLMS } from 'src/functions/ChatBook'
 
 const SettingApiModelAPP = () => {
 

@@ -172,19 +172,17 @@ const FileUploaderMultiple = (props: any) => {
   const uploadMultiFiles = async () => {
 
     const formData = new FormData();
-    console.log("files", files)
     formData.append('knowledgeId', knowledgeId);
     formData.append('knowledgeName', knowledgeName);
     files.map((file: File)=>{
       formData.append('files', file);
     })
-    const FormSubmit: any = await axios.post(authConfig.backEndApi + '/uploadfiles', formData, {
+    const FormSubmit: any = await axios.post('/api/uploadfiles', formData, {
       headers: {
         'Content-Type': 'multipart/form-data',
       },
     }).then(res => res.data);
     console.log("FormSubmit:", FormSubmit)
-    
     
     if(FormSubmit.status == "ok") {
       //Insufficient balance

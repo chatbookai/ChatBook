@@ -67,7 +67,7 @@ export async function ChatKnowledgeOutput(Message: string, UserId: number, knowl
     }
     try {
         setLastMessage('')
-        const response = await fetch(`${authConfig.backEndApi}/chat/knowledge/openai`, {
+        const response = await fetch(`/api/ChatOpenaiKnowledge`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, SyntheticEvent, Fragment } from 'react'
+import { useState, SyntheticEvent, Fragment, useEffect } from 'react'
 
 // ** Next Import
 import { useRouter } from 'next/router'
@@ -11,6 +11,7 @@ import Badge from '@mui/material/Badge'
 import Avatar from '@mui/material/Avatar'
 import { styled } from '@mui/material/styles'
 
+import axios from 'axios'
 
 // ** Type Imports
 import { Settings } from 'src/@core/context/settingsContext'
@@ -51,6 +52,10 @@ const UserDropdown = (props: Props) => {
     }
     setAnchorEl(null)
   }
+
+  useEffect(() => {
+    axios.get('/api/initDatabase')
+  }, [])
 
   return (
     <Fragment>

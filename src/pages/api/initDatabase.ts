@@ -107,9 +107,11 @@ async function initChatBookDb() {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  let exeStatus = 0  
   if (!initialized) {
     await initChatBookDb();
     initialized = true;
+    exeStatus = 1
   }
-  res.status(200).json({ message: 'Database is initialized!' });
+  res.status(200).json({ message: 'Database is initialized!', exeStatus });
 }

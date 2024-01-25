@@ -202,21 +202,21 @@ export async function ChatChatOutput(Message: string, UserId: number, chatId: nu
         let modelName = ''
         switch(chatId) {
             case 'ChatGPT3.5':
-                modelName = 'openai'
+                modelName = 'ChatOpenai'
                 break;
             case 'ChatGPT4':
-                modelName = 'openai'
+                modelName = 'ChatOpenai'
                 break;
             case 'Gemini':
-                modelName = 'gemini'
+                modelName = 'ChatGemini'
                 break;
             case 'BaiduWenxin':
-                modelName = 'baiduwenxin'
+                modelName = 'ChatBaiduwenxin'
                 break;
         }
         console.log("chatId", chatId)
         if(modelName != '')  {
-            const response = await fetch(`${authConfig.backEndApi}/chat/chat/` + modelName, {
+            const response = await fetch(`/api/` + modelName, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

@@ -8,7 +8,11 @@ const DataDir = "./data"
 const userId = 1
 
 // @ts-ignore
-const db = new sqlite3.Database(DataDir + '/ChatBookSqlite3.db', { encoding: 'utf8' });
+const db: any = new sqlite3.Database(DataDir + '/ChatBookSqlite3.db', { encoding: 'utf8' });
+
+export function setting() {
+  return [DataDir, db, userId]
+}
 
 export function enableDir(directoryPath: string): void {
   try {
@@ -486,7 +490,7 @@ export async function GetSetting(Name: string, knowledgeId: number | string, use
         reject(err);
       } 
       else {
-        resolve(result ? result.content : null);
+        resolve(result ? String(result.content) : '');
       }
     });
   });

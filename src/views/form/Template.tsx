@@ -11,7 +11,6 @@ import CardContent from '@mui/material/CardContent'
 
 // ** Axios Imports
 import axios from 'axios'
-import authConfig from 'src/configs/auth'
 
 // ** Third Party Components
 import toast from 'react-hot-toast'
@@ -56,7 +55,7 @@ const TemplateModelForm = (props: any) => {
   };
 
   const handleGetData = async () => {
-    const GetData: any = await axios.get(authConfig.backEndApi + '/gettemplate/' + knowledgeId, {}).then(res => res.data)
+    const GetData: any = await axios.get('/api/gettemplate/' + knowledgeId, {}).then(res => res.data)
     console.log("GetData:", GetData)
     setCONDENSE_TEMPLATE(GetData.CONDENSE_TEMPLATE || '')
     setQA_TEMPLATE(GetData.QA_TEMPLATE || '')
@@ -75,7 +74,7 @@ const TemplateModelForm = (props: any) => {
         return
     }
     const PostParams = {CONDENSE_TEMPLATE: CONDENSE_TEMPLATE, QA_TEMPLATE: QA_TEMPLATE, knowledgeId: knowledgeId}
-    const FormSubmit: any = await axios.post(authConfig.backEndApi + '/settemplate', PostParams).then(res => res.data)
+    const FormSubmit: any = await axios.post('/api/settemplate', PostParams).then(res => res.data)
     console.log("FormSubmit:", FormSubmit)
     if(FormSubmit?.status == "ok") {
         toast.success(FormSubmit.msg, { duration: 4000 })

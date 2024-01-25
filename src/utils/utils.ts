@@ -2,10 +2,13 @@ import * as fs from 'fs'
 import multer from 'multer'
 import path from 'path'
 import * as crypto from 'crypto'
+import sqlite3 from 'sqlite3';
 
-const db: any = null
 const DataDir = "./data"
 const userId = 1
+
+// @ts-ignore
+const db = new sqlite3.Database(DataDir + '/ChatBookSqlite3.db', { encoding: 'utf8' });
 
 export function enableDir(directoryPath: string): void {
   try {
@@ -203,9 +206,9 @@ export async function uploadfilesInsertIntoDb(files: any[], knowledgeId: number 
   insertFiles.finalize();
 }
 
-export async function getFilesPage(pageid: any, pagesize: any) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid);
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize);
+export async function getFilesPage(pageid: number, pagesize: number) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
   const From = pageidFiler * pagesizeFiler;
   const RecordsTotal: number = await new Promise((resolve, reject) => {
     db.get("SELECT COUNT(*) AS NUM from files", (err: any, result: any) => {
@@ -255,10 +258,10 @@ export async function getFilesPage(pageid: any, pagesize: any) {
   return RS;
 }
 
-export async function getFilesKnowledgeId(knowledgeId: number | string, pageid: any, pagesize: any) {
+export async function getFilesKnowledgeId(knowledgeId: number | string, pageid: number, pagesize: number) {
   const KnowledgeIdFiler = Number(knowledgeId) < 0 ? 0 : Number(knowledgeId);
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid);
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize);
+  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
   const From = pageidFiler * pagesizeFiler;
   const RecordsTotal: number = await new Promise((resolve, reject) => {
     db.get("SELECT COUNT(*) AS NUM from files where knowledgeId = '"+KnowledgeIdFiler+"'", (err: any, result: any) => {
@@ -307,11 +310,11 @@ export async function getFilesKnowledgeId(knowledgeId: number | string, pageid: 
   return RS;
 }
 
-export async function getChatLogByKnowledgeIdAndUserId(knowledgeId: number | string, userId: number, pageid: any, pagesize: any) {
+export async function getChatLogByKnowledgeIdAndUserId(knowledgeId: number | string, userId: number, pageid: number, pagesize: number) {
   const KnowledgeIdFiler = filterString(knowledgeId);
-  const userIdFiler = Number(userId) < 0 ? 0 : Number(userId);
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid);
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize);
+  const userIdFiler = Number(userId) < 0 ? 0 : Number(userId) || 1;
+  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
   const From = pageidFiler * pagesizeFiler;
   const RecordsTotal: number = await new Promise((resolve, reject) => {
     db.get("SELECT COUNT(*) AS NUM from chatlog where knowledgeId = '"+KnowledgeIdFiler+"' and userId = '"+userIdFiler+"'", (err: any, result: any) => {
@@ -352,9 +355,9 @@ export async function getChatLogByKnowledgeIdAndUserId(knowledgeId: number | str
   return RS;
 }
 
-export async function getLogsPage(pageid: any, pagesize: any) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid);
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize);
+export async function getLogsPage(pageid: number, pagesize: number) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
   const From = pageidFiler * pagesizeFiler;
   const RecordsTotal: number = await new Promise((resolve, reject) => {
     db.get("SELECT COUNT(*) AS NUM from logs", (err: any, result: any) => {
@@ -366,7 +369,7 @@ export async function getLogsPage(pageid: any, pagesize: any) {
     });
   });
   const RecordsAll: any[] = await new Promise((resolve, reject) => {
-                          db.all("SELECT * from logs where 1=1 order by id desc limit "+ Number(pagesize) +" offset "+ From +"", (err: any, result: any) => {
+                          db.all("SELECT * from logs where 1=1 order by id desc limit "+ pagesizeFiler +" offset "+ From +"", (err: any, result: any) => {
                             if (err) {
                               reject(err);
                             } else {
@@ -394,11 +397,13 @@ export async function getLogsPage(pageid: any, pagesize: any) {
   return RS;
 }
 
-export async function getKnowledgePage(pageid: any, pagesize: any) {
-  const userIdFiler = Number(userId) < 0 ? 0 : Number(userId);
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid);
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize);
+export async function getKnowledgePage(pageid: number, pagesize: number) {
+  const userIdFiler = Number(userId) < 0 ? 0 : Number(userId) || 1;
+  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
   const From = pageidFiler * pagesizeFiler;
+  console.log("pageidFiler", pageidFiler)
+  console.log("pagesizeFiler", pagesizeFiler)
   const RecordsTotal: number = await new Promise((resolve, reject) => {
     db.get("SELECT COUNT(*) AS NUM from knowledge where userId='"+userIdFiler+"'", (err: any, result: any) => {
       if (err) {
@@ -409,7 +414,7 @@ export async function getKnowledgePage(pageid: any, pagesize: any) {
     });
   });
   const RecordsAll: any[] = await new Promise((resolve, reject) => {
-                          db.all("SELECT * from knowledge where userId='"+userIdFiler+"' order by id desc limit "+ Number(pagesize) +" offset "+ From +"", (err: any, result: any) => {
+                          db.all("SELECT * from knowledge where userId='"+userIdFiler+"' order by id desc limit "+ pagesizeFiler +" offset "+ From +"", (err: any, result: any) => {
                             if (err) {
                               reject(err);
                             } else {

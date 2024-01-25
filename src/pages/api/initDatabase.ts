@@ -8,7 +8,6 @@ let initialized = false;
 
 const DataDir = "./data"
 
-
 const CONDENSE_TEMPLATE_INIT = `Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.
 
 <chat_history>
@@ -37,7 +36,7 @@ async function initChatBookDb() {
     enableDir(DataDir);
     enableDir(DataDir + '/uploadfiles/');
     enableDir(DataDir + '/parsedfiles/');
-    
+
     // @ts-ignore
     const db = new sqlite3.Database(DataDir + '/ChatBookSqlite3.db', { encoding: 'utf8' });
     db.serialize(() => {

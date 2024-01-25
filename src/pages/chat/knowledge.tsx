@@ -21,7 +21,6 @@ import { useTranslation } from 'react-i18next'
 
 // ** Axios Imports
 import axios from 'axios'
-import authConfig from 'src/configs/auth'
 
 import { ChatKnowledgeInit, ChatKnowledgeInput, ChatKnowledgeOutput } from 'src/functions/ChatBook'
 
@@ -37,7 +36,7 @@ const AppChat = () => {
   const userId = 1
 
   const getAllKnowledgeList = async function () {
-    const RS = await axios.get(authConfig.backEndApi + '/knowledge/0/100').then(res=>res.data)
+    const RS = await axios.get('/api/knowledge/0/100').then(res=>res.data)
     setKnowledge(RS)
     if(RS && RS['data'] && RS['data'][0] && RS['data'][0].id && knowledgeId == 0) {
       setKnowledgeId(RS['data'][0].id)
@@ -47,7 +46,7 @@ const AppChat = () => {
   }
 
   const getChatLogList = async function (knowledgeId: number) {
-    const RS = await axios.get(authConfig.backEndApi + '/chatlog/' + knowledgeId + '/' + userId + '/0/90').then(res=>res.data)
+    const RS = await axios.get('/api/chatlog/' + knowledgeId + '/' + userId + '/0/90').then(res=>res.data)
     const ChatKnowledgeInitList = ChatKnowledgeInit(RS['data'].reverse())
     console.log("ChatKnowledgeInitList", ChatKnowledgeInitList)
     const selectedChat = {

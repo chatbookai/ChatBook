@@ -6,7 +6,6 @@ import Button from '@mui/material/Button'
 
 // ** Axios Imports
 import axios from 'axios'
-import authConfig from 'src/configs/auth'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -63,7 +62,7 @@ const Knowledge = () => {
   }, [paginationModel, counter, isMobileData])
 
   const fetchData = async function (paginationModel: any) {
-    const RS = await axios.get(authConfig.backEndApi + '/knowledge/' + paginationModel.page + '/' + paginationModel.pageSize, { headers: { }, params: { } }).then(res=>res.data)
+    const RS = await axios.get('/api/knowledge/' + paginationModel.page + '/' + paginationModel.pageSize, { headers: { }, params: { } }).then(res=>res.data)
     console.log("RS", RS)
     setStore(RS)  
   }
@@ -183,7 +182,7 @@ const Knowledge = () => {
     }
 
     const PostParams = {name, summary}
-    const FormSubmit: any = await axios.post(authConfig.backEndApi + '/addknowledge', PostParams).then(res => res.data)
+    const FormSubmit: any = await axios.post('/api/addknowledge', PostParams).then(res => res.data)
     console.log("FormSubmit:", FormSubmit)
     if(FormSubmit?.status == "ok") {
         toast.success(FormSubmit.msg, { duration: 4000 })

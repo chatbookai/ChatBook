@@ -23,7 +23,6 @@ import { GetAllLLMS, ChatKnowledgeInit, ChatChatNameList, ChatChatInput, ChatCha
 
 // ** Axios Imports
 import axios from 'axios'
-import authConfig from 'src/configs/auth'
 
 const AppChat = () => {
 
@@ -47,7 +46,7 @@ const AppChat = () => {
   }, [])
 
   const getChatLogList = async function (knowledgeId: number | string) {
-    const RS = await axios.get(authConfig.backEndApi + '/chatlog/' + knowledgeId + '/' + userId + '/0/90').then(res=>res.data)
+    const RS = await axios.get('/api/chatlog/' + knowledgeId + '/' + userId + '/0/90').then(res=>res.data)
     const ChatKnowledgeInitList = ChatKnowledgeInit(RS['data'].reverse())
     console.log("ChatKnowledgeInitList", ChatKnowledgeInitList)
     const selectedChat = {

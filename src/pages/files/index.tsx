@@ -15,7 +15,6 @@ import Files from 'src/views/model/files';
 
 // ** Axios Imports
 import axios from 'axios'
-import authConfig from 'src/configs/auth'
 
 const FilesApp = () => {
 
@@ -31,7 +30,7 @@ const FilesApp = () => {
   const { settings } = useSettings()
 
   const fetchData = async function () {
-    const RS = await axios.get(authConfig.backEndApi + '/knowledge/0/100').then(res=>res.data)
+    const RS = await axios.get('/api/knowledge/0/100').then(res=>res.data)
     setKnowledge(RS)
     if(RS && RS['data'] && RS['data'][0] && RS['data'][0].id) {
       setKnowledgeId(RS['data'][0].id)

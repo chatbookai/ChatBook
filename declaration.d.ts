@@ -5,3 +5,4 @@ declare module '*.module.css';
 declare module '@emotion/react';
 declare module 'human-crypto-keys';
 declare module 'secrets.js';
+declare module 'multer';

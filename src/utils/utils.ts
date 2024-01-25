@@ -601,3 +601,4 @@ export function formatDateFromTimestamp(timestamp: number | string) {
 
   return formattedDate;
 }
+

@@ -191,7 +191,7 @@ export async function uploadfilesInsertIntoDb(files: any[], knowledgeId: number 
       hash: fileHash,
     };
   });
-  const insertFiles = db.prepare('INSERT OR IGNORE INTO files (knowledgeId: number | string, suffixName, newName, originalName, hash, timestamp, userId) VALUES (?,?,?,?,?,?,?)');
+  const insertFiles = db.prepare('INSERT OR IGNORE INTO files (knowledgeId, suffixName, newName, originalName, hash, timestamp, userId) VALUES (?,?,?,?,?,?,?)');
   filesInfo.map((Item: any)=>{
     const suffixName = path.extname(Item.originalName).toLowerCase();
     insertFiles.run(knowledgeId, suffixName, Item.newName, Item.originalName, Item.hash, Date.now(), Number(userId));
@@ -207,6 +207,14 @@ export async function uploadfilesInsertIntoDb(files: any[], knowledgeId: number 
       }
     });
   })
+  insertFiles.finalize();
+}
+
+export async function InsertFilesDb(knowledgeId: number | string, originalFilename: string, FileNameNew: string, FileHash: string) {
+  console.log("originalFilenameoriginalFilenameoriginalFilename", originalFilename)
+  const insertFiles = db.prepare('INSERT OR IGNORE INTO files (knowledgeId, suffixName, newName, originalName, hash, timestamp, userId) VALUES (?,?,?,?,?,?,?)');
+  const suffixName = path.extname(originalFilename).toLowerCase();
+  insertFiles.run(knowledgeId, suffixName, FileNameNew, originalFilename, FileHash, Date.now(), Number(userId));
   insertFiles.finalize();
 }
 
@@ -496,7 +504,7 @@ export async function GetSetting(Name: string, knowledgeId: number | string, use
   });
 }
 
-function calculateFileHashSync(filePath: string) {
+export function calculateFileHashSync(filePath: string) {
   try {
     const fileContent = fs.readFileSync(filePath);
     const hash = crypto.createHash('sha256');

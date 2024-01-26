@@ -106,6 +106,10 @@ let ChatBaiduWenxinModel: any = null
        });    
       pinecone = new Pinecone({apiKey: PINECONE_API_KEY,});
     }
+    else {
+      res.write("Not set API_KEY");
+      res.end();
+    }
   }
 
   export async function chatChatOpenAI(res: NextApiResponse, knowledgeId: number | string, question: string, history: any[]) {
@@ -359,7 +363,7 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function initChatBookGeminiStream(knowledgeId: number | string) {
+  export async function initChatBookGeminiStream(res: NextApiResponse, knowledgeId: number | string) {
     getLLMSSettingData = await getLLMSSetting(knowledgeId);
     console.log("Gemini getLLMSSettingData", getLLMSSettingData, knowledgeId)
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
@@ -382,10 +386,14 @@ let ChatBaiduWenxinModel: any = null
       });
       pinecone = new Pinecone({apiKey: PINECONE_API_KEY,});
     }
+    else {
+      res.write("Not set API_KEY");
+      res.end();
+    }
   }
 
   export async function chatChatGemini(res: NextApiResponse, knowledgeId: number | string, question: string, history: any[]) {
-    await initChatBookGeminiStream(knowledgeId)
+    await initChatBookGeminiStream(res, knowledgeId)
     const input2 = [
         new HumanMessage({
           content: [
@@ -408,7 +416,7 @@ let ChatBaiduWenxinModel: any = null
     insertChatLog.finalize();
   }
 
-  export async function initChatBookBaiduWenxinStream(knowledgeId: number | string) {
+  export async function initChatBookBaiduWenxinStream(res: NextApiResponse, knowledgeId: number | string) {
     getLLMSSettingData = await getLLMSSetting(knowledgeId);
     console.log("BaiduWenxin getLLMSSettingData", getLLMSSettingData, knowledgeId)
     const BAIDU_API_KEY = getLLMSSettingData.BAIDU_API_KEY ?? "1AWXpm1Cd8lbxmAaFoPR0dNx";
@@ -430,10 +438,14 @@ let ChatBaiduWenxinModel: any = null
       }
       pinecone = new Pinecone({apiKey: PINECONE_API_KEY,});
     }
+    else {
+      res.write("Not set API_KEY");
+      res.end();
+    }
   }
 
-  export async function chatChatBaiduWenxin(knowledgeId: number | string, question: string, history: any[]) {
-    await initChatBookBaiduWenxinStream(knowledgeId);
+  export async function chatChatBaiduWenxin(res: NextApiResponse, knowledgeId: number | string, question: string, history: any[]) {
+    await initChatBookBaiduWenxinStream(res, knowledgeId);
     const input2 = [new HumanMessage(question)];
     const response = await ChatBaiduWenxinModel.call(input2);
     console.log("response", response.content);

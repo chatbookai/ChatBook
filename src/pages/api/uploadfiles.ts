@@ -1,15 +1,31 @@
 // @ts-ignore
 import { NextApiRequest, NextApiResponse } from 'next';
-import { IncomingForm } from 'formidable';
-import path from 'path'
-import fs from 'fs'
 
-const DataDir = "./data"
+//const DataDir = "./data"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse): Promise<void> {
+  /*
+  const storage = multer.diskStorage({
+    destination: (req: any, file: any, cb: any) => {
+      cb(null, DataDir + '/uploadfiles/'); // 设置上传文件保存的目录
+    },
+    filename: (req: any, file: any, cb: any) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      const FileNameNew = file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase();
+      cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase());
+      
+      //const absolutePath = path.resolve('uploadfiles', FileNameNew);
+      //const calculateFileHash = calculateFileHashSync(absolutePath);
+      
+      console.log("FileNameNew", FileNameNew)
+    },
+  });
+  const upload = multer({ storage: storage });
+  res.status(200).json({ status: 'ok', msg: 'upload success' });
+
+  
   const form = new IncomingForm();
   console.log("form", form)
-
   form.parse(req, async (err: any, fields: any, files: any) => {
     if (err) {
       console.error('Error parsing form:', err);
@@ -60,4 +76,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   });
   res.status(200).json({ status: 'error', msg: 'form is null' });
+  */
+  res.json({ status: 'ok', msg: 'upload success' });
 }

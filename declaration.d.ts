@@ -7,3 +7,4 @@ declare module 'human-crypto-keys';
 declare module 'secrets.js';
 declare module 'multer';
 declare module 'formidable';
+declare module 'pdf-parse';

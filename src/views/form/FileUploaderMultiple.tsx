@@ -163,9 +163,9 @@ const FileUploaderMultiple = (props: any) => {
   }
 
   const handleUploadAllFiles = () => {
-    setIsDisabledButton(true)
-    setIsDisabledRemove(true)
-    setUploadingButton(`${t(`Uploading`)}...`)
+    //setIsDisabledButton(true)
+    //setIsDisabledRemove(true)
+    //setUploadingButton(`${t(`Uploading`)}...`)
     uploadMultiFiles();
   }
 
@@ -187,10 +187,10 @@ const FileUploaderMultiple = (props: any) => {
     if(FormSubmit.status == "ok") {
       //Insufficient balance
       toast.success(FormSubmit.msg, { duration: 4000 })
-      setIsDisabledButton(false)
-      setIsDisabledRemove(false)
-      setUploadingButton(`${t(`Upload Files`)}`)
-      handleRemoveAllFiles()
+      //setIsDisabledButton(false)
+      //setIsDisabledRemove(false)
+      //setUploadingButton(`${t(`Upload Files`)}`)
+      //handleRemoveAllFiles()
     }
 
   };

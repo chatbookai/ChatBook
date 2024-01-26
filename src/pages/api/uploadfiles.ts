@@ -15,6 +15,7 @@ export const config = {
 }
 
 const DataDirTeamp = './data/uploadfiles'
+const userId = 1
 
 if (!fs.existsSync(DataDirTeamp)) {
   fs.mkdirSync(DataDirTeamp, { recursive: true })
@@ -39,7 +40,10 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
             if (file && file.filepath) {
               const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
               const FileNameNew = uniqueSuffix + path.extname(file.originalFilename)
-              const newPath = path.join(DataDirTeamp, FileNameNew)
+              if (!fs.existsSync(DataDirTeamp + '/' + String(userId) + '/' + String(knowledgeId))) {
+                fs.mkdirSync(DataDirTeamp + '/' + String(userId) + '/' + String(knowledgeId), { recursive: true })
+              }
+              const newPath = path.join(DataDirTeamp + '/' + String(userId) + '/' + String(knowledgeId), FileNameNew)
               
               //console.log("file.filepath", file.filepath)
               //console.log("file.newFilename", file.newFilename)

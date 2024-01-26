@@ -322,6 +322,18 @@ export async function getFilesKnowledgeId(knowledgeId: number | string, pageid: 
   return RS;
 }
 
+export async function getFilesNotParsed() {
+  return await new Promise((resolve, reject) => {
+                          db.all("SELECT * from files where status = '0' order by timestamp asc limit 10 ", (err: any, result: any) => {
+                            if (err) {
+                              reject(err);
+                            } else {
+                              resolve(result ? result : null);
+                            }
+                          });
+                        });
+}
+
 export async function getChatLogByKnowledgeIdAndUserId(knowledgeId: number | string, userId: number, pageid: number, pagesize: number) {
   const KnowledgeIdFiler = filterString(knowledgeId);
   const userIdFiler = Number(userId) < 0 ? 0 : Number(userId) || 1;

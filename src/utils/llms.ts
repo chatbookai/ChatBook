@@ -82,7 +82,8 @@ let ChatBaiduWenxinModel: any = null
 
   export async function initChatBookOpenAIStream(res: NextApiResponse, knowledgeId: number | string) {
     getLLMSSettingData = await getLLMSSetting(knowledgeId);
-    console.log("OpenAI getLLMSSettingData", getLLMSSettingData)
+    
+    //console.log("OpenAI getLLMSSettingData", getLLMSSettingData)
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
     const OPENAI_Temperature = getLLMSSettingData.Temperature;
@@ -293,69 +294,75 @@ let ChatBaiduWenxinModel: any = null
       await Promise.all(getKnowledgePageData.map(async (KnowledgeItem: any)=>{
         const KnowledgeItemId = KnowledgeItem.id
         await initChatBookOpenAI(KnowledgeItemId)
-        console.log("getLLMSSettingData", getLLMSSettingData, "KnowledgeItemId", KnowledgeItemId)
-        console.log("process.env.OPENAI_BASE_URL", process.env.OPENAI_BASE_URL)
-        enableDir(DataDir + '/uploadfiles/' + String(userId))
-        enableDir(DataDir + '/uploadfiles/' + String(userId) + '/' + String(KnowledgeItemId))
-        const directoryLoader = new DirectoryLoader(DataDir + '/uploadfiles/'  + String(userId) + '/' + String(KnowledgeItemId) + '/', {
-          '.pdf': (path) => new PDFLoader(path),
-          '.docx': (path) => new DocxLoader(path),
-          '.json': (path) => new JSONLoader(path, '/texts'),
-          '.jsonl': (path) => new JSONLinesLoader(path, '/html'),
-          '.txt': (path) => new TextLoader(path),
-          '.csv': (path) => new CSVLoader(path, 'text'),
-          '.htm': (path) => new UnstructuredLoader(path),
-          '.html': (path) => new UnstructuredLoader(path),
-          '.ppt': (path) => new UnstructuredLoader(path),
-          '.pptx': (path) => new UnstructuredLoader(path),
-        });
-        const rawDocs = await directoryLoader.load();
-        if(rawDocs.length > 0)  {
-          const textSplitter = new RecursiveCharacterTextSplitter({
-            chunkSize: 1000,
-            chunkOverlap: 200,
-          });
-          const SplitterDocs = await textSplitter.splitDocuments(rawDocs);
-          log("parseFiles rawDocs docs count: ", rawDocs.length)
-          log("parseFiles textSplitter docs count: ", SplitterDocs.length)
-          log('parseFiles creating vector store begin ...');
+        if(getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "")    {
           
-          const embeddings = new OpenAIEmbeddings({openAIApiKey: getLLMSSettingData.OPENAI_API_KEY});
-          const index = pinecone.Index(PINECONE_INDEX_NAME);  
-          
-          const PINECONE_NAME_SPACE_USE = PINECONE_NAME_SPACE + '_' + String(KnowledgeItemId)
-          await PineconeStore.fromDocuments(SplitterDocs, embeddings, {
-            pineconeIndex: index,
-            namespace: PINECONE_NAME_SPACE_USE,
-            textKey: 'text',
+          //console.log("getLLMSSettingData", getLLMSSettingData, "KnowledgeItemId", KnowledgeItemId)
+          console.log("process.env.OPENAI_BASE_URL", process.env.OPENAI_BASE_URL)
+          enableDir(DataDir + '/uploadfiles/' + String(userId))
+          enableDir(DataDir + '/uploadfiles/' + String(userId) + '/' + String(KnowledgeItemId))
+          const directoryLoader = new DirectoryLoader(DataDir + '/uploadfiles/'  + String(userId) + '/' + String(KnowledgeItemId) + '/', {
+            '.pdf': (path) => new PDFLoader(path),
+            '.docx': (path) => new DocxLoader(path),
+            '.json': (path) => new JSONLoader(path, '/texts'),
+            '.jsonl': (path) => new JSONLinesLoader(path, '/html'),
+            '.txt': (path) => new TextLoader(path),
+            '.csv': (path) => new CSVLoader(path, 'text'),
+            '.htm': (path) => new UnstructuredLoader(path),
+            '.html': (path) => new UnstructuredLoader(path),
+            '.ppt': (path) => new UnstructuredLoader(path),
+            '.pptx': (path) => new UnstructuredLoader(path),
           });
-          log('parseFiles creating vector store finished', PINECONE_NAME_SPACE_USE);
-          const ParsedFiles: any[] = [];
-          rawDocs.map((Item) => {
-            const fileName = path.basename(Item.metadata.source);
-            if(!ParsedFiles.includes(fileName)) {
-              ParsedFiles.push(fileName);
-            }
-          });
-
-          const UpdateFileParseStatus = db.prepare('update files set status = ? where newName = ? and knowledgeId = ? and userId = ?');
-          ParsedFiles.map((Item) => {
-            UpdateFileParseStatus.run(1, Item, KnowledgeItemId, userId);
-            const destinationFilePath = path.join(DataDir + '/parsedfiles/', Item);
-            fs.rename(DataDir + '/uploadfiles/' + String(userId) + '/' + String(KnowledgeItemId) + '/' + Item, destinationFilePath, (err) => {
-              if (err) {
-                log('parseFiles Error moving file:', err, Item);
-              } else {
-                log('parseFiles File moved successfully.', Item);
+          const rawDocs = await directoryLoader.load();
+          if(rawDocs.length > 0)  {
+            const textSplitter = new RecursiveCharacterTextSplitter({
+              chunkSize: 1000,
+              chunkOverlap: 200,
+            });
+            const SplitterDocs = await textSplitter.splitDocuments(rawDocs);
+            log("parseFiles rawDocs docs count: ", rawDocs.length)
+            log("parseFiles textSplitter docs count: ", SplitterDocs.length)
+            log('parseFiles creating vector store begin ...');
+            
+            const embeddings = new OpenAIEmbeddings({openAIApiKey: getLLMSSettingData.OPENAI_API_KEY});
+            const index = pinecone.Index(PINECONE_INDEX_NAME);  
+            
+            const PINECONE_NAME_SPACE_USE = PINECONE_NAME_SPACE + '_' + String(KnowledgeItemId)
+            await PineconeStore.fromDocuments(SplitterDocs, embeddings, {
+              pineconeIndex: index,
+              namespace: PINECONE_NAME_SPACE_USE,
+              textKey: 'text',
+            });
+            log('parseFiles creating vector store finished', PINECONE_NAME_SPACE_USE);
+            const ParsedFiles: any[] = [];
+            rawDocs.map((Item) => {
+              const fileName = path.basename(Item.metadata.source);
+              if(!ParsedFiles.includes(fileName)) {
+                ParsedFiles.push(fileName);
               }
             });
-          });
-          UpdateFileParseStatus.finalize();
-          log('parseFiles change the files status finished', ParsedFiles);
-          
+
+            const UpdateFileParseStatus = db.prepare('update files set status = ? where newName = ? and knowledgeId = ? and userId = ?');
+            ParsedFiles.map((Item) => {
+              UpdateFileParseStatus.run(1, Item, KnowledgeItemId, userId);
+              const destinationFilePath = path.join(DataDir + '/parsedfiles/', Item);
+              fs.rename(DataDir + '/uploadfiles/' + String(userId) + '/' + String(KnowledgeItemId) + '/' + Item, destinationFilePath, (err) => {
+                if (err) {
+                  log('parseFiles Error moving file:', err, Item);
+                } else {
+                  log('parseFiles File moved successfully.', Item);
+                }
+              });
+            });
+            UpdateFileParseStatus.finalize();
+            log('parseFiles change the files status finished', ParsedFiles);
+            
+          }
+          else {
+            log('parseFiles No files need to parse');
+          }
         }
         else {
-          log('parseFiles No files need to parse');
+          log('Not set OPENAI_API_KEY in knowledge setting, KnowledgeItemId:', KnowledgeItemId);
         }
       }))
     } catch (error: any) {
@@ -365,7 +372,8 @@ let ChatBaiduWenxinModel: any = null
 
   export async function initChatBookGeminiStream(res: NextApiResponse, knowledgeId: number | string) {
     getLLMSSettingData = await getLLMSSetting(knowledgeId);
-    console.log("Gemini getLLMSSettingData", getLLMSSettingData, knowledgeId)
+    
+    //console.log("Gemini getLLMSSettingData", getLLMSSettingData, knowledgeId)
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
     if(OPENAI_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
@@ -418,7 +426,8 @@ let ChatBaiduWenxinModel: any = null
 
   export async function initChatBookBaiduWenxinStream(res: NextApiResponse, knowledgeId: number | string) {
     getLLMSSettingData = await getLLMSSetting(knowledgeId);
-    console.log("BaiduWenxin getLLMSSettingData", getLLMSSettingData, knowledgeId)
+    
+    //console.log("BaiduWenxin getLLMSSettingData", getLLMSSettingData, knowledgeId)
     const BAIDU_API_KEY = getLLMSSettingData.BAIDU_API_KEY ?? "1AWXpm1Cd8lbxmAaFoPR0dNx";
     const BAIDU_SECRET_KEY = getLLMSSettingData.BAIDU_SECRET_KEY ?? "TQy5sT9Mz4xKn0tR8h7W6LxPWIUNnXqq";
     const OPENAI_Temperature = getLLMSSettingData.Temperature ?? 1;

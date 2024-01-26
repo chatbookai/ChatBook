@@ -57,6 +57,16 @@ const UserDropdown = (props: Props) => {
     axios.get('/api/initDatabase')
   }, [])
 
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      axios.get('/api/parsefiles')
+    }, 60000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
   return (
     <Fragment>
       <Badge

@@ -1,3 +1,4 @@
+// @ts-ignore
 import { NextApiRequest, NextApiResponse } from 'next'
 const formidable = require('formidable')
 import fs from 'fs'

@@ -1,6 +1,8 @@
 // @ts-ignore
 import { NextApiRequest, NextApiResponse } from 'next'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const formidable = require('formidable')
+
 import fs from 'fs'
 import path from 'path'
 

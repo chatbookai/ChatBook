@@ -23,7 +23,6 @@ import toast from 'react-hot-toast'
 
 // ** Axios Imports
 import axios from 'axios'
-import authConfig from 'src/configs/auth'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
@@ -185,8 +184,10 @@ const FileUploaderMultiple = (props: any) => {
     console.log("FormSubmit:", FormSubmit)
     
     if(FormSubmit.status == "ok") {
+
       //Insufficient balance
       toast.success(FormSubmit.msg, { duration: 4000 })
+      
       //setIsDisabledButton(false)
       //setIsDisabledRemove(false)
       //setUploadingButton(`${t(`Upload Files`)}`)

@@ -14,6 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (err) {
       console.error('Error parsing form:', err);
       res.status(200).json({ status: 'error', msg: 'Internal Server Error' });
+      
       return;
     }
     try {

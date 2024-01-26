@@ -1,5 +1,3 @@
-import authConfig from 'src/configs/auth'
-
 const ChatKnowledge = "ChatKnowledge"
 const ChatChat = "ChatChat"
 const ChatChatName = "ChatChatName"

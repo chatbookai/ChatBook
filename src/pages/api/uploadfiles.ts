@@ -20,7 +20,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
     const form = new formidable.IncomingForm()
 
-    form.on('file', (field, file) => {
+    form.on('file', (field: any, file: any) => {
       if (file.originalFilename) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
         const FileNameNew = uniqueSuffix + path.extname(file.originalFilename)
@@ -29,7 +29,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
       }
     })
 
-    form.parse(req, (err, fields, files) => {
+    form.parse(req, (err: any, fields: any, files: any) => {
       if (err) {
         console.error('File upload error:', err)
 

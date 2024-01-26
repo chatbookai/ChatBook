@@ -27,7 +27,7 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
         const FileNameNew = uniqueSuffix + path.extname(file.originalFilename)
         const newPath = path.join(DataDir, FileNameNew)
-        fs.renameSync(file.filepath, newPath)
+        fs.copyFileSync(file.filepath, newPath)
       }
     })
 

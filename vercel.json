@@ -3,6 +3,10 @@
         "pages/api/cron.ts": {
           "memory": 512,
           "maxDuration": 10
+        },
+        "pages/api/test.ts": {
+            "memory": 512,
+            "maxDuration": 10
         }
     },
     "crons": [{

@@ -166,6 +166,35 @@ export function DeleteChatChatName(Id: number) {
     window.localStorage.setItem(ChatChatName, JSON.stringify(ChatChatList))
 }
 
+export function ChatChatInit(MsgList: any) {
+    const ChatLogList: any = []
+    MsgList.map((Item: any)=>{
+        ChatLogList.push({
+            "message": Item.send,
+            "time": Item.timestamp,
+            "senderId": Item.userId,
+            "feedback": {
+                "isSent": true,
+                "isDelivered": true,
+                "isSeen": true
+            }
+          })
+        ChatLogList.push({
+            "message": Item.received,
+            "time": Item.timestamp,
+            "senderId": 999999,
+            "feedback": {
+                "isSent": true,
+                "isDelivered": true,
+                "isSeen": true
+            }
+          })
+    })
+    window.localStorage.setItem(ChatChat, JSON.stringify(ChatLogList))
+
+    return ChatLogList
+}
+
 export function ChatChatInput(Message: string, UserId: number, knowledgeId: number | string) {
 	const ChatChatText = window.localStorage.getItem(ChatChat)      
     const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
@@ -210,6 +239,12 @@ export async function ChatChatOutput(Message: string, UserId: number, chatId: nu
                 break;
             case 'BaiduWenxin':
                 modelName = 'ChatBaiduwenxin'
+                break;
+            case 'Dall-E-2':
+                modelName = 'DallE2Openai'
+                break;
+            default:
+                modelName = String(chatId);
                 break;
         }
         console.log("chatId", chatId)
@@ -297,11 +332,12 @@ export function setChatBookLanguage(Language: string) {
 
 export function GetAllLLMS(): any[] {
     const AllLLMS: any[] = []
-    AllLLMS.push({name:"ChatGPT 3.5", id:"ChatGPT3.5", avatar:"/images/llms/ChatGPT.webp", summary:'OpenAI'})
-    AllLLMS.push({name:"ChatGPT 4", id:"ChatGPT4", avatar:"/images/llms/ChatGPT-4.webp", summary:'OpenAI'})
-    AllLLMS.push({name:"Gemini", id:"Gemini", avatar:"/images/llms/Gemini.webp", summary:'Google'})
-    AllLLMS.push({name:"Llama 2", id:"Llama2", avatar:"/images/llms/llama2.webp", summary:'Facebook'})
-    AllLLMS.push({name:"Baidu Wenxin", id:"BaiduWenxin", avatar:"/images/llms/BaiduWenxin.png", summary:'Baidu'})
+    AllLLMS.push({name:"ChatGPT 3.5", id:"ChatGPT3.5", avatar:"/images/llms/ChatGPT.webp", summary:'OpenAI ChatGPT3.5'})
+    AllLLMS.push({name:"ChatGPT 4", id:"ChatGPT4", avatar:"/images/llms/ChatGPT-4.webp", summary:'OpenAI ChatGPT 4'})
+    AllLLMS.push({name:"Gemini", id:"Gemini", avatar:"/images/llms/Gemini.webp", summary:'Google Gemini'})
+    AllLLMS.push({name:"Llama 2", id:"Llama2", avatar:"/images/llms/llama2.webp", summary:'Facebook Llama 2'})
+    AllLLMS.push({name:"Baidu Wenxin", id:"BaiduWenxin", avatar:"/images/llms/BaiduWenxin.png", summary:'Baidu Wenxin'})
+    AllLLMS.push({name:"Generate Image", id:"Dall-E-2", avatar:"/images/llms/openai-dall-e-2.png", summary:'Openai Dall-E-2'})
 
     return AllLLMS
 }

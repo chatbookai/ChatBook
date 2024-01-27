@@ -6,6 +6,8 @@ import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import ReactMarkdown from 'react-markdown'
+import CardMedia from '@mui/material/CardMedia'
+import Link from 'next/link'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -27,6 +29,11 @@ import {
 
 const PerfectScrollbar = styled(PerfectScrollbarComponent)<ScrollBarProps & { ref: Ref<unknown> }>(({ theme }) => ({
   padding: theme.spacing(5)
+}))
+
+const LinkStyled = styled(Link)(({ theme }) => ({
+  textDecoration: 'none',
+  color: theme.palette.primary.main
 }))
 
 const ChatLog = (props: any) => {
@@ -172,44 +179,82 @@ const ChatLog = (props: any) => {
 
           <Box className='chat-body' sx={{ maxWidth: ['calc(100% - 5.75rem)', '75%', '65%'] }}>
             {item.messages.map((chat: ChatLogChatType, index: number, { length }: { length: number }) => {
-
+              let ChatMsgType = 'Chat'
+              let ChatMsgContent: any
+              if(chat.msg.includes('"type":"image"')) {
+                ChatMsgType = 'Image'
+                ChatMsgContent = JSON.parse(chat.msg)
+              }
+              
               return (
                 <Box key={index} sx={{ '&:not(:last-of-type)': { mb: 3.5 } }}>
-                  <div>
-                    <Typography
-                      sx={{
-                        boxShadow: 1,
-                        borderRadius: 1,
-                        width: 'fit-content',
-                        fontSize: '0.875rem',
-                        p: theme => theme.spacing(2, 4),
-                        ml: isSender ? 'auto' : undefined,
-                        borderTopLeftRadius: !isSender ? 0 : undefined,
-                        borderTopRightRadius: isSender ? 0 : undefined,
-                        color: isSender ? 'common.white' : 'text.primary',
-                        backgroundColor: isSender ? 'primary.main' : 'background.paper'
-                      }}
-                    > 
-                      <ReactMarkdown>{chat.msg}</ReactMarkdown>
-                    </Typography>
-                  </div>
-                  {index + 1 === length ? (
-                    <Box
-                      sx={{
-                        mt: 1,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: isSender ? 'flex-end' : 'flex-start'
-                      }}
-                    >
-                      {renderMsgFeedback(isSender, chat.feedback)}
-                      <Typography variant='caption'>
-                        {chat.time
-                          ? new Date(Number(chat.time)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
-                          : null}
-                      </Typography>
-                    </Box>
-                  ) : null}
+                    {ChatMsgType == "Chat" ?
+                      <div>
+                        <Typography
+                        sx={{
+                          boxShadow: 1,
+                          borderRadius: 1,
+                          width: 'fit-content',
+                          fontSize: '0.875rem',
+                          p: theme => theme.spacing(2, 4),
+                          ml: isSender ? 'auto' : undefined,
+                          borderTopLeftRadius: !isSender ? 0 : undefined,
+                          borderTopRightRadius: isSender ? 0 : undefined,
+                          color: isSender ? 'common.white' : 'text.primary',
+                          backgroundColor: isSender ? 'primary.main' : 'background.paper'
+                        }}
+                        >
+                          <ReactMarkdown>{chat.msg}</ReactMarkdown>
+                        </Typography>
+                        {index + 1 === length ? (
+                          <Box
+                            sx={{
+                              mt: 1,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: isSender ? 'flex-end' : 'flex-start'
+                            }}
+                          >
+                            {renderMsgFeedback(isSender, chat.feedback)}
+                            <Typography variant='caption'>
+                              {chat.time
+                                ? new Date(Number(chat.time)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+                                : null}
+                            </Typography>
+                          </Box>
+                        ) : null}
+                      </div>
+                      :
+                      null
+                    }
+                    {ChatMsgType == "Image" && ChatMsgContent && ChatMsgContent.data ?
+                      <div>
+                        <LinkStyled target='_blank' href={ChatMsgContent.data[0].url}>
+                        <CardMedia image={ChatMsgContent.data[0].url} sx={{ mt: 1, width: '500px', height: '500px', borderRadius: '5px' }}/>
+                        </LinkStyled>
+                        <Box
+                            sx={{
+                              mt: 1,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: isSender ? 'flex-end' : 'flex-start'
+                            }}
+                          >
+                            <Typography variant='caption'>
+                              {chat.time
+                                ? new Date(Number(chat.time)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+                                : null}
+                              {ChatMsgContent.data[0].url ?
+                              ' Source: ' + (new URL(ChatMsgContent.data[0].url)).hostname
+                              :
+                              null
+                              }
+                            </Typography>
+                          </Box>
+                      </div>
+                      :
+                      null
+                    }
                 </Box>
               )
             })}

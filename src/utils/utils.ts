@@ -257,7 +257,8 @@ export async function getFilesPage(pageid: number, pagesize: number) {
           return {...Item, status:ItemStatus, timestamp: formatDateFromTimestamp(Item.timestamp)}
         })
     );
-    log("getFilesPage", RSDATA)
+    
+    //log("getFilesPage", RSDATA)
   }
   const RS: any = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
@@ -366,7 +367,8 @@ export async function getChatLogByKnowledgeIdAndUserId(knowledgeId: number | str
           return Item
         })
     );
-    log("getChatLogByKnowledgeIdAndUserId", RSDATA)
+
+    //log("getChatLogByKnowledgeIdAndUserId", RSDATA)
   }
   const RS: any = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);

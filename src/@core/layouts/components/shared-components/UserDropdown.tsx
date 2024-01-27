@@ -60,7 +60,7 @@ const UserDropdown = (props: Props) => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       axios.get('/api/parsefiles')
-    }, 60000);
+    }, 3600000);
 
     return () => {
       clearInterval(intervalId);

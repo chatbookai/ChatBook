@@ -19,7 +19,7 @@ import ChatContent from 'src/views/chat/Chat/ChatContent'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
-import { GetAllLLMS, ChatKnowledgeInit, ChatChatNameList, ChatChatInput, ChatChatOutput  } from 'src/functions/ChatBook'
+import { GetAllLLMS, ChatChatInit, ChatChatNameList, ChatChatInput, ChatChatOutput  } from 'src/functions/ChatBook'
 
 // ** Axios Imports
 import axios from 'axios'
@@ -47,14 +47,14 @@ const AppChat = () => {
 
   const getChatLogList = async function (knowledgeId: number | string) {
     const RS = await axios.get('/api/chatlog/' + knowledgeId + '/' + userId + '/0/90').then(res=>res.data)
-    const ChatKnowledgeInitList = ChatKnowledgeInit(RS['data'].reverse())
-    console.log("ChatKnowledgeInitList", ChatKnowledgeInitList)
+    const ChatChatInitList = ChatChatInit(RS['data'].reverse())
+    console.log("ChatChatInitList", ChatChatInitList)
     const selectedChat = {
       "chat": {
           "id": 1,
           "userId": 1,
           "unseenMsgs": 0,
-          "chat": ChatKnowledgeInitList
+          "chat": ChatChatInitList
       }
     }
     const storeInit = {

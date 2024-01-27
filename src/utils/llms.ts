@@ -3,9 +3,10 @@ import { NextApiResponse } from 'next';
 
 import * as fs from 'fs'
 import path from 'path'
+import axios from 'axios'
 
-
-import { OpenAI, ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
+import { OpenAI } from "openai";
+import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { PromptTemplate, ChatPromptTemplate } from "@langchain/core/prompts";
 
 //import { LLMChain } from "langchain/chains";
@@ -73,6 +74,7 @@ let ChatBaiduWenxinModel: any = null
         process.env.OPENAI_API_KEY = OPENAI_API_KEY
       }
       ChatOpenAIModel = new ChatOpenAI({ 
+        modelName: getLLMSSettingData.ModelName ?? "gpt-3.5-turbo",
         openAIApiKey: OPENAI_API_KEY, 
         temperature: Number(OPENAI_Temperature)
        });    
@@ -83,7 +85,7 @@ let ChatBaiduWenxinModel: any = null
   export async function initChatBookOpenAIStream(res: NextApiResponse, knowledgeId: number | string) {
     getLLMSSettingData = await getLLMSSetting(knowledgeId);
     
-    //console.log("OpenAI getLLMSSettingData", getLLMSSettingData)
+    console.log("initChatBookOpenAIStream getLLMSSettingData", getLLMSSettingData)
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
     const OPENAI_Temperature = getLLMSSettingData.Temperature;
@@ -92,20 +94,26 @@ let ChatBaiduWenxinModel: any = null
         process.env.OPENAI_BASE_URL = OPENAI_API_BASE
         process.env.OPENAI_API_KEY = OPENAI_API_KEY
       }
-      ChatOpenAIModel = new ChatOpenAI({ 
-        openAIApiKey: OPENAI_API_KEY, 
-        temperature: Number(OPENAI_Temperature),
-        streaming: true,
-        callbacks: [
-          {
-            handleLLMNewToken(token) {
-              res.write(token);
-              ChatBookOpenAIStreamResponse = ChatBookOpenAIStreamResponse + token
+      try{
+        ChatOpenAIModel = new ChatOpenAI({ 
+          modelName: getLLMSSettingData.ModelName ?? "gpt-3.5-turbo",
+          openAIApiKey: OPENAI_API_KEY, 
+          temperature: Number(OPENAI_Temperature),
+          streaming: true,
+          callbacks: [
+            {
+              handleLLMNewToken(token) {
+                res.write(token);
+                ChatBookOpenAIStreamResponse = ChatBookOpenAIStreamResponse + token
+              },
             },
-          },
-        ],
-       });    
-      pinecone = new Pinecone({apiKey: PINECONE_API_KEY,});
+          ],
+         });    
+        pinecone = new Pinecone({apiKey: PINECONE_API_KEY,});
+      }
+      catch(Error: any) {
+        log("initChatBookOpenAIStream Error", Error)
+      }
     }
     else {
       res.write("Not set API_KEY");
@@ -281,9 +289,46 @@ let ChatBaiduWenxinModel: any = null
 
     const chain = new ConversationChain({ llm: ChatOpenAIModel, memory: memory });
 
-    const res2 = await chain.call({ input: "What's the price?" });
+    const res2 = await chain.call({ input: "您使用的是哪个模型?" });
     console.log({ res2 });
     
+  }
+
+  export async function GenereateImageUsingDallE2(res: NextApiResponse, knowledgeId: number | string, question: string, size='1024x1024') {
+    getLLMSSettingData = await getLLMSSetting(knowledgeId);    
+    const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE ?? "https://api.openai.com/v1";
+    const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
+    const requestData = {
+      model: 'dall-e-2',
+      prompt: question,
+      n: 1,
+      size: size,
+      style: 'vivid'
+    };
+
+    //style: natural | vivid
+    //256x256, 512x512, or 1024x1024 for dall-e-2
+    try {
+      const response = await axios.post(OPENAI_API_BASE + '/images/generations', requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        },
+      });  
+      const generatedImage = response.data;
+      const generatedImageTS = {...generatedImage, type:'image'}
+      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
+      insertChatLog.run(knowledgeId, question, JSON.stringify(generatedImageTS), userId, Date.now(), JSON.stringify([]), JSON.stringify([]));
+      insertChatLog.finalize();
+      log('Generated Image:', generatedImageTS);
+
+      return generatedImageTS;
+    } 
+    catch (error) {
+      log('Error generating image:', error);
+
+      return {error};
+    }
   }
 
   export async function parseFiles() {

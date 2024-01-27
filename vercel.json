@@ -7,6 +7,14 @@
         "pages/api/test.ts": {
             "memory": 512,
             "maxDuration": 10
+        },
+        "api/test.ts": {
+            "memory": 512,
+            "maxDuration": 10
+        },
+        "test.ts": {
+            "memory": 512,
+            "maxDuration": 10
         }
     },
     "crons": [{

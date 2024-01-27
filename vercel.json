@@ -8,7 +8,7 @@
             "memory": 512,
             "maxDuration": 10
         },
-        "test.ts": {
+        "src/pages/api/test.ts": {
             "memory": 512,
             "maxDuration": 10
         }

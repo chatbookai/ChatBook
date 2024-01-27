@@ -36,7 +36,10 @@ async function initChatBookDb() {
     enableDir(DataDir);
     enableDir(DataDir + '/uploadfiles/');
     enableDir(DataDir + '/parsedfiles/');
-
+    enableDir(DataDir + '/audio/');
+    enableDir(DataDir + '/image/');
+    enableDir(DataDir + '/video/');
+    
     // @ts-ignore
     const db = new sqlite3.Database(DataDir + '/ChatBookSqlite3.db', { encoding: 'utf8' });
     db.serialize(() => {

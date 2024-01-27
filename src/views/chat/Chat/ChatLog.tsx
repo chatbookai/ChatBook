@@ -185,7 +185,11 @@ const ChatLog = (props: any) => {
                 ChatMsgType = 'Image'
                 ChatMsgContent = JSON.parse(chat.msg)
               }
-              
+              if(chat.msg.includes('"type":"audio"')) {
+                ChatMsgType = 'Audio'
+                ChatMsgContent = JSON.parse(chat.msg)
+              }
+
               return (
                 <Box key={index} sx={{ '&:not(:last-of-type)': { mb: 3.5 } }}>
                     {ChatMsgType == "Chat" ?
@@ -230,7 +234,7 @@ const ChatLog = (props: any) => {
                     {ChatMsgType == "Image" && ChatMsgContent && ChatMsgContent.data ?
                       <div>
                         <LinkStyled target='_blank' href={ChatMsgContent.data[0].url}>
-                        <CardMedia image={ChatMsgContent.data[0].url} sx={{ mt: 1, width: '500px', height: '500px', borderRadius: '5px' }}/>
+                          <CardMedia image={ChatMsgContent.data[0].url} sx={{ mt: 1, width: '500px', height: '500px', borderRadius: '5px' }}/>
                         </LinkStyled>
                         <Box
                             sx={{
@@ -249,6 +253,29 @@ const ChatLog = (props: any) => {
                               :
                               null
                               }
+                            </Typography>
+                          </Box>
+                      </div>
+                      :
+                      null
+                    }
+                    {ChatMsgType == "Audio" && ChatMsgContent && ChatMsgContent.ShortFileName ?
+                      <div>
+                        <LinkStyled target='_blank' href={'/api/audio/' + ChatMsgContent.ShortFileName}>
+                          <CardMedia component="audio" controls src={'/api/audio/' + ChatMsgContent.ShortFileName} sx={{ mt: 1, width: '360px', borderRadius: '5px' }}/>
+                        </LinkStyled>
+                        <Box
+                            sx={{
+                              mt: 1,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: isSender ? 'flex-end' : 'flex-start'
+                            }}
+                          >
+                            <Typography variant='caption'>
+                              {chat.time
+                                ? new Date(Number(chat.time)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
+                                : null}
                             </Typography>
                           </Box>
                       </div>

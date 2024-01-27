@@ -331,6 +331,66 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
+  export async function GenereateAudioUsingTTS(res: NextApiResponse, knowledgeId: number | string, question: string, voice='alloy') {
+    getLLMSSettingData = await getLLMSSetting(knowledgeId);    
+    const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE ?? "https://api.openai.com/v1";
+    const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
+    const requestData = {
+      model: 'tts-1',
+      voice: voice,
+      input: question,
+      response_format: "mp3",
+    };
+    try {
+      const response = await axios.post(OPENAI_API_BASE + '/audio/speech', requestData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
+        },
+        responseType: 'arraybuffer'
+      });  
+      console.log('Generated Audio:', response.data);
+      const generatedAudio = response.data;
+      const data = Buffer.from(generatedAudio);
+      const DateNow = Date.now();
+      const ShortFileName = DateNow + '-' + Math.round(Math.random() * 1e9) + '-' + knowledgeId;
+      const FileName = DataDir + "/audio/"+ ShortFileName + ".mp3";
+      fs.writeFileSync(FileName, data);
+      const generatedAudioTS = {...requestData, FileName: FileName, type:'audio', status: 'OK', timestamp: DateNow, ShortFileName:ShortFileName}
+      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
+      insertChatLog.run(knowledgeId, question, JSON.stringify(generatedAudioTS), userId, DateNow, JSON.stringify([]), JSON.stringify([]));
+      insertChatLog.finalize();
+      log('Generated Audio:', generatedAudioTS);
+
+      return generatedAudioTS;
+    } 
+    catch (error) {
+      log('Error generating Audio:', error);
+
+      return {error};
+    }
+  }
+
+  export async function outputAudio(res: NextApiResponse, file: string) {
+    try {
+      const FileName = DataDir + "/audio/"+ file + ".mp3";
+
+      const readStream = fs.createReadStream(FileName);
+
+      res.setHeader('Content-Type', 'audio/mpeg');
+
+      readStream.pipe(res);
+    } 
+    catch (error) {
+        console.error('Error:', error);
+
+        return {
+          statusCode: 500,
+          body: JSON.stringify({ error: 'Internal Server Error' }),
+        };
+    }
+  }
+
   export async function parseFiles() {
     try {
       const getKnowledgePageRS = await getKnowledgePage(0, 999);

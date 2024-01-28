@@ -19,6 +19,13 @@ import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
 import { ChatBaiduWenxin } from "@langchain/community/chat_models/baiduwenxin";
 
+import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
+import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
+import { createRetrieverTool } from "langchain/agents/toolkits";
+import { pull } from "langchain/hub";
+import { createOpenAIFunctionsAgent } from "langchain/agents";
+import { AgentExecutor } from "langchain/agents";
 
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { PineconeStore } from '@langchain/community/vectorstores/pinecone';
@@ -292,6 +299,79 @@ let ChatBaiduWenxinModel: any = null
     const res2 = await chain.call({ input: "您使用的是哪个模型?" });
     console.log({ res2 });
     
+  }
+
+  export async function debug_agent(res: NextApiResponse, knowledgeId: number | string) {
+    getLLMSSettingData = await getLLMSSetting(knowledgeId);
+    console.log("debug_agent getLLMSSettingData", getLLMSSettingData)
+    const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
+    const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
+    const OPENAI_Temperature = getLLMSSettingData.Temperature;
+    if(OPENAI_API_BASE && OPENAI_API_BASE !='' && OPENAI_API_BASE.length > 16) {
+      process.env.OPENAI_BASE_URL = OPENAI_API_BASE
+      process.env.OPENAI_API_KEY = OPENAI_API_KEY
+    }
+    const searchTool = new TavilySearchResults();
+    
+    //const toolResult = await searchTool.invoke("郑州天气如何?");    
+    //res.status(200).json(JSON.parse(toolResult));
+    //console.log(toolResult);
+
+    const loader = new CheerioWebBaseLoader("https://docs.smith.langchain.com/overview");
+    const rawDocs = await loader.load();
+    const splitter = new RecursiveCharacterTextSplitter({
+      chunkSize: 1000,
+      chunkOverlap: 200,
+    });
+    const docs = await splitter.splitDocuments(rawDocs);    
+    const vectorstore = await MemoryVectorStore.fromDocuments(
+      docs,
+      new OpenAIEmbeddings({openAIApiKey:getLLMSSettingData.OPENAI_API_KEY})
+    );
+    const retriever = vectorstore.asRetriever();    
+    const retrieverResult = await retriever.getRelevantDocuments(
+      "how to upload a dataset"
+    );
+    console.log("retrieverResult", retrieverResult);
+
+    const retrieverTool = createRetrieverTool(retriever, {
+      name: "langsmith_search",
+      description:
+        "Search for information about LangSmith. For any questions about LangSmith, you must use this tool!",
+    });
+    console.log("retrieverTool", retrieverTool);
+
+    const tools = [searchTool, retrieverTool];
+
+    const prompt = await pull<ChatPromptTemplate>(
+      "hwchase17/openai-functions-agent"
+    );
+    console.log("prompt", prompt);
+
+    const llm = new ChatOpenAI({
+      modelName: getLLMSSettingData.ModelName ?? "gpt-3.5-turbo",
+      openAIApiKey: OPENAI_API_KEY, 
+      temperature: Number(OPENAI_Temperature),
+    });
+
+    const agent = await createOpenAIFunctionsAgent({
+      llm,
+      tools,
+      prompt,
+    });
+    console.log("agent", agent);
+
+    const agentExecutor = new AgentExecutor({
+      agent,
+      tools,
+    });
+    console.log("agentExecutor", agentExecutor);
+
+    const result1 = await agentExecutor.invoke({
+      input: "how can langsmith help with testing?!",
+    });
+    console.log(result1);
+
   }
 
   export async function GenereateImageUsingDallE2(res: NextApiResponse, knowledgeId: number | string, question: string, size='1024x1024') {

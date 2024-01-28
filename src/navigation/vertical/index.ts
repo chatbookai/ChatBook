@@ -44,7 +44,7 @@ const MenuList = [
     path: '/files'
   },
   {
-    title: 'Chat Settings',
+    title: 'Chat Setting',
     icon: 'mingcute:openai-fill',
     path: '/settings/llms'
   },

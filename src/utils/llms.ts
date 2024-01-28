@@ -316,13 +316,35 @@ let ChatBaiduWenxinModel: any = null
         },
       });  
       const generatedImage = response.data;
-      const generatedImageTS = {...generatedImage, type:'image'}
-      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
-      insertChatLog.run(knowledgeId, question, JSON.stringify(generatedImageTS), userId, Date.now(), JSON.stringify([]), JSON.stringify([]));
-      insertChatLog.finalize();
-      log('Generated Image:', generatedImageTS);
 
-      return generatedImageTS;
+      if(generatedImage && generatedImage['data'] && generatedImage['data'][0] && generatedImage['data'][0]['url']) {
+        const response = await axios({
+          method: 'get',
+          url: generatedImage['data'][0]['url'],
+          responseType: 'arraybuffer',  // 使用 arraybuffer
+        });
+        const data = Buffer.from(response.data);
+        const DateNow = Date.now();
+        const ShortFileName = DateNow + '-' + Math.round(Math.random() * 1e9) + '-' + knowledgeId;
+        const FileName = DataDir + "/image/"+ ShortFileName + ".png";
+        const generatedImageTS = {...requestData, FileName: FileName, type: 'image', status: 'OK', timestamp: DateNow, ShortFileName: ShortFileName}
+        fs.writeFileSync(FileName, data);
+        console.log("response", response)
+
+        const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
+        insertChatLog.run(knowledgeId, question, JSON.stringify(generatedImageTS), userId, Date.now(), JSON.stringify([]), JSON.stringify([]));
+        insertChatLog.finalize();
+        log('Generated Image:', generatedImageTS);
+
+        return generatedImageTS;
+      }
+      else {
+        log('Error generating image:', generatedImage);
+
+        return {generatedImage};
+      }
+  
+      
     } 
     catch (error) {
       log('Error generating image:', error);
@@ -356,7 +378,7 @@ let ChatBaiduWenxinModel: any = null
       const ShortFileName = DateNow + '-' + Math.round(Math.random() * 1e9) + '-' + knowledgeId;
       const FileName = DataDir + "/audio/"+ ShortFileName + ".mp3";
       fs.writeFileSync(FileName, data);
-      const generatedAudioTS = {...requestData, FileName: FileName, type:'audio', status: 'OK', timestamp: DateNow, ShortFileName:ShortFileName}
+      const generatedAudioTS = {...requestData, FileName: FileName, type: 'audio', status: 'OK', timestamp: DateNow, ShortFileName: ShortFileName}
       const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
       insertChatLog.run(knowledgeId, question, JSON.stringify(generatedAudioTS), userId, DateNow, JSON.stringify([]), JSON.stringify([]));
       insertChatLog.finalize();
@@ -378,6 +400,26 @@ let ChatBaiduWenxinModel: any = null
       const readStream = fs.createReadStream(FileName);
 
       res.setHeader('Content-Type', 'audio/mpeg');
+
+      readStream.pipe(res);
+    } 
+    catch (error) {
+        console.error('Error:', error);
+
+        return {
+          statusCode: 500,
+          body: JSON.stringify({ error: 'Internal Server Error' }),
+        };
+    }
+  }
+
+  export async function outputImage(res: NextApiResponse, file: string) {
+    try {
+      const FileName = DataDir + "/image/"+ file + ".png";
+
+      const readStream = fs.createReadStream(FileName);
+
+      res.setHeader('Content-Type', 'image/png');
 
       readStream.pipe(res);
     } 

@@ -243,10 +243,10 @@ const ChatLog = (props: any) => {
                       :
                       null
                     }
-                    {ChatMsgType == "Image" && ChatMsgContent && ChatMsgContent.data ?
+                    {ChatMsgType == "Image" && ChatMsgContent && ChatMsgContent.ShortFileName ?
                       <div>
-                        <LinkStyled target='_blank' href={ChatMsgContent.data[0].url}>
-                          <CardMedia image={ChatMsgContent.data[0].url} sx={{ mt: 1, width: '500px', height: '500px', borderRadius: '5px' }}/>
+                        <LinkStyled target='_blank' href={'/api/image/' + ChatMsgContent.ShortFileName}>
+                          <CardMedia image={'/api/image/' + ChatMsgContent.ShortFileName} sx={{ mt: 1, width: '500px', height: '500px', borderRadius: '5px' }}/>
                         </LinkStyled>
                         <Box
                             sx={{
@@ -260,8 +260,10 @@ const ChatLog = (props: any) => {
                               {chat.time
                                 ? new Date(Number(chat.time)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
                                 : null}
-                              {ChatMsgContent.data[0].url ?
-                              ' Source: ' + (new URL(ChatMsgContent.data[0].url)).hostname
+                              {ChatMsgContent.ShortFileName ?
+                              <LinkStyled onClick={()=>handleDownload('/api/image/' + ChatMsgContent.ShortFileName, ChatMsgContent.ShortFileName + '.png')} href={'#'} sx={{ml: 1}}>
+                                Download
+                              </LinkStyled>
                               :
                               null
                               }

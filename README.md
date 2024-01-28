@@ -8,10 +8,22 @@
 
 ## 编译安装
 ```
+git clone https://github.com/chatbookai/ChatBook.git
+cd ChatBook
 npm install
 npm run dev
+
 ```
 后端使用serverless function, 数据目录是在安装目录的./data下面.
+
+## Docker安装
+```
+sudo docker pull chatbookai/chatbook:0.2
+
+sudo docker run -p 8888:3000 chatbook:0.2
+
+如何访问: http://127.0.0.1:3000 or http://youripaddress:8888
+```
 
 ## 支持模型
 ```

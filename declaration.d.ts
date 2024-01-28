@@ -10,3 +10,4 @@ declare module 'formidable';
 declare module 'pdf-parse';
 declare module 'file-saver';
 declare module 'mp3-duration';
+declare module 'bcrypt';

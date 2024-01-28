@@ -3,34 +3,10 @@ import sqlite3 from 'sqlite3';
 // @ts-ignore
 import { NextApiRequest, NextApiResponse } from 'next';
 import { enableDir } from '../../utils/utils';
+import { DataDir, CONDENSE_TEMPLATE_INIT, QA_TEMPLATE_INIT } from '../../utils/const';
+
 
 let initialized = false;
-
-const DataDir = "./data"
-
-const CONDENSE_TEMPLATE_INIT = `Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.
-
-<chat_history>
-  {chat_history}
-</chat_history>
-
-Follow Up Input: {question}
-Standalone question:`;
-
-const QA_TEMPLATE_INIT = `You are an expert researcher. Use the following pieces of context to answer the question at the end.
-If you don't know the answer, just say you don't know. DO NOT try to make up an answer.
-If the question is not related to the context or chat history, politely respond that you are tuned to only answer questions that are related to the context.
-
-<context>
-  {context}
-</context>
-
-<chat_history>
-  {chat_history}
-</chat_history>
-
-Question: {question}
-Helpful answer in markdown:`;
 
 async function initChatBookDb() {
     enableDir(DataDir);
@@ -104,6 +80,33 @@ async function initChatBookDb() {
                 timestamp INTEGER not null default 0,
                 source TEXT not null,
                 history TEXT not null
+            );
+        `);        
+        db.run(`
+            CREATE TABLE IF NOT EXISTS user (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT UNIQUE not null,
+                username TEXT UNIQUE not null,
+                firstname TEXT not null default '',
+                lastname TEXT not null default '',                
+                organization TEXT not null default '',
+                mobile TEXT not null default '',
+                address TEXT not null default '',
+                state TEXT not null default '',
+                zipcode TEXT not null default '',
+                country TEXT not null default '',
+                language TEXT not null default '',
+                timezone TEXT not null default '',
+                nickname TEXT not null default '',
+                birthday TEXT not null default '',
+                avatar TEXT not null default '',
+                mobile_status INTEGER not null default 0,
+                google_auth TEXT not null default '',
+                github_auth TEXT not null default '',
+                user_type TEXT not null default '',
+                user_status INTEGER not null default 1,
+                password TEXT not null default '',
+                createtime INTEGER not null default 0
             );
         `);
     });

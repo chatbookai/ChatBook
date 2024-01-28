@@ -11,7 +11,7 @@ import axios from 'axios'
 import authConfig from 'src/configs/auth'
 
 // ** Types
-import { AuthValuesType, LoginParams, ErrCallbackType, UserDataType } from './types'
+import { AuthValuesType, RegisterParams, LoginParams, ErrCallbackType, UserDataType } from './types'
 
 // ** Defaults
 const defaultProvider: AuthValuesType = {
@@ -20,7 +20,8 @@ const defaultProvider: AuthValuesType = {
   setUser: () => null,
   setLoading: () => Boolean,
   login: () => Promise.resolve(),
-  logout: () => Promise.resolve()
+  logout: () => Promise.resolve(),
+  register: () => Promise.resolve()
 }
 
 const AuthContext = createContext(defaultProvider)
@@ -61,11 +62,11 @@ const AuthProvider = ({ children }: Props) => {
 
   const handleLogout = () => {
     
-    //setUser(null)
+    setUser(null)
 
-    //window.localStorage.removeItem('userData')
-    //window.localStorage.removeItem(authConfig.storageTokenKeyName)
-    //router.push('/login')
+    window.localStorage.removeItem('userData')
+    window.localStorage.removeItem(authConfig.storageTokenKeyName)
+    router.push('/login')
   }
 
   useEffect(() => {
@@ -73,13 +74,27 @@ const AuthProvider = ({ children }: Props) => {
     setUser(user as UserDataType)
   }, [])
 
+  const handleRegister = (params: RegisterParams, errorCallback?: ErrCallbackType) => {
+    axios
+      .post(authConfig.registerEndpoint, params)
+      .then(res => {
+        if (res.data.error) {
+          if (errorCallback) errorCallback(res.data.error)
+        } else {
+          handleLogin({ email: params.email, password: params.password })
+        }
+      })
+      .catch((err: { [key: string]: string }) => (errorCallback ? errorCallback(err) : null))
+  }
+
   const values = {
     user,
     loading,
     setUser,
     setLoading,
     login: handleLogin,
-    logout: handleLogout
+    logout: handleLogout,
+    register: handleRegister
   }
 
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>

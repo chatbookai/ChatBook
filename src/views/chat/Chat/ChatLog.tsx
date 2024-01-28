@@ -1,5 +1,6 @@
 // ** React Imports
 import { useRef, useEffect, Ref, ReactNode } from 'react'
+import { saveAs } from 'file-saver';
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -55,6 +56,17 @@ const ChatLog = (props: any) => {
       }
     }
   }
+
+  const handleDownload = (DownloadUrl: string, FileName: string) => {
+    fetch(DownloadUrl)
+      .then(response => response.blob())
+      .then(blob => {
+        saveAs(blob, FileName);
+      })
+      .catch(error => {
+        console.error('Error downloading file:', error);
+      });
+  };
 
   // ** Formats chat data based on sender
   const formattedChatData = () => {
@@ -276,6 +288,13 @@ const ChatLog = (props: any) => {
                               {chat.time
                                 ? new Date(Number(chat.time)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
                                 : null}
+                              {ChatMsgContent.ShortFileName ?
+                              <LinkStyled onClick={()=>handleDownload('/api/audio/' + ChatMsgContent.ShortFileName, ChatMsgContent.ShortFileName + '.mp3')} href={'#'} sx={{ml: 1}}>
+                                Download
+                              </LinkStyled>
+                              :
+                              null
+                              }
                             </Typography>
                           </Box>
                       </div>

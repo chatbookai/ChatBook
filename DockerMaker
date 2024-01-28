@@ -1,0 +1,17 @@
+sudo docker login
+    chatbookai
+    password
+
+sudo docker build -t chatbookai/chatbook:0.2 .
+
+sudo docker push chatbookai/chatbook:0.2
+
+sudo docker rm 22cc2dece268
+
+sudo docker ps -a
+
+sudo docker stop 22cc2dece268
+
+sudo docker pull chatbookai/chatbook:0.2
+
+sudo docker run -p 8888:3000 chatbook:0.2

@@ -57,9 +57,11 @@ const AuthProvider = ({ children }: Props) => {
   }
 
   useEffect(() => {
-    const userData = window.localStorage.getItem(authConfig.userInfoTokenKeyName) || ''
-    const user = JSON.parse(userData)
-    setUser(user as UserDataType)
+    const userData = window.localStorage.getItem(authConfig.userInfoTokenKeyName)
+    if(userData) {
+      const user = JSON.parse(userData)
+      setUser(user as UserDataType)
+    }
   }, [])
 
   const handleLogout = () => {

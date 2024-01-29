@@ -22,6 +22,8 @@ import Icon from 'src/@core/components/icon'
 // ** Third Party Imports
 import * as yup from 'yup'
 import toast from 'react-hot-toast'
+import axios from 'axios'
+import { useAuth } from 'src/hooks/useAuth'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
@@ -43,8 +45,8 @@ const schema = yup.object().shape({
     .string()
     .min(8)
     .matches(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\$%\^&\*])(?=.{8,})/,
-      'Must contain 8 characters, 1 uppercase, 1 lowercase, 1 number and 1 special case character'
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.{8,})/,
+      'Must contain 8 characters, 1 uppercase, 1 lowercase, 1 number'
     )
     .required(),
   confirmNewPassword: yup
@@ -54,6 +56,9 @@ const schema = yup.object().shape({
 })
 
 const ChangePasswordCard = () => {
+  
+  const auth = useAuth()
+
   // ** States
   const [values, setValues] = useState<State>({
     showNewPassword: false,
@@ -90,8 +95,19 @@ const ChangePasswordCard = () => {
     event.preventDefault()
   }
 
-  const onPasswordFormSubmit = () => {
-    toast.success('Password Changed Successfully')
+  const onPasswordFormSubmit = (data: any) => {
+    if (auth.user) {
+      axios.post('/api/user/setpassword', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} })
+         .then(res=>res.data)
+         .then(res=>{
+          if(res.status == 'ok') {
+            toast.success(res.msg, { duration: 4000 })
+          }
+          else {
+            toast.error(res.msg, { duration: 4000 })
+          }
+         })
+    }
     reset(defaultValues)
   }
 

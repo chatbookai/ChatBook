@@ -83,35 +83,41 @@
     }
   }
 
-  export async function changeUserPassword(email: string, oldPassword: string, password: string, confirm_password: string) {
-    const getOneUserData: any = getOneUser(email);
-    if(getOneUserData) {
-        const isPasswordMatch = await comparePasswords(oldPassword, getOneUserData.password);
-        if(isPasswordMatch) {
-            if(password != confirm_password) {
+  export async function changeUserPasswordByToken(token: string, data: any) {    
+    const checkUserTokenData: any = await checkUserToken(token);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
+      const getOneUserData: any = await getOneUser(checkUserTokenData.data.email);
+      
+      if(getOneUserData) {
+          const isPasswordMatch = await comparePasswords(data.currentPassword, getOneUserData.password);
+          if(isPasswordMatch) {
+              if(!passwordValidator(data.newPassword)) {
+      
+                  return {"status":"error", "msg":"The password must contain both letters and numbers, and be at least 8 characters long."}
+              }
+              const hashedPassword = await hashPassword(data.newPassword);
+              const updateSetting = db.prepare('update user set password = ? where email = ?');
+              updateSetting.run(hashedPassword, checkUserTokenData.data.email);
+              updateSetting.finalize();
 
-                return {"status":"error", "msg":"The passwords entered twice are different"}
-            }
-            if(!passwordValidator(password)) {
-    
-                return {"status":"error", "msg":"The password must contain both letters and numbers, and be at least 8 characters long."}
-            }
-            const hashedPassword = await hashPassword(password);
-            const updateSetting = db.prepare('update user set password = ? where email = ?)');
-            updateSetting.run(hashedPassword, email);
-            updateSetting.finalize();
+              // User password change log
+              // ...
 
-            // User password change log
-            // ...
+              return {"status":"ok", "msg":"Change password successful"}
+          }
+          else {
 
-            return {"status":"ok", "msg":"Change password successful"}
-        }
-        else {
-            return {"status":"error", "msg":"Username not exist or password is error"}
-        }
+              return {"status":"error", "msg":"Username not exist or password is error"}
+          }
+      }
+      else {
+
+          return {"status":"error", "msg":"Username not exist or password is error"}
+      }
     }
     else {
-        return {"status":"error", "msg":"Username not exist or password is error"}
+
+      return {"status":"error", "msg":"Token is invalid"}
     }
   }
 
@@ -127,7 +133,7 @@
       return {"status":"ok", "msg":"Change user information successful"}
     }
     else {
-      
+
       return {"status":"error", "msg":"Token is invalid"}
     }
   }

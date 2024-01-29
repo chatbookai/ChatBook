@@ -15,6 +15,7 @@ const BlankLayoutWrapper = styled(Box)<BoxProps>(({ theme }) => ({
     minHeight: '100vh',
     alignItems: 'center',
     justifyContent: 'center',
+    width: '100%',
     padding: theme.spacing(5)
   },
 

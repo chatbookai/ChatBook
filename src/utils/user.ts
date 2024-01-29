@@ -55,6 +55,16 @@
     return passwordRegex.test(password);
   };
 
+  export async function checkUserToken(token: string) {
+    const userTokenData: any = verifyJwtToken(token);
+    if(userTokenData) {
+        return {"status":"ok", "msg":"User token is valid", "data": userTokenData}
+    }
+    else {
+        return {"status":"error", "msg":"Token is valid"}
+    }
+  }
+
   export async function checkUserPassword(email: string, password: string) {
     const getOneUserData: any = await getOneUser(email);
     if(getOneUserData) {
@@ -62,7 +72,7 @@
         if(isPasswordMatch) {
             const createJwtTokenData = createJwtToken(getOneUserData.id, getOneUserData.email)
             
-            return {"status":"ok", "msg":"Login successful", "token": createJwtTokenData, "data": getOneUserData}
+            return {"status":"ok", "msg":"Login successful", "token": createJwtTokenData, "data": {...getOneUserData, password:''}}
         }
         else {
             return {"status":"error", "msg":"Username not exist or password is error"}
@@ -93,6 +103,8 @@
 
             // User password change log
             // ...
+
+            return {"status":"ok", "msg":"Change password successful"}
         }
         else {
             return {"status":"error", "msg":"Username not exist or password is error"}
@@ -103,12 +115,20 @@
     }
   }
 
-  export async function changeUserDetail(email: string) {
-    const getOneUserData: any = getOneUser(email);
-    if(getOneUserData) {
+  export async function changeUserDetail(token: string, data: any) {
+    console.log("data", data)
+    const checkUserTokenData: any = await checkUserToken(token);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
+      console.log("checkUserTokenData", checkUserTokenData)
+      const updateSetting = db.prepare('update user set firstname = ?, lastname = ?, organization = ?, mobile = ?, address = ?, state = ?, country = ?, language = ? where email = ?');
+      updateSetting.run(data.firstname, data.lastname, data.organization, data.mobile, data.address, data.state, data.country, data.language, checkUserTokenData.data.email);
+      updateSetting.finalize();
+
+      return {"status":"ok", "msg":"Change user information successful"}
     }
     else {
-        return {"status":"error", "msg":"Username not exist or password is error"}
+      
+      return {"status":"error", "msg":"Token is invalid"}
     }
   }
 
@@ -142,6 +162,24 @@
     const Records: any = await getDbRecord("SELECT * from user where email = ? ", [email]);
  
     return Records ? Records : null;
+  }
+
+  export async function getOneUserByToken(token: string) {
+    const checkUserTokenData: any = await checkUserToken(token);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
+      const getOneUserData: any = await getOneUser(checkUserTokenData.data.email);
+      if(getOneUserData) {
+
+        return {"status":"ok", "msg":"Get one user information", "data": {...getOneUserData, password:''}}
+      }
+      else {       
+
+        return {"status":"ok", "msg":"User not exist", "data": null}
+      }
+    }
+    else {
+      return {"status":"ok", "msg":"Token is invalid", "data": null}
+    }
   }
 
   export async function getUsers(pageid: number, pagesize: number) {

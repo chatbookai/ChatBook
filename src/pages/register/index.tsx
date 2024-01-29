@@ -127,7 +127,7 @@ const RegisterV1 = () => {
     }
 
     const username = email
-    axios.post('/api/register', { email, username, password }) .then(res => {
+    axios.post('/api/user/register', { email, username, password }) .then(res => {
       if (res.data.status == 'ok') {
         //handleLogin({ email: params.email, password: params.password })
         toast.success(res.data.msg, { duration: 4000 })

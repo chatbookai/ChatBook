@@ -40,7 +40,7 @@ const AuthProvider = ({ children }: Props) => {
 
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
     axios
-      .post('/api/login', params)
+      .post('/api/user/login', params)
       .then(async response => {
         if(response.data.status == 'ok') {
           params.rememberMe ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.token) : null
@@ -58,9 +58,10 @@ const AuthProvider = ({ children }: Props) => {
 
   useEffect(() => {
     const userData = window.localStorage.getItem(authConfig.userInfoTokenKeyName)
+    const token = window.localStorage.getItem(authConfig.storageTokenKeyName)
     if(userData) {
       const user = JSON.parse(userData)
-      setUser(user as UserDataType)
+      setUser({...user, token} as UserDataType)
     }
   }, [])
 
@@ -73,7 +74,7 @@ const AuthProvider = ({ children }: Props) => {
 
   const handleRegister = (params: RegisterParams, errorCallback?: ErrCallbackType) => {
     axios
-      .post('/api/register', params)
+      .post('/api/user/register', params)
       .then(res => {
         if (res.data.status == 'ok') {
           //handleLogin({ email: params.email, password: params.password })

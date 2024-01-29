@@ -1,85 +1,50 @@
 // ** React Imports
-import { useState, ReactNode, MouseEvent } from 'react'
+import { useState, MouseEvent } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
 
 // ** MUI Components
-import Alert from '@mui/material/Alert'
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
-import Checkbox from '@mui/material/Checkbox'
 import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 import InputLabel from '@mui/material/InputLabel'
 import IconButton from '@mui/material/IconButton'
-import Box, { BoxProps } from '@mui/material/Box'
+import CardContent from '@mui/material/CardContent'
 import FormControl from '@mui/material/FormControl'
-import useMediaQuery from '@mui/material/useMediaQuery'
 import OutlinedInput from '@mui/material/OutlinedInput'
 import { styled, useTheme } from '@mui/material/styles'
-import FormHelperText from '@mui/material/FormHelperText'
+import MuiCard, { CardProps } from '@mui/material/Card'
 import InputAdornment from '@mui/material/InputAdornment'
-import Typography, { TypographyProps } from '@mui/material/Typography'
-import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
+import FormHelperText from '@mui/material/FormHelperText'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
+
+// ** Configs
+import themeConfig from 'src/configs/themeConfig'
 
 // ** Third Party Imports
 import * as yup from 'yup'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
-// ** Hooks
-import { useAuth } from 'src/hooks/useAuth'
-import useBgColor from 'src/@core/hooks/useBgColor'
-import { useSettings } from 'src/@core/hooks/useSettings'
-
-// ** Configs
-import themeConfig from 'src/configs/themeConfig'
-
 // ** Layout Import
-import BlankLayout from 'src/@core/layouts/BlankLayout'
+//import BlankLayout from 'src/@core/layouts/BlankLayout'
 
-// ** Demo Imports
-import FooterIllustrationsV2 from 'src/views/pages/auth/FooterIllustrationsV2'
+// ** Third Party Import
+import { useTranslation } from 'react-i18next'
+import { isEmailValid, passwordValidator } from 'src/configs/functions'
+
+// ** Third Party Components
+import toast from 'react-hot-toast'
+import { useAuth } from 'src/hooks/useAuth'
 
 // ** Styled Components
-const LoginIllustrationWrapper = styled(Box)<BoxProps>(({ theme }) => ({
-  padding: theme.spacing(20),
-  paddingRight: '0 !important',
-  [theme.breakpoints.down('lg')]: {
-    padding: theme.spacing(10)
-  }
-}))
-
-const LoginIllustration = styled('img')(({ theme }) => ({
-  maxWidth: '48rem',
-  [theme.breakpoints.down('lg')]: {
-    maxWidth: '35rem'
-  }
-}))
-
-const RightWrapper = styled(Box)<BoxProps>(({ theme }) => ({
-  width: '100%',
-  [theme.breakpoints.up('md')]: {
-    maxWidth: 450
-  }
-}))
-
-const BoxWrapper = styled(Box)<BoxProps>(({ theme }) => ({
-  [theme.breakpoints.down('xl')]: {
-    width: '100%'
-  },
-  [theme.breakpoints.down('md')]: {
-    maxWidth: 400
-  }
-}))
-
-const TypographyStyled = styled(Typography)<TypographyProps>(({ theme }) => ({
-  fontWeight: 550,
-  marginBottom: theme.spacing(1.5),
-  [theme.breakpoints.down('md')]: { mt: theme.spacing(8) }
+const Card = styled(MuiCard)<CardProps>(({ theme }) => ({
+  [theme.breakpoints.up('sm')]: { width: '28rem' }
 }))
 
 const LinkStyled = styled(Link)(({ theme }) => ({
@@ -88,20 +53,13 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   color: theme.palette.primary.main
 }))
 
-const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ theme }) => ({
-  '& .MuiFormControlLabel-label': {
-    fontSize: '0.875rem',
-    color: theme.palette.text.secondary
-  }
-}))
-
 const schema = yup.object().shape({
   email: yup.string().email().required(),
   password: yup.string().min(5).required()
 })
 
 const defaultValues = {
-  password: 'admin',
+  password: 'admin001',
   email: 'chatbookai@gmail.com'
 }
 
@@ -110,19 +68,16 @@ interface FormData {
   password: string
 }
 
-const LoginPage = () => {
+const RegisterV1 = () => {
+  // ** Hook
+  const { t } = useTranslation()
+
   const [rememberMe, setRememberMe] = useState<boolean>(true)
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
-  // ** Hooks
-  const auth = useAuth()
+  // ** Hook
   const theme = useTheme()
-  const bgColors = useBgColor()
-  const { settings } = useSettings()
-  const hidden = useMediaQuery(theme.breakpoints.down('md'))
-
-  // ** Vars
-  const { skin } = settings
+  const auth = useAuth()
 
   const {
     control,
@@ -137,51 +92,39 @@ const LoginPage = () => {
 
   const onSubmit = (data: FormData) => {
     const { email, password } = data
-    auth.login({ email, password, rememberMe }, () => {
+    console.log("datasss", data)
+    if(!isEmailValid(email)) {
       setError('email', {
         type: 'manual',
-        message: 'Email or Password is invalid'
+        message: 'Email is invalid'
       })
-    })
+
+      return
+    }
+    if(!passwordValidator(password)) {
+      setError('password', {
+        type: 'manual',
+        message: 'The password must contain both letters and numbers, and be at least 8 characters long.'
+      })
+
+      return
+    }
+
+    if(!rememberMe) {
+      toast.error("Must agree to the agreement", { duration: 4000 })
+      
+      return
+    }
+    setRememberMe(true)
+    auth.login({ email, password, rememberMe })
+
   }
 
-  const imageSource = skin === 'bordered' ? 'auth-v2-login-illustration-bordered' : 'auth-v2-login-illustration'
-
   return (
-    <Box className='content-right'>
-      {!hidden ? (
-        <Box sx={{ flex: 1, display: 'flex', position: 'relative', alignItems: 'center', justifyContent: 'center' }}>
-          <LoginIllustrationWrapper>
-            <LoginIllustration
-              alt='login-illustration'
-              src={`/images/pages/${imageSource}-${theme.palette.mode}.png`}
-            />
-          </LoginIllustrationWrapper>
-          <FooterIllustrationsV2 />
-        </Box>
-      ) : null}
-      <RightWrapper sx={skin === 'bordered' && !hidden ? { borderLeft: `1px solid ${theme.palette.divider}` } : {}}>
-        <Box
-          sx={{
-            p: 12,
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'background.paper'
-          }}
-        >
-          <BoxWrapper>
-            <Box
-              sx={{
-                top: 30,
-                left: 40,
-                display: 'flex',
-                position: 'absolute',
-                alignItems: 'center',
-                justifyContent: 'center'
-              }}
-            >
+      <Box className='content-center'>
+        <Card sx={{ zIndex: 1, marginX: 'auto', textAlign: 'center', mt: 3 }}>
+          <CardContent sx={{ p: theme => `${theme.spacing(12, 9, 7)} !important` }}>
+            <Box sx={{ mb: 8, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               <svg
                 width={35}
                 height={29}
@@ -246,7 +189,8 @@ const LoginPage = () => {
                 sx={{
                   ml: 3,
                   lineHeight: 1,
-                  fontWeight: 550,
+                  fontWeight: 600,
+                  textTransform: 'uppercase',
                   fontSize: '1.5rem !important'
                 }}
               >
@@ -254,19 +198,13 @@ const LoginPage = () => {
               </Typography>
             </Box>
             <Box sx={{ mb: 6 }}>
-              <TypographyStyled variant='h5'>Welcome to {themeConfig.templateName}! 👋🏻</TypographyStyled>
-              <Typography variant='body2'>Please sign-in to your account and start the adventure</Typography>
+              <Typography variant='h5' sx={{ fontWeight: 600, mb: 1.5 }}>
+                Welcome to {themeConfig.templateName} ! 👋🏻
+              </Typography>
+              <Typography variant='body2'>{`${t(`Please sign-in to your account and start the adventure`)}`}</Typography>
             </Box>
-            <Alert icon={false} sx={{ py: 3, mb: 6, ...bgColors.primaryLight, '& .MuiAlert-message': { p: 0 } }}>
-              <Typography variant='caption' sx={{ mb: 2, display: 'block', color: 'primary.main' }}>
-                Admin: <strong>chatbookai@gmail.com</strong> / Pass: <strong>admin</strong>
-              </Typography>
-              <Typography variant='caption' sx={{ display: 'block', color: 'primary.main' }}>
-                Client: <strong>client@materio.com</strong> / Pass: <strong>client</strong>
-              </Typography>
-            </Alert>
             <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
-              <FormControl fullWidth sx={{ mb: 4 }}>
+              <FormControl fullWidth sx={{ mb: 6 }}>
                 <Controller
                   name='email'
                   control={control}
@@ -285,9 +223,9 @@ const LoginPage = () => {
                 />
                 {errors.email && <FormHelperText sx={{ color: 'error.main' }}>{errors.email.message}</FormHelperText>}
               </FormControl>
-              <FormControl fullWidth>
+              <FormControl fullWidth sx={{ mb: 5}}>
                 <InputLabel htmlFor='auth-login-v2-password' error={Boolean(errors.password)}>
-                  Password
+                {`${t(`Password`)}`}
                 </InputLabel>
                 <Controller
                   name='password'
@@ -322,27 +260,18 @@ const LoginPage = () => {
                   </FormHelperText>
                 )}
               </FormControl>
-              <Box
-                sx={{ mb: 4, display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'space-between' }}
-              >
-                <FormControlLabel
-                  label='Remember Me'
-                  control={<Checkbox checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />}
-                />
-                <LinkStyled href='/forgot-password'>Forgot Password?</LinkStyled>
-              </Box>
-              <Button fullWidth size='large' type='submit' variant='contained' sx={{ mb: 7 }}>
-                Login
-              </Button>
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
                 <Typography variant='body2' sx={{ mr: 2 }}>
-                  New on our platform?
+                {`${t(`New on our platform?`)}`}
                 </Typography>
-                <Typography variant='body2'>
-                  <LinkStyled href='/register'>Create an account</LinkStyled>
+                <Typography variant='body2' sx={{ mr: 2 }}>
+                  <LinkStyled href='/register'>{`${t(`Create an account`)}`}</LinkStyled>
                 </Typography>
               </Box>
-              <Divider sx={{ my: (theme: any) => `${theme.spacing(5)} !important` }}>or</Divider>
+              <Button fullWidth size='large' type='submit' variant='contained' sx={{ mb: 3, mt: 5 }}>
+              {`${t(`Login`)}`}
+              </Button>
+              <Divider sx={{ my: theme => `${theme.spacing(5)} !important` }}>or</Divider>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                 <IconButton
                   href='/'
@@ -364,7 +293,7 @@ const LoginPage = () => {
                   href='/'
                   component={Link}
                   onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}
-                  sx={{ color: (theme: any) => (theme.palette.mode === 'light' ? '#272727' : 'grey.300') }}
+                  sx={{ color: theme => (theme.palette.mode === 'light' ? '#272727' : 'grey.300') }}
                 >
                   <Icon icon='mdi:github' />
                 </IconButton>
@@ -378,15 +307,12 @@ const LoginPage = () => {
                 </IconButton>
               </Box>
             </form>
-          </BoxWrapper>
-        </Box>
-      </RightWrapper>
-    </Box>
+          </CardContent>
+        </Card>
+      </Box>
   )
 }
 
-LoginPage.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
+//RegisterV1.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
 
-LoginPage.guestGuard = true
-
-export default LoginPage
+export default RegisterV1

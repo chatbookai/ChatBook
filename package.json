@@ -63,7 +63,7 @@
     "i18next-browser-languagedetector": "7.0.1",
     "i18next-http-backend": "2.2.0",
     "install": "^0.13.0",
-    "jsonwebtoken": "8.5.1",
+    "jsonwebtoken": "^8.5.1",
     "keen-slider": "6.8.5",
     "langchain": "^0.1.7",
     "mp3-duration": "^1.1.0",
@@ -103,6 +103,7 @@
     "stylis": "4.1.4",
     "stylis-plugin-rtl": "2.1.1",
     "uuid": "^9.0.1",
+    "validator": "^13.11.0",
     "yup": "1.1.1"
   },
   "devDependencies": {

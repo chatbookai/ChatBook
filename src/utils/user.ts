@@ -2,29 +2,52 @@
   import dotenv from 'dotenv';
   import { promisify } from 'util';
   import bcrypt from 'bcrypt';
+  import jwt from 'jsonwebtoken';
 
   dotenv.config();
 
-  const [db] = setting()
+  const [DataDir, db, userId] = setting()
+
+  console.log("DataDir***********************", DataDir)
+  console.log("userId***********************", userId)
+
+  const secretKey: string = process.env.JWT_TOKEN_SECRET_KEY || "ChatBookAI"; 
 
   const getDbRecord = promisify(db.get.bind(db));
   const getDbRecordALL = promisify(db.all.bind(db));
+  
+  export const createJwtToken = (userId: string, email: string) => {
+    const token = jwt.sign({ userId, email }, secretKey, { expiresIn: '1d' });
 
+    return token;
+  };
 
-  const hashPassword = async (password: string): Promise<string> => {
+  export const verifyJwtToken = (token: string) => {
+    try {
+      const decoded = jwt.verify(token, secretKey);
+
+      return decoded;
+    } 
+    catch (error) {
+
+      return null;
+    }
+  };
+
+  export const hashPassword = async (password: string): Promise<string> => {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     return hashedPassword;
   };
 
-  const comparePasswords = async (password: string, hashedPassword: string): Promise<boolean> => {
+  export const comparePasswords = async (password: string, hashedPassword: string): Promise<boolean> => {
     const isMatch = await bcrypt.compare(password, hashedPassword);
 
     return isMatch;
   };
 
-  const passwordValidator = (password: string): boolean => {
+  export const passwordValidator = (password: string): boolean => {
 
     // 正则表达式，要求至少包含一个数字、一个字母，且长度至少为八位
     const passwordRegex = /^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/;
@@ -32,12 +55,14 @@
     return passwordRegex.test(password);
   };
 
-  export async function checkUserPassword(email: string, userPassword: string) {
-    const getOneUserData: any = getOneUser(email);
+  export async function checkUserPassword(email: string, password: string) {
+    const getOneUserData: any = await getOneUser(email);
     if(getOneUserData) {
-        const isPasswordMatch = await comparePasswords(userPassword, getOneUserData.password);
+        const isPasswordMatch = await comparePasswords(password, getOneUserData.password);
         if(isPasswordMatch) {
-            return {"status":"ok", "msg":"Login successful"}
+            const createJwtTokenData = createJwtToken(getOneUserData.id, getOneUserData.email)
+            
+            return {"status":"ok", "msg":"Login successful", "token": createJwtTokenData, "data": getOneUserData}
         }
         else {
             return {"status":"error", "msg":"Username not exist or password is error"}
@@ -97,6 +122,10 @@
 
             return {"status":"error", "msg":"The password must contain both letters and numbers, and be at least 8 characters long."}
         }
+        const getOneUserData: any = await getOneUser(email);
+        if(getOneUserData) {
+          return {"status":"error", "msg":"This email have used before."}
+        }
         const hashedPassword = await hashPassword(password);
         const insertSetting = db.prepare('INSERT OR IGNORE INTO user (email, username, password, language, createtime) VALUES (?, ?, ?, ?, ?)');
         insertSetting.run(email, username, hashedPassword, language, Date.now());
@@ -105,6 +134,7 @@
     catch (error: any) {
       log('Error registerUser:', error.message);
     }
+
     return {"status":"ok", "msg":"Register user successful"}
   }
 

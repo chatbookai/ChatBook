@@ -40,48 +40,44 @@ const AuthProvider = ({ children }: Props) => {
 
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
     axios
-      .post(authConfig.loginEndpoint, params)
+      .post('/api/login', params)
       .then(async response => {
-        params.rememberMe
-          ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.accessToken)
-          : null
-        const returnUrl = router.query.returnUrl
-
-        setUser({ ...response.data.userData })
-        params.rememberMe ? window.localStorage.setItem('userData', JSON.stringify(response.data.userData)) : null
-
-        const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
-
-        router.replace(redirectURL as string)
+        if(response.data.status == 'ok') {
+          params.rememberMe ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.token) : null
+          const returnUrl = router.query.returnUrl
+          setUser({ ...response.data.data })
+          params.rememberMe ? window.localStorage.setItem(authConfig.userInfoTokenKeyName, JSON.stringify(response.data.data)) : null
+          const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
+          router.replace(redirectURL as string)
+        }
       })
-
       .catch(err => {
         if (errorCallback) errorCallback(err)
       })
   }
 
-  const handleLogout = () => {
-    
-    setUser(null)
+  useEffect(() => {
+    const userData = window.localStorage.getItem(authConfig.userInfoTokenKeyName) || ''
+    const user = JSON.parse(userData)
+    setUser(user as UserDataType)
+  }, [])
 
-    window.localStorage.removeItem('userData')
+  const handleLogout = () => {
+    setUser(null)
+    window.localStorage.removeItem(authConfig.userInfoTokenKeyName)
     window.localStorage.removeItem(authConfig.storageTokenKeyName)
     router.push('/login')
   }
 
-  useEffect(() => {
-    const user = {id: 1, role: 'admin', fullName: 'John Doe', username: 'johndoe', email: 'chatbookai@gmail.com'}
-    setUser(user as UserDataType)
-  }, [])
-
   const handleRegister = (params: RegisterParams, errorCallback?: ErrCallbackType) => {
     axios
-      .post(authConfig.registerEndpoint, params)
+      .post('/api/register', params)
       .then(res => {
-        if (res.data.error) {
+        if (res.data.status == 'ok') {
+          //handleLogin({ email: params.email, password: params.password })
+        }
+        else {
           if (errorCallback) errorCallback(res.data.error)
-        } else {
-          handleLogin({ email: params.email, password: params.password })
         }
       })
       .catch((err: { [key: string]: string }) => (errorCallback ? errorCallback(err) : null))

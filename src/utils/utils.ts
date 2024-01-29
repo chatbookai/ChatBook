@@ -3,6 +3,7 @@ import multer from 'multer'
 import path from 'path'
 import * as crypto from 'crypto'
 import sqlite3 from 'sqlite3';
+import validator from 'validator';
 
 const DataDir = "./data"
 const userId = 1
@@ -624,3 +625,6 @@ export function formatDateFromTimestamp(timestamp: number | string) {
   return formattedDate;
 }
 
+export const isEmailValid = (email: string): boolean => {
+  return validator.isEmail(email);
+};

@@ -1,3 +1,4 @@
+import validator from 'validator';
 
 export function formatTimestampMemo(timestamp: number): string {
   const date = new Date(timestamp * 1000);
@@ -118,4 +119,18 @@ export function isMobile(): boolean {
   
   return false;
 }
+
+export const isEmailValid = (email: string): boolean => {
+  return validator.isEmail(email);
+};
+
+export const passwordValidator = (password: string): boolean => {
+
+  // 正则表达式，要求至少包含一个数字、一个字母，且长度至少为八位
+  const passwordRegex = /^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/;
+
+  return passwordRegex.test(password);
+};
+
+
 

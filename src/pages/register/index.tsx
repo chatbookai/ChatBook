@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, Fragment, ChangeEvent, MouseEvent, ReactNode } from 'react'
+import { useState, Fragment, MouseEvent } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -7,7 +7,6 @@ import Link from 'next/link'
 // ** MUI Components
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-import Grid from '@mui/material/Grid'
 import Divider from '@mui/material/Divider'
 import Checkbox from '@mui/material/Checkbox'
 import TextField from '@mui/material/TextField'
@@ -20,6 +19,7 @@ import OutlinedInput from '@mui/material/OutlinedInput'
 import { styled, useTheme } from '@mui/material/styles'
 import MuiCard, { CardProps } from '@mui/material/Card'
 import InputAdornment from '@mui/material/InputAdornment'
+import FormHelperText from '@mui/material/FormHelperText'
 import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
 
 // ** Icon Imports
@@ -28,17 +28,21 @@ import Icon from 'src/@core/components/icon'
 // ** Configs
 import themeConfig from 'src/configs/themeConfig'
 
+// ** Third Party Imports
+import * as yup from 'yup'
+import { useForm, Controller } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+
 // ** Layout Import
 //import BlankLayout from 'src/@core/layouts/BlankLayout'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
-import { isMobile } from 'src/configs/functions'
+import { isEmailValid, passwordValidator } from 'src/configs/functions'
 
-interface State {
-  password: string
-  showPassword: boolean
-}
+// ** Third Party Components
+import toast from 'react-hot-toast'
+import axios from 'axios'
 
 // ** Styled Components
 const Card = styled(MuiCard)<CardProps>(({ theme }) => ({
@@ -60,27 +64,81 @@ const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ t
   }
 }))
 
+const schema = yup.object().shape({
+  email: yup.string().email().required(),
+  password: yup.string().min(5).required()
+})
+
+const defaultValues = {
+  password: 'admin001',
+  email: 'chatbookai@gmail.com'
+}
+
+interface FormData {
+  email: string
+  password: string
+}
+
 const RegisterV1 = () => {
   // ** Hook
   const { t } = useTranslation()
 
-  // ** States
-  const [values, setValues] = useState<State>({
-    password: '',
-    showPassword: false
-  })
+  const [rememberMe, setRememberMe] = useState<boolean>(true)
+  const [showPassword, setShowPassword] = useState<boolean>(false)
 
   // ** Hook
   const theme = useTheme()
 
-  const handleChange = (prop: keyof State) => (event: ChangeEvent<HTMLInputElement>) => {
-    setValues({ ...values, [prop]: event.target.value })
-  }
-  const handleClickShowPassword = () => {
-    setValues({ ...values, showPassword: !values.showPassword })
-  }
-  const handleMouseDownPassword = (event: MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault()
+  const {
+    control,
+    setError,
+    handleSubmit,
+    formState: { errors }
+  } = useForm({
+    defaultValues,
+    mode: 'onBlur',
+    resolver: yupResolver(schema)
+  })
+
+  const onSubmit = (data: FormData) => {
+    const { email, password } = data
+    console.log("datasss", data)
+    if(!isEmailValid(email)) {
+      setError('email', {
+        type: 'manual',
+        message: 'Email is invalid'
+      })
+
+      return
+    }
+    if(!passwordValidator(password)) {
+      setError('password', {
+        type: 'manual',
+        message: 'The password must contain both letters and numbers, and be at least 8 characters long.'
+      })
+
+      return
+    }
+
+    if(!rememberMe) {
+      toast.error("Must agree to the agreement", { duration: 4000 })
+      
+      return
+    }
+
+    const username = email
+    axios.post('/api/register', { email, username, password }) .then(res => {
+      if (res.data.status == 'ok') {
+        //handleLogin({ email: params.email, password: params.password })
+        toast.success(res.data.msg, { duration: 4000 })
+      }
+      else {
+        toast.error(res.data.msg, { duration: 4000 })
+      
+        return
+      }
+    })
+
   }
 
   return (
@@ -166,33 +224,65 @@ const RegisterV1 = () => {
               </Typography>
               <Typography variant='body2'>{`${t(`Manage your knowledge easy and fun!`)}`}</Typography>
             </Box>
-            <form noValidate autoComplete='off' onSubmit={e => e.preventDefault()}>
-              <TextField autoFocus fullWidth id='username' label='Username' sx={{ mb: 4 }} />
-              <TextField fullWidth type='email' label='Email' sx={{ mb: 4 }} />
-              <FormControl fullWidth>
-                <InputLabel htmlFor='auth-register-password'>{`${t(`Password`)}`}</InputLabel>
-                <OutlinedInput
-                  label='Password'
-                  value={values.password}
-                  id='auth-register-password'
-                  onChange={handleChange('password')}
-                  type={values.showPassword ? 'text' : 'password'}
-                  endAdornment={
-                    <InputAdornment position='end'>
-                      <IconButton
-                        edge='end'
-                        onClick={handleClickShowPassword}
-                        onMouseDown={handleMouseDownPassword}
-                        aria-label='toggle password visibility'
-                      >
-                        <Icon icon={values.showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} fontSize={20} />
-                      </IconButton>
-                    </InputAdornment>
-                  }
+            <form noValidate autoComplete='off' onSubmit={handleSubmit(onSubmit)}>
+            <FormControl fullWidth sx={{ mb: 4 }}>
+                <Controller
+                  name='email'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange, onBlur } }) => (
+                    <TextField
+                      autoFocus
+                      label='Email'
+                      value={value}
+                      onBlur={onBlur}
+                      onChange={onChange}
+                      error={Boolean(errors.email)}
+                      placeholder='chatbookai@gmail.com'
+                    />
+                  )}
                 />
+                {errors.email && <FormHelperText sx={{ color: 'error.main' }}>{errors.email.message}</FormHelperText>}
+              </FormControl>
+              <FormControl fullWidth>
+                <InputLabel htmlFor='auth-login-v2-password' error={Boolean(errors.password)}>
+                {`${t(`Password`)}`}
+                </InputLabel>
+                <Controller
+                  name='password'
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { value, onChange, onBlur } }) => (
+                    <OutlinedInput
+                      value={value}
+                      onBlur={onBlur}
+                      label='Password'
+                      onChange={onChange}
+                      id='auth-login-v2-password'
+                      error={Boolean(errors.password)}
+                      type={showPassword ? 'text' : 'password'}
+                      endAdornment={
+                        <InputAdornment position='end'>
+                          <IconButton
+                            edge='end'
+                            onMouseDown={e => e.preventDefault()}
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            <Icon icon={showPassword ? 'mdi:eye-outline' : 'mdi:eye-off-outline'} fontSize={20} />
+                          </IconButton>
+                        </InputAdornment>
+                      }
+                    />
+                  )}
+                />
+                {errors.password && (
+                  <FormHelperText sx={{ color: 'error.main' }} id=''>
+                    {errors.password.message}
+                  </FormHelperText>
+                )}
               </FormControl>
               <FormControlLabel
-                control={<Checkbox />}
+                control={<Checkbox checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />}
                 label={
                   <Fragment>
                     <span>{`${t(`I agree to`)}`} </span>
@@ -210,7 +300,7 @@ const RegisterV1 = () => {
                 {`${t(`Already have an account?`)}`}
                 </Typography>
                 <Typography variant='body2'>
-                  <LinkStyled href='/pages/auth/login-v1'>{`${t(`Sign in instead`)}`}</LinkStyled>
+                  <LinkStyled href='/login'>{`${t(`Sign in instead`)}`}</LinkStyled>
                 </Typography>
               </Box>
               <Divider sx={{ my: theme => `${theme.spacing(5)} !important` }}>or</Divider>

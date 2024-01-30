@@ -1,7 +1,8 @@
 // ** Type import
 import { VerticalNavItemsType } from 'src/@core/layouts/types'
+import { useAuth } from 'src/hooks/useAuth'
 
-const MenuList = [
+const MenuListAdmin = [
   {
     sectionTitle: 'Chat'
   },
@@ -55,7 +56,33 @@ const MenuList = [
   }
 ]
 
+const MenuListUser = [
+  {
+    sectionTitle: 'Chat'
+  },
+  {
+    title: 'Chat',
+    icon: 'mdi:message-outline',
+    path: '/chat/chat'
+  },
+  {
+    title: 'Knowledge Chat',
+    icon: 'material-symbols:chat',
+    path: '/chat/knowledge'
+  }
+]
+
 const navigation = (): VerticalNavItemsType => {
+  
+  let MenuList = []
+  const auth = useAuth()
+  if(auth && auth.user && auth.user.role && auth.user.role == 'admin') {
+    MenuList = MenuListAdmin
+  }
+  else {
+    MenuList = MenuListUser
+  }
+  
   // @ts-ignore
   return MenuList
 }

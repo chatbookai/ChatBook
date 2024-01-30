@@ -21,6 +21,7 @@ import toast from 'react-hot-toast'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
+import { useAuth } from 'src/hooks/useAuth'
 
 const SettingForm = (props: any) => {
   // ** Props
@@ -28,6 +29,7 @@ const SettingForm = (props: any) => {
   
   // ** Hook
   const { t } = useTranslation()
+  const auth = useAuth()
 
   const openApiBaseText = "Example: https://api.openai.com/v1";
     
@@ -82,12 +84,14 @@ const SettingForm = (props: any) => {
   };
 
   const handleGetData = async () => {
-    const GetData: any = await axios.get('/api/getopenai/' + llmsId, {}).then(res => res.data)
-    console.log("GetData:", GetData)
-    setOpenApiBase(GetData?.OPENAI_API_BASE ?? '')
-    setOpenApiKey(GetData?.OPENAI_API_KEY ?? '')
-    setInputTemperature(GetData.Temperature ?? '0')
-    setInputModelName(GetData.ModelName || 'gpt-3.5-turbo')
+    if(auth.user)   {
+        const GetData: any = await axios.get('/api/getopenai/' + llmsId, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+        console.log("GetData:", GetData)
+        setOpenApiBase(GetData?.OPENAI_API_BASE ?? '')
+        setOpenApiKey(GetData?.OPENAI_API_KEY ?? '')
+        setInputTemperature(GetData.Temperature ?? '0')
+        setInputModelName(GetData.ModelName || 'gpt-3.5-turbo')
+    }
   }
 
   useEffect(()=>{
@@ -116,15 +120,16 @@ const SettingForm = (props: any) => {
 
         return
     }
-
-    const PostParams = {OPENAI_API_BASE: openApiBase, OPENAI_API_KEY: openApiKey, ModelName: inputModelName, Temperature: inputTemperature, userId: userId, knowledgeId: llmsId }
-    const FormSubmit: any = await axios.post('/api/setopenai', PostParams).then(res => res.data)
-    console.log("FormSubmit:", FormSubmit)
-    if(FormSubmit?.status == "ok") {
-        toast.success(FormSubmit.msg, { duration: 4000 })
-    }
-    else {
-        toast.error(FormSubmit.msg, { duration: 4000 })
+    if(auth.user)   {
+        const PostParams = {OPENAI_API_BASE: openApiBase, OPENAI_API_KEY: openApiKey, ModelName: inputModelName, Temperature: inputTemperature, userId: userId, knowledgeId: llmsId }
+        const FormSubmit: any = await axios.post('/api/setopenai', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+        console.log("FormSubmit:", FormSubmit)
+        if(FormSubmit?.status == "ok") {
+            toast.success(FormSubmit.msg, { duration: 4000 })
+        }
+        else {
+            toast.error(FormSubmit.msg, { duration: 4000 })
+        }
     }
 
   }

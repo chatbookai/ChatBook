@@ -28,6 +28,7 @@ import TextField from '@mui/material/TextField'
 
 // ** Next Import
 import { useRouter } from 'next/router'
+import { useAuth } from 'src/hooks/useAuth'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -43,6 +44,7 @@ import { isMobile } from 'src/configs/functions'
 const Knowledge = () => {
   // ** Hook
   const { t } = useTranslation()
+  const auth = useAuth()
 
   const [uploadingButton, setUploadingButton] = useState<string>(`${t('Submit')}`)
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
@@ -62,9 +64,11 @@ const Knowledge = () => {
   }, [paginationModel, counter, isMobileData])
 
   const fetchData = async function (paginationModel: any) {
-    const RS = await axios.get('/api/knowledge/' + paginationModel.page + '/' + paginationModel.pageSize, { headers: { }, params: { } }).then(res=>res.data)
-    console.log("RS", RS)
-    setStore(RS)  
+    if (auth.user) {
+      const RS = await axios.get('/api/knowledge/' + paginationModel.page + '/' + paginationModel.pageSize, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' }, params: { } }).then(res=>res.data)
+      console.log("RS", RS)
+      setStore(RS)  
+    }
   }
 
   useEffect(() => {
@@ -181,16 +185,18 @@ const Knowledge = () => {
         return
     }
 
-    const PostParams = {name, summary}
-    const FormSubmit: any = await axios.post('/api/addknowledge', PostParams).then(res => res.data)
-    console.log("FormSubmit:", FormSubmit)
-    if(FormSubmit?.status == "ok") {
-        toast.success(FormSubmit.msg, { duration: 4000 })
+    if (auth.user) {
+      const PostParams = {name, summary}
+      const FormSubmit: any = await axios.post('/api/addknowledge', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+      console.log("FormSubmit:", FormSubmit)
+      if(FormSubmit?.status == "ok") {
+          toast.success(FormSubmit.msg, { duration: 4000 })
+      }
+      else {
+          toast.error(FormSubmit.msg, { duration: 4000 })
+      }
+      setCounter(counter + 1)
     }
-    else {
-        toast.error(FormSubmit.msg, { duration: 4000 })
-    }
-    setCounter(counter + 1)
 
   }
 

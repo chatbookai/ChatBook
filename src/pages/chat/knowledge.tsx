@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next'
 
 // ** Axios Imports
 import axios from 'axios'
+import { useAuth } from 'src/hooks/useAuth'
 
 import { ChatKnowledgeInit, ChatKnowledgeInput, ChatKnowledgeOutput } from 'src/functions/ChatBook'
 
@@ -28,6 +29,7 @@ const AppChat = () => {
 
   // ** Hook
   const { t } = useTranslation()
+  const auth = useAuth()
 
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
   const [knowledge, setKnowledge] = useState<any>(null)
@@ -36,37 +38,41 @@ const AppChat = () => {
   const userId = 1
 
   const getAllKnowledgeList = async function () {
-    const RS = await axios.get('/api/knowledge/0/100').then(res=>res.data)
-    setKnowledge(RS)
-    if(RS && RS['data'] && RS['data'][0] && RS['data'][0].id && knowledgeId == 0) {
-      setKnowledgeId(RS['data'][0].id)
-      setKnowledgeName(RS['data'][0].name)
-      getChatLogList(RS['data'][0].id)
+    if (auth.user) {
+      const RS = await axios.get('/api/knowledge/0/100', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      setKnowledge(RS)
+      if(RS && RS['data'] && RS['data'][0] && RS['data'][0].id && knowledgeId == 0) {
+        setKnowledgeId(RS['data'][0].id)
+        setKnowledgeName(RS['data'][0].name)
+        getChatLogList(RS['data'][0].id)
+      }
     }
   }
 
   const getChatLogList = async function (knowledgeId: number) {
-    const RS = await axios.get('/api/chatlog/' + knowledgeId + '/' + userId + '/0/90').then(res=>res.data)
-    const ChatKnowledgeInitList = ChatKnowledgeInit(RS['data'].reverse())
-    console.log("ChatKnowledgeInitList", ChatKnowledgeInitList)
-    const selectedChat = {
-      "chat": {
-          "id": 1,
-          "userId": 1,
-          "unseenMsgs": 0,
-          "chat": ChatKnowledgeInitList
+    if (auth.user) {
+      const RS = await axios.get('/api/chatlog/' + knowledgeId + '/' + userId + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      const ChatKnowledgeInitList = ChatKnowledgeInit(RS['data'].reverse())
+      console.log("ChatKnowledgeInitList", ChatKnowledgeInitList)
+      const selectedChat = {
+        "chat": {
+            "id": 1,
+            "userId": 1,
+            "unseenMsgs": 0,
+            "chat": ChatKnowledgeInitList
+        }
       }
+      const storeInit = {
+        "chats": [],
+        "userProfile": {
+            "id": userId,
+            "avatar": "/images/avatars/1.png",
+            "fullName": "Current User",
+        },
+        "selectedChat": selectedChat
+      }
+      setStore(storeInit)
     }
-    const storeInit = {
-      "chats": [],
-      "userProfile": {
-          "id": userId,
-          "avatar": "/images/avatars/1.png",
-          "fullName": "Current User",
-      },
-      "selectedChat": selectedChat
-    }
-    setStore(storeInit)
   }
 
   const setActiveId = function (Id: number, Name: string) {

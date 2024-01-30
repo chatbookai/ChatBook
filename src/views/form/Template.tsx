@@ -14,6 +14,7 @@ import axios from 'axios'
 
 // ** Third Party Components
 import toast from 'react-hot-toast'
+import { useAuth } from 'src/hooks/useAuth'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
@@ -24,6 +25,7 @@ const TemplateModelForm = (props: any) => {
 
   // ** Hook
   const { t } = useTranslation()
+  const auth = useAuth()
 
   // ** State
   const [uploadingButton, setUploadingButton] = useState<string>(`${t('Submit')}`)
@@ -55,10 +57,12 @@ const TemplateModelForm = (props: any) => {
   };
 
   const handleGetData = async () => {
-    const GetData: any = await axios.get('/api/gettemplate/' + knowledgeId, {}).then(res => res.data)
-    console.log("GetData:", GetData)
-    setCONDENSE_TEMPLATE(GetData.CONDENSE_TEMPLATE || '')
-    setQA_TEMPLATE(GetData.QA_TEMPLATE || '')
+    if (auth.user) {
+        const GetData: any = await axios.get('/api/gettemplate/' + knowledgeId, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+        console.log("GetData:", GetData)
+        setCONDENSE_TEMPLATE(GetData.CONDENSE_TEMPLATE || '')
+        setQA_TEMPLATE(GetData.QA_TEMPLATE || '')
+    }
   }
 
   useEffect(()=>{
@@ -73,14 +77,16 @@ const TemplateModelForm = (props: any) => {
 
         return
     }
-    const PostParams = {CONDENSE_TEMPLATE: CONDENSE_TEMPLATE, QA_TEMPLATE: QA_TEMPLATE, knowledgeId: knowledgeId}
-    const FormSubmit: any = await axios.post('/api/settemplate', PostParams).then(res => res.data)
-    console.log("FormSubmit:", FormSubmit)
-    if(FormSubmit?.status == "ok") {
-        toast.success(FormSubmit.msg, { duration: 4000 })
-    }
-    else {
-        toast.error(FormSubmit.msg, { duration: 4000 })
+    if (auth.user) {
+        const PostParams = {CONDENSE_TEMPLATE: CONDENSE_TEMPLATE, QA_TEMPLATE: QA_TEMPLATE, knowledgeId: knowledgeId}
+        const FormSubmit: any = await axios.post('/api/settemplate', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+        console.log("FormSubmit:", FormSubmit)
+        if(FormSubmit?.status == "ok") {
+            toast.success(FormSubmit.msg, { duration: 4000 })
+        }
+        else {
+            toast.error(FormSubmit.msg, { duration: 4000 })
+        }
     }
 
   }

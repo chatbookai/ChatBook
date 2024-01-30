@@ -19,21 +19,27 @@ import ChatContent from 'src/views/chat/Chat/ChatContent'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
-import { GetAllLLMS, ChatChatInit, ChatChatNameList, ChatChatInput, ChatChatOutput  } from 'src/functions/ChatBook'
+import { GetAllLLMS, ChatChatInit, ChatChatNameList, ChatChatInput, ChatChatOutput, CheckPermission  } from 'src/functions/ChatBook'
 
 // ** Axios Imports
 import axios from 'axios'
+import { useAuth } from 'src/hooks/useAuth'
+import { useRouter } from 'next/router'
 
 const AppChat = () => {
 
   // ** Hook
   const { t } = useTranslation()
-
+  const auth = useAuth()
+  const router = useRouter()
+  CheckPermission(auth, router)
+  
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
   const [llms, setLlms] = useState<any>([])
   const [chatId, setChatId] = useState<number | string>(-1)
   const [chatName, setChatName] = useState<string>("")
   const userId = 1
+
 
   const AllLLMS: any[] = GetAllLLMS()
 
@@ -46,27 +52,29 @@ const AppChat = () => {
   }, [])
 
   const getChatLogList = async function (knowledgeId: number | string) {
-    const RS = await axios.get('/api/chatlog/' + knowledgeId + '/' + userId + '/0/90').then(res=>res.data)
-    const ChatChatInitList = ChatChatInit(RS['data'].reverse())
-    console.log("ChatChatInitList", ChatChatInitList)
-    const selectedChat = {
-      "chat": {
-          "id": 1,
-          "userId": 1,
-          "unseenMsgs": 0,
-          "chat": ChatChatInitList
+    if (auth.user) {
+      const RS = await axios.get('/api/chatlog/' + knowledgeId + '/' + userId + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      const ChatChatInitList = ChatChatInit(RS['data'].reverse())
+      console.log("ChatChatInitList", ChatChatInitList)
+      const selectedChat = {
+        "chat": {
+            "id": 1,
+            "userId": 1,
+            "unseenMsgs": 0,
+            "chat": ChatChatInitList
+        }
       }
+      const storeInit = {
+        "chats": [],
+        "userProfile": {
+            "id": userId,
+            "avatar": "/images/avatars/1.png",
+            "fullName": "Current User",
+        },
+        "selectedChat": selectedChat
+      }
+      setStore(storeInit)
     }
-    const storeInit = {
-      "chats": [],
-      "userProfile": {
-          "id": userId,
-          "avatar": "/images/avatars/1.png",
-          "fullName": "Current User",
-      },
-      "selectedChat": selectedChat
-    }
-    setStore(storeInit)
   }
 
   const setActiveId = function (Id: string, Name: string) {

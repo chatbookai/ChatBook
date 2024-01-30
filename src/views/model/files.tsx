@@ -17,6 +17,7 @@ import { formatTimestamp } from 'src/configs/functions';
 
 // ** Next Import
 import { useRouter } from 'next/router'
+import { useAuth } from 'src/hooks/useAuth'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
@@ -28,6 +29,7 @@ const Files = (props: any) => {
 
   // ** Hook
   const { t } = useTranslation()
+  const auth = useAuth()
   
   const router = useRouter()
   const { id } = router.query
@@ -47,9 +49,11 @@ const Files = (props: any) => {
   }, [paginationModel, knowledgeId])
 
   const fetchData = async function (paginationModel: any) {
-    const RS = await axios.get('/api/files/' + knowledgeId + '/' + paginationModel.page + '/' + paginationModel.pageSize, { headers: { }, params: { } }).then(res=>res.data)
-    console.log("RS", RS)
-    setStore(RS)  
+    if (auth.user) {
+      const RS = await axios.get('/api/files/' + knowledgeId + '/' + paginationModel.page + '/' + paginationModel.pageSize, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' }, params: { } }).then(res=>res.data)
+      console.log("RS", RS)
+      setStore(RS)  
+    }
   }
 
   useEffect(() => {

@@ -134,7 +134,7 @@ const AccountSettings = ({ tab, apiPricingPlanData }: { tab: string; apiPricingP
               {isLoading ? (
                 <Box sx={{ mt: 6, display: 'flex', alignItems: 'center', flexDirection: 'column' }}>
                   <CircularProgress sx={{ mb: 4 }} />
-                  <Typography>Loading...</Typography>
+                  <Typography>{t('Loading') as string}...</Typography>
                 </Box>
               ) : (
                 <TabPanel sx={{ p: 0 }} value={activeTab}>

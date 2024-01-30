@@ -348,4 +348,14 @@ export function GetAllLLMById(id: string): any[] {
 
     return GetAllLLMSData.filter((Item: any)=>Item.id == id)
 }
+
+export function CheckPermission(auth: any, router: any) {
+    const roleList = ['admin', 'user']
+    if(auth && auth.user && auth.user.role && roleList.includes(auth.user.role) ) {
+        //Permission Valid
+    }
+    else {
+        router.replace('/login')
+    }
+}
   

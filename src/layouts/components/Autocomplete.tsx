@@ -35,30 +35,6 @@ const AutocompleteComponent = ({ hidden, settings }: Props) => {
   const router = useRouter()
   const { layout } = settings
 
-  // Get all data using API
-  useEffect(() => {
-    const searchValueTrim = searchValue.trim();
-    switch(searchValueTrim.length)           {
-      case 43:
-        axios.get(authConfig.backEndApi + '/wallet/' + searchValueTrim + '/txrecord', { headers: { }, params: { } })
-        .then(res => {
-          if(res.data && res.data.id && res.data.id.length>0) {
-            router.push("/txs/view/" + searchValueTrim)
-          }
-          else {
-            router.push("/addresses/all/" + searchValueTrim)
-          }
-        })
-        break;
-      case 64:
-        router.push("/blocks/view/" + searchValueTrim)
-        break;
-    }
-    if(!isNaN(Number(searchValue)) && Number(searchValue) > 0) {
-      router.push("/blocks/view/" + Number(searchValue))
-    }
-  }, [searchValue])
-
   useEffect(() => {
     if (!openDialog) {
       setSearchValue('')

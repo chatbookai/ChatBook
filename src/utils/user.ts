@@ -21,8 +21,8 @@
   const getDbRecord = promisify(db.get.bind(db));
   const getDbRecordALL = promisify(db.all.bind(db));
   
-  export const createJwtToken = (userId: string, email: string) => {
-    const token = jwt.sign({ userId, email }, secretKey, { expiresIn: '1d' });
+  export const createJwtToken = (userId: string, email: string, role: string) => {
+    const token = jwt.sign({ userId, email, role }, secretKey, { expiresIn: '1d' });
 
     return token;
   };
@@ -77,14 +77,15 @@
     const OperatingSystem = agent.os.family
     const Device = agent.device.family
     const ipaddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    const ipaddress2 = ipaddress.replace('::ffff:','');
     const insertSetting = db.prepare('INSERT OR IGNORE INTO userlog (email, browsertype, browserversion, os, device, location, country, ipaddress, recentactivities, action, msg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-    if(ipaddress != "::1")  {
+    if(ipaddress2 != "::1")  {
       try {
-        const response = await axios.get(`https://ipinfo.io/${ipaddress}/json`);
+        const response = await axios.get(`https://ipinfo.io/${ipaddress2}/json`);
         const locationInfo = response.data;
         const location = locationInfo.city + ', ' + locationInfo.region + ', ' + locationInfo.country
         const country = locationInfo.country
-        insertSetting.run(email, BrowserType, BrowserVersion, OperatingSystem, Device, location, country, ipaddress, Date.now(), action, msg);
+        insertSetting.run(email, BrowserType, BrowserVersion, OperatingSystem, Device, location, country, ipaddress2, Date.now(), action, msg);
         insertSetting.finalize();
       }
       catch(error: any) {
@@ -98,7 +99,7 @@
         const isPasswordMatch = await comparePasswords(password, getOneUserData.password);
         if(isPasswordMatch) {
             const msg = "Login successful"
-            const createJwtTokenData = createJwtToken(getOneUserData.id, getOneUserData.email)
+            const createJwtTokenData = createJwtToken(getOneUserData.id, getOneUserData.email, getOneUserData.role)
             userLoginLog(req, email, 'Login Success', msg)
 
             return {"status":"ok", "msg":"Login successful", "token": createJwtTokenData, "data": {...getOneUserData, password:''}}
@@ -120,7 +121,7 @@
 
   export async function changeUserPasswordByToken(token: string, data: any) {    
     const checkUserTokenData: any = await checkUserToken(token);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
       const getOneUserData: any = await getOneUser(checkUserTokenData.data.email);
       
       if(getOneUserData) {
@@ -159,7 +160,7 @@
   export async function changeUserDetail(token: string, data: any) {
     console.log("data", data)
     const checkUserTokenData: any = await checkUserToken(token);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
       console.log("checkUserTokenData", checkUserTokenData)
       const updateSetting = db.prepare('update user set firstname = ?, lastname = ?, organization = ?, mobile = ?, address = ?, state = ?, country = ?, language = ? where email = ?');
       updateSetting.run(data.firstname, data.lastname, data.organization, data.mobile, data.address, data.state, data.country, data.language, checkUserTokenData.data.email);
@@ -207,7 +208,7 @@
 
   export async function getOneUserByToken(token: string) {
     const checkUserTokenData: any = await checkUserToken(token);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
       const getOneUserData: any = await getOneUser(checkUserTokenData.data.email);
       if(getOneUserData) {
 

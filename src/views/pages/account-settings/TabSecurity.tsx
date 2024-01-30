@@ -72,6 +72,7 @@ const TabSecurity = () => {
                 <TableRow>
                   <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Browser')}`}</TableCell>
                   <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Device')}`}</TableCell>
+                  <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Ip')}`}</TableCell>
                   <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Location')}`}</TableCell>
                   <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Recent Activities')}`}</TableCell>
                   <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Action')}`}</TableCell>
@@ -91,6 +92,11 @@ const TabSecurity = () => {
                     <TableCell>
                       <Typography variant='body2' sx={{ whiteSpace: 'nowrap' }}>
                         {row.device}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant='body2' sx={{ whiteSpace: 'nowrap' }}>
+                        {row.ipaddress}
                       </Typography>
                     </TableCell>
                     <TableCell>

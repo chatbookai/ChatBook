@@ -15,6 +15,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid'
 
 // ** Next Import
 import { useRouter } from 'next/router'
+import { useAuth } from 'src/hooks/useAuth'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
@@ -23,6 +24,7 @@ import { isMobile } from 'src/configs/functions'
 const Files = () => {
   // ** Hook
   const { t } = useTranslation()
+  const auth = useAuth()
   
   const router = useRouter()
   const { id } = router.query
@@ -39,9 +41,11 @@ const Files = () => {
   }, [paginationModel])
 
   const fetchData = async function (paginationModel: any) {
-    const RS = await axios.get('/api/logs/' + paginationModel.page + '/' + paginationModel.pageSize, { headers: { }, params: { } }).then(res=>res.data)
-    console.log("RS", RS)
-    setStore(RS)  
+    if (auth.user) {
+      const RS = await axios.get('/api/logs/' + paginationModel.page + '/' + paginationModel.pageSize, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' }, params: { } }).then(res=>res.data)
+      console.log("RS", RS)
+      setStore(RS)  
+    }
   }
 
   useEffect(() => {

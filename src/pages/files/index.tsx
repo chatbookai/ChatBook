@@ -15,6 +15,7 @@ import Files from 'src/views/model/files';
 
 // ** Axios Imports
 import axios from 'axios'
+import { useAuth } from 'src/hooks/useAuth'
 
 const FilesApp = () => {
 
@@ -28,13 +29,16 @@ const FilesApp = () => {
   // ** Hooks
   const theme = useTheme()
   const { settings } = useSettings()
+  const auth = useAuth()
 
   const fetchData = async function () {
-    const RS = await axios.get('/api/knowledge/0/100').then(res=>res.data)
-    setKnowledge(RS)
-    if(RS && RS['data'] && RS['data'][0] && RS['data'][0].id) {
-      setKnowledgeId(RS['data'][0].id)
-      setKnowledgeName(RS['data'][0].name)
+    if (auth.user) {
+      const RS = await axios.get('/api/knowledge/0/100', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      setKnowledge(RS)
+      if(RS && RS['data'] && RS['data'][0] && RS['data'][0].id) {
+        setKnowledgeId(RS['data'][0].id)
+        setKnowledgeName(RS['data'][0].name)
+      }
     }
   }
 

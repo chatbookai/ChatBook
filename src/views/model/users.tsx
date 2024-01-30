@@ -46,7 +46,8 @@ const Logs = () => {
 
   const fetchData = async function (paginationModel: any) {
     if (auth.user) {
-      const RS = await axios.get('/api/logs/' + paginationModel.page + '/' + paginationModel.pageSize, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' }, params: { } }).then(res=>res.data)
+      const data: any = {pageid: paginationModel.page, pagesize: paginationModel.pageSize}
+      const RS = await axios.post('/api/user/getusers', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       console.log("RS", RS)
       setStore(RS)  
     }
@@ -74,32 +75,107 @@ const Logs = () => {
       }
     },
     {
-      flex: 0.15,
+      flex: 0.3,
       minWidth: 100,
-      field: 'Datetime',
-      headerName: `${t(`Datetime`)}`,
+      field: 'Email',
+      headerName: `${t(`Email`)}`,
       sortable: false,
       filterable: false,
       renderCell: ({ row }: any) => {
         
         return (
           <Typography noWrap variant='body2'>
-            {row.datetime}
+            {row.email}
           </Typography>
         )
       }
     },
     {
-      flex: 0.5,
-      minWidth: 500,
-      field: 'Content',
-      headerName: `${t(`Content`)}`,
+      flex: 0.25,
+      minWidth: 100,
+      field: 'Username',
+      headerName: `${t(`Username`)}`,
       sortable: false,
       filterable: false,
       renderCell: ({ row }: any) => {
         return (
           <Typography noWrap variant='body2'>
-            {row.content}
+            {row.username}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      minWidth: 100,
+      field: 'Firstname',
+      headerName: `${t(`Firstname`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: any) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {row.firstname}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      minWidth: 100,
+      field: 'Lastname',
+      headerName: `${t(`Lastname`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: any) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {row.lastname}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      minWidth: 100,
+      field: 'Role',
+      headerName: `${t(`Role`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: any) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {row.role}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      minWidth: 100,
+      field: 'Mobile',
+      headerName: `${t(`Mobile`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: any) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {row.mobile}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.23,
+      minWidth: 100,
+      field: 'Create Time',
+      headerName: `${t(`Create Time`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: any) => {
+        return (
+          <Typography noWrap variant='body2'>
+            {new Date(Number(row.createtime)).toLocaleString()}
           </Typography>
         )
       }
@@ -113,7 +189,7 @@ const Logs = () => {
       {store && store.data != undefined ?
         <Grid item xs={12}>
           <Card>
-            <CardHeader title={`${t(`System Logs`)}`} />
+            <CardHeader title={`${t(`User Manage`)}`} />
             <Divider />
             <DataGrid
               autoHeight

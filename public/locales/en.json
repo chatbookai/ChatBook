@@ -68,5 +68,16 @@
   "Billing": "Billing",
   "Connections": "Connections",
   "Recent Devices": "Recent Devices",
-  "Loading": "Loading"
+  "Loading": "Loading",
+  "User Manage": "User Manage",
+  "User Logs": "User Logs",
+  "Email": "Email",
+  "Create Time": "Create Time",
+  "OS": "OS",
+  "Username": "Username",
+  "Firstname": "Firstname",
+  "Lastname": "Lastname",
+  "Role": "Role",
+  "System Logs": "System Logs"
+  
 }

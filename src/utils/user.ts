@@ -236,7 +236,7 @@
     const Records: any = await getDbRecord("SELECT COUNT(*) AS NUM from user where user_status = ? ", [user_status]);
     const RecordsTotal: number = Records ? Records.NUM : 0;
 
-    const RecordsAll: any[] = await getDbRecordALL(`SELECT * FROM user WHERE user_status = ? ORDER BY id DESC LIMIT ? OFFSET ? `, [user_status, pagesizeFiler, From]) || [];
+    const RecordsAll: any[] = await getDbRecordALL(`SELECT id, email, username, firstname, lastname, organization, role, mobile, address, state, zipcode, country, language, timezone, nickname, birthday, avatar, mobile_status, google_auth, github_auth, user_type, user_status, createtime FROM user WHERE user_status = ? ORDER BY id DESC LIMIT ? OFFSET ? `, [user_status, pagesizeFiler, From]) || [];
 
     const RS: any = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
@@ -260,6 +260,29 @@
     const RecordsTotal: number = Records ? Records.NUM : 0;
 
     const RecordsAll: any[] = await getDbRecordALL(`SELECT * FROM userlog WHERE email = ? ORDER BY id DESC LIMIT ? OFFSET ? `, [email, pagesizeFiler, From]) || [];
+
+    const RS: any = {};
+    RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
+    RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
+    RS['from'] = From;
+    RS['pageid'] = pageidFiler;
+    RS['pagesize'] = pagesizeFiler;
+    RS['total'] = RecordsTotal;
+  
+    return RS;
+  }
+
+  export async function getUserLogsAll(pageid: number, pagesize: number) {
+    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+    const From = pageidFiler * pagesizeFiler;
+    console.log("pageidFiler", pageidFiler)
+    console.log("pagesizeFiler", pagesizeFiler)
+
+    const Records: any = await getDbRecord("SELECT COUNT(*) AS NUM from userlog");
+    const RecordsTotal: number = Records ? Records.NUM : 0;
+
+    const RecordsAll: any[] = await getDbRecordALL(`SELECT * FROM userlog ORDER BY id DESC LIMIT ? OFFSET ? `, [pagesizeFiler, From]) || [];
 
     const RS: any = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);

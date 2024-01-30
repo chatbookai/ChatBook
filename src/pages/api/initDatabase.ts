@@ -126,6 +126,8 @@ async function initChatBookDb() {
                 msg TEXT not null default ''
             );
         `);
+        db.run(`insert or ignore into user (email, username, role, password, createtime) values('chatbook-admin@gmail.com', 'chatbook-admin', 'admin', '$2b$10$JWPrDnyv3v3ov3B0BuQXtOvy.rpci6RY4Cqi33kFAeDx1RfhUjN6.', '`+Date.now()+`');`);
+        db.run(`insert or ignore into user (email, username, role, password, createtime) values('chatbook-user@gmail.com', 'chatbook-user', 'user', '$2b$10$JWPrDnyv3v3ov3B0BuQXtOvy.rpci6RY4Cqi33kFAeDx1RfhUjN6.', '`+Date.now()+`');`);
     });
 }
 

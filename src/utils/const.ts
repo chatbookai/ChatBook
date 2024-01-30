@@ -73,7 +73,17 @@ export const MenuListAdmin = [
     path: '/settings/llms'
   },
   {
-    title: 'Logs',
+    title: 'User Manage',
+    icon: 'mdi:users',
+    path: '/settings/users'
+  },
+  {
+    title: 'User Logs',
+    icon: 'icon-park-outline:upload-logs',
+    path: '/settings/userlogs'
+  },
+  {
+    title: 'System Logs',
     icon: 'mdi:web-sync',
     path: '/logs'
   }

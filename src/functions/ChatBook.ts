@@ -351,11 +351,15 @@ export function GetAllLLMById(id: string): any[] {
 
 export function CheckPermission(auth: any, router: any) {
     const roleList = ['admin', 'user']
-    if(auth && auth.user && auth.user.role && roleList.includes(auth.user.role) ) {
-        //Permission Valid
-    }
-    else if(router) {
-        router.replace('/login')
+    console.log("auth.user.role", auth)
+    console.log("auth.user.role", auth.user)
+    if(auth && auth.user && auth.user.loading == '1')  { // User info loaded by browser
+        if(auth && auth.user && auth.user.role && roleList.includes(auth.user.role) ) {
+            //Permission Valid
+        }
+        else if(router) {
+            router.replace('/login')
+        }
     }
 }
   

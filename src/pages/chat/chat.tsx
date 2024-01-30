@@ -57,26 +57,28 @@ const AppChat = () => {
   const getChatLogList = async function (knowledgeId: number | string) {
     if (auth.user) {
       const RS = await axios.get('/api/chatlog/' + knowledgeId + '/' + userId + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
-      const ChatChatInitList = ChatChatInit(RS['data'].reverse())
-      console.log("ChatChatInitList", ChatChatInitList)
-      const selectedChat = {
-        "chat": {
-            "id": 1,
-            "userId": 1,
-            "unseenMsgs": 0,
-            "chat": ChatChatInitList
+      if(RS['status'] == 'ok')  {
+        const ChatChatInitList = ChatChatInit(RS['data'].reverse())
+        console.log("ChatChatInitList", ChatChatInitList)
+        const selectedChat = {
+          "chat": {
+              "id": 1,
+              "userId": 1,
+              "unseenMsgs": 0,
+              "chat": ChatChatInitList
+          }
         }
+        const storeInit = {
+          "chats": [],
+          "userProfile": {
+              "id": userId,
+              "avatar": "/images/avatars/1.png",
+              "fullName": "Current User",
+          },
+          "selectedChat": selectedChat
+        }
+        setStore(storeInit)
       }
-      const storeInit = {
-        "chats": [],
-        "userProfile": {
-            "id": userId,
-            "avatar": "/images/avatars/1.png",
-            "fullName": "Current User",
-        },
-        "selectedChat": selectedChat
-      }
-      setStore(storeInit)
     }
   }
 

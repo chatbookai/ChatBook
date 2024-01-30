@@ -98,79 +98,86 @@ const UserDropdown = (props: Props) => {
 
   return (
     <Fragment>
-      <Badge
-        overlap='circular'
-        onClick={handleDropdownOpen}
-        sx={{ ml: 2, cursor: 'pointer' }}
-        badgeContent={<BadgeContentSpan />}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right'
-        }}
-      >
-        <Avatar
-          alt='John Doe'
-          onClick={handleDropdownOpen}
-          sx={{ width: 40, height: 40 }}
-          src='/images/avatars/1.png'
-        />
-      </Badge>
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={() => handleDropdownClose()}
-        sx={{ '& .MuiMenu-paper': { width: 230, mt: 4 } }}
-        anchorOrigin={{ vertical: 'bottom', horizontal: direction === 'ltr' ? 'right' : 'left' }}
-        transformOrigin={{ vertical: 'top', horizontal: direction === 'ltr' ? 'right' : 'left' }}
-      >
-        <Box sx={{ pt: 2, pb: 3, px: 4 }}>
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Badge
-              overlap='circular'
-              badgeContent={<BadgeContentSpan />}
-              anchorOrigin={{
-                vertical: 'bottom',
-                horizontal: 'right'
-              }}
-            >
-              <Avatar alt='John Doe' src='/images/avatars/1.png' sx={{ width: '2.5rem', height: '2.5rem' }} />
-            </Badge>
-            <Box sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
-              <Typography sx={{ 'maxWidth': '15ch', 'overflow': 'hidden', 'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'fontWeight': 600 }}>{user?.username}</Typography>
-              <Typography variant='body2' sx={{ fontSize: '0.8rem', color: 'text.disabled' }}>
-                {user?.role}
-              </Typography>
+      {
+        user?.username ?
+        <Fragment>
+          <Badge
+            overlap='circular'
+            onClick={handleDropdownOpen}
+            sx={{ ml: 2, cursor: 'pointer' }}
+            badgeContent={<BadgeContentSpan />}
+            anchorOrigin={{
+              vertical: 'bottom',
+              horizontal: 'right'
+            }}
+          >
+            <Avatar
+              alt='John Doe'
+              onClick={handleDropdownOpen}
+              sx={{ width: 40, height: 40 }}
+              src='/images/avatars/1.png'
+            />
+          </Badge>
+          <Menu
+            anchorEl={anchorEl}
+            open={Boolean(anchorEl)}
+            onClose={() => handleDropdownClose()}
+            sx={{ '& .MuiMenu-paper': { width: 230, mt: 4 } }}
+            anchorOrigin={{ vertical: 'bottom', horizontal: direction === 'ltr' ? 'right' : 'left' }}
+            transformOrigin={{ vertical: 'top', horizontal: direction === 'ltr' ? 'right' : 'left' }}
+          >
+            <Box sx={{ pt: 2, pb: 3, px: 4 }}>
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Badge
+                  overlap='circular'
+                  badgeContent={<BadgeContentSpan />}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'right'
+                  }}
+                >
+                  <Avatar alt='John Doe' src='/images/avatars/1.png' sx={{ width: '2.5rem', height: '2.5rem' }} />
+                </Badge>
+                <Box sx={{ display: 'flex', ml: 3, alignItems: 'flex-start', flexDirection: 'column' }}>
+                  <Typography sx={{ 'maxWidth': '15ch', 'overflow': 'hidden', 'textOverflow': 'ellipsis', 'whiteSpace': 'nowrap', 'fontWeight': 600 }}>{user?.username}</Typography>
+                  <Typography variant='body2' sx={{ fontSize: '0.8rem', color: 'text.disabled' }}>
+                    {user?.role}
+                  </Typography>
+                </Box>
+              </Box>
             </Box>
-          </Box>
-        </Box>
-        <Divider sx={{ mt: '0 !important' }} />
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/user/account')}>
-          <Box sx={styles}>
-            <Icon icon='mdi:cog-outline' />
-            Settings
-          </Box>
-        </MenuItem>
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/pricing')}>
-          <Box sx={styles}>
-            <Icon icon='mdi:currency-usd' />
-            Pricing
-          </Box>
-        </MenuItem>
-        <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/faq')}>
-          <Box sx={styles}>
-            <Icon icon='mdi:help-circle-outline' />
-            FAQ
-          </Box>
-        </MenuItem>
-        <Divider />
-        <MenuItem
-          onClick={handleLogout}
-          sx={{ py: 2, '& svg': { mr: 2, fontSize: '1.375rem', color: 'text.primary' } }}
-        >
-          <Icon icon='mdi:logout-variant' />
-          Logout
-        </MenuItem>
-      </Menu>
+            <Divider sx={{ mt: '0 !important' }} />
+            <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/user/account')}>
+              <Box sx={styles}>
+                <Icon icon='mdi:cog-outline' />
+                Settings
+              </Box>
+            </MenuItem>
+            <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/pricing')}>
+              <Box sx={styles}>
+                <Icon icon='mdi:currency-usd' />
+                Pricing
+              </Box>
+            </MenuItem>
+            <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/faq')}>
+              <Box sx={styles}>
+                <Icon icon='mdi:help-circle-outline' />
+                FAQ
+              </Box>
+            </MenuItem>
+            <Divider />
+            <MenuItem
+              onClick={handleLogout}
+              sx={{ py: 2, '& svg': { mr: 2, fontSize: '1.375rem', color: 'text.primary' } }}
+            >
+              <Icon icon='mdi:logout-variant' />
+              Logout
+            </MenuItem>
+          </Menu>
+        </Fragment>
+        :
+        null
+      }
     </Fragment>
   )
 }

@@ -21,6 +21,7 @@ export type UserDataType = {
   password: string
   avatar?: string | null
   token?: string | null
+  loading?: string | null
 }
 
 export type AuthValuesType = {

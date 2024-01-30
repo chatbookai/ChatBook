@@ -23,6 +23,9 @@ import toast from 'react-hot-toast'
 
 // ** Axios Imports
 import axios from 'axios'
+import { useRouter } from 'next/router'
+import { useAuth } from 'src/hooks/useAuth'
+import { CheckPermission } from 'src/functions/ChatBook'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
@@ -60,6 +63,11 @@ const FileUploaderMultiple = (props: any) => {
 
   // ** Hook
   const { t } = useTranslation()
+  const auth = useAuth()
+  const router = useRouter()
+  useEffect(() => {
+    CheckPermission(auth, router)
+  }, [])
 
   // ** State
   const [files, setFiles] = useState<File[]>([])
@@ -169,31 +177,32 @@ const FileUploaderMultiple = (props: any) => {
   }
 
   const uploadMultiFiles = async () => {
-
-    const formData = new FormData();
-    formData.append('knowledgeId', knowledgeId);
-    formData.append('knowledgeName', knowledgeName);
-    files.map((file: File)=>{
-      formData.append('files', file);
-    })
-    const FormSubmit: any = await axios.post('/api/uploadfiles', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }).then(res => res.data);
-    console.log("FormSubmit:", FormSubmit)
-    
-    if(FormSubmit.status == "ok") {
-
-      //Insufficient balance
-      toast.success(FormSubmit.msg, { duration: 4000 })
+    if (auth.user) {
+      const formData = new FormData();
+      formData.append('knowledgeId', knowledgeId);
+      formData.append('knowledgeName', knowledgeName);
+      files.map((file: File)=>{
+        formData.append('files', file);
+      })
+      const FormSubmit: any = await axios.post('/api/uploadfiles', formData, {
+        headers: {
+          Authorization: auth.user.token,
+          'Content-Type': 'multipart/form-data',
+        },
+      }).then(res => res.data);
+      console.log("FormSubmit:", FormSubmit)
       
-      //setIsDisabledButton(false)
-      //setIsDisabledRemove(false)
-      //setUploadingButton(`${t(`Upload Files`)}`)
-      //handleRemoveAllFiles()
-    }
+      if(FormSubmit.status == "ok") {
 
+        //Insufficient balance
+        toast.success(FormSubmit.msg, { duration: 4000 })
+        
+        //setIsDisabledButton(false)
+        //setIsDisabledRemove(false)
+        //setUploadingButton(`${t(`Upload Files`)}`)
+        //handleRemoveAllFiles()
+      }
+    }
   };
 
   useEffect(() => {

@@ -71,9 +71,11 @@ const MenuListUser = [
   }
 ]
 
-const navigation = (): VerticalNavItemsType => {
+const navigation = (user: any): VerticalNavItemsType => {
   
   let MenuList = []
+
+  console.log("useruseruseruseruser", user)
   
   //const auth = useAuth()
   //if(auth && auth.user && auth.user.role && auth.user.role == 'admin') {

@@ -66,12 +66,15 @@ const AuthProvider = ({ children }: Props) => {
     const token = window.localStorage.getItem(authConfig.storageTokenKeyName)
     if(userData) {
       const user = JSON.parse(userData)
-      setUser({...user, token} as UserDataType)
+      setUser({...user, token, 'loading': '1'} as UserDataType)
+    }
+    else {
+      setUser({'loading': '1'} as UserDataType)
     }
   }, [])
 
   const handleLogout = () => {
-    setUser(null)
+    setUser({'loading': '1'} as UserDataType)
     window.localStorage.removeItem(authConfig.userInfoTokenKeyName)
     window.localStorage.removeItem(authConfig.storageTokenKeyName)
     router.push('/login')

@@ -24,3 +24,73 @@ If the question is not related to the context or chat history, politely respond 
 
 Question: {question}
 Helpful answer in markdown:`;
+
+export const MenuListAdmin = [
+  {
+    sectionTitle: 'Chat'
+  },
+  {
+    title: 'Chat',
+    icon: 'mdi:message-outline',
+    path: '/chat/chat'
+  },
+  {
+    title: 'Knowledge Chat',
+    icon: 'material-symbols:chat',
+    path: '/chat/knowledge'
+  },
+  {
+    sectionTitle: 'Settings'
+  },
+  {
+    title: 'Knowledge Base',
+    icon: 'carbon:ibm-watson-knowledge-studio',
+    path: '/knowledge'
+  },
+  {
+    title: 'Settings',
+    icon: 'mingcute:openai-fill',
+    path: '/settings'
+  },
+  {
+    title: 'Template',
+    icon: 'tabler:template',
+    path: '/template'
+  },
+  {
+    title: 'Upload Files',
+    icon: 'material-symbols:backup',
+    path: '/upload'
+  },
+  {
+    title: 'File Parse Process',
+    icon: 'clarity:process-on-vm-line',
+    path: '/files'
+  },
+  {
+    title: 'Chat Setting',
+    icon: 'mingcute:openai-fill',
+    path: '/settings/llms'
+  },
+  {
+    title: 'Logs',
+    icon: 'mdi:web-sync',
+    path: '/logs'
+  }
+]
+
+export const MenuListUser = [
+  {
+    sectionTitle: 'Chat'
+  },
+  {
+    title: 'Chat',
+    icon: 'mdi:message-outline',
+    path: '/chat/chat'
+  },
+  {
+    title: 'Knowledge Chat',
+    icon: 'material-symbols:chat',
+    path: '/chat/knowledge'
+  }
+]

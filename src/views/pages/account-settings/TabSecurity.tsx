@@ -1,5 +1,5 @@
 // ** React Imports
-import { ReactNode } from 'react'
+import { useState, useEffect } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -20,102 +20,61 @@ import Icon from 'src/@core/components/icon'
 // ** Demo Components
 import ChangePasswordCard from 'src/views/pages/account-settings/security/ChangePasswordCard'
 
-interface RecentDeviceDataType {
-  date: string
-  device: string
-  location: string
-  browserName: string
-  browserIcon: ReactNode
-}
+// ** Third Party Import
+import { useTranslation } from 'react-i18next'
 
-const recentDeviceData: RecentDeviceDataType[] = [
-  {
-    location: 'Switzerland',
-    device: 'HP Spectre 360',
-    date: '10, July 2021 20:07',
-    browserName: 'Chrome on Windows',
-    browserIcon: (
-      <Box component='span' sx={{ mr: 2.5, '& svg': { color: 'info.main' } }}>
-        <Icon icon='mdi:microsoft-windows' fontSize={20} />
-      </Box>
-    )
-  },
-  {
-    location: 'Australia',
-    device: 'iPhone 12x',
-    date: '13, July 2021 10:10',
-    browserName: 'Chrome on iPhone',
-    browserIcon: (
-      <Box component='span' sx={{ mr: 2.5, '& svg': { color: 'error.main' } }}>
-        <Icon icon='mdi:cellphone' fontSize={20} />
-      </Box>
-    )
-  },
-  {
-    location: 'Dubai',
-    device: 'Oneplus 9 Pro',
-    date: '14, July 2021 15:15',
-    browserName: 'Chrome on Android',
-    browserIcon: (
-      <Box component='span' sx={{ mr: 2.5, '& svg': { color: 'success.main' } }}>
-        <Icon icon='mdi:android' fontSize={20} />
-      </Box>
-    )
-  },
-  {
-    location: 'India',
-    device: 'Apple iMac',
-    date: '16, July 2021 16:17',
-    browserName: 'Chrome on MacOS',
-    browserIcon: (
-      <Box component='span' sx={{ mr: 2.5, '& svg': { color: 'secondary.main' } }}>
-        <Icon icon='mdi:apple' fontSize={20} />
-      </Box>
-    )
-  },
-  {
-    location: 'Switzerland',
-    device: 'HP Spectre 360',
-    date: '20, July 2021 21:01',
-    browserName: 'Chrome on Windows',
-    browserIcon: (
-      <Box component='span' sx={{ mr: 2.5, '& svg': { color: 'info.main' } }}>
-        <Icon icon='mdi:microsoft-windows' fontSize={20} />
-      </Box>
-    )
-  },
-  {
-    location: 'Dubai',
-    device: 'Oneplus 9 Pro',
-    date: '21, July 2021 12:22',
-    browserName: 'Chrome on Android',
-    browserIcon: (
-      <Box component='span' sx={{ mr: 2.5, '& svg': { color: 'success.main' } }}>
-        <Icon icon='mdi:android' fontSize={20} />
-      </Box>
-    )
-  }
-]
+// ** Third Party Components
+import axios from 'axios'
+import { useAuth } from 'src/hooks/useAuth'
 
 const TabSecurity = () => {
+  // ** Hook
+  const { t } = useTranslation()
+
+  // ** Hook
+  const auth = useAuth()
+  const [recentDeviceData, setRecentDeviceData] = useState<any[]>([])
+
+  const fetchData = async function () {
+    if (auth.user) {
+      const data: any = {pageid: 0, pagesize: 6}
+      const RS = await axios.post('/api/user/getuserlogs', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      if(RS && RS.data) {
+        setRecentDeviceData(RS.data)
+      }
+    }    
+  }
+
+  useEffect(() => {
+    fetchData()  
+  }, [])
+
+  const BrowserTypeIcon: any = {}
+  BrowserTypeIcon['Windows'] = "mdi:microsoft-windows"
+  BrowserTypeIcon['iPhone'] = "mdi:cellphone"
+  BrowserTypeIcon['Android'] = "mdi:android"
+  BrowserTypeIcon['MacOS'] = "mdi:apple"
+
+
+
   return (
     <Grid container spacing={6}>
       <Grid item xs={12}>
         <ChangePasswordCard />
       </Grid>
 
-      {/* Recent Devices Card*/}
       <Grid item xs={12}>
         <Card>
-          <CardHeader title='Recent Devices' />
+          <CardHeader title={`${t('Recent Devices')}`} />
           <TableContainer>
             <Table>
               <TableHead sx={{ backgroundColor: 'customColors.tableHeaderBg' }}>
                 <TableRow>
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>Browser</TableCell>
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>Device</TableCell>
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>Location</TableCell>
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>Recent Activities</TableCell>
+                  <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Browser')}`}</TableCell>
+                  <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Device')}`}</TableCell>
+                  <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Location')}`}</TableCell>
+                  <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Recent Activities')}`}</TableCell>
+                  <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Action')}`}</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -123,8 +82,10 @@ const TabSecurity = () => {
                   <TableRow key={index}>
                     <TableCell>
                       <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        {row.browserIcon}
-                        <Typography sx={{ whiteSpace: 'nowrap' }}>{row.browserName}</Typography>
+                        <Box component='span' sx={{ mr: 2.5, '& svg': { color: 'info.main' } }}>
+                          <Icon icon={`${BrowserTypeIcon[row.os] ?? 'mdi:microsoft-windows'}`} fontSize={20} />
+                        </Box>
+                        <Typography sx={{ whiteSpace: 'nowrap' }}>{row.browsertype}</Typography>
                       </Box>
                     </TableCell>
                     <TableCell>
@@ -139,7 +100,12 @@ const TabSecurity = () => {
                     </TableCell>
                     <TableCell>
                       <Typography variant='body2' sx={{ whiteSpace: 'nowrap' }}>
-                        {row.date}
+                        {new Date(Number(row.recentactivities)).toLocaleString()}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant='body2' sx={{ whiteSpace: 'nowrap' }}>
+                        {row.action}
                       </Typography>
                     </TableCell>
                   </TableRow>

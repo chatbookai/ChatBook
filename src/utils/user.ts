@@ -3,6 +3,11 @@
   import { promisify } from 'util';
   import bcrypt from 'bcrypt';
   import jwt from 'jsonwebtoken';
+  import axios from 'axios'
+
+  // @ts-ignore
+  import { NextApiRequest } from 'next';
+  import useragent from 'useragent';
 
   dotenv.config();
 
@@ -65,21 +70,51 @@
     }
   }
 
-  export async function checkUserPassword(email: string, password: string) {
+  export async function userLoginLog(req: NextApiRequest, email: string, action: string, msg: string) {
+    const agent = useragent.parse(req.headers['user-agent']);
+    const BrowserType = agent.family
+    const BrowserVersion = agent.toVersion()
+    const OperatingSystem = agent.os.family
+    const Device = agent.device.family
+    const ipaddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+    const insertSetting = db.prepare('INSERT OR IGNORE INTO userlog (email, browsertype, browserversion, os, device, location, country, ipaddress, recentactivities, action, msg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+    if(ipaddress != "::1")  {
+      try {
+        const response = await axios.get(`https://ipinfo.io/${ipaddress}/json`);
+        const locationInfo = response.data;
+        const location = locationInfo.city + ', ' + locationInfo.region + ', ' + locationInfo.country
+        const country = locationInfo.country
+        insertSetting.run(email, BrowserType, BrowserVersion, OperatingSystem, Device, location, country, ipaddress, Date.now(), action, msg);
+        insertSetting.finalize();
+      }
+      catch(error: any) {
+      }
+    }
+  }
+
+  export async function checkUserPassword(req: NextApiRequest, email: string, password: string) {
     const getOneUserData: any = await getOneUser(email);
     if(getOneUserData) {
         const isPasswordMatch = await comparePasswords(password, getOneUserData.password);
         if(isPasswordMatch) {
+            const msg = "Login successful"
             const createJwtTokenData = createJwtToken(getOneUserData.id, getOneUserData.email)
-            
+            userLoginLog(req, email, 'Login Success', msg)
+
             return {"status":"ok", "msg":"Login successful", "token": createJwtTokenData, "data": {...getOneUserData, password:''}}
         }
         else {
-            return {"status":"error", "msg":"Username not exist or password is error"}
+            const msg = "Username not exist or password is error"
+            userLoginLog(req, email, 'Login Failed', msg)
+
+            return {"status":"error", "msg":msg}
         }
     }
     else {
-        return {"status":"error", "msg":"Username not exist or password is error"}
+        const msg = "Username not exist or password is error"
+        userLoginLog(req, email, 'Login Failed', msg)
+
+        return {"status":"error", "msg":msg}
     }
   }
 
@@ -180,11 +215,12 @@
       }
       else {       
 
-        return {"status":"ok", "msg":"User not exist", "data": null}
+        return {"status":"error", "msg":"User not exist", "data": null}
       }
     }
     else {
-      return {"status":"ok", "msg":"Token is invalid", "data": null}
+
+      return {"status":"error", "msg":"Token is invalid", "data": null}
     }
   }
 
@@ -212,3 +248,25 @@
     return RS;
   }
 
+  export async function getUserLogs(email: string, pageid: number, pagesize: number) {
+    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+    const From = pageidFiler * pagesizeFiler;
+    console.log("pageidFiler", pageidFiler)
+    console.log("pagesizeFiler", pagesizeFiler)
+
+    const Records: any = await getDbRecord("SELECT COUNT(*) AS NUM from userlog where email = ? ", [email]);
+    const RecordsTotal: number = Records ? Records.NUM : 0;
+
+    const RecordsAll: any[] = await getDbRecordALL(`SELECT * FROM userlog WHERE email = ? ORDER BY id DESC LIMIT ? OFFSET ? `, [email, pagesizeFiler, From]) || [];
+
+    const RS: any = {};
+    RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
+    RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
+    RS['from'] = From;
+    RS['pageid'] = pageidFiler;
+    RS['pagesize'] = pagesizeFiler;
+    RS['total'] = RecordsTotal;
+  
+    return RS;
+  }

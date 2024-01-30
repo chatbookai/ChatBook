@@ -100,13 +100,13 @@ const UserAccount = () => {
     if(!data.firstname) {
       setError('firstname', {
         type: 'manual',
-        message: 'This field must have a value'
+        message: `${t('This field must have a value')}`
       })
     }
     if(!data.lastname) {
       setError('lastname', {
         type: 'manual',
-        message: 'This field must have a value'
+        message: `${t('This field must have a value')}`
       })
     }
     if (auth.user) {
@@ -134,7 +134,7 @@ const UserAccount = () => {
                       render={({ field: { value, onChange, onBlur } }) => (
                         <TextField
                           autoFocus
-                          label='First name'
+                          label={`${t('First name')}`}
                           value={value}
                           onBlur={onBlur}
                           onChange={onChange}
@@ -155,7 +155,7 @@ const UserAccount = () => {
                       render={({ field: { value, onChange, onBlur } }) => (
                         <TextField
                           autoFocus
-                          label='Last name'
+                          label={`${t('Last name')}`}
                           value={value}
                           onBlur={onBlur}
                           onChange={onChange}
@@ -176,7 +176,7 @@ const UserAccount = () => {
                       render={({ field: { value, onChange, onBlur } }) => (
                         <TextField
                           autoFocus
-                          label='Organization'
+                          label={`${t('Organization')}`}
                           value={value}
                           onBlur={onBlur}
                           onChange={onChange}
@@ -197,7 +197,7 @@ const UserAccount = () => {
                       render={({ field: { value, onChange, onBlur } }) => (
                         <TextField
                           autoFocus
-                          label='Mobile'
+                          label={`${t('Mobile')}`}
                           value={value}
                           onBlur={onBlur}
                           onChange={onChange}
@@ -218,7 +218,7 @@ const UserAccount = () => {
                       render={({ field: { value, onChange, onBlur } }) => (
                         <TextField
                           autoFocus
-                          label='Address'
+                          label={`${t('Address')}`}
                           value={value}
                           onBlur={onBlur}
                           onChange={onChange}
@@ -239,7 +239,7 @@ const UserAccount = () => {
                       render={({ field: { value, onChange, onBlur } }) => (
                         <TextField
                           autoFocus
-                          label='State'
+                          label={`${t('State')}`}
                           value={value}
                           onBlur={onBlur}
                           onChange={onChange}
@@ -260,7 +260,7 @@ const UserAccount = () => {
                       render={({ field: { value, onChange, onBlur } }) => (
                         <TextField
                           autoFocus
-                          label='Country'
+                          label={`${t('Country')}`}
                           value={value}
                           onBlur={onBlur}
                           onChange={onChange}
@@ -281,7 +281,7 @@ const UserAccount = () => {
                       render={({ field: { value, onChange, onBlur } }) => (
                         <TextField
                           autoFocus
-                          label='Language'
+                          label={`${t('Language')}`}
                           value={value}
                           onBlur={onBlur}
                           onChange={onChange}

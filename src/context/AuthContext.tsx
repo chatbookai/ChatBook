@@ -6,6 +6,7 @@ import { useRouter } from 'next/router'
 
 // ** Axios
 import axios from 'axios'
+import toast from 'react-hot-toast'
 
 // ** Config
 import authConfig from 'src/configs/auth'
@@ -45,10 +46,14 @@ const AuthProvider = ({ children }: Props) => {
         if(response.data.status == 'ok') {
           params.rememberMe ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.token) : null
           const returnUrl = router.query.returnUrl
-          setUser({ ...response.data.data })
+          setUser({ ...response.data.data, token: response.data.token})
           params.rememberMe ? window.localStorage.setItem(authConfig.userInfoTokenKeyName, JSON.stringify(response.data.data)) : null
+          toast.success(response.data.msg, { duration: 4000 })
           const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
           router.replace(redirectURL as string)
+        }
+        else {
+          toast.error(response.data.msg, { duration: 4000 })
         }
       })
       .catch(err => {

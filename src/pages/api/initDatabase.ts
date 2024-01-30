@@ -109,6 +109,22 @@ async function initChatBookDb() {
                 password TEXT not null default '',
                 createtime INTEGER not null default 0
             );
+        `);      
+        db.run(`
+            CREATE TABLE IF NOT EXISTS userlog (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT not null default '',
+                browsertype TEXT not null default '',
+                browserversion TEXT not null default '',
+                os TEXT not null default '',
+                device TEXT not null default '',
+                location TEXT not null default '',
+                country TEXT not null default '',
+                ipaddress TEXT not null default '',
+                recentactivities INTEGER not null default 0,
+                action TEXT not null default '',
+                msg TEXT not null default ''
+            );
         `);
     });
 }

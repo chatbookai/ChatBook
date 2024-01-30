@@ -63,21 +63,15 @@ const CurrentPlanCard = ({ data }: { data: PricingPlanType[] }) => {
           <Grid container spacing={6}>
             <Grid item xs={12} md={6}>
               <Box sx={{ mb: 6 }}>
-                <Typography sx={{ mb: 1, fontWeight: 600 }}>Your Current Plan is Basic</Typography>
+                <Typography sx={{ mb: 1, fontWeight: 600 }}>Your Current Plan is Standard</Typography>
                 <Typography sx={{ color: 'text.secondary' }}>A simple start for everyone</Typography>
-              </Box>
-              <Box sx={{ mb: 6 }}>
-                <Typography sx={{ mb: 1, fontWeight: 600 }}>Active until Dec 09, 2021</Typography>
-                <Typography sx={{ color: 'text.secondary' }}>
-                  We will send you a notification upon Subscription expiration
-                </Typography>
               </Box>
               <div>
                 <Box sx={{ mb: 1, display: 'flex', alignItems: 'center' }}>
-                  <Typography sx={{ mr: 2, fontWeight: 600 }}>$199 Per Month</Typography>
+                  <Typography sx={{ mr: 2, fontWeight: 600 }}>$0 Per Month</Typography>
                   <CustomChip label='Popular' size='small' color='primary' skin='light' />
                 </Box>
-                <Typography sx={{ color: 'text.secondary' }}>Standard plan for small to medium businesses</Typography>
+                <Typography sx={{ color: 'text.secondary' }}>Standard plan for personal user</Typography>
               </div>
             </Grid>
             <Grid item xs={12} md={6}>
@@ -109,10 +103,10 @@ const CurrentPlanCard = ({ data }: { data: PricingPlanType[] }) => {
             </Grid>
             <Grid item xs={12}>
               <Box sx={{ mt: 3, gap: 4, display: 'flex', flexWrap: 'wrap' }}>
-                <Button variant='contained' onClick={() => setOpenPricingDialog(true)}>
+                <Button variant='contained' onClick={() => setOpenPricingDialog(true)} disabled={true}>
                   Upgrade Plan
                 </Button>
-                <Button variant='outlined' color='secondary' onClick={() => setOpen(true)}>
+                <Button variant='outlined' color='secondary' onClick={() => setOpen(true)} disabled={true}>
                   Cancel Subscription
                 </Button>
               </Box>

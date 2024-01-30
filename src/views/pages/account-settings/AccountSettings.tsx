@@ -118,15 +118,6 @@ const AccountSettings = ({ tab, apiPricingPlanData }: { tab: string; apiPricingP
                   }
                 />
                 <Tab
-                  value='notifications'
-                  label={
-                    <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
-                      <Icon icon='mdi:bell-outline' />
-                      {!hideText && 'Notifications'}
-                    </Box>
-                  }
-                />
-                <Tab
                   value='connections'
                   label={
                     <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>

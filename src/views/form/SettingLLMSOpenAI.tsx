@@ -12,6 +12,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 
 // ** Axios Imports
 import axios from 'axios'
+import { useRouter } from 'next/router'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -22,6 +23,8 @@ import toast from 'react-hot-toast'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 import { useAuth } from 'src/hooks/useAuth'
+import { CheckPermission } from 'src/functions/ChatBook'
+
 
 const SettingForm = (props: any) => {
   // ** Props
@@ -30,6 +33,10 @@ const SettingForm = (props: any) => {
   // ** Hook
   const { t } = useTranslation()
   const auth = useAuth()
+  const router = useRouter()
+  useEffect(() => {
+    CheckPermission(auth, router)
+  }, [])
 
   const openApiBaseText = "Example: https://api.openai.com/v1";
     

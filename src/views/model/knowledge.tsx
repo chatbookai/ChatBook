@@ -39,17 +39,20 @@ import toast from 'react-hot-toast'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 import { isMobile } from 'src/configs/functions'
-
+import { CheckPermission } from 'src/functions/ChatBook'
 
 const Knowledge = () => {
   // ** Hook
   const { t } = useTranslation()
   const auth = useAuth()
+  const router = useRouter()
+  useEffect(() => {
+    CheckPermission(auth, router)
+  }, [])
 
   const [uploadingButton, setUploadingButton] = useState<string>(`${t('Submit')}`)
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
   
-  const router = useRouter()
   const isMobileData = isMobile()
   
   // ** State

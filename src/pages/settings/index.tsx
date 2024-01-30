@@ -15,7 +15,10 @@ import SettingApiModel from 'src/views/form/SettingApi';
 
 // ** Axios Imports
 import axios from 'axios'
+import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
+import { CheckPermission } from 'src/functions/ChatBook'
+
 
 const SettingApiModelAPP = () => {
 
@@ -30,6 +33,10 @@ const SettingApiModelAPP = () => {
   const theme = useTheme()
   const { settings } = useSettings()
   const auth = useAuth()
+  const router = useRouter()
+  useEffect(() => {
+    CheckPermission(auth, router)
+  }, [])
 
   const fetchData = async function () {
     if (auth.user) {

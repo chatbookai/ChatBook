@@ -11,6 +11,7 @@ import CardContent from '@mui/material/CardContent'
 
 // ** Axios Imports
 import axios from 'axios'
+import { useRouter } from 'next/router'
 
 // ** Third Party Components
 import toast from 'react-hot-toast'
@@ -18,6 +19,8 @@ import { useAuth } from 'src/hooks/useAuth'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
+import { CheckPermission } from 'src/functions/ChatBook'
+
 
 const TemplateModelForm = (props: any) => {
   // ** Props
@@ -26,6 +29,10 @@ const TemplateModelForm = (props: any) => {
   // ** Hook
   const { t } = useTranslation()
   const auth = useAuth()
+  const router = useRouter()
+  useEffect(() => {
+    CheckPermission(auth, router)
+  }, [])
 
   // ** State
   const [uploadingButton, setUploadingButton] = useState<string>(`${t('Submit')}`)

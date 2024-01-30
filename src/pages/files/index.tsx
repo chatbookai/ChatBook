@@ -15,7 +15,10 @@ import Files from 'src/views/model/files';
 
 // ** Axios Imports
 import axios from 'axios'
+import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
+
+import { CheckPermission } from 'src/functions/ChatBook'
 
 const FilesApp = () => {
 
@@ -30,6 +33,10 @@ const FilesApp = () => {
   const theme = useTheme()
   const { settings } = useSettings()
   const auth = useAuth()
+  const router = useRouter()
+  useEffect(() => {
+    CheckPermission(auth, router)
+  }, [])
 
   const fetchData = async function () {
     if (auth.user) {

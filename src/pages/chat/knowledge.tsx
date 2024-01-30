@@ -22,14 +22,19 @@ import { useTranslation } from 'react-i18next'
 // ** Axios Imports
 import axios from 'axios'
 import { useAuth } from 'src/hooks/useAuth'
+import { useRouter } from 'next/router'
 
-import { ChatKnowledgeInit, ChatKnowledgeInput, ChatKnowledgeOutput } from 'src/functions/ChatBook'
+import { ChatKnowledgeInit, ChatKnowledgeInput, ChatKnowledgeOutput, CheckPermission } from 'src/functions/ChatBook'
 
 const AppChat = () => {
 
   // ** Hook
   const { t } = useTranslation()
   const auth = useAuth()
+  const router = useRouter()
+  useEffect(() => {
+    CheckPermission(auth, router)
+  }, [])
 
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
   const [knowledge, setKnowledge] = useState<any>(null)

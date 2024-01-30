@@ -1,18 +1,11 @@
 // ** React Imports
 import { useEffect, useCallback, useState, ChangeEvent } from 'react'
 
-// ** Next Imports
-import { useRouter } from 'next/router'
-
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
 import InputAdornment from '@mui/material/InputAdornment'
-
-// ** Third Party Imports
-import axios from 'axios'
-import authConfig from 'src/configs/auth'
 
 // ** Types Imports
 import { Settings } from 'src/@core/context/settingsContext'
@@ -32,7 +25,6 @@ const AutocompleteComponent = ({ hidden, settings }: Props) => {
   const [openDialog, setOpenDialog] = useState<boolean>(false)
 
   // ** Hooks & Vars
-  const router = useRouter()
   const { layout } = settings
 
   useEffect(() => {

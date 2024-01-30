@@ -20,13 +20,17 @@ import { useAuth } from 'src/hooks/useAuth'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 import { isMobile } from 'src/configs/functions'
+import { CheckPermission } from 'src/functions/ChatBook'
 
 const Files = () => {
   // ** Hook
   const { t } = useTranslation()
   const auth = useAuth()
-  
   const router = useRouter()
+  useEffect(() => {
+    CheckPermission(auth, router)
+  }, [])
+  
   const { id } = router.query
   const isMobileData = isMobile()
   

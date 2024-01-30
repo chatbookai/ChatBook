@@ -16,7 +16,10 @@ import TemplateModel from 'src/views/form/Template';
 
 // ** Axios Imports
 import axios from 'axios'
+import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
+import { CheckPermission } from 'src/functions/ChatBook'
+
 
 const TemplateModelAPP = () => {
 
@@ -31,6 +34,10 @@ const TemplateModelAPP = () => {
   const theme = useTheme()
   const { settings } = useSettings()
   const auth = useAuth()
+  const router = useRouter()
+  useEffect(() => {
+    CheckPermission(auth, router)
+  }, [])
 
   const fetchData = async function () {
     if (auth.user) {

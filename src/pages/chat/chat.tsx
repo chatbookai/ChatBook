@@ -1,5 +1,5 @@
 // ** React Imports
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -32,7 +32,10 @@ const AppChat = () => {
   const { t } = useTranslation()
   const auth = useAuth()
   const router = useRouter()
-  CheckPermission(auth, router)
+  useEffect(() => {
+    CheckPermission(auth, router)
+  }, [])
+  
   
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
   const [llms, setLlms] = useState<any>([])
@@ -169,7 +172,9 @@ const AppChat = () => {
   }
 
   return (
-    <Box
+    <Fragment>
+      {auth.user ?
+      <Box
       className='app-chat'
       sx={{
         width: '100%',
@@ -201,7 +206,11 @@ const AppChat = () => {
         chatId={chatId}
         chatName={chatName}
       />
-    </Box>
+      </Box>
+      :
+      null
+      }
+    </Fragment>
   )
 }
 

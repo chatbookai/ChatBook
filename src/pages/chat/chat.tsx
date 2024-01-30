@@ -149,17 +149,19 @@ const AppChat = () => {
 
 
   const sendMsg = async (Obj: any) => {
-    setSendButtonDisable(true)
-    setSendButtonText(t("Sending") as string)
-    setSendInputText(t("Generating the answer...") as string)
-    ChatChatInput(Obj.message, userId, chatId)
-    setRefreshChatCounter(refreshChatCounter + 1)
-    const ChatChatOutputStatus = await ChatChatOutput(Obj.message, userId, chatId, setLastMessage)
-    if(ChatChatOutputStatus) {
-      setSendButtonDisable(false)
-      setRefreshChatCounter(refreshChatCounter + 2)
-      setSendButtonText(t("Send") as string)
-      setSendInputText(t("Type your message here...") as string)  
+    if(auth.user && auth.user.token)  {
+      setSendButtonDisable(true)
+      setSendButtonText(t("Sending") as string)
+      setSendInputText(t("Generating the answer...") as string)
+      ChatChatInput(Obj.message, userId, chatId)
+      setRefreshChatCounter(refreshChatCounter + 1)
+      const ChatChatOutputStatus = await ChatChatOutput(Obj.message, auth.user.token, auth.user.id, chatId, setLastMessage)
+      if(ChatChatOutputStatus) {
+        setSendButtonDisable(false)
+        setRefreshChatCounter(refreshChatCounter + 2)
+        setSendButtonText(t("Send") as string)
+        setSendInputText(t("Type your message here...") as string)  
+      }
     }
   }
 
@@ -175,7 +177,7 @@ const AppChat = () => {
 
   return (
     <Fragment>
-      {auth.user ?
+      {auth.user && auth.user.email ?
       <Box
       className='app-chat'
       sx={{

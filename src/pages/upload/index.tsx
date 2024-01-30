@@ -65,7 +65,7 @@ const UploadFilesApp = () => {
 
   return (
     <Fragment>
-      {auth.user ?
+      {auth.user && auth.user.email ?
       <Box
         className='app-chat'
         sx={{

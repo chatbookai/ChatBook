@@ -13,7 +13,6 @@ const TabBilling = ({ apiPricingPlanData }: { apiPricingPlanData: PricingPlanTyp
       <Grid item xs={12}>
         <CurrentPlanCard data={apiPricingPlanData} />
       </Grid>
-
     </Grid>
   )
 }

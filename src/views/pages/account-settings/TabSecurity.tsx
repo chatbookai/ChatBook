@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -25,14 +25,20 @@ import { useTranslation } from 'react-i18next'
 
 // ** Third Party Components
 import axios from 'axios'
+import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
+import { CheckPermission } from 'src/functions/ChatBook'
 
 const TabSecurity = () => {
   // ** Hook
   const { t } = useTranslation()
+  const auth = useAuth()
+  const router = useRouter()
+  useEffect(() => {
+    CheckPermission(auth, router)
+  }, [])
 
   // ** Hook
-  const auth = useAuth()
   const [recentDeviceData, setRecentDeviceData] = useState<any[]>([])
 
   const fetchData = async function () {
@@ -58,70 +64,75 @@ const TabSecurity = () => {
 
 
   return (
-    <Grid container spacing={6}>
-      <Grid item xs={12}>
-        <ChangePasswordCard />
-      </Grid>
-
-      <Grid item xs={12}>
-        <Card>
-          <CardHeader title={`${t('Recent Devices')}`} />
-          <TableContainer>
-            <Table>
-              <TableHead sx={{ backgroundColor: 'customColors.tableHeaderBg' }}>
-                <TableRow>
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Browser')}`}</TableCell>
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Device')}`}</TableCell>
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Ip')}`}</TableCell>
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Location')}`}</TableCell>
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Recent Activities')}`}</TableCell>
-                  <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Action')}`}</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {recentDeviceData.map((row, index) => (
-                  <TableRow key={index}>
-                    <TableCell>
-                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Box component='span' sx={{ mr: 2.5, '& svg': { color: 'info.main' } }}>
-                          <Icon icon={`${BrowserTypeIcon[row.os] ?? 'mdi:microsoft-windows'}`} fontSize={20} />
-                        </Box>
-                        <Typography sx={{ whiteSpace: 'nowrap' }}>{row.browsertype}</Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant='body2' sx={{ whiteSpace: 'nowrap' }}>
-                        {row.device}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant='body2' sx={{ whiteSpace: 'nowrap' }}>
-                        {row.ipaddress}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant='body2' sx={{ whiteSpace: 'nowrap' }}>
-                        {row.location}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant='body2' sx={{ whiteSpace: 'nowrap' }}>
-                        {new Date(Number(row.recentactivities)).toLocaleString()}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant='body2' sx={{ whiteSpace: 'nowrap' }}>
-                        {row.action}
-                      </Typography>
-                    </TableCell>
+    <Fragment>
+      {auth.user && auth.user.email ? 
+      <Grid container spacing={6}>
+        <Grid item xs={12}>
+          <ChangePasswordCard />
+        </Grid>
+        <Grid item xs={12}>
+          <Card>
+            <CardHeader title={`${t('Recent Devices')}`} />
+            <TableContainer>
+              <Table>
+                <TableHead sx={{ backgroundColor: 'customColors.tableHeaderBg' }}>
+                  <TableRow>
+                    <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Browser')}`}</TableCell>
+                    <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Device')}`}</TableCell>
+                    <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Ip')}`}</TableCell>
+                    <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Location')}`}</TableCell>
+                    <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Recent Activities')}`}</TableCell>
+                    <TableCell sx={{ whiteSpace: 'nowrap' }}>{`${t('Action')}`}</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Card>
+                </TableHead>
+                <TableBody>
+                  {recentDeviceData.map((row, index) => (
+                    <TableRow key={index}>
+                      <TableCell>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                          <Box component='span' sx={{ mr: 2.5, '& svg': { color: 'info.main' } }}>
+                            <Icon icon={`${BrowserTypeIcon[row.os] ?? 'mdi:microsoft-windows'}`} fontSize={20} />
+                          </Box>
+                          <Typography sx={{ whiteSpace: 'nowrap' }}>{row.browsertype}</Typography>
+                        </Box>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant='body2' sx={{ whiteSpace: 'nowrap' }}>
+                          {row.device}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant='body2' sx={{ whiteSpace: 'nowrap' }}>
+                          {row.ipaddress}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant='body2' sx={{ whiteSpace: 'nowrap' }}>
+                          {row.location}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant='body2' sx={{ whiteSpace: 'nowrap' }}>
+                          {new Date(Number(row.recentactivities)).toLocaleString()}
+                        </Typography>
+                      </TableCell>
+                      <TableCell>
+                        <Typography variant='body2' sx={{ whiteSpace: 'nowrap' }}>
+                          {row.action}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </Card>
+        </Grid>
       </Grid>
-    </Grid>
+      :
+      null
+      }
+    </Fragment>
   )
 }
 export default TabSecurity

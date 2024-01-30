@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const addKnowledgeData: any = await addKnowledge(req.body);
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         res.status(200).json(addKnowledgeData);
     }
     else {

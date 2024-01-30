@@ -51,7 +51,7 @@ export function ChatKnowledgeInput(Message: string, UserId: number, knowledgeId:
     window.localStorage.setItem(ChatKnowledge, JSON.stringify(ChatKnowledgeList))
 }
 
-export async function ChatKnowledgeOutput(Message: string, UserId: number, knowledgeId: number, setLastMessage:any) {
+export async function ChatKnowledgeOutput(Message: string, Token: string, UserId: number, knowledgeId: number, setLastMessage:any) {
     const ChatKnowledgeHistoryText = window.localStorage.getItem(ChatKnowledgeHistory)      
     const ChatKnowledgeList = ChatKnowledgeHistoryText ? JSON.parse(ChatKnowledgeHistoryText) : []
     const History: any = []
@@ -68,6 +68,7 @@ export async function ChatKnowledgeOutput(Message: string, UserId: number, knowl
         const response = await fetch(`/api/ChatOpenaiKnowledge`, {
           method: 'POST',
           headers: {
+            Authorization: Token,
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ question: Message, history: History, knowledgeId: knowledgeId }),
@@ -212,7 +213,7 @@ export function ChatChatInput(Message: string, UserId: number, knowledgeId: numb
     window.localStorage.setItem(ChatChat, JSON.stringify(ChatChatList))
 }
 
-export async function ChatChatOutput(Message: string, UserId: number, chatId: number | string, setLastMessage:any) {
+export async function ChatChatOutput(Message: string, Token: string, UserId: number, chatId: number | string, setLastMessage:any) {
     const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []
     const History: any = []
@@ -252,6 +253,7 @@ export async function ChatChatOutput(Message: string, UserId: number, chatId: nu
             const response = await fetch(`/api/` + modelName, {
             method: 'POST',
             headers: {
+                Authorization: Token,
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ question: Message, history: History, knowledgeId: chatId }),

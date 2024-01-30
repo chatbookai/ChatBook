@@ -144,7 +144,7 @@ const SettingForm = (props: any) => {
 
   return (
     <Fragment>
-        {auth.user ?
+        {auth.user && auth.user.email ?
         <Card>
         <CardHeader title={`${knowledgeName}`} />
         <CardContent>

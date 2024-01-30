@@ -143,17 +143,19 @@ const AppChat = () => {
   }, [])
 
   const sendMsg = async (Obj: any) => {
-    setSendButtonDisable(true)
-    setSendButtonText(t("Sending") as string)
-    setSendInputText(t("Generating the answer...") as string)
-    ChatKnowledgeInput(Obj.message, userId, knowledgeId)
-    setRefreshChatCounter(refreshChatCounter + 1)
-    const ChatKnowledgeOutputStatus = await ChatKnowledgeOutput(Obj.message, userId, knowledgeId, setLastMessage)
-    if(ChatKnowledgeOutputStatus) {
-      setSendButtonDisable(false)
-      setRefreshChatCounter(refreshChatCounter + 2)
-      setSendButtonText(t("Send") as string)
-      setSendInputText(t("Type your message here...") as string)  
+    if(auth.user && auth.user.token)  {
+      setSendButtonDisable(true)
+      setSendButtonText(t("Sending") as string)
+      setSendInputText(t("Generating the answer...") as string)
+      ChatKnowledgeInput(Obj.message, userId, knowledgeId)
+      setRefreshChatCounter(refreshChatCounter + 1)
+      const ChatKnowledgeOutputStatus = await ChatKnowledgeOutput(Obj.message, auth.user.token, auth.user.id, knowledgeId, setLastMessage)
+      if(ChatKnowledgeOutputStatus) {
+        setSendButtonDisable(false)
+        setRefreshChatCounter(refreshChatCounter + 2)
+        setSendButtonText(t("Send") as string)
+        setSendInputText(t("Type your message here...") as string)  
+      }
     }
   }
 
@@ -169,7 +171,7 @@ const AppChat = () => {
 
   return (
     <Fragment>
-      {auth.user ?
+      {auth.user && auth.user.email ?
       <Box
         className='app-chat'
         sx={{

@@ -108,7 +108,7 @@ const Logs = () => {
 
   return (
     <Fragment>
-      {auth.user ?
+      {auth.user && auth.user.email ?
       <Grid container spacing={6}>    
       {store && store.data != undefined ?
         <Grid item xs={12}>

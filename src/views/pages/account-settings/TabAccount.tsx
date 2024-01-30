@@ -22,7 +22,9 @@ import { useTranslation } from 'react-i18next'
 // ** Third Party Components
 import axios from 'axios'
 import toast from 'react-hot-toast'
+import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
+import { CheckPermission } from 'src/functions/ChatBook'
 
 // ** Styled Components
 const Card = styled(MuiCard)<CardProps>(({ theme }) => ({
@@ -35,9 +37,11 @@ const schema = yup.object().shape({
 const UserAccount = () => {
   // ** Hook
   const { t } = useTranslation()
-
-  // ** Hook
   const auth = useAuth()
+  const router = useRouter()
+  useEffect(() => {
+    CheckPermission(auth, router)
+  }, [])
 
   // defaultValues 必须保存每个字段有一个确实的值
   const defaultValues = {
@@ -120,6 +124,7 @@ const UserAccount = () => {
 
   return (
     <Grid container spacing={6}>
+      {auth.user && auth.user.email ? 
       <Grid item xs={12}>
         <Card>
           <CardContent sx={{ pb: theme => `${theme.spacing(10)}` }}>
@@ -304,7 +309,9 @@ const UserAccount = () => {
           </CardContent>
         </Card>
       </Grid>
-
+      :
+      null
+      }
     </Grid>
   )
 }

@@ -1,5 +1,5 @@
 // ** React Imports
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Fragment } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -63,28 +63,34 @@ const FilesApp = () => {
   const { skin } = settings
 
   return (
-    <Box
-      className='app-chat'
-      sx={{
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        borderRadius: 1,
-        overflow: 'hidden',
-        position: 'relative',
-        backgroundColor: 'background.paper',
-        boxShadow: skin === 'bordered' ? 0 : 6,
-        ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
-      }}
-    >
-      <KnowledgeLeft
-        knowledge={knowledge}
-        setActiveId={setActiveId}
-        hidden={false}
-        knowledgeId={knowledgeId}
-      />
-      <Files knowledgeId={knowledgeId} knowledgeName={knowledgeName} userId={userId}/>
-    </Box>
+    <Fragment>
+      {auth.user ?
+      <Box
+        className='app-chat'
+        sx={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          borderRadius: 1,
+          overflow: 'hidden',
+          position: 'relative',
+          backgroundColor: 'background.paper',
+          boxShadow: skin === 'bordered' ? 0 : 6,
+          ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
+        }}
+      >
+        <KnowledgeLeft
+          knowledge={knowledge}
+          setActiveId={setActiveId}
+          hidden={false}
+          knowledgeId={knowledgeId}
+        />
+        <Files knowledgeId={knowledgeId} knowledgeName={knowledgeName} userId={userId}/>
+      </Box>
+      :
+      null
+      }
+    </Fragment>
   )
 }
 

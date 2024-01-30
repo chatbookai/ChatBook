@@ -1,5 +1,5 @@
 // ** React Imports
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Fragment } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -168,38 +168,44 @@ const AppChat = () => {
   }
 
   return (
-    <Box
-      className='app-chat'
-      sx={{
-        width: '100%',
-        display: 'flex',
-        borderRadius: 1,
-        overflow: 'hidden',
-        position: 'relative',
-        backgroundColor: 'background.paper',
-        boxShadow: skin === 'bordered' ? 0 : 6,
-        ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
-      }}
-    >
-      <KnowledgeLeft
-        knowledge={knowledge}
-        setActiveId={setActiveId}
-        hidden={false}
-        knowledgeId={knowledgeId}
-      />
-      <ChatContent
-        store={store}
-        hidden={hidden}
-        sendMsg={sendMsg}
-        mdAbove={mdAbove}
-        statusObj={statusObj}
-        sendButtonDisable={sendButtonDisable}
-        sendButtonText={sendButtonText}
-        sendInputText={sendInputText}
-        knowledgeId={knowledgeId}
-        knowledgeName={knowledgeName}
-      />
-    </Box>
+    <Fragment>
+      {auth.user ?
+      <Box
+        className='app-chat'
+        sx={{
+          width: '100%',
+          display: 'flex',
+          borderRadius: 1,
+          overflow: 'hidden',
+          position: 'relative',
+          backgroundColor: 'background.paper',
+          boxShadow: skin === 'bordered' ? 0 : 6,
+          ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
+        }}
+      >
+        <KnowledgeLeft
+          knowledge={knowledge}
+          setActiveId={setActiveId}
+          hidden={false}
+          knowledgeId={knowledgeId}
+        />
+        <ChatContent
+          store={store}
+          hidden={hidden}
+          sendMsg={sendMsg}
+          mdAbove={mdAbove}
+          statusObj={statusObj}
+          sendButtonDisable={sendButtonDisable}
+          sendButtonText={sendButtonText}
+          sendInputText={sendInputText}
+          knowledgeId={knowledgeId}
+          knowledgeName={knowledgeName}
+        />
+      </Box>
+      :
+      null
+      }
+    </Fragment>
   )
 }
 

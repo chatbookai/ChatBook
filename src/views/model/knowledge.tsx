@@ -204,110 +204,115 @@ const Knowledge = () => {
   }
 
   return (
-    <Grid container spacing={6}>
-    
-    {store && store.data != undefined ?
-      <Grid item xs={12}>
-        <Card>
-          <CardHeader title={`${t(`Knowledge`)}`} />
-          <CardContent>
+    <Fragment>
+      {auth.user ?
+      <Grid container spacing={6}>
+      {store && store.data != undefined ?
+        <Grid item xs={12}>
+          <Card>
+            <CardHeader title={`${t(`Knowledge`)}`} />
+            <CardContent>
 
-            <Grid container spacing={6}>
-              <Grid item xs={12} lg={12}>
-                <TableContainer>
-                  <Table size='small' sx={{ width: '95%' }}>
-                    <TableBody
-                      sx={{
-                        '& .MuiTableCell-root': {
-                          border: 0,
-                          pt: 2,
-                          pb: 2.5,
-                          pl: '2 !important',
-                          pr: '2 !important'
-                        }
-                      }}
-                    >
-                      <TableRow>
-                        <TableCell>
-                          <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                            <TextField
-                                fullWidth
-                                label={`${t('Name')}`}
-                                placeholder={`${t('Name')}`}
-                                value={name}
-                                onChange={handleNameChange}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                        <Icon icon='mdi:account-outline' />
-                                        </InputAdornment>
-                                    )
-                                }}
-                                size="small"
-                                error={!!nameError}
-                                helperText={nameError}
-                            />
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                            <TextField
-                                fullWidth
-                                label={`${t('Summary')}`}
-                                placeholder={`${t('Summary')}`}
-                                value={summary}
-                                onChange={handleSummaryChange}
-                                InputProps={{
-                                    startAdornment: (
-                                        <InputAdornment position='start'>
-                                        <Icon icon='mdi:account-outline' />
-                                        </InputAdornment>
-                                    )
-                                }}
-                                size="small"
-                                error={!!summaryError}
-                                helperText={summaryError}
-                            />
-                          </Typography>
-                        </TableCell>
-                        <TableCell>
-                          <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                            <Button type='submit' variant='contained' onClick={handleSubmit} disabled={isDisabledButton} >
-                                {uploadingButton}
-                            </Button>
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
+              <Grid container spacing={6}>
+                <Grid item xs={12} lg={12}>
+                  <TableContainer>
+                    <Table size='small' sx={{ width: '95%' }}>
+                      <TableBody
+                        sx={{
+                          '& .MuiTableCell-root': {
+                            border: 0,
+                            pt: 2,
+                            pb: 2.5,
+                            pl: '2 !important',
+                            pr: '2 !important'
+                          }
+                        }}
+                      >
+                        <TableRow>
+                          <TableCell>
+                            <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
+                              <TextField
+                                  fullWidth
+                                  label={`${t('Name')}`}
+                                  placeholder={`${t('Name')}`}
+                                  value={name}
+                                  onChange={handleNameChange}
+                                  InputProps={{
+                                      startAdornment: (
+                                          <InputAdornment position='start'>
+                                          <Icon icon='mdi:account-outline' />
+                                          </InputAdornment>
+                                      )
+                                  }}
+                                  size="small"
+                                  error={!!nameError}
+                                  helperText={nameError}
+                              />
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
+                              <TextField
+                                  fullWidth
+                                  label={`${t('Summary')}`}
+                                  placeholder={`${t('Summary')}`}
+                                  value={summary}
+                                  onChange={handleSummaryChange}
+                                  InputProps={{
+                                      startAdornment: (
+                                          <InputAdornment position='start'>
+                                          <Icon icon='mdi:account-outline' />
+                                          </InputAdornment>
+                                      )
+                                  }}
+                                  size="small"
+                                  error={!!summaryError}
+                                  helperText={summaryError}
+                              />
+                            </Typography>
+                          </TableCell>
+                          <TableCell>
+                            <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
+                              <Button type='submit' variant='contained' onClick={handleSubmit} disabled={isDisabledButton} >
+                                  {uploadingButton}
+                              </Button>
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Grid>
               </Grid>
-            </Grid>
 
-          </CardContent>
+            </CardContent>
 
-          <Divider />
-          <DataGrid
-            autoHeight
-            rows={store.data}
-            rowCount={store.total as number}
-            columns={columns}
-            sortingMode='server'
-            paginationMode='server'
-            filterMode="server"
-            loading={isLoading}
-            disableRowSelectionOnClick
-            pageSizeOptions={[10, 15, 20, 30, 50, 100]}
-            paginationModel={paginationModel}
-            onPaginationModelChange={setPaginationModel}
-            disableColumnMenu={true}
-          />
-        </Card>
+            <Divider />
+            <DataGrid
+              autoHeight
+              rows={store.data}
+              rowCount={store.total as number}
+              columns={columns}
+              sortingMode='server'
+              paginationMode='server'
+              filterMode="server"
+              loading={isLoading}
+              disableRowSelectionOnClick
+              pageSizeOptions={[10, 15, 20, 30, 50, 100]}
+              paginationModel={paginationModel}
+              onPaginationModelChange={setPaginationModel}
+              disableColumnMenu={true}
+            />
+          </Card>
+        </Grid>
+        :
+        <Fragment></Fragment>
+      }
       </Grid>
       :
-      <Fragment></Fragment>
-    }
-    </Grid>
+      null
+      }
+    </Fragment>
   )
 }
 

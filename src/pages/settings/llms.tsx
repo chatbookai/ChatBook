@@ -1,5 +1,5 @@
 // ** React Imports
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Fragment } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -14,6 +14,9 @@ import LLMSLeft from 'src/views/form/LLMSLeft'
 import SettingLLMSOpenAI from 'src/views/form/SettingLLMSOpenAI';
 
 import { GetAllLLMS } from 'src/functions/ChatBook'
+import { useAuth } from 'src/hooks/useAuth'
+import { useRouter } from 'next/router'
+import { CheckPermission } from 'src/functions/ChatBook'
 
 const SettingApiModelAPP = () => {
 
@@ -26,6 +29,12 @@ const SettingApiModelAPP = () => {
 
   // ** Hooks
   const theme = useTheme()
+  const auth = useAuth()
+  const router = useRouter()
+  useEffect(() => {
+    CheckPermission(auth, router)
+  }, [])
+
   const { settings } = useSettings()
 
   const AllLLMS: any[] = GetAllLLMS()
@@ -52,28 +61,34 @@ const SettingApiModelAPP = () => {
   const { skin } = settings
 
   return (
-    <Box
-      className='app-chat'
-      sx={{
-        width: '100%',
-        height: '100%',
-        display: 'flex',
-        borderRadius: 1,
-        overflow: 'hidden',
-        position: 'relative',
-        backgroundColor: 'background.paper',
-        boxShadow: skin === 'bordered' ? 0 : 6,
-        ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
-      }}
-    >
-      <LLMSLeft
-        llms={llms}
-        setActiveId={setActiveId}
-        hidden={false}
-        chatId={llmsId}
-      />
-      <SettingLLMSOpenAI llmsId={llmsId} llmsName={llmsName} userId={userId}/>
-    </Box>
+    <Fragment>
+      {auth.user ?
+      <Box
+        className='app-chat'
+        sx={{
+          width: '100%',
+          height: '100%',
+          display: 'flex',
+          borderRadius: 1,
+          overflow: 'hidden',
+          position: 'relative',
+          backgroundColor: 'background.paper',
+          boxShadow: skin === 'bordered' ? 0 : 6,
+          ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
+        }}
+      >
+        <LLMSLeft
+          llms={llms}
+          setActiveId={setActiveId}
+          hidden={false}
+          chatId={llmsId}
+        />
+        <SettingLLMSOpenAI llmsId={llmsId} llmsName={llmsName} userId={userId}/>
+      </Box>
+      :
+      null
+      }
+    </Fragment>
   )
 }
 

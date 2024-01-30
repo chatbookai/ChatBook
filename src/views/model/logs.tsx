@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next'
 import { isMobile } from 'src/configs/functions'
 import { CheckPermission } from 'src/functions/ChatBook'
 
-const Files = () => {
+const Logs = () => {
   // ** Hook
   const { t } = useTranslation()
   const auth = useAuth()
@@ -107,36 +107,41 @@ const Files = () => {
   ]
 
   return (
-    <Grid container spacing={6}>
-    
-    {store && store.data != undefined ?
-      <Grid item xs={12}>
-        <Card>
-          <CardHeader title={`${t(`Logs`)}`} />
-          <Divider />
-          <DataGrid
-            autoHeight
-            rows={store.data}
-            rowCount={store.total as number}
-            columns={columns}
-            sortingMode='server'
-            paginationMode='server'
-            filterMode="server"
-            loading={isLoading}
-            disableRowSelectionOnClick
-            pageSizeOptions={[10, 15, 20, 30, 50, 100]}
-            paginationModel={paginationModel}
-            onPaginationModelChange={setPaginationModel}
-            disableColumnMenu={true}
-          />
-        </Card>
+    <Fragment>
+      {auth.user ?
+      <Grid container spacing={6}>    
+      {store && store.data != undefined ?
+        <Grid item xs={12}>
+          <Card>
+            <CardHeader title={`${t(`Logs`)}`} />
+            <Divider />
+            <DataGrid
+              autoHeight
+              rows={store.data}
+              rowCount={store.total as number}
+              columns={columns}
+              sortingMode='server'
+              paginationMode='server'
+              filterMode="server"
+              loading={isLoading}
+              disableRowSelectionOnClick
+              pageSizeOptions={[10, 15, 20, 30, 50, 100]}
+              paginationModel={paginationModel}
+              onPaginationModelChange={setPaginationModel}
+              disableColumnMenu={true}
+            />
+          </Card>
+        </Grid>
+        :
+        <Fragment></Fragment>
+      }
       </Grid>
       :
-      <Fragment></Fragment>
-    }
-    </Grid>
+      null
+      }
+    </Fragment>
   )
 }
 
-export default Files
+export default Logs
 

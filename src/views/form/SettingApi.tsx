@@ -144,6 +144,7 @@ const SettingForm = (props: any) => {
 
   return (
     <Fragment>
+        {auth.user ?
         <Card>
         <CardHeader title={`${knowledgeName}`} />
         <CardContent>
@@ -230,7 +231,9 @@ const SettingForm = (props: any) => {
             </Grid>
         </CardContent>
         </Card>
-        
+        :
+        null
+        }        
     </Fragment>
   )
 }

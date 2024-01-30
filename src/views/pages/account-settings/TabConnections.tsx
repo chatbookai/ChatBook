@@ -5,6 +5,8 @@ import Card from '@mui/material/Card'
 import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
+import { useTranslation } from 'react-i18next'
+import { t } from 'i18next'
 
 interface ConnectedAccountsType {
   title: string
@@ -18,17 +20,19 @@ const connectedAccountsArr: ConnectedAccountsType[] = [
     checked: true,
     title: 'Google',
     logo: '/images/logos/google.png',
-    subtitle: 'Calendar and Contacts'
+    subtitle: t('Google Account')
   },
   {
     checked: true,
     title: 'Github',
     logo: '/images/logos/github.png',
-    subtitle: 'Manage your Git repositories'
+    subtitle: t('Github Account')
   }
 ]
 
 const TabConnections = () => {
+  const { t } = useTranslation()
+
   return (
     <Card>
       <Grid container spacing={5}>
@@ -36,9 +40,9 @@ const TabConnections = () => {
         <Grid item xs={12} md={6}>
           <CardContent>
             <Box sx={{ mb: 6 }}>
-              <Typography variant='h6'>Connected Accounts</Typography>
+              <Typography variant='h6'>{`${t('Connected Accounts')}`}</Typography>
               <Typography variant='body1' sx={{ color: 'text.secondary' }}>
-                Display content from your connected accounts on your site
+                {`${t('Display content from your connected accounts on your site')}`}
               </Typography>
             </Box>
             {connectedAccountsArr.map(account => {

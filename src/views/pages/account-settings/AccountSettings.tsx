@@ -18,6 +18,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
+import { useTranslation } from 'react-i18next'
 
 // ** Types
 import { PricingPlanType } from 'src/@core/components/plan-details/types'
@@ -57,6 +58,7 @@ const AccountSettings = ({ tab, apiPricingPlanData }: { tab: string; apiPricingP
   // ** Hooks
   const router = useRouter()
   const hideText = useMediaQuery((theme: Theme) => theme.breakpoints.down('md'))
+  const { t } = useTranslation()
 
   const handleChange = (event: SyntheticEvent, value: string) => {
     setIsLoading(true)
@@ -95,7 +97,7 @@ const AccountSettings = ({ tab, apiPricingPlanData }: { tab: string; apiPricingP
                   label={
                     <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
                       <Icon icon='mdi:account-outline' />
-                      {!hideText && 'Account'}
+                      {!hideText && t('Account')}
                     </Box>
                   }
                 />
@@ -104,7 +106,7 @@ const AccountSettings = ({ tab, apiPricingPlanData }: { tab: string; apiPricingP
                   label={
                     <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
                       <Icon icon='mdi:lock-open-outline' />
-                      {!hideText && 'Security'}
+                      {!hideText && t('Security')}
                     </Box>
                   }
                 />
@@ -113,7 +115,7 @@ const AccountSettings = ({ tab, apiPricingPlanData }: { tab: string; apiPricingP
                   label={
                     <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
                       <Icon icon='mdi:bookmark-outline' />
-                      {!hideText && 'Billing'}
+                      {!hideText && t('Billing')}
                     </Box>
                   }
                 />
@@ -122,7 +124,7 @@ const AccountSettings = ({ tab, apiPricingPlanData }: { tab: string; apiPricingP
                   label={
                     <Box sx={{ display: 'flex', alignItems: 'center', ...(!hideText && { '& svg': { mr: 2 } }) }}>
                       <Icon icon='mdi:link' />
-                      {!hideText && 'Connections'}
+                      {!hideText && t('Connections')}
                     </Box>
                   }
                 />

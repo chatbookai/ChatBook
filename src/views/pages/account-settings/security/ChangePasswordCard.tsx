@@ -27,6 +27,8 @@ import { useAuth } from 'src/hooks/useAuth'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 
+import { useTranslation } from 'react-i18next'
+
 interface State {
   showNewPassword: boolean
   showCurrentPassword: boolean
@@ -57,6 +59,8 @@ const schema = yup.object().shape({
 
 const ChangePasswordCard = () => {
   
+  // ** Hook
+  const { t } = useTranslation()
   const auth = useAuth()
 
   // ** States
@@ -113,14 +117,14 @@ const ChangePasswordCard = () => {
 
   return (
     <Card>
-      <CardHeader title='Change Password' />
+      <CardHeader title={`${t('Change Password')}`} />
       <CardContent>
         <form onSubmit={handleSubmit(onPasswordFormSubmit)}>
           <Grid container spacing={5}>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel htmlFor='input-current-password' error={Boolean(errors.currentPassword)}>
-                  Current Password
+                  {`${t('Current Password')}`}
                 </InputLabel>
                 <Controller
                   name='currentPassword'
@@ -129,7 +133,7 @@ const ChangePasswordCard = () => {
                   render={({ field: { value, onChange } }) => (
                     <OutlinedInput
                       value={value}
-                      label='Current Password'
+                      label={`${t('Current Password')}`}
                       onChange={onChange}
                       id='input-current-password'
                       error={Boolean(errors.currentPassword)}
@@ -158,7 +162,7 @@ const ChangePasswordCard = () => {
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel htmlFor='input-new-password' error={Boolean(errors.newPassword)}>
-                  New Password
+                  {`${t('New Password')}`}
                 </InputLabel>
                 <Controller
                   name='newPassword'
@@ -167,7 +171,7 @@ const ChangePasswordCard = () => {
                   render={({ field: { value, onChange } }) => (
                     <OutlinedInput
                       value={value}
-                      label='New Password'
+                      label={`${t('New Password')}`}
                       onChange={onChange}
                       id='input-new-password'
                       error={Boolean(errors.newPassword)}
@@ -194,7 +198,7 @@ const ChangePasswordCard = () => {
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel htmlFor='input-confirm-new-password' error={Boolean(errors.confirmNewPassword)}>
-                  Confirm New Password
+                {`${t('Confirm New Password')}`}
                 </InputLabel>
                 <Controller
                   name='confirmNewPassword'
@@ -203,7 +207,7 @@ const ChangePasswordCard = () => {
                   render={({ field: { value, onChange } }) => (
                     <OutlinedInput
                       value={value}
-                      label='Confirm New Password'
+                      label={`${t('Confirm New Password')}`}
                       onChange={onChange}
                       id='input-confirm-new-password'
                       error={Boolean(errors.confirmNewPassword)}
@@ -228,22 +232,22 @@ const ChangePasswordCard = () => {
               </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <Typography sx={{ mt: 1, color: 'text.secondary' }}>Password Requirements:</Typography>
+              <Typography sx={{ mt: 1, color: 'text.secondary' }}>{`${t('Password Requirements')}`}:</Typography>
               <Box
                 component='ul'
                 sx={{ pl: 4, mb: 0, '& li': { mb: 4, color: 'text.secondary', '&::marker': { fontSize: '1.25rem' } } }}
               >
-                <li>Minimum 8 characters long - the more, the better</li>
-                <li>At least one lowercase & one uppercase character</li>
-                <li>At least one number, symbol, or whitespace character</li>
+                <li>{`${t('Minimum 8 characters long - the more, the better')}`}</li>
+                <li>{`${t('At least one lowercase & one uppercase character')}`}</li>
+                <li>{`${t('At least one number, symbol, or whitespace character')}`}</li>
               </Box>
             </Grid>
             <Grid item xs={12}>
               <Button variant='contained' type='submit' sx={{ mr: 3 }}>
-                Save Changes
+              {`${t('Save Changes')}`}
               </Button>
               <Button type='reset' variant='outlined' color='secondary' onClick={() => reset()}>
-                Reset
+              {`${t('Reset')}`}
               </Button>
             </Grid>
           </Grid>

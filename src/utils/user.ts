@@ -11,10 +11,9 @@
 
   dotenv.config();
 
-  const [DataDir, db, userId] = setting()
+  const [DataDir, db] = setting()
 
   console.log("DataDir***********************", DataDir)
-  console.log("userId***********************", userId)
 
   const secretKey: string = process.env.JWT_TOKEN_SECRET_KEY || "ChatBookAI"; 
 
@@ -22,7 +21,7 @@
   const getDbRecordALL = promisify(db.all.bind(db));
   
   export const createJwtToken = (userId: string, email: string, role: string) => {
-    const token = jwt.sign({ userId, email, role }, secretKey, { expiresIn: '1d' });
+    const token = jwt.sign({ id: userId, email, role }, secretKey, { expiresIn: '1d' });
 
     return token;
   };

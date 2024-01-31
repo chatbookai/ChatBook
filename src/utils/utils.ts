@@ -4,15 +4,18 @@ import path from 'path'
 import * as crypto from 'crypto'
 import sqlite3 from 'sqlite3';
 import validator from 'validator';
+import { promisify } from 'util';
+import { DataDir, CONDENSE_TEMPLATE_INIT, QA_TEMPLATE_INIT } from './const';
 
-const DataDir = "./data"
-const userId = 1
 
 // @ts-ignore
 const db: any = new sqlite3.Database(DataDir + '/ChatBookSqlite3.db', { encoding: 'utf8' });
+const getDbRecord = promisify(db.get.bind(db));
+const getDbRecordALL = promisify(db.all.bind(db));
+
 
 export function setting() {
-  return [DataDir, db, userId]
+  return [DataDir, db]
 }
 
 export function enableDir(directoryPath: string): void {
@@ -32,19 +35,12 @@ export function enableDir(directoryPath: string): void {
 
 export async function getLLMSSetting(knowledgeId: number | string) {
   const knowledgeIdFilter = filterString(knowledgeId)
-  const userIdFilter = Number(userId)
-  const SettingRS: any[] = await new Promise((resolve, reject) => {
-          db.all("SELECT name,content from setting where type='openaisetting' and knowledgeId='"+knowledgeIdFilter+"' and userId='"+userIdFilter+"'", (err: any, result: any) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(result ? result : null);
-            }
-          });
-        });
+  
+  const RecordsAll: any[] = await getDbRecordALL(`SELECT name,content from setting where type='openaisetting' and knowledgeId = ? `, [knowledgeIdFilter]) || [];
+
   const OpenAISetting: any = {}
-  if(SettingRS)  {
-    SettingRS.map((Item: any)=>{
+  if(RecordsAll)  {
+    RecordsAll.map((Item: any)=>{
       OpenAISetting[Item.name] = Item.content
     })
   }
@@ -54,7 +50,7 @@ export async function getLLMSSetting(knowledgeId: number | string) {
 
 export async function setOpenAISetting(Params: any) {
   const knowledgeIdFilter = filterString(Params.knowledgeId)
-  const userIdFilter = Number(userId)
+  const userIdFilter = filterString(Params.userId)
   try {
     const insertSetting = db.prepare('INSERT OR REPLACE INTO setting (name, content, type, knowledgeId, userId) VALUES (?, ?, ?, ?, ?)');
     insertSetting.run('OPENAI_API_BASE', Params.OPENAI_API_BASE, 'openaisetting', knowledgeIdFilter, userIdFilter);
@@ -70,19 +66,12 @@ export async function setOpenAISetting(Params: any) {
   return {"status":"ok", "msg":"Updated Success"}
 }
 
-export async function getTemplate(knowledgeId: number | string) {
+export async function getTemplate(knowledgeId: number | string, userId: string) {
   const knowledgeIdFilter = filterString(knowledgeId)
   const userIdFilter = Number(userId)
-  const SettingRS: any[] = await new Promise((resolve, reject) => {
-          const Templatename = "TEMPLATE"
-          db.all("SELECT name,content from setting where type='"+Templatename+"' and knowledgeId='"+knowledgeIdFilter+"' and userId='"+userIdFilter+"'", (err: any, result: any) => {
-            if (err) {
-              reject(err);
-            } else {
-              resolve(result ? result : null);
-            }
-          });
-        });
+  
+  const SettingRS: any[] = await getDbRecordALL(`SELECT name,content from setting where type='TEMPLATE' and knowledgeId = ? and userId = ? `, [knowledgeIdFilter, userIdFilter]) || [];
+  
   const Template: any = {}
   if(SettingRS)  {
     SettingRS.map((Item: any)=>{
@@ -96,7 +85,7 @@ export async function getTemplate(knowledgeId: number | string) {
 export async function setTemplate(Params: any) {
   try{
     const knowledgeIdFilter = Number(Params.knowledgeId)
-    const userIdFilter = Number(userId)
+    const userIdFilter = Params.userId
     const Templatename = "TEMPLATE"
     const insertSetting = db.prepare('INSERT OR REPLACE INTO setting (name, content, type, knowledgeId, userId) VALUES (?, ?, ?, ?, ?)');
     insertSetting.run('CONDENSE_TEMPLATE', Params.CONDENSE_TEMPLATE, Templatename, knowledgeIdFilter, userIdFilter);
@@ -112,27 +101,39 @@ export async function setTemplate(Params: any) {
 
 export async function addKnowledge(Params: any) {
   try{
-    const userIdFilter = Number(userId)
+    console.log("ParamsParamsParamsParamsParams", Params)
+    const userIdFilter = Params.userId
     Params.name = filterString(Params.name)
     Params.summary = filterString(Params.summary)
-    const RecordId = await new Promise((resolve, reject) => {
-      db.get("SELECT id from knowledge where name = '"+filterString(Params.name)+"' and userId = '"+userIdFilter+"'", (err: any, result: any) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(result ? result.id : null);
-        }
-      });
-    });
-    console.log("RecordId", RecordId, userId)
-    if(RecordId) {
+
+    const Records: any = await getDbRecord("SELECT id from knowledge where name = ? and userId = ?", [Params.name, userIdFilter]);
+    const RecordId: number = Records ? Records.id : 0;
+
+    console.log("RecordId", RecordId, Params.userId)
+    if(RecordId > 0) {
       Params.id = RecordId
       setKnowledge(Params)
     }
     else {
       const insertSetting = db.prepare('INSERT OR REPLACE INTO knowledge (name, summary, timestamp, userId) VALUES (?, ?, ?, ?)');
       insertSetting.run(Params.name, Params.summary, Date.now(), userIdFilter);
-      insertSetting.finalize();
+
+      insertSetting.run(Params.name, Params.summary, Date.now(), userIdFilter, function(err: any) {
+        if (err) {
+          console.error(err.message);
+          return;
+        }
+
+        //@ts-ignore
+        const lastInsertId = this.lastID;
+        console.log('Last inserted ID:', lastInsertId);
+        insertSetting.finalize();
+        if(lastInsertId) {
+          const TemplateInfo = {knowledgeId: lastInsertId, CONDENSE_TEMPLATE: CONDENSE_TEMPLATE_INIT, QA_TEMPLATE: QA_TEMPLATE_INIT, userId: userIdFilter}
+          setTemplate(TemplateInfo)
+        }
+
+      });
     }
   }
   catch (error: any) {
@@ -141,6 +142,7 @@ export async function addKnowledge(Params: any) {
 
   return {"status":"ok", "msg":"Updated Success"}
 }
+
 
 export async function setKnowledge(Params: any) {
   try{
@@ -179,7 +181,7 @@ export function uploadfiles() {
   return upload
 }
 
-export async function uploadfilesInsertIntoDb(files: any[], knowledgeId: number | string) {
+export async function uploadfilesInsertIntoDb(files: any[], knowledgeId: number | string, userId: string) {
   //const originalName = Buffer.from(files[0].originalname, 'hex').toString('utf8');
   //log("originalName", files[0].originalname)
   const filesInfo = files.map((file: any) => {
@@ -211,7 +213,7 @@ export async function uploadfilesInsertIntoDb(files: any[], knowledgeId: number 
   insertFiles.finalize();
 }
 
-export async function InsertFilesDb(knowledgeId: number | string, originalFilename: string, FileNameNew: string, FileHash: string) {
+export async function InsertFilesDb(knowledgeId: number | string, originalFilename: string, FileNameNew: string, FileHash: string, userId: string) {
   console.log("originalFilenameoriginalFilenameoriginalFilename", originalFilename)
   const insertFiles = db.prepare('INSERT OR IGNORE INTO files (knowledgeId, suffixName, newName, originalName, hash, timestamp, userId) VALUES (?,?,?,?,?,?,?)');
   const suffixName = path.extname(originalFilename).toLowerCase();
@@ -223,24 +225,9 @@ export async function getFilesPage(pageid: number, pagesize: number) {
   const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
   const From = pageidFiler * pagesizeFiler;
-  const RecordsTotal: number = await new Promise((resolve, reject) => {
-    db.get("SELECT COUNT(*) AS NUM from files", (err: any, result: any) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(result ? result.NUM : null);
-      }
-    });
-  });
-  const RecordsAll: any[] = await new Promise((resolve, reject) => {
-                          db.all("SELECT * from files where 1=1 order by status desc, timestamp desc limit "+ Number(pagesize) +" offset "+ From +"", (err: any, result: any) => {
-                            if (err) {
-                              reject(err);
-                            } else {
-                              resolve(result ? result : null);
-                            }
-                          });
-                        });
+  const Records: any = await getDbRecord("SELECT COUNT(*) AS NUM from files");
+  const RecordsTotal: number = Records ? Records.NUM : 0;
+  const RecordsAll: any[] = await getDbRecordALL(`SELECT * from files where 1=1 order by status desc, timestamp desc limit ? OFFSET ? `, [pagesizeFiler, From]) || [];
   let RSDATA: any[] = []
   if(RecordsAll != undefined) {
     RSDATA = await Promise.all(
@@ -277,24 +264,11 @@ export async function getFilesKnowledgeId(knowledgeId: number | string, pageid: 
   const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
   const From = pageidFiler * pagesizeFiler;
-  const RecordsTotal: number = await new Promise((resolve, reject) => {
-    db.get("SELECT COUNT(*) AS NUM from files where knowledgeId = '"+KnowledgeIdFiler+"'", (err: any, result: any) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(result ? result.NUM : null);
-      }
-    });
-  });
-  const RecordsAll: any[] = await new Promise((resolve, reject) => {
-                          db.all("SELECT * from files where knowledgeId = '"+KnowledgeIdFiler+"' order by status desc, timestamp desc limit "+ Number(pagesize) +" offset "+ From +"", (err: any, result: any) => {
-                            if (err) {
-                              reject(err);
-                            } else {
-                              resolve(result ? result : null);
-                            }
-                          });
-                        });
+  
+  const Records: any = await getDbRecord("SELECT COUNT(*) AS NUM from files where knowledgeId = ?", [KnowledgeIdFiler]);
+  const RecordsTotal: number = Records ? Records.NUM : 0;
+  const RecordsAll: any[] = await getDbRecordALL(`SELECT * from files where knowledgeId = ? order by status desc, timestamp desc limit ? OFFSET ? `, [KnowledgeIdFiler, pagesizeFiler, From]) || [];
+
   let RSDATA = []
   if(RecordsAll != undefined) {
     RSDATA = await Promise.all(
@@ -325,15 +299,8 @@ export async function getFilesKnowledgeId(knowledgeId: number | string, pageid: 
 }
 
 export async function getFilesNotParsed() {
-  return await new Promise((resolve, reject) => {
-                          db.all("SELECT * from files where status = '0' order by timestamp asc limit 10 ", (err: any, result: any) => {
-                            if (err) {
-                              reject(err);
-                            } else {
-                              resolve(result ? result : null);
-                            }
-                          });
-                        });
+  const RecordsAll: any[] = await getDbRecordALL(`SELECT * from files where status = '0' order by timestamp asc limit 10 `) || [];
+  return RecordsAll;
 }
 
 export async function getChatLogByKnowledgeIdAndUserId(knowledgeId: number | string, userId: number, pageid: number, pagesize: number) {
@@ -342,38 +309,14 @@ export async function getChatLogByKnowledgeIdAndUserId(knowledgeId: number | str
   const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
   const From = pageidFiler * pagesizeFiler;
-  const RecordsTotal: number = await new Promise((resolve, reject) => {
-    db.get("SELECT COUNT(*) AS NUM from chatlog where knowledgeId = '"+KnowledgeIdFiler+"' and userId = '"+userIdFiler+"'", (err: any, result: any) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(result ? result.NUM : null);
-      }
-    });
-  });
-  const RecordsAll: any[] = await new Promise((resolve, reject) => {
-                          db.all("SELECT * from chatlog where knowledgeId = '"+KnowledgeIdFiler+"' and userId = '"+userIdFiler+"' order by timestamp desc limit "+ Number(pagesize) +" offset "+ From +"", (err: any, result: any) => {
-                            if (err) {
-                              reject(err);
-                            } else {
-                              resolve(result ? result : null);
-                            }
-                          });
-                        });
-  let RSDATA = []
-  if(RecordsAll != undefined) {
-    RSDATA = await Promise.all(
-      RecordsAll.map(async (Item)=>{
 
-          return Item
-        })
-    );
+  const Records: any = await getDbRecord("SELECT COUNT(*) AS NUM from chatlog where knowledgeId = ? and userId = ?", [KnowledgeIdFiler, userIdFiler]);
+  const RecordsTotal: number = Records ? Records.NUM : 0;
+  const RecordsAll: any[] = await getDbRecordALL(`SELECT * from chatlog where knowledgeId = ? and userId = ? order by id desc limit ? OFFSET ? `, [KnowledgeIdFiler, userIdFiler, pagesizeFiler, From]) || [];
 
-    //log("getChatLogByKnowledgeIdAndUserId", RSDATA)
-  }
   const RS: any = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
-  RS['data'] = RSDATA.filter(element => element !== null && element !== undefined && element !== '');
+  RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
   RS['from'] = From;
   RS['pageid'] = pageidFiler;
   RS['pagesize'] = pagesizeFiler;
@@ -386,36 +329,14 @@ export async function getLogsPage(pageid: number, pagesize: number) {
   const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
   const From = pageidFiler * pagesizeFiler;
-  const RecordsTotal: number = await new Promise((resolve, reject) => {
-    db.get("SELECT COUNT(*) AS NUM from logs", (err: any, result: any) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(result ? result.NUM : null);
-      }
-    });
-  });
-  const RecordsAll: any[] = await new Promise((resolve, reject) => {
-                          db.all("SELECT * from logs where 1=1 order by id desc limit "+ pagesizeFiler +" offset "+ From +"", (err: any, result: any) => {
-                            if (err) {
-                              reject(err);
-                            } else {
-                              resolve(result ? result : null);
-                            }
-                          });
-                        });
-  let RSDATA = []
-  if(RecordsAll != undefined) {
-    RSDATA = await Promise.all(
-      RecordsAll.map(async (Item)=>{
 
-          return Item
-        })
-    );
-  }
+  const Records: any = await getDbRecord("SELECT COUNT(*) AS NUM from logs ");
+  const RecordsTotal: number = Records ? Records.NUM : 0;
+  const RecordsAll: any[] = await getDbRecordALL(`SELECT * from logs order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]) || [];
+  
   const RS: any = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
-  RS['data'] = RSDATA.filter(element => element !== null && element !== undefined && element !== '');
+  RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
   RS['from'] = From;
   RS['pageid'] = pageidFiler;
   RS['pagesize'] = pagesizeFiler;
@@ -425,42 +346,19 @@ export async function getLogsPage(pageid: number, pagesize: number) {
 }
 
 export async function getKnowledgePage(pageid: number, pagesize: number) {
-  const userIdFiler = Number(userId) < 0 ? 0 : Number(userId) || 1;
   const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
   const From = pageidFiler * pagesizeFiler;
   console.log("pageidFiler", pageidFiler)
   console.log("pagesizeFiler", pagesizeFiler)
-  const RecordsTotal: number = await new Promise((resolve, reject) => {
-    db.get("SELECT COUNT(*) AS NUM from knowledge where userId='"+userIdFiler+"'", (err: any, result: any) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(result ? result.NUM : null);
-      }
-    });
-  });
-  const RecordsAll: any[] = await new Promise((resolve, reject) => {
-                          db.all("SELECT * from knowledge where userId='"+userIdFiler+"' order by id desc limit "+ pagesizeFiler +" offset "+ From +"", (err: any, result: any) => {
-                            if (err) {
-                              reject(err);
-                            } else {
-                              resolve(result ? result : null);
-                            }
-                          });
-                        });
-  let RSDATA = []
-  if(RecordsAll != undefined) {
-    RSDATA = await Promise.all(
-      RecordsAll.map(async (Item)=>{
 
-          return Item
-        })
-    );
-  }
+  const Records: any = await getDbRecord("SELECT COUNT(*) AS NUM from knowledge where userId = ? ");
+  const RecordsTotal: number = Records ? Records.NUM : 0;
+  const RecordsAll: any[] = await getDbRecordALL(`SELECT * from knowledge order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]) || [];
+  
   const RS: any = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
-  RS['data'] = RSDATA.filter(element => element !== null && element !== undefined && element !== '');
+  RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
   RS['from'] = From;
   RS['pageid'] = pageidFiler;
   RS['pagesize'] = pagesizeFiler;
@@ -479,44 +377,31 @@ export function timestampToDate(timestamp: number | string) {
 }
 
 export async function log(Action1: string | any, Action2: string | any='', Action3: string | any='', Action4: string | any='', Action5: string | any='', Action6: string | any='', Action7: string | any='', Action8: string | any='', Action9: string | any='', Action10: string | any='') {
+  const userId = 0
   const currentDate = new Date();
   const currentDateTime = currentDate.toLocaleString();
   const content = JSON.stringify(Action1) +" "+ JSON.stringify(Action2) +" "+ JSON.stringify(Action3) +" "+ JSON.stringify(Action4) +" "+ JSON.stringify(Action5) +" "+ JSON.stringify(Action6) +" "+ JSON.stringify(Action7) +" "+ JSON.stringify(Action8) +" "+ JSON.stringify(Action9) +" "+ JSON.stringify(Action10);
   const insertStat = db.prepare('INSERT OR REPLACE INTO logs (datetime, content, knowledgeId, userId) VALUES (? ,? ,? ,?)');
   insertStat.run(currentDateTime, content, 0, userId);
   insertStat.finalize();
-  console.log(Action1, Action2, Action3, Action4, Action5, Action6, Action7, Action8, Action9, Action10)
+  console.log(userId, Action1, Action2, Action3, Action4, Action5, Action6, Action7, Action8, Action9, Action10)
 }
 
 export async function deleteLog() {
-  const MaxId: number = await new Promise((resolve, reject) => {
-    db.get("SELECT MAX(id) AS NUM FROM logs", (err: any, result: any) => {
-      if (err) {
-        reject(err);
-      } 
-      else {
-        resolve(result ? result.NUM : null);
-      }
-    });
-  });
-  const DeleteId = MaxId - 1000;
-  const DeleteLog = db.prepare("delete from logs where id < ?");
-  DeleteLog.run(DeleteId);
-  DeleteLog.finalize();
+  const Records: any = await getDbRecord("SELECT MAX(id) AS NUM FROM logs");
+  const MaxId: number = Records ? Records.NUM : 0;
+  if(MaxId > 1000) {
+    const DeleteId = MaxId - 1000;
+    const DeleteLog = db.prepare("delete from logs where id < ?");
+    DeleteLog.run(DeleteId);
+    DeleteLog.finalize();
+  }
 }
 
 export async function GetSetting(Name: string, knowledgeId: number | string, userId: number) {
-
-  return await new Promise((resolve, reject) => {
-    db.get("SELECT content FROM setting where name='"+Name+"' and knowledgeId='"+knowledgeId+"' and userId='"+userId+"'", (err: any, result: any) => {
-      if (err) {
-        reject(err);
-      } 
-      else {
-        resolve(result ? String(result.content) : '');
-      }
-    });
-  });
+  const Records: any = await getDbRecord("SELECT content FROM setting where name = ? and knowledgeId = ? and userId = ? ", [Name, knowledgeId, userId]);
+  
+  return Records ? Records.content : '';
 }
 
 export function calculateFileHashSync(filePath: string) {
@@ -582,12 +467,12 @@ export function copyFileSync(source: string, destination: string) {
   try {
     const content = fs.readFileSync(source);
     fs.writeFileSync(destination, content);
-    log('File copied successfully!');
+    log('0', 'File copied successfully!');
 
     return true;
   } 
   catch (error: any) {
-    log('Error copying file:', error);
+    log('0', 'Error copying file:', error);
 
     return false;
   }

@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
-        const GenereateImageUsingDallE2Data = await GenereateImageUsingDallE2(res, "Dall-E-2", question, '1024x1024');
+        const GenereateImageUsingDallE2Data = await GenereateImageUsingDallE2(res, "Dall-E-2", checkUserTokenData.data.id, question, '1024x1024');
         res.status(200).json(GenereateImageUsingDallE2Data);
     }
     else {

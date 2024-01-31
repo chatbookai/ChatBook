@@ -7,7 +7,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
-        const setTemplateData: any = await setTemplate(req.body);
+        const setTemplateData: any = await setTemplate({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(setTemplateData);
     }
     else {

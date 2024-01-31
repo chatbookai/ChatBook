@@ -56,7 +56,7 @@ const PINECONE_ENVIRONMENT = process.env.PINECONE_ENVIRONMENT;
 const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME;
 const PINECONE_NAME_SPACE = process.env.PINECONE_NAME_SPACE;
 
-const [DataDir, db, userId] = setting()
+const [DataDir, db] = setting()
 
 let getLLMSSettingData: any = null
 let ChatOpenAIModel: any = null
@@ -128,7 +128,7 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function chatChatOpenAI(res: NextApiResponse, knowledgeId: number | string, question: string, history: any[]) {
+  export async function chatChatOpenAI(res: NextApiResponse, knowledgeId: number | string, userId: string, question: string, history: any[]) {
     ChatBookOpenAIStreamResponse = ''
     await initChatBookOpenAIStream(res, knowledgeId)
     const pastMessages: any[] = []
@@ -150,7 +150,7 @@ let ChatBaiduWenxinModel: any = null
     res.end();
   }
 
-  export async function chatKnowledgeOpenAI(res: NextApiResponse, knowledgeId: number | string, question: string, history: any[]) {
+  export async function chatKnowledgeOpenAI(res: NextApiResponse, knowledgeId: number | string, userId: number, question: string, history: any[]) {
     await initChatBookOpenAIStream(res, knowledgeId)
     const CONDENSE_TEMPLATE: string | unknown = await GetSetting("CONDENSE_TEMPLATE", knowledgeId, userId);
     const QA_TEMPLATE: string | unknown = await GetSetting("QA_TEMPLATE", knowledgeId, userId);
@@ -374,7 +374,7 @@ let ChatBaiduWenxinModel: any = null
 
   }
 
-  export async function GenereateImageUsingDallE2(res: NextApiResponse, knowledgeId: number | string, question: string, size='1024x1024') {
+  export async function GenereateImageUsingDallE2(res: NextApiResponse, knowledgeId: number | string, userId: string, question: string, size='1024x1024') {
     getLLMSSettingData = await getLLMSSetting(knowledgeId);    
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE ?? "https://api.openai.com/v1";
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
@@ -433,7 +433,7 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function GenereateAudioUsingTTS(res: NextApiResponse, knowledgeId: number | string, question: string, voice='alloy') {
+  export async function GenereateAudioUsingTTS(res: NextApiResponse, knowledgeId: number | string, userId: string, question: string, voice='alloy') {
     getLLMSSettingData = await getLLMSSetting(knowledgeId);    
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE ?? "https://api.openai.com/v1";
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
@@ -517,7 +517,7 @@ let ChatBaiduWenxinModel: any = null
     try {
       const getKnowledgePageRS = await getKnowledgePage(0, 999);
       const getKnowledgePageData = getKnowledgePageRS.data;
-      
+      const userId = '0'
       await Promise.all(getKnowledgePageData.map(async (KnowledgeItem: any)=>{
         const KnowledgeItemId = KnowledgeItem.id
         await initChatBookOpenAI(KnowledgeItemId)
@@ -546,9 +546,9 @@ let ChatBaiduWenxinModel: any = null
               chunkOverlap: 200,
             });
             const SplitterDocs = await textSplitter.splitDocuments(rawDocs);
-            log("parseFiles rawDocs docs count: ", rawDocs.length)
-            log("parseFiles textSplitter docs count: ", SplitterDocs.length)
-            log('parseFiles creating vector store begin ...');
+            log(userId, "parseFiles rawDocs docs count: ", rawDocs.length)
+            log(userId, "parseFiles textSplitter docs count: ", SplitterDocs.length)
+            log(userId, 'parseFiles creating vector store begin ...');
             
             const embeddings = new OpenAIEmbeddings({openAIApiKey: getLLMSSettingData.OPENAI_API_KEY});
             const index = pinecone.Index(PINECONE_INDEX_NAME);  
@@ -627,7 +627,7 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function chatChatGemini(res: NextApiResponse, knowledgeId: number | string, question: string, history: any[]) {
+  export async function chatChatGemini(res: NextApiResponse, knowledgeId: number | string, userId: string, question: string, history: any[]) {
     await initChatBookGeminiStream(res, knowledgeId)
     const input2 = [
         new HumanMessage({
@@ -680,7 +680,7 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function chatChatBaiduWenxin(res: NextApiResponse, knowledgeId: number | string, question: string, history: any[]) {
+  export async function chatChatBaiduWenxin(res: NextApiResponse, knowledgeId: number | string, userId: string, question: string, history: any[]) {
     await initChatBookBaiduWenxinStream(res, knowledgeId);
     const input2 = [new HumanMessage(question)];
     const response = await ChatBaiduWenxinModel.call(input2);

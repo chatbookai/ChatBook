@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
-        const GenereateAudioUsingTTSData = await GenereateAudioUsingTTS(res, "TTS-1", question, 'alloy');
+        const GenereateAudioUsingTTSData = await GenereateAudioUsingTTS(res, "TTS-1", checkUserTokenData.data.id, question, 'alloy');
         res.status(200).json(GenereateAudioUsingTTSData);
     }
     else {

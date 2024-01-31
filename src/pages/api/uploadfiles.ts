@@ -16,7 +16,6 @@ export const config = {
 }
 
 const DataDirTeamp = './data/uploadfiles'
-const userId = 1
 
 if (!fs.existsSync(DataDirTeamp)) {
   fs.mkdirSync(DataDirTeamp, { recursive: true })
@@ -26,6 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const { authorization } = req.headers;
   const checkUserTokenData: any = await checkUserToken(authorization);
   if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
+    const userId = checkUserTokenData.data.id
     if (req.method === 'POST') {
       const form = new formidable.IncomingForm()
   
@@ -55,7 +55,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 console.log("file.originalFilename", file.originalFilename)
                 fs.copyFileSync(file.filepath, newPath)
                 const FileHash = calculateFileHashSync(newPath)
-                InsertFilesDb(knowledgeId, file.originalFilename, FileNameNew, FileHash)
+                InsertFilesDb(knowledgeId, file.originalFilename, FileNameNew, FileHash, userId)
               }
             });
           });

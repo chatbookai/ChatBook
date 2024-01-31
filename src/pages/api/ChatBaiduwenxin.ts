@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        const chatChatBaiduWenxinData: any = await chatChatBaiduWenxin(res, knowledgeId, question, history);    
+        const chatChatBaiduWenxinData: any = await chatChatBaiduWenxin(res, knowledgeId, checkUserTokenData.data.id, question, history);    
         res.status(200).json(chatChatBaiduWenxinData);
     }
     else {

@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        await chatChatOpenAI(res, knowledgeId, question, history);
+        await chatChatOpenAI(res, knowledgeId, checkUserTokenData.data.id, question, history);
         res.end();
     }
     else {

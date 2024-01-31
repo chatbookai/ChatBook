@@ -134,7 +134,7 @@
           if(isPasswordMatch) {
               if(!passwordValidator(data.newPassword)) {
       
-                  return {"status":"error", "msg":"The password must contain both letters and numbers, and be at least 8 characters long."}
+                  return {"status":"error", "msg":"The password must contain both letters and numbers, and be at least 8 characters long"}
               }
               const hashedPassword = await hashPassword(data.newPassword);
               const updateSetting = db.prepare('update user set password = ? where email = ?');
@@ -204,11 +204,11 @@
         }
         if(!passwordValidator(password)) {
 
-            return {"status":"error", "msg":"The password must contain both letters and numbers, and be at least 8 characters long."}
+            return {"status":"error", "msg":"The password must contain both letters and numbers, and be at least 8 characters long"}
         }
         const getOneUserData: any = await getOneUser(email);
         if(getOneUserData) {
-          return {"status":"error", "msg":"This email have used before."}
+          return {"status":"error", "msg":"This email have used before"}
         }
         const hashedPassword = await hashPassword(password);
         const insertSetting = db.prepare('INSERT OR IGNORE INTO user (email, username, password, language, createtime) VALUES (?, ?, ?, ?, ?)');

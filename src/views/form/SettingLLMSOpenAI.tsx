@@ -132,10 +132,10 @@ const SettingForm = (props: any) => {
         const FormSubmit: any = await axios.post('/api/setopenai', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
         console.log("FormSubmit:", FormSubmit)
         if(FormSubmit?.status == "ok") {
-            toast.success(FormSubmit.msg, { duration: 4000 })
+            toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
         }
         else {
-            toast.error(FormSubmit.msg, { duration: 4000 })
+            toast.error(t(FormSubmit.msg) as string, { duration: 4000 })
         }
     }
 

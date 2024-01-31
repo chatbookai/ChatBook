@@ -78,7 +78,7 @@ const TemplateModelForm = (props: any) => {
 
   const handleSubmit = async () => {
     if(CONDENSE_TEMPLATE == "" && QA_TEMPLATE == "") {
-        toast.error("TEMPLATE cannot be empty", { duration: 4000 })
+        toast.error(t("TEMPLATE cannot be empty") as string, { duration: 4000 })
         setIsDisabledButton(false)
         setUploadingButton(`${t('Submit')}`)
 
@@ -89,10 +89,10 @@ const TemplateModelForm = (props: any) => {
         const FormSubmit: any = await axios.post('/api/settemplate', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
         console.log("FormSubmit:", FormSubmit)
         if(FormSubmit?.status == "ok") {
-            toast.success(FormSubmit.msg, { duration: 4000 })
+            toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
         }
         else {
-            toast.error(FormSubmit.msg, { duration: 4000 })
+            toast.error(t(FormSubmit.msg) as string, { duration: 4000 })
         }
     }
 

@@ -121,7 +121,7 @@ const RegisterV1 = () => {
     }
 
     if(!rememberMe) {
-      toast.error("Must agree to the agreement", { duration: 4000 })
+      toast.error(t("Must agree to the agreement") as string, { duration: 4000 })
       
       return
     }
@@ -130,10 +130,10 @@ const RegisterV1 = () => {
     axios.post('/api/user/register', { email, username, password }) .then(res => {
       if (res.data.status == 'ok') {
         //handleLogin({ email: params.email, password: params.password })
-        toast.success(res.data.msg, { duration: 4000 })
+        toast.success(t(res.data.msg) as string, { duration: 4000 })
       }
       else {
-        toast.error(res.data.msg, { duration: 4000 })
+        toast.error(t(res.data.msg) as string, { duration: 4000 })
       
         return
       }

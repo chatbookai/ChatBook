@@ -78,6 +78,22 @@
   "Firstname": "Firstname",
   "Lastname": "Lastname",
   "Role": "Role",
-  "System Logs": "System Logs"
+  "System Logs": "System Logs",
+  "User is not allow to login": "User is not allow to login",
+  "Username not exist or password is error": "Username not exist or password is error",
+  "Login successful": "Login successful",
+  "The password must contain both letters and numbers, and be at least 8 characters long": "The password must contain both letters and numbers, and be at least 8 characters long",
+  "Change password successful": "Change password successful",
+  "Token is invalid": "Token is invalid",
+  "Change user information successful": "Change user information successful",
+  "Change user status successful": "Change user status successful",
+  "The passwords entered twice are different": "The passwords entered twice are different",
+  "This email have used before": "This email have used before",
+  "Register user successful": "Register user successful",
+  "Get one user information": "Get one user information",
+  "User not exist": "User not exist",
+  "User token is valid": "User token is valid",
+  "Updated Success": "Updated Success",
+  "Must agree to the agreement": "Must agree to the agreement"
   
 }

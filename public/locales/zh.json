@@ -78,5 +78,21 @@
   "Firstname": "名",
   "Lastname": "姓",
   "Role": "角色",
-  "System Logs": "系统日志"
+  "System Logs": "系统日志",
+  "User is not allow to login": "用户不允许登录",
+  "Username not exist or password is error": "用户名不存在或密码错误",
+  "Login successful": "登录成功",
+  "The password must contain both letters and numbers, and be at least 8 characters long": "密码必须包含字母和数字，并且至少为8个字符长",
+  "Change password successful": "更改密码成功",
+  "Token is invalid": "令牌无效",
+  "Change user information successful": "更改用户信息成功",
+  "Change user status successful": "更改用户状态成功",
+  "The passwords entered twice are different": "两次输入的密码不同",
+  "This email have used before": "该电子邮件已被使用过",
+  "Register user successful": "用户注册成功",
+  "Get one user information": "获取用户信息",
+  "User not exist": "用户不存在",
+  "User token is valid": "用户令牌有效",
+  "Updated Success": "更新成功",
+  "Must agree to the agreement": "必须同意协议"
 }

@@ -10,6 +10,7 @@ import toast from 'react-hot-toast'
 
 // ** Config
 import authConfig from 'src/configs/auth'
+import { useTranslation } from 'react-i18next'
 
 // ** Types
 import { AuthValuesType, RegisterParams, LoginParams, ErrCallbackType, UserDataType } from './types'
@@ -38,6 +39,7 @@ const AuthProvider = ({ children }: Props) => {
 
   // ** Hooks
   const router = useRouter()
+  const { t } = useTranslation()
 
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
     axios
@@ -48,12 +50,12 @@ const AuthProvider = ({ children }: Props) => {
           const returnUrl = router.query.returnUrl
           setUser({ ...response.data.data, token: response.data.token})
           params.rememberMe ? window.localStorage.setItem(authConfig.userInfoTokenKeyName, JSON.stringify(response.data.data)) : null
-          toast.success(response.data.msg, { duration: 4000 })
+          toast.success(t(response.data.msg) as string, { duration: 4000 })
           const redirectURL = returnUrl && returnUrl !== '/' ? returnUrl : '/'
           router.replace(redirectURL as string)
         }
         else {
-          toast.error(response.data.msg, { duration: 4000 })
+          toast.error(t(response.data.msg) as string, { duration: 4000 })
         }
       })
       .catch(err => {

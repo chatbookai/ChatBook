@@ -117,7 +117,7 @@ const UserAccount = () => {
       axios.post('/api/user/setuserinfo', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} })
          .then(res=>res.data)
          .then(res=>{
-          toast.success(res.msg, { duration: 4000 })
+          toast.success(t(res.msg) as string, { duration: 4000 })
          })
     }
   }

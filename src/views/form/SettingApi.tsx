@@ -107,21 +107,21 @@ const SettingForm = (props: any) => {
   
   const handleSubmit = async () => {
     if(openApiKey == "") {
-        toast.error("Open AI Api cannot be empty", { duration: 4000 })
+        toast.error(t("Open AI Api cannot be empty") as string, { duration: 4000 })
         setIsDisabledButton(false)
         setUploadingButton(`${t('Submit')}`)
 
         return
     }
     if(inputModelName == "") {
-        toast.error("Model Name Api cannot be empty", { duration: 4000 })
+        toast.error(t("Model Name Api cannot be empty") as string, { duration: 4000 })
         setIsDisabledButton(false)
         setUploadingButton(`${t('Submit')}`)
 
         return
     }
     if(inputTemperature < 0 || inputTemperature > 1) {
-        toast.error("Temperature must in the range 0~1", { duration: 4000 })
+        toast.error(t("Temperature must in the range 0~1") as string, { duration: 4000 })
         setIsDisabledButton(false)
         setUploadingButton(`${t('Submit')}`)
 
@@ -133,10 +133,10 @@ const SettingForm = (props: any) => {
         const FormSubmit: any = await axios.post('/api/setopenai', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
         console.log("FormSubmit:", FormSubmit)
         if(FormSubmit?.status == "ok") {
-            toast.success(FormSubmit.msg, { duration: 4000 })
+            toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
         }
         else {
-            toast.error(FormSubmit.msg, { duration: 4000 })
+            toast.error(t(FormSubmit.msg) as string, { duration: 4000 })
         }
     }
 

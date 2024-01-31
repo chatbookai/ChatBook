@@ -174,14 +174,14 @@ const Knowledge = () => {
 
   const handleSubmit = async () => {
     if(name == "") {
-        toast.error("Name cannot be empty", { duration: 4000 })
+        toast.error(t("Name cannot be empty") as string, { duration: 4000 })
         setIsDisabledButton(false)
         setUploadingButton(`${t('Submit')}`)
 
         return
     }
     if(summary == "") {
-        toast.error("Summary cannot be empty", { duration: 4000 })
+        toast.error(t("Summary cannot be empty") as string, { duration: 4000 })
         setIsDisabledButton(false)
         setUploadingButton(`${t('Submit')}`)
 
@@ -193,10 +193,10 @@ const Knowledge = () => {
       const FormSubmit: any = await axios.post('/api/addknowledge', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit:", FormSubmit)
       if(FormSubmit?.status == "ok") {
-          toast.success(FormSubmit.msg, { duration: 4000 })
+          toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
       }
       else {
-          toast.error(FormSubmit.msg, { duration: 4000 })
+          toast.error(t(FormSubmit.msg) as string, { duration: 4000 })
       }
       setCounter(counter + 1)
     }

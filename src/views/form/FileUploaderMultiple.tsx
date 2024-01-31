@@ -195,7 +195,7 @@ const FileUploaderMultiple = (props: any) => {
       if(FormSubmit.status == "ok") {
 
         //Insufficient balance
-        toast.success(FormSubmit.msg, { duration: 4000 })
+        toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
         
         //setIsDisabledButton(false)
         //setIsDisabledRemove(false)

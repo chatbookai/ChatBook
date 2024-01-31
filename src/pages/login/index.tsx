@@ -111,7 +111,7 @@ const RegisterV1 = () => {
     }
 
     if(!rememberMe) {
-      toast.error("Must agree to the agreement", { duration: 4000 })
+      toast.error(t("Must agree to the agreement") as string, { duration: 4000 })
       
       return
     }

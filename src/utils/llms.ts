@@ -31,6 +31,8 @@ import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { PineconeStore } from '@langchain/community/vectorstores/pinecone';
 import { Pinecone } from '@pinecone-database/pinecone';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
+
+/*
 import { DirectoryLoader } from 'langchain/document_loaders/fs/directory';
 import { TextLoader } from 'langchain/document_loaders/fs/text';
 import { DocxLoader } from 'langchain/document_loaders/fs/docx';
@@ -38,13 +40,15 @@ import { JSONLoader } from 'langchain/document_loaders/fs/json';
 import { JSONLinesLoader } from 'langchain/document_loaders/fs/json';
 import { CSVLoader } from 'langchain/document_loaders/fs/csv';
 import { UnstructuredLoader } from 'langchain/document_loaders/fs/unstructured';
+*/
 
 //import { Document } from '@langchain/core/documents';
 import { RunnableSequence } from '@langchain/core/runnables';
 import { StringOutputParser } from '@langchain/core/output_parsers';
 
 import { setting } from './utils'
-import { getLLMSSetting, GetSetting, log, getKnowledgePage, enableDir } from './utils'
+import { promisify } from 'util';
+import { getLLMSSetting, GetSetting, log } from './utils'
 
 //.ENV
 import dotenv from 'dotenv';
@@ -57,6 +61,11 @@ const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME;
 const PINECONE_NAME_SPACE = process.env.PINECONE_NAME_SPACE;
 
 const [DataDir, db] = setting()
+
+// @ts-ignore
+//const getDbRecord = promisify(db.get.bind(db));
+const getDbRecordALL = promisify(db.all.bind(db));
+
 
 let getLLMSSettingData: any = null
 let ChatOpenAIModel: any = null
@@ -512,40 +521,27 @@ let ChatBaiduWenxinModel: any = null
 
   export async function parseFiles() {
     try {
-      const getKnowledgePageRS = await getKnowledgePage(0, 999);
-      const getKnowledgePageData = getKnowledgePageRS.data;
-      const userId = '0'
-      await Promise.all(getKnowledgePageData.map(async (KnowledgeItem: any)=>{
-        const KnowledgeItemId = KnowledgeItem.id
+      const RecordsAll: any[] = await getDbRecordALL(`SELECT * from files where status = '0' order by id asc limit ?`, [ 2 ]) || [];
+      console.log("RecordsAll", RecordsAll)
+      await Promise.all(RecordsAll.map(async (FileItem: any)=>{
+        const KnowledgeItemId = FileItem.knowledgeId
         await initChatBookOpenAI(KnowledgeItemId)
         if(getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "")    {
-          
-          //console.log("getLLMSSettingData", getLLMSSettingData, "KnowledgeItemId", KnowledgeItemId)
-          console.log("process.env.OPENAI_BASE_URL", process.env.OPENAI_BASE_URL)
-          enableDir(DataDir + '/uploadfiles/' + String(userId))
-          enableDir(DataDir + '/uploadfiles/' + String(userId) + '/' + String(KnowledgeItemId))
-          const directoryLoader = new DirectoryLoader(DataDir + '/uploadfiles/'  + String(userId) + '/' + String(KnowledgeItemId) + '/', {
-            '.pdf': (path) => new PDFLoader(path),
-            '.docx': (path) => new DocxLoader(path),
-            '.json': (path) => new JSONLoader(path, '/texts'),
-            '.jsonl': (path) => new JSONLinesLoader(path, '/html'),
-            '.txt': (path) => new TextLoader(path),
-            '.csv': (path) => new CSVLoader(path, 'text'),
-            '.htm': (path) => new UnstructuredLoader(path),
-            '.html': (path) => new UnstructuredLoader(path),
-            '.ppt': (path) => new UnstructuredLoader(path),
-            '.pptx': (path) => new UnstructuredLoader(path),
-          });
-          const rawDocs = await directoryLoader.load();
-          if(rawDocs.length > 0)  {
+            console.log("getLLMSSettingData", getLLMSSettingData, "KnowledgeItemId", KnowledgeItemId)
+            console.log("process.env.OPENAI_BASE_URL", process.env.OPENAI_BASE_URL)
+            const pdfFilePath = DataDir + '/uploadfiles/2/' + String(KnowledgeItemId) + '/' + FileItem.newName;
+            const pdfLoader = new PDFLoader(pdfFilePath);
+            const rawDoc = await pdfLoader.load();
+            console.log("rawDoc", rawDoc)
+            
             const textSplitter = new RecursiveCharacterTextSplitter({
               chunkSize: 1000,
               chunkOverlap: 200,
             });
-            const SplitterDocs = await textSplitter.splitDocuments(rawDocs);
-            log(userId, "parseFiles rawDocs docs count: ", rawDocs.length)
-            log(userId, "parseFiles textSplitter docs count: ", SplitterDocs.length)
-            log(userId, 'parseFiles creating vector store begin ...');
+            const SplitterDocs = await textSplitter.splitDocuments(rawDoc);
+            log("parseFiles rawDocs docs count: ", rawDoc.length)
+            log("parseFiles textSplitter docs count: ", SplitterDocs.length)
+            log('parseFiles creating vector store begin ...');
             
             const embeddings = new OpenAIEmbeddings({openAIApiKey: getLLMSSettingData.OPENAI_API_KEY});
             const index = pinecone.Index(PINECONE_INDEX_NAME);  
@@ -557,38 +553,24 @@ let ChatBaiduWenxinModel: any = null
               textKey: 'text',
             });
             log('parseFiles creating vector store finished', PINECONE_NAME_SPACE_USE);
-            const ParsedFiles: any[] = [];
-            rawDocs.map((Item) => {
-              const fileName = path.basename(Item.metadata.source);
-              if(!ParsedFiles.includes(fileName)) {
-                ParsedFiles.push(fileName);
+
+            const UpdateFileParseStatus = db.prepare('update files set status = ? where id = ?');
+            UpdateFileParseStatus.run(1, FileItem.id);
+            const destinationFilePath = path.join(DataDir + '/parsedfiles/', FileItem.newName);
+            fs.rename(DataDir + '/uploadfiles/2/' + String(KnowledgeItemId) + '/' + FileItem.newName, destinationFilePath, (err) => {
+              if (err) {
+                log('parseFiles Error moving file:', err, FileItem.newName);
+              } else {
+                log('parseFiles File moved successfully.', FileItem.newName);
               }
             });
-
-            const UpdateFileParseStatus = db.prepare('update files set status = ? where newName = ? and knowledgeId = ? and userId = ?');
-            ParsedFiles.map((Item) => {
-              UpdateFileParseStatus.run(1, Item, KnowledgeItemId, userId);
-              const destinationFilePath = path.join(DataDir + '/parsedfiles/', Item);
-              fs.rename(DataDir + '/uploadfiles/' + String(userId) + '/' + String(KnowledgeItemId) + '/' + Item, destinationFilePath, (err) => {
-                if (err) {
-                  log('parseFiles Error moving file:', err, Item);
-                } else {
-                  log('parseFiles File moved successfully.', Item);
-                }
-              });
-            });
             UpdateFileParseStatus.finalize();
-            log('parseFiles change the files status finished', ParsedFiles);
+            log('parseFiles change the files status finished', FileItem);
             
-          }
-          else {
-            log('parseFiles No files need to parse');
-          }
-        }
-        else {
-          log('Not set OPENAI_API_KEY in knowledge setting, KnowledgeItemId:', KnowledgeItemId);
+            return
         }
       }))
+
     } catch (error: any) {
       log('parseFiles Failed to ingest your data', error);
     }

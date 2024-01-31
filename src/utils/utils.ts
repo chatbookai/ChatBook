@@ -121,6 +121,7 @@ export async function addKnowledge(Params: any) {
       insertSetting.run(Params.name, Params.summary, Date.now(), userIdFilter, function(err: any) {
         if (err) {
           console.error(err.message);
+
           return;
         }
 
@@ -300,6 +301,7 @@ export async function getFilesKnowledgeId(knowledgeId: number | string, pageid: 
 
 export async function getFilesNotParsed() {
   const RecordsAll: any[] = await getDbRecordALL(`SELECT * from files where status = '0' order by timestamp asc limit 10 `) || [];
+  
   return RecordsAll;
 }
 

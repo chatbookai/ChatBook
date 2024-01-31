@@ -91,8 +91,6 @@ let ChatBaiduWenxinModel: any = null
 
   export async function initChatBookOpenAIStream(res: NextApiResponse, knowledgeId: number | string) {
     getLLMSSettingData = await getLLMSSetting(knowledgeId);
-    
-    console.log("initChatBookOpenAIStream getLLMSSettingData", getLLMSSettingData)
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
     const OPENAI_Temperature = getLLMSSettingData.Temperature;
@@ -303,7 +301,6 @@ let ChatBaiduWenxinModel: any = null
 
   export async function debug_agent(res: NextApiResponse, knowledgeId: number | string) {
     getLLMSSettingData = await getLLMSSetting(knowledgeId);
-    console.log("debug_agent getLLMSSettingData", getLLMSSettingData)
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
     const OPENAI_Temperature = getLLMSSettingData.Temperature;
@@ -599,8 +596,6 @@ let ChatBaiduWenxinModel: any = null
 
   export async function initChatBookGeminiStream(res: NextApiResponse, knowledgeId: number | string) {
     getLLMSSettingData = await getLLMSSetting(knowledgeId);
-    
-    //console.log("Gemini getLLMSSettingData", getLLMSSettingData, knowledgeId)
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
     if(OPENAI_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
@@ -653,8 +648,6 @@ let ChatBaiduWenxinModel: any = null
 
   export async function initChatBookBaiduWenxinStream(res: NextApiResponse, knowledgeId: number | string) {
     getLLMSSettingData = await getLLMSSetting(knowledgeId);
-    
-    //console.log("BaiduWenxin getLLMSSettingData", getLLMSSettingData, knowledgeId)
     const BAIDU_API_KEY = getLLMSSettingData.BAIDU_API_KEY ?? "1AWXpm1Cd8lbxmAaFoPR0dNx";
     const BAIDU_SECRET_KEY = getLLMSSettingData.BAIDU_SECRET_KEY ?? "TQy5sT9Mz4xKn0tR8h7W6LxPWIUNnXqq";
     const OPENAI_Temperature = getLLMSSettingData.Temperature ?? 1;

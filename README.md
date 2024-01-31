@@ -29,7 +29,6 @@ sudo docker run -p 8888:3000 chatbook:0.2
 ```
 ChatGPT
 Google Gemini
-Facebook Llama 2
 Baidu Wenxin
 ```
 

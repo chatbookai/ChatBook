@@ -40,7 +40,6 @@ const AppChat = () => {
   const [knowledge, setKnowledge] = useState<any>(null)
   const [knowledgeId, setKnowledgeId] = useState<number>(0)
   const [knowledgeName, setKnowledgeName] = useState<string>("")
-  const userId = 1
 
   const getAllKnowledgeList = async function () {
     if (auth.user) {
@@ -56,13 +55,13 @@ const AppChat = () => {
 
   const getChatLogList = async function (knowledgeId: number) {
     if (auth.user) {
-      const RS = await axios.get('/api/chatlog/' + knowledgeId + '/' + userId + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      const RS = await axios.get('/api/chatlog/' + knowledgeId + '/' + auth.user.id + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       const ChatKnowledgeInitList = ChatKnowledgeInit(RS['data'].reverse())
       console.log("ChatKnowledgeInitList", ChatKnowledgeInitList)
       const selectedChat = {
         "chat": {
             "id": 1,
-            "userId": 1,
+            "userId": auth.user.id,
             "unseenMsgs": 0,
             "chat": ChatKnowledgeInitList
         }
@@ -70,7 +69,7 @@ const AppChat = () => {
       const storeInit = {
         "chats": [],
         "userProfile": {
-            "id": userId,
+            "id": auth.user.id,
             "avatar": "/images/avatars/1.png",
             "fullName": "Current User",
         },
@@ -111,30 +110,32 @@ const AppChat = () => {
   const hidden = useMediaQuery(theme.breakpoints.down('lg'))
 
   useEffect(() => {
-    const ChatKnowledgeText = window.localStorage.getItem("ChatKnowledge")      
-    const ChatKnowledgeList = ChatKnowledgeText ? JSON.parse(ChatKnowledgeText) : []
-    if(lastMessage && lastMessage!="") {
-      ChatKnowledgeList.push(lastChat)
-    }
-    const selectedChat = {
-      "chat": {
-          "id": 1,
-          "userId": 1,
-          "unseenMsgs": 0,
-          "chat": ChatKnowledgeList
+    if(auth.user)   {
+      const ChatKnowledgeText = window.localStorage.getItem("ChatKnowledge")      
+      const ChatKnowledgeList = ChatKnowledgeText ? JSON.parse(ChatKnowledgeText) : []
+      if(lastMessage && lastMessage!="") {
+        ChatKnowledgeList.push(lastChat)
       }
+      const selectedChat = {
+        "chat": {
+            "id": auth.user.id,
+            "userId": auth.user.id,
+            "unseenMsgs": 0,
+            "chat": ChatKnowledgeList
+        }
+      }
+      const storeInit = {
+        "chats": [],
+        "userProfile": {
+            "id": auth.user.id,
+            "avatar": "/images/avatars/1.png",
+            "fullName": "Current User",
+        },
+        "selectedChat": selectedChat
+      }
+      setStore(storeInit)
     }
-    const storeInit = {
-      "chats": [],
-      "userProfile": {
-          "id": userId,
-          "avatar": "/images/avatars/1.png",
-          "fullName": "Current User",
-      },
-      "selectedChat": selectedChat
-    }
-    setStore(storeInit)
-  }, [refreshChatCounter, lastMessage])
+  }, [refreshChatCounter, lastMessage, auth])
 
   useEffect(() => {
     getAllKnowledgeList()  
@@ -147,7 +148,7 @@ const AppChat = () => {
       setSendButtonDisable(true)
       setSendButtonText(t("Sending") as string)
       setSendInputText(t("Generating the answer...") as string)
-      ChatKnowledgeInput(Obj.message, userId, knowledgeId)
+      ChatKnowledgeInput(Obj.message, auth.user.id, knowledgeId)
       setRefreshChatCounter(refreshChatCounter + 1)
       const ChatKnowledgeOutputStatus = await ChatKnowledgeOutput(Obj.message, auth.user.token, auth.user.id, knowledgeId, setLastMessage)
       if(ChatKnowledgeOutputStatus) {

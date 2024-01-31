@@ -7,18 +7,24 @@ import axios from 'axios'
 // ** Type Import
 import { HorizontalNavItemsType } from 'src/@core/layouts/types'
 import { useAuth } from 'src/hooks/useAuth'
+import { useRouter } from 'next/router'
 
 const ServerSideNavItems = () => {
   // ** State
   const [menuItems, setMenuItems] = useState<HorizontalNavItemsType>([])
   const auth = useAuth()
+  const router = useRouter()
 
   useEffect(() => {
     if(auth && auth.user && auth.user.token) {
       axios.get('/api/menu/horizontal', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' }, params: { } }).then(response => {
         const menuArray = response.data
-
-        setMenuItems(menuArray)
+        if(menuArray && menuArray.status == 'error') {
+          router.push('/login')
+        }
+        else {
+          setMenuItems(menuArray)
+        }
       })
     }
   }, [])

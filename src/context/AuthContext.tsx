@@ -70,6 +70,7 @@ const AuthProvider = ({ children }: Props) => {
     }
     else {
       setUser({'loading': '1'} as UserDataType)
+      router.push('/login')
     }
   }, [])
 

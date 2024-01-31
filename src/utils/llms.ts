@@ -66,7 +66,6 @@ const [DataDir, db] = setting()
 //const getDbRecord = promisify(db.get.bind(db));
 const getDbRecordALL = promisify(db.all.bind(db));
 
-
 let getLLMSSettingData: any = null
 let ChatOpenAIModel: any = null
 let pinecone: any = null
@@ -383,59 +382,65 @@ let ChatBaiduWenxinModel: any = null
   export async function GenereateImageUsingDallE2(res: NextApiResponse, knowledgeId: number | string, userId: string, question: string, size='1024x1024') {
     getLLMSSettingData = await getLLMSSetting(knowledgeId);    
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE ?? "https://api.openai.com/v1";
-    const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
-    const requestData = {
-      model: 'dall-e-2',
-      prompt: question,
-      n: 1,
-      size: size,
-      style: 'vivid'
-    };
-
-    //style: natural | vivid
-    //256x256, 512x512, or 1024x1024 for dall-e-2
-    try {
-      const response = await axios.post(OPENAI_API_BASE + '/images/generations', requestData, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        },
-      });  
-      const generatedImage = response.data;
-
-      if(generatedImage && generatedImage['data'] && generatedImage['data'][0] && generatedImage['data'][0]['url']) {
-        const response = await axios({
-          method: 'get',
-          url: generatedImage['data'][0]['url'],
-          responseType: 'arraybuffer',  // 使用 arraybuffer
-        });
-        const data = Buffer.from(response.data);
-        const DateNow = Date.now();
-        const ShortFileName = DateNow + '-' + Math.round(Math.random() * 1e9) + '-' + knowledgeId;
-        const FileName = DataDir + "/image/"+ ShortFileName + ".png";
-        const generatedImageTS = {...requestData, FileName: FileName, type: 'image', status: 'OK', timestamp: DateNow, ShortFileName: ShortFileName}
-        fs.writeFileSync(FileName, data);
-        console.log("response", response)
-
-        const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
-        insertChatLog.run(knowledgeId, question, JSON.stringify(generatedImageTS), userId, Date.now(), JSON.stringify([]), JSON.stringify([]));
-        insertChatLog.finalize();
-        log('Generated Image:', generatedImageTS);
-
-        return generatedImageTS;
-      }
-      else {
-        log('Error generating image:', generatedImage);
-
-        return {generatedImage};
-      }
-  
+    const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;    
+    if(OPENAI_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
+      const requestData = {
+        model: 'dall-e-2',
+        prompt: question,
+        n: 1,
+        size: size,
+        style: 'vivid'
+      };
       
-    } 
-    catch (error) {
-      log('Error generating image:', error);
+      //style: natural | vivid
+      //256x256, 512x512, or 1024x1024 for dall-e-2
+      try {
+        const response = await axios.post(OPENAI_API_BASE + '/images/generations', requestData, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${OPENAI_API_KEY}`,
+          },
+        });  
+        const generatedImage = response.data;
 
-      return {error};
+        if(generatedImage && generatedImage['data'] && generatedImage['data'][0] && generatedImage['data'][0]['url']) {
+          const response = await axios({
+            method: 'get',
+            url: generatedImage['data'][0]['url'],
+            responseType: 'arraybuffer',  // 使用 arraybuffer
+          });
+          const data = Buffer.from(response.data);
+          const DateNow = Date.now();
+          const ShortFileName = DateNow + '-' + Math.round(Math.random() * 1e9) + '-' + knowledgeId;
+          const FileName = DataDir + "/image/"+ ShortFileName + ".png";
+          const generatedImageTS = {...requestData, FileName: FileName, type: 'image', status: 'OK', timestamp: DateNow, ShortFileName: ShortFileName}
+          fs.writeFileSync(FileName, data);
+          console.log("response", response)
+
+          const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
+          insertChatLog.run(knowledgeId, question, JSON.stringify(generatedImageTS), userId, Date.now(), JSON.stringify([]), JSON.stringify([]));
+          insertChatLog.finalize();
+          log('Generated Image:', generatedImageTS);
+
+          return generatedImageTS;
+        }
+        else {
+          log('Error generating image:', generatedImage);
+
+          return {generatedImage};
+        }
+    
+        
+      } 
+      catch (error) {
+        log('Error generating image:', error);
+
+        return {error};
+      }
+    }
+    else {
+      res.write("Not set API_KEY");
+      res.end();
     }
   }
 
@@ -443,39 +448,46 @@ let ChatBaiduWenxinModel: any = null
     getLLMSSettingData = await getLLMSSetting(knowledgeId);    
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE ?? "https://api.openai.com/v1";
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
-    const requestData = {
-      model: 'tts-1',
-      voice: voice,
-      input: question,
-      response_format: "mp3",
-    };
-    try {
-      const response = await axios.post(OPENAI_API_BASE + '/audio/speech', requestData, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        },
-        responseType: 'arraybuffer'
-      });  
-      console.log('Generated Audio:', response.data);
-      const generatedAudio = response.data;
-      const data = Buffer.from(generatedAudio);
-      const DateNow = Date.now();
-      const ShortFileName = DateNow + '-' + Math.round(Math.random() * 1e9) + '-' + knowledgeId;
-      const FileName = DataDir + "/audio/"+ ShortFileName + ".mp3";
-      fs.writeFileSync(FileName, data);
-      const generatedAudioTS = {...requestData, FileName: FileName, type: 'audio', status: 'OK', timestamp: DateNow, ShortFileName: ShortFileName}
-      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
-      insertChatLog.run(knowledgeId, question, JSON.stringify(generatedAudioTS), userId, DateNow, JSON.stringify([]), JSON.stringify([]));
-      insertChatLog.finalize();
-      log('Generated Audio:', generatedAudioTS);
+    
+    if(OPENAI_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
+      const requestData = {
+        model: 'tts-1',
+        voice: voice,
+        input: question,
+        response_format: "mp3",
+      };
+      try {
+        const response = await axios.post(OPENAI_API_BASE + '/audio/speech', requestData, {
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${OPENAI_API_KEY}`,
+          },
+          responseType: 'arraybuffer'
+        });  
+        console.log('Generated Audio:', response.data);
+        const generatedAudio = response.data;
+        const data = Buffer.from(generatedAudio);
+        const DateNow = Date.now();
+        const ShortFileName = DateNow + '-' + Math.round(Math.random() * 1e9) + '-' + knowledgeId;
+        const FileName = DataDir + "/audio/"+ ShortFileName + ".mp3";
+        fs.writeFileSync(FileName, data);
+        const generatedAudioTS = {...requestData, FileName: FileName, type: 'audio', status: 'OK', timestamp: DateNow, ShortFileName: ShortFileName}
+        const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
+        insertChatLog.run(knowledgeId, question, JSON.stringify(generatedAudioTS), userId, DateNow, JSON.stringify([]), JSON.stringify([]));
+        insertChatLog.finalize();
+        log('Generated Audio:', generatedAudioTS);
 
-      return generatedAudioTS;
-    } 
-    catch (error) {
-      log('Error generating Audio:', error);
+        return generatedAudioTS;
+      } 
+      catch (error) {
+        log('Error generating Audio:', error);
 
-      return {error};
+        return {error};
+      }
+    }
+    else {
+      res.write("Not set API_KEY");
+      res.end();
     }
   }
 

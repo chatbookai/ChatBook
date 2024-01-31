@@ -94,7 +94,7 @@
 
   export async function checkUserPassword(req: NextApiRequest, email: string, password: string) {
     const getOneUserData: any = await getOneUser(email);
-    if(getOneUserData) {
+    if(getOneUserData && getOneUserData.user_status == '1') {
         const isPasswordMatch = await comparePasswords(password, getOneUserData.password);
         if(isPasswordMatch) {
             const msg = "Login successful"
@@ -109,6 +109,12 @@
 
             return {"status":"error", "msg":msg}
         }
+    }
+    else if(getOneUserData && getOneUserData.user_status == '0') {
+      const msg = "User is not allow to login"
+      userLoginLog(req, email, 'Login Failed', msg)
+
+      return {"status":"error", "msg":msg}
     }
     else {
         const msg = "Username not exist or password is error"
@@ -173,6 +179,23 @@
     }
   }
 
+  export async function changeUserStatus(token: string, data: any) {
+    console.log("data", data)
+    const checkUserTokenData: any = await checkUserToken(token);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
+      console.log("checkUserTokenData", checkUserTokenData)
+      const updateSetting = db.prepare('update user set user_status = ? where id = ?');
+      updateSetting.run(data.user_status, data.id);
+      updateSetting.finalize();
+
+      return {"status":"ok", "msg":"Change user status successful"}
+    }
+    else {
+
+      return {"status":"error", "msg":"Token is invalid"}
+    }
+  }
+
   export async function registerUser(email: string, username: string, password: string, confirm_password: string, language: string) {
     try{
         if(password != confirm_password) {
@@ -225,17 +248,16 @@
   }
 
   export async function getUsers(pageid: number, pagesize: number) {
-    const user_status = 1;
     const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
     const From = pageidFiler * pagesizeFiler;
     console.log("pageidFiler", pageidFiler)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records: any = await getDbRecord("SELECT COUNT(*) AS NUM from user where user_status = ? ", [user_status]);
+    const Records: any = await getDbRecord("SELECT COUNT(*) AS NUM from user ");
     const RecordsTotal: number = Records ? Records.NUM : 0;
 
-    const RecordsAll: any[] = await getDbRecordALL(`SELECT id, email, username, firstname, lastname, organization, role, mobile, address, state, zipcode, country, language, timezone, nickname, birthday, avatar, mobile_status, google_auth, github_auth, user_type, user_status, createtime FROM user WHERE user_status = ? ORDER BY id DESC LIMIT ? OFFSET ? `, [user_status, pagesizeFiler, From]) || [];
+    const RecordsAll: any[] = await getDbRecordALL(`SELECT id, email, username, firstname, lastname, organization, role, mobile, address, state, zipcode, country, language, timezone, nickname, birthday, avatar, mobile_status, google_auth, github_auth, user_type, user_status, createtime FROM user ORDER BY id DESC LIMIT ? OFFSET ? `, [pagesizeFiler, From]) || [];
 
     const RS: any = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);

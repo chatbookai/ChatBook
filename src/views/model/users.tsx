@@ -7,6 +7,7 @@ import axios from 'axios'
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
+import Switch from '@mui/material/Switch'
 import Divider from '@mui/material/Divider'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
@@ -38,6 +39,7 @@ const Logs = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 15 })
   const [store, setStore] = useState<any>(null);
+  const [userStatus, setUserStatus] = useState<any>({});
 
   useEffect(() => {
     fetchData(paginationModel)
@@ -48,10 +50,32 @@ const Logs = () => {
     if (auth.user) {
       const data: any = {pageid: paginationModel.page, pagesize: paginationModel.pageSize}
       const RS = await axios.post('/api/user/getusers', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
-      console.log("RS", RS)
+      if(RS) {
+        const userStatusNew = userStatus
+        RS.data.map((Item: any)=>{
+          userStatusNew[Item.id] = Item.user_status
+        })
+        setUserStatus(userStatusNew)
+      }
       setStore(RS)  
     }
   }
+
+  const handleUserStatus = async function (id: number, user_status: number) {
+    if (auth.user) {
+      const data: any = {user_status: user_status, id:id}
+      axios.post('/api/user/setuserstatus', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} })
+    }
+  }
+
+  const handleSwitchChange = (id: number, checked: boolean) => {
+    setUserStatus((prevUserStatus: any) => {
+      const newUserStatus = { ...prevUserStatus, [id]: checked ? 1 : 0 };
+      handleUserStatus(id, newUserStatus[id]);
+      
+      return newUserStatus;
+    });
+  };
 
   useEffect(() => {
     setIsLoading(false)
@@ -108,36 +132,6 @@ const Logs = () => {
     {
       flex: 0.15,
       minWidth: 100,
-      field: 'Firstname',
-      headerName: `${t(`Firstname`)}`,
-      sortable: false,
-      filterable: false,
-      renderCell: ({ row }: any) => {
-        return (
-          <Typography noWrap variant='body2'>
-            {row.firstname}
-          </Typography>
-        )
-      }
-    },
-    {
-      flex: 0.15,
-      minWidth: 100,
-      field: 'Lastname',
-      headerName: `${t(`Lastname`)}`,
-      sortable: false,
-      filterable: false,
-      renderCell: ({ row }: any) => {
-        return (
-          <Typography noWrap variant='body2'>
-            {row.lastname}
-          </Typography>
-        )
-      }
-    },
-    {
-      flex: 0.15,
-      minWidth: 100,
       field: 'Role',
       headerName: `${t(`Role`)}`,
       sortable: false,
@@ -147,6 +141,25 @@ const Logs = () => {
           <Typography noWrap variant='body2'>
             {row.role}
           </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      minWidth: 100,
+      field: 'Access',
+      headerName: `${t(`Access`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: any) => {
+        console.log("userStatus", userStatus)
+        return (
+          <Switch checked={userStatus[row.id] == 1} onChange={(e: any)=>{
+              e.preventDefault();
+              const checked = e.target.checked;
+              handleSwitchChange(row.id, checked);
+            }} 
+          />
         )
       }
     },

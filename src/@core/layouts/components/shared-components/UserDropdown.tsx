@@ -19,6 +19,7 @@ import Icon from 'src/@core/components/icon'
 
 import axios from 'axios'
 import { useAuth } from 'src/hooks/useAuth'
+import { useTranslation } from 'react-i18next'
 
 // ** Type Imports
 import { Settings } from 'src/@core/context/settingsContext'
@@ -47,6 +48,7 @@ const UserDropdown = (props: Props) => {
 
   // ** Hooks
   const router = useRouter()
+  const { t } = useTranslation()
   
   // ** Vars
   const { direction } = settings
@@ -150,19 +152,13 @@ const UserDropdown = (props: Props) => {
             <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/user/account')}>
               <Box sx={styles}>
                 <Icon icon='mdi:cog-outline' />
-                Settings
-              </Box>
-            </MenuItem>
-            <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/pricing')}>
-              <Box sx={styles}>
-                <Icon icon='mdi:currency-usd' />
-                Pricing
+                {t('Settings') as string}
               </Box>
             </MenuItem>
             <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/faq')}>
               <Box sx={styles}>
                 <Icon icon='mdi:help-circle-outline' />
-                FAQ
+                {t('FAQ') as string}                
               </Box>
             </MenuItem>
             <Divider />
@@ -171,7 +167,7 @@ const UserDropdown = (props: Props) => {
               sx={{ py: 2, '& svg': { mr: 2, fontSize: '1.375rem', color: 'text.primary' } }}
             >
               <Icon icon='mdi:logout-variant' />
-              Logout
+              {t('Logout') as string}  
             </MenuItem>
           </Menu>
         </Fragment>

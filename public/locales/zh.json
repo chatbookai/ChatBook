@@ -94,5 +94,21 @@
   "User not exist": "用户不存在",
   "User token is valid": "用户令牌有效",
   "Updated Success": "更新成功",
-  "Must agree to the agreement": "必须同意协议"
+  "Must agree to the agreement": "必须同意协议",
+  "Logout": "退出",
+  "FAQ": "常见问题",
+  "Already have an account?": "已有账户？",
+  "Manage your knowledge easy and fun!": "轻松有趣地管理您的知识！",
+  "Adventure starts here": "冒险从这里开始",
+  "I agree to": "我同意",
+  "privacy policy & terms": "隐私政策和条款",
+  "Sign up": "注册",
+  "Sign in instead": "改为登录",
+  "Please sign-in to your account and start the adventure": "请登录您的账户，开始冒险",
+  "New on our platform?": "在我们的平台上是新手？",
+  "Login": "登录",
+  "Password": "密码",
+  "Create an account": "创建一个账户",
+  "or": "或",
+  "Welcome to": "欢迎来到"
 }

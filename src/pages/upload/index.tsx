@@ -40,7 +40,7 @@ const UploadFilesApp = () => {
   }, [])
 
   const fetchData = async function () {
-    if (auth.user) {
+    if (auth && auth.user) {
       const RS = await axios.get('/api/knowledge/0/100', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       setKnowledge(RS)
       if(RS && RS['data'] && RS['data'][0] && RS['data'][0].id) {

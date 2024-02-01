@@ -177,7 +177,7 @@ const FileUploaderMultiple = (props: any) => {
   }
 
   const uploadMultiFiles = async () => {
-    if (auth.user) {
+    if (auth && auth.user) {
       const formData = new FormData();
       formData.append('knowledgeId', knowledgeId);
       formData.append('knowledgeName', knowledgeName);

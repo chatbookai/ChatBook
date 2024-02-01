@@ -72,7 +72,7 @@ const UserAccount = () => {
   }
 
   const fetchData = async function () {
-    if (auth.user) {
+    if (auth && auth.user) {
       const RS = await axios.get('/api/user/getuserinfo', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       if(RS && RS.data) {
         Object.entries(RS.data).forEach(([key, value]) => {
@@ -113,7 +113,7 @@ const UserAccount = () => {
         message: `${t('This field must have a value')}`
       })
     }
-    if (auth.user) {
+    if (auth && auth.user) {
       axios.post('/api/user/setuserinfo', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} })
          .then(res=>res.data)
          .then(res=>{

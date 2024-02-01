@@ -42,7 +42,7 @@ const TabSecurity = () => {
   const [recentDeviceData, setRecentDeviceData] = useState<any[]>([])
 
   const fetchData = async function () {
-    if (auth.user) {
+    if (auth && auth.user) {
       const data: any = {pageid: 0, pagesize: 6}
       const RS = await axios.post('/api/user/getuserlogs', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       if(RS && RS.data) {

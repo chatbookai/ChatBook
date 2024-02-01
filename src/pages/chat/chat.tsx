@@ -53,7 +53,7 @@ const AppChat = () => {
   }, [])
 
   const getChatLogList = async function (knowledgeId: number | string) {
-    if (auth.user) {
+    if (auth && auth.user) {
       const RS = await axios.get('/api/chatlog/' + knowledgeId + '/' + auth.user.id + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       if(RS['data'])  {
         const ChatChatInitList = ChatChatInit(RS['data'].reverse())

@@ -64,7 +64,7 @@ const TemplateModelForm = (props: any) => {
   };
 
   const handleGetData = async () => {
-    if (auth.user) {
+    if (auth && auth.user) {
         const GetData: any = await axios.get('/api/gettemplate/' + knowledgeId, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
         console.log("GetData:", GetData)
         setCONDENSE_TEMPLATE(GetData.CONDENSE_TEMPLATE || '')
@@ -84,7 +84,7 @@ const TemplateModelForm = (props: any) => {
 
         return
     }
-    if (auth.user) {
+    if (auth && auth.user) {
         const PostParams = {CONDENSE_TEMPLATE: CONDENSE_TEMPLATE, QA_TEMPLATE: QA_TEMPLATE, knowledgeId: knowledgeId}
         const FormSubmit: any = await axios.post('/api/settemplate', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
         console.log("FormSubmit:", FormSubmit)

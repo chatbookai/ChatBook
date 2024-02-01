@@ -100,7 +100,7 @@ const ChangePasswordCard = () => {
   }
 
   const onPasswordFormSubmit = (data: any) => {
-    if (auth.user) {
+    if (auth && auth.user) {
       axios.post('/api/user/setpassword', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} })
          .then(res=>res.data)
          .then(res=>{

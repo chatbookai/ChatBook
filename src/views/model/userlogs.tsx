@@ -45,7 +45,7 @@ const Logs = () => {
   }, [paginationModel])
 
   const fetchData = async function (paginationModel: any) {
-    if (auth.user) {
+    if (auth && auth.user) {
       const data: any = {pageid: paginationModel.page, pagesize: paginationModel.pageSize}
       const RS = await axios.post('/api/user/getuserlogsall', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       console.log("RS", RS)

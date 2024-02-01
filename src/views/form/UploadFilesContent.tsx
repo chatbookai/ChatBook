@@ -30,7 +30,7 @@ const UploadFilesContent = (props: any) => {
               {knowledgeName} {`${t('Upload Files')}`}
             </Typography>
           }
-          subtitle={<Typography variant='body2' sx={{pt:2}}>{`${t('You can choose multiple files for simultaneous uploading.')}`}</Typography>}
+          subtitle={<Typography variant='body2' sx={{pt:2}}>{`${t('Up to 10 files can be uploaded at one time')}`}</Typography>}
         />
         <Grid item xs={12}>
             <FileUploaderMultiple knowledgeId={knowledgeId} knowledgeName={knowledgeName} userId={userId} />

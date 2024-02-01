@@ -25,7 +25,7 @@
   "Logs": "Logs",
   "Datetime": "Datetime",
   "Content": "Content",
-  "You can choose multiple files for simultaneous uploading.":"You can choose multiple files for simultaneous uploading.",
+  "Up to 10 files can be uploaded at one time":"Up to 10 files can be uploaded at one time",
   "Drop files here or click to upload.":"Drop files here or click to upload.",
   "Uploading": "Uploading",
   "Upload success": "Upload success",
@@ -110,6 +110,7 @@
   "Password": "Password",
   "Create an account": "Create an account",
   "or": "or",
-  "Welcome to": "Welcome to"
+  "Welcome to": "Welcome to",
+  "Uploaded Success": "Uploaded Success"
   
 }

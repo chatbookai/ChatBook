@@ -152,7 +152,7 @@
     }
     else {
 
-      return {"status":"error", "msg":"Token is invalid"}
+      return {"status":"error", "msg":"Token is invalid in changeUserPasswordByToken"}
     }
   }
 
@@ -169,7 +169,7 @@
     }
     else {
 
-      return {"status":"error", "msg":"Token is invalid"}
+      return {"status":"error", "msg":"Token is invalid in changeUserDetail"}
     }
   }
 
@@ -186,7 +186,7 @@
     }
     else {
 
-      return {"status":"error", "msg":"Token is invalid"}
+      return {"status":"error", "msg":"Token is invalid in changeUserStatus"}
     }
   }
 
@@ -237,7 +237,7 @@
     }
     else {
 
-      return {"status":"error", "msg":"Token is invalid", "data": null}
+      return {"status":"error", "msg":"Token is invalid in getOneUserByToken", "data": null}
     }
   }
 

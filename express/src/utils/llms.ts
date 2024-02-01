@@ -54,6 +54,7 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+
 const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
 const PINECONE_ENVIRONMENT = process.env.PINECONE_ENVIRONMENT;
 const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME;
@@ -122,7 +123,7 @@ let ChatBaiduWenxinModel: any = null
       }
     }
     else {
-      res.write("Not set API_KEY");
+      res.write("Not set API_KEY in initChatBookOpenAIStream");
       res.end();
     }
   }
@@ -130,6 +131,7 @@ let ChatBaiduWenxinModel: any = null
   export async function chatChatOpenAI(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[]) {
     ChatBookOpenAIStreamResponse = ''
     await initChatBookOpenAIStream(res, knowledgeId)
+    
     const pastMessages: any[] = []
     if(history && history.length > 0) {
       history.map((Item) => {
@@ -151,6 +153,10 @@ let ChatBaiduWenxinModel: any = null
 
   export async function chatKnowledgeOpenAI(res: Response, knowledgeId: number | string, userId: number, question: string, history: any[]) {
     await initChatBookOpenAIStream(res, knowledgeId)
+    if(!ChatOpenAIModel) {
+      res.end();
+      return
+    }
     const CONDENSE_TEMPLATE: string | unknown = await GetSetting("CONDENSE_TEMPLATE", knowledgeId, userId);
     const QA_TEMPLATE: string | unknown = await GetSetting("QA_TEMPLATE", knowledgeId, userId);
 
@@ -283,7 +289,10 @@ let ChatBaiduWenxinModel: any = null
   
   export async function debug(res: Response, knowledgeId: number | string) {
     await initChatBookOpenAIStream(res, knowledgeId)
-
+    if(!ChatOpenAIModel) {
+      res.end();
+      return
+    }
     const pastMessages = [
       new HumanMessage("what is Bitcoin?"),
       new AIMessage("Nice to meet you, Jonas!"),
@@ -530,6 +539,7 @@ let ChatBaiduWenxinModel: any = null
       await Promise.all(RecordsAll.map(async (FileItem: any)=>{
         const KnowledgeItemId = FileItem.knowledgeId
         await initChatBookOpenAI(KnowledgeItemId)
+        console.log("parseFiles getLLMSSettingData", getLLMSSettingData)
         if(getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "")    {
             console.log("KnowledgeItemId", KnowledgeItemId)
             console.log("process.env.OPENAI_BASE_URL", process.env.OPENAI_BASE_URL)
@@ -618,6 +628,10 @@ let ChatBaiduWenxinModel: any = null
 
   export async function chatChatGemini(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[]) {
     await initChatBookGeminiStream(res, knowledgeId)
+    if(!ChatGeminiModel) {
+      res.end();
+      return
+    }
     const input2 = [
         new HumanMessage({
           content: [
@@ -669,6 +683,10 @@ let ChatBaiduWenxinModel: any = null
 
   export async function chatChatBaiduWenxin(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[]) {
     await initChatBookBaiduWenxinStream(res, knowledgeId);
+    if(!ChatBaiduWenxinModel) {
+      res.end();
+      return
+    }
     const input2 = [new HumanMessage(question)];
     const response = await ChatBaiduWenxinModel.call(input2);
     console.log("response", response.content);

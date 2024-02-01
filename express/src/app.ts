@@ -1,32 +1,30 @@
 // app.ts
 import express, { Request, Response } from 'express';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import cron from 'node-cron';
-import * as crypto from 'crypto'
-import sqlite3 from 'sqlite3';
-import validator from 'validator';
 import dotenv from 'dotenv';
-
-dotenv.config();
 
 import { DataDir } from './utils/const';
 import { MenuListAdmin, MenuListUser } from './utils/const';
 import { checkUserPassword, registerUser, changeUserPasswordByToken, changeUserDetail, changeUserStatus, checkUserToken, getUsers, getUserLogsAll, getUserLogs, getOneUserByToken } from './utils/user';
-import { getLogsPage, getTemplate, getLLMSSetting, getFilesPage, getFilesKnowledgeId, getChatLogByKnowledgeIdAndUserId, addKnowledge, setOpenAISetting, setTemplate, getKnowledgePage } from './utils/utils';
-import { debug, outputImage, outputAudio, chatChatBaiduWenxin, chatChatGemini, chatChatOpenAI, chatKnowledgeOpenAI, GenereateImageUsingDallE2, GenereateAudioUsingTTS } from './utils/llms';
+import { getLogsPage, getTemplate, getLLMSSetting, getFilesPage, getFilesKnowledgeId, getChatLogByKnowledgeIdAndUserId, addKnowledge, setOpenAISetting, setTemplate, getKnowledgePage, uploadfiles, uploadfilesInsertIntoDb, enableDir } from './utils/utils';
+import { debug, outputImage, outputAudio, chatChatBaiduWenxin, chatChatGemini, chatChatOpenAI, chatKnowledgeOpenAI, GenereateImageUsingDallE2, GenereateAudioUsingTTS, parseFiles } from './utils/llms';
 
 
 const app = express();
+const port = 1988;
 app.use(cors());
 app.use(bodyParser.json());
+dotenv.config();
 
-const port = 1988;
+enableDir(DataDir + '/uploadfiles')
+enableDir(DataDir + '/parsedfiles')
 
-app.get('/api/uploadfiles', async (req: Request, res: Response) => {
-  res.end();
+cron.schedule('*/3 * * * *', () => {
+  console.log('Task Begin !');
+  parseFiles();
+  console.log('Task End !');
 });
 
 app.get('/api/initDatabase', async (req: Request, res: Response) => {
@@ -74,8 +72,14 @@ app.post('/api/setopenai', async (req: Request, res: Response) => {
 });
 
 app.get('/api/parsefiles', async (req: Request, res: Response) => {
+  parseFiles();
   res.status(200).send("Execute finished, logs in the console or the log page");
   res.end();
+});
+
+app.post('/api/uploadfiles', uploadfiles().array('files', 10), async (req, res) => {
+  uploadfilesInsertIntoDb(req.files as any[], req.body.knowledgeId, '999');
+  res.json({"status":"ok", "msg":"Uploaded Success"}).end(); 
 });
 
 app.post('/api/DallE2Openai', async (req: Request, res: Response) => {
@@ -109,7 +113,6 @@ app.post('/api/ChatOpenaiKnowledge', async (req: Request, res: Response) => {
 app.post('/api/ChatOpenai', async (req: Request, res: Response) => {
   const { knowledgeId, question, history } = req.body;
   const { authorization } = req.headers;
-  console.log("ChatOpenai req.headers", req.headers)
   const checkUserTokenData: any = await checkUserToken(authorization as string);
   if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
       await chatChatOpenAI(res, knowledgeId, checkUserTokenData.data.id, question, history);

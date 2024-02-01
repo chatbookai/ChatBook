@@ -163,11 +163,7 @@ export function uploadfiles() {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
       const FileNameNew = file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase();
       cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase());
-      
-      //const absolutePath = path.resolve('uploadfiles', FileNameNew);
-      //const calculateFileHash = calculateFileHashSync(absolutePath);
-      
-      log("FileNameNew", FileNameNew)
+      log("uploadfiles FileNameNew", FileNameNew)
     },
   });
   const upload = multer({ storage: storage });
@@ -192,17 +188,6 @@ export async function uploadfilesInsertIntoDb(files: any[], knowledgeId: number 
   filesInfo.map((Item: any)=>{
     const suffixName = path.extname(Item.originalName).toLowerCase();
     insertFiles.run(knowledgeId, suffixName, Item.newName, Item.originalName, Item.hash, Date.now(), Number(userId));
-    
-    // Move Files To knowledgeId Dir
-    enableDir(DataDir + '/uploadfiles/' + String(userId) )
-    enableDir(DataDir + '/uploadfiles/' + String(userId) + '/' + String(knowledgeId))
-    fs.rename(DataDir + '/uploadfiles/' + Item.newName, DataDir + '/uploadfiles/'  + String(userId) + '/' + String(knowledgeId) + '/' + Item.newName, (err: any) => {
-      if (err) {
-        log('Error moving file:', err, Item);
-      } else {
-        log('File moved successfully.', Item);
-      }
-    });
   })
   insertFiles.finalize();
 }

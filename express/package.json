@@ -8,9 +8,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",  
+  "license": "ISC",
   "engines": {
-    "node": "18.x"
+    "node": ">=18.17.1"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

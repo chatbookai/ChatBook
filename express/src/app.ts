@@ -14,9 +14,20 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { DataDir } from './utils/const';
+import { checkUserPassword } from './utils/user';
 
 const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+
 const port = 1988;
+
+app.post('/api/user/login', async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  const checkUserPasswordData = await checkUserPassword(req, email, password);
+  res.status(200).json(checkUserPasswordData);
+  res.end();
+});
 
 app.get('/api/debug', async (req: Request, res: Response) => {
   await debug(res, "ChatGPT4");

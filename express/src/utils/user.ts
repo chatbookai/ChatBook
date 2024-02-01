@@ -1,25 +1,19 @@
-  import { setting, log } from './utils'
+  import { Request, Response } from 'express';
+  import { log } from './utils'
   import dotenv from 'dotenv';
-  import { promisify } from 'util';
   import bcrypt from 'bcrypt';
   import jwt from 'jsonwebtoken';
   import axios from 'axios'
-
-  // @ts-ignore
-  import { NextApiRequest } from 'next';
   import useragent from 'useragent';
 
   dotenv.config();
 
-  const [DataDir, db] = setting()
+  import { db, getDbRecord, getDbRecordALL } from './db'
 
-  console.log("DataDir***********************", DataDir)
+  type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
   const secretKey: string = process.env.JWT_TOKEN_SECRET_KEY || "ChatBookAI"; 
 
-  const getDbRecord = promisify(db.get.bind(db));
-  const getDbRecordALL = promisify(db.all.bind(db));
-  
   export const createJwtToken = (userId: string, email: string, role: string) => {
     const token = jwt.sign({ id: userId, email, role }, secretKey, { expiresIn: '1d' });
 
@@ -69,14 +63,14 @@
     }
   }
 
-  export async function userLoginLog(req: NextApiRequest, email: string, action: string, msg: string) {
+  export async function userLoginLog(req: Request, email: string, action: string, msg: string) {
     const agent = useragent.parse(req.headers['user-agent']);
     const BrowserType = agent.family
     const BrowserVersion = agent.toVersion()
     const OperatingSystem = agent.os.family
     const Device = agent.device.family
     const ipaddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    const ipaddress2 = ipaddress.replace('::ffff:','');
+    const ipaddress2 = (ipaddress as string).replace('::ffff:','');
     const insertSetting = db.prepare('INSERT OR IGNORE INTO userlog (email, browsertype, browserversion, os, device, location, country, ipaddress, recentactivities, action, msg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
     if(ipaddress2 != "::1")  {
       try {
@@ -92,7 +86,7 @@
     }
   }
 
-  export async function checkUserPassword(req: NextApiRequest, email: string, password: string) {
+  export async function checkUserPassword(req: Request, email: string, password: string) {
     const getOneUserData: any = await getOneUser(email);
     if(getOneUserData && getOneUserData.user_status == '1') {
         const isPasswordMatch = await comparePasswords(password, getOneUserData.password);
@@ -223,7 +217,7 @@
   }
 
   export async function getOneUser(email: string) {
-    const Records: any = await getDbRecord("SELECT * from user where email = ? ", [email]);
+    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT * from user where email = ? ", [email]);
  
     return Records ? Records : null;
   }
@@ -254,10 +248,10 @@
     console.log("pageidFiler", pageidFiler)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records: any = await getDbRecord("SELECT COUNT(*) AS NUM from user ");
+    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from user ");
     const RecordsTotal: number = Records ? Records.NUM : 0;
 
-    const RecordsAll: any[] = await getDbRecordALL(`SELECT id, email, username, firstname, lastname, organization, role, mobile, address, state, zipcode, country, language, timezone, nickname, birthday, avatar, mobile_status, google_auth, github_auth, user_type, user_status, createtime FROM user ORDER BY id DESC LIMIT ? OFFSET ? `, [pagesizeFiler, From]) || [];
+    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT id, email, username, firstname, lastname, organization, role, mobile, address, state, zipcode, country, language, timezone, nickname, birthday, avatar, mobile_status, google_auth, github_auth, user_type, user_status, createtime FROM user ORDER BY id DESC LIMIT ? OFFSET ? `, [pagesizeFiler, From]) || [];
 
     const RS: any = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
@@ -277,10 +271,10 @@
     console.log("pageidFiler", pageidFiler)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records: any = await getDbRecord("SELECT COUNT(*) AS NUM from userlog where email = ? ", [email]);
+    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from userlog where email = ? ", [email]);
     const RecordsTotal: number = Records ? Records.NUM : 0;
 
-    const RecordsAll: any[] = await getDbRecordALL(`SELECT * FROM userlog WHERE email = ? ORDER BY id DESC LIMIT ? OFFSET ? `, [email, pagesizeFiler, From]) || [];
+    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * FROM userlog WHERE email = ? ORDER BY id DESC LIMIT ? OFFSET ? `, [email, pagesizeFiler, From]) || [];
 
     const RS: any = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
@@ -300,10 +294,10 @@
     console.log("pageidFiler", pageidFiler)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records: any = await getDbRecord("SELECT COUNT(*) AS NUM from userlog");
+    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from userlog");
     const RecordsTotal: number = Records ? Records.NUM : 0;
 
-    const RecordsAll: any[] = await getDbRecordALL(`SELECT * FROM userlog ORDER BY id DESC LIMIT ? OFFSET ? `, [pagesizeFiler, From]) || [];
+    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * FROM userlog ORDER BY id DESC LIMIT ? OFFSET ? `, [pagesizeFiler, From]) || [];
 
     const RS: any = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);

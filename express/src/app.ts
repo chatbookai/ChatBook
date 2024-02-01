@@ -4,6 +4,8 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import cron from 'node-cron';
 import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
 import { initChatBookDbExec } from './utils/db';
 import { MenuListAdmin, MenuListUser } from './utils/const';
@@ -18,6 +20,7 @@ const port = 1988;
 app.use(cors());
 app.use(bodyParser.json());
 dotenv.config();
+
 
 //Initial Database and Folder
 initChatBookDbExec()
@@ -439,9 +442,7 @@ app.get('/api/debug', async (req: Request, res: Response) => {
   res.end();
 });
 
-app.get('/', (req, res) => {
-  res.send('Hello, TypeScript with Express!');
-});
+app.use(express.static(join(__dirname, '../../out')));
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

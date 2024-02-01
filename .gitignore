@@ -33,6 +33,7 @@ yarn-error.log*
 
 
 # express
-express/node_modules
-express/dist
-express/data
+/express/node_modules
+/express/dist
+/express/data
+/express/data/ChatBookSqlite3.db

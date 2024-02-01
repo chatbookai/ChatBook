@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, SyntheticEvent, Fragment, useEffect } from 'react'
+import { useState, SyntheticEvent, Fragment } from 'react'
 
 // ** Next Import
 import { useRouter } from 'next/router'
@@ -17,8 +17,6 @@ import MenuItem from '@mui/material/MenuItem'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
-import axios from 'axios'
-import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
 import { useTranslation } from 'react-i18next'
 
@@ -64,20 +62,6 @@ const UserDropdown = (props: Props) => {
     }
     setAnchorEl(null)
   }
-
-  useEffect(() => {
-    axios.get(authConfig.backEndApi + '/api/initDatabase')
-  }, [])
-
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      axios.get(authConfig.backEndApi + '/api/parsefiles')
-    }, 3600000);
-
-    return () => {
-      clearInterval(intervalId);
-    };
-  }, []);
 
   const styles = {
     py: 2,

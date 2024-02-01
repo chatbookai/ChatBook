@@ -35,6 +35,4 @@ yarn-error.log*
 # express
 express/node_modules
 express/dist
-express/data/uploadfiles
-express/data/parsedfiles
-express/data/ChatBookSqlite3.db
+express/data

@@ -5,32 +5,32 @@ import bodyParser from 'body-parser';
 import cron from 'node-cron';
 import dotenv from 'dotenv';
 
-import { DataDir } from './utils/const';
+import { initChatBookDbExec } from './utils/db';
 import { MenuListAdmin, MenuListUser } from './utils/const';
 import { checkUserPassword, registerUser, changeUserPasswordByToken, changeUserDetail, changeUserStatus, checkUserToken, getUsers, getUserLogsAll, getUserLogs, getOneUserByToken } from './utils/user';
 import { getLogsPage, getTemplate, getLLMSSetting, getFilesPage, getFilesKnowledgeId, getChatLogByKnowledgeIdAndUserId, addKnowledge, setOpenAISetting, setTemplate, getKnowledgePage, uploadfiles, uploadfilesInsertIntoDb, enableDir } from './utils/utils';
 import { debug, outputImage, outputAudio, chatChatBaiduWenxin, chatChatGemini, chatChatOpenAI, chatKnowledgeOpenAI, GenereateImageUsingDallE2, GenereateAudioUsingTTS, parseFiles } from './utils/llms';
 
 
+//Start Express Server
 const app = express();
 const port = 1988;
 app.use(cors());
 app.use(bodyParser.json());
 dotenv.config();
 
-enableDir(DataDir + '/uploadfiles')
-enableDir(DataDir + '/parsedfiles')
+//Initial Database and Folder
+initChatBookDbExec()
 
+//Schedule Task for Parse Upload Files
 cron.schedule('*/3 * * * *', () => {
   console.log('Task Begin !');
   parseFiles();
   console.log('Task End !');
 });
 
-app.get('/api/initDatabase', async (req: Request, res: Response) => {
-  res.end();
-});
 
+//Api Interface
 app.post('/api/TTS-1', async (req: Request, res: Response) => {
   const question: string = req.body.question
   const { authorization } = req.headers;

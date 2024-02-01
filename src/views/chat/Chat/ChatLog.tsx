@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography'
 import ReactMarkdown from 'react-markdown'
 import CardMedia from '@mui/material/CardMedia'
 import Link from 'next/link'
+import authConfig from 'src/configs/auth'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'

@@ -64,7 +64,6 @@ export async function getTemplate(knowledgeId: number | string, userId: string) 
   const userIdFilter = Number(userId)
   
   const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT name,content from setting where type='TEMPLATE' and knowledgeId = ? and userId = ? `, [knowledgeIdFilter, userIdFilter]) as any[];
-  await (getDbRecordALL as SqliteQueryFunction)('SELECT * FROM users WHERE id = ?', [userId]);
   
   const Template: any = {}
   if(SettingRS)  {

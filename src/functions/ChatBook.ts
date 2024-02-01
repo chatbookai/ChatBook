@@ -1,3 +1,5 @@
+import authConfig from 'src/configs/auth'
+
 const ChatKnowledge = "ChatKnowledge"
 const ChatChat = "ChatChat"
 const ChatChatName = "ChatChatName"
@@ -65,7 +67,7 @@ export async function ChatKnowledgeOutput(Message: string, Token: string, UserId
     }
     try {
         setLastMessage('')
-        const response = await fetch(`/api/ChatOpenaiKnowledge`, {
+        const response = await fetch(authConfig.backEndApi + `/api/ChatOpenaiKnowledge`, {
           method: 'POST',
           headers: {
             Authorization: Token,
@@ -249,7 +251,7 @@ export async function ChatChatOutput(Message: string, Token: string, UserId: num
         }
         console.log("chatId", chatId)
         if(modelName != '')  {
-            const response = await fetch(`/api/` + modelName, {
+            const response = await fetch(authConfig.backEndApi + `/api/` + modelName, {
             method: 'POST',
             headers: {
                 Authorization: Token,

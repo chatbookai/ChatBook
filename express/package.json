@@ -19,6 +19,7 @@
     "dotenv": "^16.4.1",
     "langchain": "^0.1.11",
     "sqlite3": "^5.1.7",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   },
   "dependencies": {

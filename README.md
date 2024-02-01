@@ -7,17 +7,25 @@
     3 数据分析: 企业内部数据分析.
     4 基础AI对话: 无需每个用户去开通各通AI模型的会员,由单位开通一次,即可给单位内用户使用.
 
-## 编译安装
+## 编译安装,适用于需要做二次开发
 ```
 git clone https://github.com/chatbookai/ChatBook.git
-cd ChatBook
-npm install
-npm run dev
+启动前端项目:
+    cd ChatBook
+    npm install
+    npm run dev
+    然后访问　http://127.0.0.1:3000
+启动后端项目:
+    使用另外一个CMD窗口,进入到ChatBook目录的express目录下面,因为是前后端在一个仓库,但是两个项目,需要额外再执行一次npm install,命令如下:
+    cd ChatBook\express
+    npm install
+    npm run express
+    后端API就可以访问了, http://127.0.0.1:1988
 
 ```
 后端使用serverless function, 数据目录是在安装目录的./data下面.
 
-## Docker安装
+## Docker安装,应用于非程序员
 ```
 sudo docker pull chatbookai/chatbook:0.2
 

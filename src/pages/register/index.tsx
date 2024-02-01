@@ -43,6 +43,7 @@ import { isEmailValid, passwordValidator } from 'src/configs/functions'
 // ** Third Party Components
 import toast from 'react-hot-toast'
 import axios from 'axios'
+import authConfig from 'src/configs/auth'
 
 // ** Styled Components
 const Card = styled(MuiCard)<CardProps>(({ theme }) => ({
@@ -127,7 +128,7 @@ const RegisterV1 = () => {
     }
 
     const username = email
-    axios.post('/api/user/register', { email, username, password }) .then(res => {
+    axios.post(authConfig.backEndApi + '/api/user/register', { email, username, password }) .then(res => {
       if (res.data.status == 'ok') {
         //handleLogin({ email: params.email, password: params.password })
         toast.success(t(res.data.msg) as string, { duration: 4000 })

@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next'
 
 // ** Axios Imports
 import axios from 'axios'
+import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
 import { useRouter } from 'next/router'
 
@@ -43,7 +44,7 @@ const AppChat = () => {
 
   const getAllKnowledgeList = async function () {
     if (auth && auth.user) {
-      const RS = await axios.get('/api/knowledge/0/100', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      const RS = await axios.get(authConfig.backEndApi + '/api/knowledge/0/100', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       setKnowledge(RS)
       if(RS && RS['data'] && RS['data'][0] && RS['data'][0].id && knowledgeId == 0) {
         setKnowledgeId(RS['data'][0].id)
@@ -55,7 +56,7 @@ const AppChat = () => {
 
   const getChatLogList = async function (knowledgeId: number) {
     if (auth && auth.user) {
-      const RS = await axios.get('/api/chatlog/' + knowledgeId + '/' + auth.user.id + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      const RS = await axios.get(authConfig.backEndApi + '/api/chatlog/' + knowledgeId + '/' + auth.user.id + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       const ChatKnowledgeInitList = ChatKnowledgeInit(RS['data'].reverse())
       console.log("ChatKnowledgeInitList", ChatKnowledgeInitList)
       const selectedChat = {

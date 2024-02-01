@@ -3,6 +3,7 @@ import { useState, useEffect, Fragment } from 'react'
 
 // ** Axios Imports
 import axios from 'axios'
+import authConfig from 'src/configs/auth'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -49,7 +50,7 @@ const Logs = () => {
   const fetchData = async function (paginationModel: any) {
     if (auth && auth.user) {
       const data: any = {pageid: paginationModel.page, pagesize: paginationModel.pageSize}
-      const RS = await axios.post('/api/user/getusers', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      const RS = await axios.post(authConfig.backEndApi + '/api/user/getusers', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       if(RS) {
         const userStatusNew = userStatus
         RS.data.map((Item: any)=>{
@@ -64,7 +65,7 @@ const Logs = () => {
   const handleUserStatus = async function (id: number, user_status: number) {
     if (auth && auth.user) {
       const data: any = {user_status: user_status, id:id}
-      axios.post('/api/user/setuserstatus', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} })
+      axios.post(authConfig.backEndApi + '/api/user/setuserstatus', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} })
     }
   }
 

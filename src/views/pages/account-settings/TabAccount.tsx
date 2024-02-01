@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next'
 
 // ** Third Party Components
 import axios from 'axios'
+import authConfig from 'src/configs/auth'
 import toast from 'react-hot-toast'
 import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
@@ -73,7 +74,7 @@ const UserAccount = () => {
 
   const fetchData = async function () {
     if (auth && auth.user) {
-      const RS = await axios.get('/api/user/getuserinfo', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      const RS = await axios.get(authConfig.backEndApi + '/api/user/getuserinfo', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       if(RS && RS.data) {
         Object.entries(RS.data).forEach(([key, value]) => {
 
@@ -114,7 +115,7 @@ const UserAccount = () => {
       })
     }
     if (auth && auth.user) {
-      axios.post('/api/user/setuserinfo', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} })
+      axios.post(authConfig.backEndApi + '/api/user/setuserinfo', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} })
          .then(res=>res.data)
          .then(res=>{
           toast.success(t(res.msg) as string, { duration: 4000 })

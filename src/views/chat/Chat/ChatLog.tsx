@@ -261,7 +261,7 @@ const ChatLog = (props: any) => {
                                 ? new Date(Number(chat.time)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
                                 : null}
                               {ChatMsgContent.ShortFileName ?
-                              <LinkStyled onClick={()=>handleDownload('/api/image/' + ChatMsgContent.ShortFileName, ChatMsgContent.ShortFileName + '.png')} href={'#'} sx={{ml: 1}}>
+                              <LinkStyled onClick={()=>handleDownload(authConfig.backEndApi + '/api/image/' + ChatMsgContent.ShortFileName, ChatMsgContent.ShortFileName + '.png')} href={'#'} sx={{ml: 1}}>
                                 Download
                               </LinkStyled>
                               :
@@ -291,7 +291,7 @@ const ChatLog = (props: any) => {
                                 ? new Date(Number(chat.time)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
                                 : null}
                               {ChatMsgContent.ShortFileName ?
-                              <LinkStyled onClick={()=>handleDownload('/api/audio/' + ChatMsgContent.ShortFileName, ChatMsgContent.ShortFileName + '.mp3')} href={'#'} sx={{ml: 1}}>
+                              <LinkStyled onClick={()=>handleDownload(authConfig.backEndApi + '/api/audio/' + ChatMsgContent.ShortFileName, ChatMsgContent.ShortFileName + '.mp3')} href={'#'} sx={{ml: 1}}>
                                 Download
                               </LinkStyled>
                               :

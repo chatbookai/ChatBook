@@ -23,6 +23,7 @@ import { GetAllLLMS, ChatChatInit, ChatChatNameList, ChatChatInput, ChatChatOutp
 
 // ** Axios Imports
 import axios from 'axios'
+import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
 import { useRouter } from 'next/router'
 
@@ -54,7 +55,7 @@ const AppChat = () => {
 
   const getChatLogList = async function (knowledgeId: number | string) {
     if (auth && auth.user) {
-      const RS = await axios.get('/api/chatlog/' + knowledgeId + '/' + auth.user.id + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      const RS = await axios.get(authConfig.backEndApi + '/api/chatlog/' + knowledgeId + '/' + auth.user.id + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       if(RS['data'])  {
         const ChatChatInitList = ChatChatInit(RS['data'].reverse())
         console.log("ChatChatInitList**************", ChatChatInitList)

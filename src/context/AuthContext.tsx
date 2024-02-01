@@ -6,10 +6,10 @@ import { useRouter } from 'next/router'
 
 // ** Axios
 import axios from 'axios'
+import authConfig from 'src/configs/auth'
 import toast from 'react-hot-toast'
 
 // ** Config
-import authConfig from 'src/configs/auth'
 import { useTranslation } from 'react-i18next'
 
 // ** Types
@@ -43,7 +43,7 @@ const AuthProvider = ({ children }: Props) => {
 
   const handleLogin = (params: LoginParams, errorCallback?: ErrCallbackType) => {
     axios
-      .post('/api/user/login', params)
+      .post(authConfig.backEndApi + '/api/user/login', params)
       .then(async response => {
         if(response.data.status == 'ok') {
           params.rememberMe ? window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.token) : null
@@ -85,7 +85,7 @@ const AuthProvider = ({ children }: Props) => {
 
   const handleRegister = (params: RegisterParams, errorCallback?: ErrCallbackType) => {
     axios
-      .post('/api/user/register', params)
+      .post(authConfig.backEndApi + '/api/user/register', params)
       .then(res => {
         if (res.data.status == 'ok') {
           //handleLogin({ email: params.email, password: params.password })

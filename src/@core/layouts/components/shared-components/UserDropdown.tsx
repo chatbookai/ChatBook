@@ -18,6 +18,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Icon from 'src/@core/components/icon'
 
 import axios from 'axios'
+import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
 import { useTranslation } from 'react-i18next'
 
@@ -65,12 +66,12 @@ const UserDropdown = (props: Props) => {
   }
 
   useEffect(() => {
-    axios.get('/api/initDatabase')
+    axios.get(authConfig.backEndApi + '/api/initDatabase')
   }, [])
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      axios.get('/api/parsefiles')
+      axios.get(authConfig.backEndApi + '/api/parsefiles')
     }, 3600000);
 
     return () => {

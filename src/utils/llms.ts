@@ -4,6 +4,7 @@ import { NextApiResponse } from 'next';
 import * as fs from 'fs'
 import path from 'path'
 import axios from 'axios'
+import authConfig from 'src/configs/auth'
 
 import { OpenAI } from "openai";
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";

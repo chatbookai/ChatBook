@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 
 // ** Axios Import
 import axios from 'axios'
+import authConfig from 'src/configs/auth'
 
 // ** Type Import
 import { VerticalNavItemsType } from 'src/@core/layouts/types'
@@ -17,7 +18,7 @@ const ServerSideNavItems = () => {
 
   useEffect(() => {
     if(auth && auth.user && auth.user.token) {
-      axios.get('/api/menu/vertical', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' }, params: { } }).then(response => {
+      axios.get(authConfig.backEndApi + '/api/menu/vertical', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' }, params: { } }).then(response => {
         const menuArray = response.data
         if(menuArray && menuArray.status == 'error') {
           router.push('/login')

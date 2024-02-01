@@ -4,6 +4,7 @@
   import bcrypt from 'bcrypt';
   import jwt from 'jsonwebtoken';
   import axios from 'axios'
+import authConfig from 'src/configs/auth'
 
   // @ts-ignore
   import { NextApiRequest } from 'next';

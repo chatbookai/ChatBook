@@ -16,6 +16,7 @@ import UploadFiles from 'src/views/form/UploadFilesContent';
 
 // ** Axios Imports
 import axios from 'axios'
+import authConfig from 'src/configs/auth'
 import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
 import { CheckPermission } from 'src/functions/ChatBook'
@@ -41,7 +42,7 @@ const UploadFilesApp = () => {
 
   const fetchData = async function () {
     if (auth && auth.user) {
-      const RS = await axios.get('/api/knowledge/0/100', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      const RS = await axios.get(authConfig.backEndApi + '/api/knowledge/0/100', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       setKnowledge(RS)
       if(RS && RS['data'] && RS['data'][0] && RS['data'][0].id) {
         setKnowledgeId(RS['data'][0].id)

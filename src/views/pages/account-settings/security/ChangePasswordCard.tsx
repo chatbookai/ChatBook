@@ -23,6 +23,7 @@ import Icon from 'src/@core/components/icon'
 import * as yup from 'yup'
 import toast from 'react-hot-toast'
 import axios from 'axios'
+import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
 import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -101,7 +102,7 @@ const ChangePasswordCard = () => {
 
   const onPasswordFormSubmit = (data: any) => {
     if (auth && auth.user) {
-      axios.post('/api/user/setpassword', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} })
+      axios.post(authConfig.backEndApi + '/api/user/setpassword', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} })
          .then(res=>res.data)
          .then(res=>{
           if(res.status == 'ok') {

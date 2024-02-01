@@ -12,6 +12,7 @@ import InputAdornment from '@mui/material/InputAdornment'
 
 // ** Axios Imports
 import axios from 'axios'
+import authConfig from 'src/configs/auth'
 import { useRouter } from 'next/router'
 
 // ** Icon Imports
@@ -92,7 +93,7 @@ const SettingForm = (props: any) => {
 
   const handleGetData = async () => {
     if(auth.user)   {
-        const GetData: any = await axios.get('/api/getopenai/' + llmsId, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+        const GetData: any = await axios.get(authConfig.backEndApi + '/api/getopenai/' + llmsId, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
         console.log("GetData:", GetData)
         setOpenApiBase(GetData?.OPENAI_API_BASE ?? '')
         setOpenApiKey(GetData?.OPENAI_API_KEY ?? '')
@@ -129,7 +130,7 @@ const SettingForm = (props: any) => {
     }
     if(auth.user)   {
         const PostParams = {OPENAI_API_BASE: openApiBase, OPENAI_API_KEY: openApiKey, ModelName: inputModelName, Temperature: inputTemperature, userId: userId, knowledgeId: llmsId }
-        const FormSubmit: any = await axios.post('/api/setopenai', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+        const FormSubmit: any = await axios.post(authConfig.backEndApi + '/api/setopenai', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
         console.log("FormSubmit:", FormSubmit)
         if(FormSubmit?.status == "ok") {
             toast.success(t(FormSubmit.msg) as string, { duration: 4000 })

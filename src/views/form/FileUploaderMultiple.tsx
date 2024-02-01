@@ -23,6 +23,7 @@ import toast from 'react-hot-toast'
 
 // ** Axios Imports
 import axios from 'axios'
+import authConfig from 'src/configs/auth'
 import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
 import { CheckPermission } from 'src/functions/ChatBook'
@@ -184,7 +185,7 @@ const FileUploaderMultiple = (props: any) => {
       files.map((file: File)=>{
         formData.append('files', file);
       })
-      const FormSubmit: any = await axios.post('/api/uploadfiles', formData, {
+      const FormSubmit: any = await axios.post(authConfig.backEndApi + '/api/uploadfiles', formData, {
         headers: {
           Authorization: auth.user.token,
           'Content-Type': 'multipart/form-data',

@@ -3,6 +3,7 @@ import { useState, useEffect, Fragment } from 'react'
 
 // ** Axios Imports
 import axios from 'axios'
+import authConfig from 'src/configs/auth'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -55,7 +56,7 @@ const Files = (props: any) => {
 
   const fetchData = async function (paginationModel: any) {
     if (auth && auth.user) {
-      const RS = await axios.get('/api/files/' + knowledgeId + '/' + paginationModel.page + '/' + paginationModel.pageSize, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' }, params: { } }).then(res=>res.data)
+      const RS = await axios.get(authConfig.backEndApi + '/api/files/' + knowledgeId + '/' + paginationModel.page + '/' + paginationModel.pageSize, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' }, params: { } }).then(res=>res.data)
       console.log("RS", RS)
       setStore(RS)  
     }

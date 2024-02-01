@@ -3,6 +3,7 @@ import { useState, useEffect, Fragment } from 'react'
 
 // ** Axios Imports
 import axios from 'axios'
+import authConfig from 'src/configs/auth'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -47,7 +48,7 @@ const Logs = () => {
   const fetchData = async function (paginationModel: any) {
     if (auth && auth.user) {
       const data: any = {pageid: paginationModel.page, pagesize: paginationModel.pageSize}
-      const RS = await axios.post('/api/user/getuserlogsall', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      const RS = await axios.post(authConfig.backEndApi + '/api/user/getuserlogsall', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       console.log("RS", RS)
       setStore(RS)  
     }

@@ -32,7 +32,7 @@
   "include": [
     "src",
     "declaration.d.ts"
-  ],
+, "express/src/utils"  ],
   "exclude": [
     "node_modules",
     "scripts"

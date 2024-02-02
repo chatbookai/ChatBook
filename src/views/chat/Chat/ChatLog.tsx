@@ -40,10 +40,12 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 
 const ChatLog = (props: any) => {
   // ** Props
-  const { data, hidden, chatName, LLMS } = props
+  const { data, hidden, chatName, LLMS, rowInMsg, maxRows } = props
 
   // ** Ref
   const chatArea = useRef(null)
+
+  console.log("rowInMsg IN ChatLog", rowInMsg)
 
   // ** Scroll to chat bottom
   const scrollToBottom = () => {
@@ -329,8 +331,10 @@ const ChatLog = (props: any) => {
     }
   }
 
+  const inputMsgHeight = rowInMsg <= maxRows? rowInMsg * 1.25 : maxRows * 1.25
+
   return (
-    <Box sx={{ height: 'calc(100% - 8.4375rem)' }}>
+    <Box sx={{ height: `calc(100% - 7rem - ${inputMsgHeight}rem)` }}>
       <ScrollWrapper>{renderChats()}</ScrollWrapper>
     </Box>
   )

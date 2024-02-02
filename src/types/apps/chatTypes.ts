@@ -145,6 +145,9 @@ export type SendMsgComponentType = {
   sendButtonDisable: boolean
   sendButtonText: string
   sendInputText: string
+  rowInMsg: number
+  handleSetRowInMsg: (params: number) => void
+  maxRows: number
 }
 
 export type ChatLogType = {

@@ -31,7 +31,7 @@ const PerfectScrollbar = styled(PerfectScrollbarComponent)<ScrollBarProps & { re
 
 const ChatLog = (props: any) => {
   // ** Props
-  const { data, hidden, knowledgeId, knowledgeName } = props
+  const { data, hidden, knowledgeId, knowledgeName, rowInMsg, maxRows } = props
 
   // ** Ref
   const chatArea = useRef(null)
@@ -232,8 +232,10 @@ const ChatLog = (props: any) => {
     }
   }
 
+  const inputMsgHeight = rowInMsg <= maxRows? rowInMsg * 1.25 : maxRows * 1.25
+
   return (
-    <Box sx={{ height: 'calc(100% - 8.4375rem)' }}>
+    <Box sx={{ height: `calc(100% - 7rem - ${inputMsgHeight}rem)` }}>
       <ScrollWrapper>{renderChats()}</ScrollWrapper>
     </Box>
   )

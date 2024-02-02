@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 
 // ** MUI Imports
 import Badge from '@mui/material/Badge'
@@ -29,6 +29,14 @@ const ChatContent = (props: any) => {
     knowledgeId,
     knowledgeName
   } = props
+
+  const [rowInMsg, setRowInMsg] = useState<number>(1)
+  
+  const maxRows = 8
+
+  const handleSetRowInMsg = (row: number) => {
+    setRowInMsg(row)
+  }
 
   const renderContent = () => {
     if (store) {
@@ -113,10 +121,10 @@ const ChatContent = (props: any) => {
             </Box>
 
             {selectedChat && store.userProfile ? (
-              <ChatLog hidden={hidden} data={{ ...selectedChat, userContact: store.userProfile }} knowledgeId={knowledgeId} knowledgeName={knowledgeName} />
+              <ChatLog hidden={hidden} data={{ ...selectedChat, userContact: store.userProfile }} knowledgeId={knowledgeId} knowledgeName={knowledgeName} rowInMsg={rowInMsg} maxRows={maxRows} />
             ) : null}
 
-            <SendMsgForm store={store} sendMsg={sendMsg} sendButtonDisable={sendButtonDisable} sendButtonText={sendButtonText} sendInputText={sendInputText}/>
+            <SendMsgForm store={store} sendMsg={sendMsg} sendButtonDisable={sendButtonDisable} sendButtonText={sendButtonText} sendInputText={sendInputText} rowInMsg={rowInMsg} handleSetRowInMsg={handleSetRowInMsg} maxRows={maxRows}/>
 
           </Box>
         )

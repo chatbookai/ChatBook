@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 
 // ** MUI Imports
 import Badge from '@mui/material/Badge'
@@ -33,6 +33,14 @@ const ChatContent = (props: any) => {
   } = props
 
   const LLMS = GetAllLLMById(chatId)
+
+  const [rowInMsg, setRowInMsg] = useState<number>(1)
+  
+  const maxRows = 8
+
+  const handleSetRowInMsg = (row: number) => {
+    setRowInMsg(row)
+  }
 
   const renderContent = () => {
           return (
@@ -118,10 +126,10 @@ const ChatContent = (props: any) => {
               </Box>
 
               {store && store.selectedChat && store.userProfile ? (
-                <ChatLog hidden={hidden} data={{ ...store.selectedChat, userContact: store.userProfile }} chatId={chatId} chatName={chatName} LLMS={LLMS} />
+                <ChatLog hidden={hidden} data={{ ...store.selectedChat, userContact: store.userProfile }} chatId={chatId} chatName={chatName} LLMS={LLMS} rowInMsg={rowInMsg} maxRows={maxRows} />
               ) : null}
 
-              <SendMsgForm store={store} sendMsg={sendMsg} sendButtonDisable={sendButtonDisable} sendButtonText={sendButtonText} sendInputText={sendInputText}/>
+              <SendMsgForm store={store} sendMsg={sendMsg} sendButtonDisable={sendButtonDisable} sendButtonText={sendButtonText} sendInputText={sendInputText} rowInMsg={rowInMsg} handleSetRowInMsg={handleSetRowInMsg} maxRows={maxRows} />
 
             </Box>
           )

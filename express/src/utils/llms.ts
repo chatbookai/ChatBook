@@ -3,6 +3,7 @@ import { Request, Response } from 'express';
 import * as fs from 'fs'
 import path from 'path'
 import axios from 'axios'
+import sharp from 'sharp';
 
 import { OpenAI } from "openai";
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
@@ -131,7 +132,7 @@ let ChatBaiduWenxinModel: any = null
   export async function chatChatOpenAI(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[]) {
     ChatBookOpenAIStreamResponse = ''
     await initChatBookOpenAIStream(res, knowledgeId)
-    
+
     const pastMessages: any[] = []
     if(history && history.length > 0) {
       history.map((Item) => {
@@ -142,12 +143,17 @@ let ChatBaiduWenxinModel: any = null
     const memory = new BufferMemory({
       chatHistory: new ChatMessageHistory(pastMessages),
     });
-    const chain = new ConversationChain({ llm: ChatOpenAIModel, memory: memory });
-    await chain.call({ input: question});
-    
-    const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
-    insertChatLog.run(knowledgeId, question, ChatBookOpenAIStreamResponse, userId, Date.now(), JSON.stringify([]), JSON.stringify(history));
-    insertChatLog.finalize();
+    try {
+      const chain = new ConversationChain({ llm: ChatOpenAIModel, memory: memory });
+      await chain.call({ input: question});      
+      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
+      insertChatLog.run(knowledgeId, question, ChatBookOpenAIStreamResponse, userId, Date.now(), JSON.stringify([]), JSON.stringify(history));
+      insertChatLog.finalize();
+    }
+    catch(error: any) {
+      console.log("chatChatOpenAI error", error.message)
+      res.write(error.message)
+    }    
     res.end();
   }
 
@@ -423,6 +429,8 @@ let ChatBaiduWenxinModel: any = null
           insertChatLog.run(knowledgeId, question, JSON.stringify(generatedImageTS), userId, Date.now(), JSON.stringify([]), JSON.stringify([]));
           insertChatLog.finalize();
           log('Generated Image:', generatedImageTS);
+          
+          await compressPng(ShortFileName);
 
           return generatedImageTS;
         }
@@ -496,40 +504,49 @@ let ChatBaiduWenxinModel: any = null
   export async function outputAudio(res: Response, file: string) {
     try {
       const FileName = DataDir + "/audio/"+ file + ".mp3";
-
-      const readStream = fs.createReadStream(FileName);
-
-      res.setHeader('Content-Type', 'audio/mpeg');
-
-      readStream.pipe(res);
+      if(isFile(FileName))   {
+        const readStream = fs.createReadStream(FileName);
+        res.setHeader('Content-Type', 'audio/mpeg');
+        readStream.pipe(res);
+        console.log("FileName Exist: ", FileName)
+      }
+      else {
+        res.status(200).json({ error: 'File not exist' })
+      }
     } 
     catch (error) {
-        console.error('Error:', error);
+        console.error('outputImage Error:', error);
+        res.status(200).json({ error: 'File not exist' })
+    }
+  }
 
-        return {
-          statusCode: 500,
-          body: JSON.stringify({ error: 'Internal Server Error' }),
-        };
+  export async function compressPng(file: string) {
+    const FileName = path.join(DataDir, "/image/"+ file + ".png");
+    const FileNameNew = path.join(DataDir, "/image/"+ file + "_thumbnail.png");
+    if(!isFile(FileNameNew))   {
+      const quality = 80;
+      await sharp(FileName).resize({ fit: 'inside', width: 800, withoutEnlargement: true }).png({ quality }).toFile(FileNameNew);
     }
   }
 
   export async function outputImage(res: Response, file: string) {
     try {
-      const FileName = DataDir + "/image/"+ file + ".png";
-
-      const readStream = fs.createReadStream(FileName);
-
-      res.setHeader('Content-Type', 'image/png');
-
-      readStream.pipe(res);
+      await compressPng(file);
+      const FileName = path.join(DataDir, "/image/"+ file + "_thumbnail.png");
+      if(isFile(FileName))   {
+        compressPng(file);
+        const readStream = fs.createReadStream(FileName);
+        res.setHeader('Content-Type', 'image/png');
+        readStream.pipe(res);
+        console.log("FileName Exist: ", FileName)
+      }
+      else {
+        res.status(200).json({ error: 'File not exist' })
+      }
     } 
     catch (error) {
-        console.error('Error:', error);
-
-        return {
-          statusCode: 500,
-          body: JSON.stringify({ error: 'Internal Server Error' }),
-        };
+        console.error('outputImage Error:', error);
+        res.status(200).json({ error: 'File not exist' })
     }
   }
 
@@ -603,10 +620,6 @@ let ChatBaiduWenxinModel: any = null
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
     if(OPENAI_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
-      if(OPENAI_API_BASE && OPENAI_API_BASE !='' && OPENAI_API_BASE.length > 16) {
-        process.env.OPENAI_BASE_URL = OPENAI_API_BASE
-        process.env.OPENAI_API_KEY = OPENAI_API_KEY
-      }
       process.env.GOOGLE_API_KEY = OPENAI_API_KEY
       ChatGeminiModel = new ChatGoogleGenerativeAI({
           modelName: getLLMSSettingData.ModelName ?? "gemini-pro",
@@ -628,10 +641,7 @@ let ChatBaiduWenxinModel: any = null
 
   export async function chatChatGemini(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[]) {
     await initChatBookGeminiStream(res, knowledgeId)
-    if(!ChatGeminiModel) {
-      res.end();
-      return
-    }
+
     const input2 = [
         new HumanMessage({
           content: [
@@ -641,24 +651,31 @@ let ChatBaiduWenxinModel: any = null
             },
           ],
         }),
-      ];    
-    const res3 = await ChatGeminiModel.stream(input2);
-    let response = '';
-    for await (const chunk of res3) {
-        //console.log(chunk.content);
-        res.write(chunk.content);
-        response = response + chunk.content
+      ];
+    try {
+      const res3 = await ChatGeminiModel.stream(input2);
+      let response = '';
+      for await (const chunk of res3) {
+          //console.log(chunk.content);
+          res.write(chunk.content);
+          response = response + chunk.content
+      }
+      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
+      insertChatLog.run(knowledgeId, question, response, userId, Date.now(), JSON.stringify([]), JSON.stringify(history));
+      insertChatLog.finalize();
     }
-    const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
-    insertChatLog.run(knowledgeId, question, response, userId, Date.now(), JSON.stringify([]), JSON.stringify(history));
-    insertChatLog.finalize();
+    catch(error: any) {
+      console.log("chatChatGemini error", error.message)
+      res.write(error.message)
+    }
+    res.end();
   }
 
   export async function initChatBookBaiduWenxinStream(res: Response, knowledgeId: number | string) {
     getLLMSSettingData = await getLLMSSetting(knowledgeId);
-    const BAIDU_API_KEY = getLLMSSettingData.BAIDU_API_KEY ?? "1AWXpm1Cd8lbxmAaFoPR0dNx";
-    const BAIDU_SECRET_KEY = getLLMSSettingData.BAIDU_SECRET_KEY ?? "TQy5sT9Mz4xKn0tR8h7W6LxPWIUNnXqq";
-    const OPENAI_Temperature = getLLMSSettingData.Temperature ?? 1;
+    const BAIDU_API_KEY = getLLMSSettingData.OPENAI_API_KEY ?? "1AWXpm1Cd8lbxmAaFoPR0dNx";
+    const BAIDU_SECRET_KEY = getLLMSSettingData.OPENAI_API_BASE ?? "TQy5sT9Mz4xKn0tR8h7W6LxPWIUNnXqq";
+    const OPENAI_Temperature = 1;
     if(BAIDU_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
       process.env.BAIDU_API_KEY = BAIDU_API_KEY
       process.env.BAIDU_SECRET_KEY = BAIDU_SECRET_KEY
@@ -687,14 +704,20 @@ let ChatBaiduWenxinModel: any = null
       res.end();
       return
     }
-    const input2 = [new HumanMessage(question)];
-    const response = await ChatBaiduWenxinModel.call(input2);
-    console.log("response", response.content);
-    const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
-    insertChatLog.run(knowledgeId, question, response.content, userId, Date.now(), JSON.stringify([]), JSON.stringify(history));
-    insertChatLog.finalize();
+    try {
+      const input2 = [new HumanMessage(question)];
+      const response = await ChatBaiduWenxinModel.call(input2);
+      console.log("response", response.content);
+      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
+      insertChatLog.run(knowledgeId, question, response.content, userId, Date.now(), JSON.stringify([]), JSON.stringify(history));
+      insertChatLog.finalize();
 
-    return response.content;
+      return response.content;
+    }
+    catch(error: any) {
+      console.log("chatChatOpenAI error", error.message)
+      return error.message;
+    }    
   }
 
 

@@ -1,5 +1,5 @@
 // app.ts
-import express, { Request, Response } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import cron from 'node-cron';
@@ -176,14 +176,8 @@ app.post('/api/ChatBaiduwenxin', async (req: Request, res: Response) => {
   const { authorization } = req.headers;
   const checkUserTokenData: any = await checkUserToken(authorization as string);
   if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-      const getLLMSSettingData = await getLLMSSetting(knowledgeId);   
-      if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
-        const chatChatBaiduWenxinData: any = await chatChatBaiduWenxin(res, knowledgeId, checkUserTokenData.data.id, question, history);    
-        res.status(200).json(chatChatBaiduWenxinData);
-      }
-      else {        
-        res.status(200).json({"status":"error", "msg":"Not set API_KEY", "data": null});
-      }
+    const chatChatBaiduWenxinData: any = await chatChatBaiduWenxin(res, knowledgeId, checkUserTokenData.data.id, question, history);    
+    res.status(200).json(chatChatBaiduWenxinData);
   }
   else {
       res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
@@ -208,7 +202,6 @@ app.post('/api/addknowledge', async (req: Request, res: Response) => {
 app.get('/api/audio/:file', async (req: Request, res: Response) => {
   const { file }= req.params;
   outputAudio(res, file);
-  res.end();
 });
 
 app.get('/api/chatlog/:knowledgeId/:userId/:pageid/:pagesize', async (req, res) => {
@@ -284,7 +277,6 @@ app.get('/api/gettemplate/:id', async (req: Request, res: Response) => {
 app.get('/api/image/:file', async (req: Request, res: Response) => {
   const { file } = req.params;
   outputImage(res, file);
-  res.end();
 });
 
 app.get('/api/knowledge/:pageid/:pagesize', async (req: Request, res: Response) => {
@@ -440,6 +432,19 @@ app.post('/api/user/login', async (req: Request, res: Response) => {
 app.get('/api/debug', async (req: Request, res: Response) => {
   await debug(res, "ChatGPT4");
   res.end();
+});
+
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  // 处理身份验证错误
+  if (err.name === 'AuthenticationError') {
+    console.error('AuthenticationError:', err.message);
+    res.status(200).json({ error: 'Authentication failed' });
+  } 
+  else {
+    // 处理其他错误
+    console.error('Unexpected error:', err);
+    res.status(200).json({ error: 'Internal Server Error' });
+  }
 });
 
 app.use(express.static(join(__dirname, '../../out')));

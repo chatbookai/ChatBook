@@ -25,6 +25,7 @@ import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from 'src/hooks/useAuth'
 import { CheckPermission } from 'src/functions/ChatBook'
+import { Typography } from '@mui/material'
 
 
 const SettingForm = (props: any) => {
@@ -227,6 +228,19 @@ const SettingForm = (props: any) => {
                         {uploadingButton}
                     </Button>
                 </Grid>
+
+                <Grid item xs={12} >
+                    <Typography>
+                        OpenAI Model: gpt-3.5-turbo dall-e-2 tts-1 gpt-4-1106-preview (Expensive)
+                    </Typography>
+                    <Typography>
+                        Google Model: gemini-pro
+                    </Typography>
+                    <Typography>
+                        Baidu Model: ERNIE-Bot-4
+                    </Typography>
+                </Grid>
+
             </Grid>
         </CardContent>
         </Card>

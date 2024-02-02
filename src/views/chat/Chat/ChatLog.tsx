@@ -246,8 +246,8 @@ const ChatLog = (props: any) => {
                     }
                     {ChatMsgType == "Image" && ChatMsgContent && ChatMsgContent.ShortFileName ?
                       <div>
-                        <LinkStyled target='_blank' href={'/api/image/' + ChatMsgContent.ShortFileName}>
-                          <CardMedia image={'/api/image/' + ChatMsgContent.ShortFileName} sx={{ mt: 1, width: '500px', height: '500px', borderRadius: '5px' }}/>
+                        <LinkStyled target='_blank' href={authConfig.backEndApi + '/api/image/' + ChatMsgContent.ShortFileName}>
+                          <CardMedia image={authConfig.backEndApi + '/api/image/' + ChatMsgContent.ShortFileName} sx={{ mt: 1, width: '500px', height: '500px', borderRadius: '5px' }}/>
                         </LinkStyled>
                         <Box
                             sx={{

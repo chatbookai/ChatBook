@@ -79,7 +79,7 @@ const SendMsgForm = (props: SendMsgComponentType) => {
     }}>
       <TextareaAutosize
          minRows={2}
-         maxRows={5}
+         maxRows={8}
          value={msg}
          placeholder={sendInputText}
          onChange={handleChange} 

@@ -276,8 +276,8 @@ const ChatLog = (props: any) => {
                     }
                     {ChatMsgType == "Audio" && ChatMsgContent && ChatMsgContent.ShortFileName ?
                       <div>
-                        <LinkStyled target='_blank' href={'/api/audio/' + ChatMsgContent.ShortFileName}>
-                          <CardMedia component="audio" controls src={'/api/audio/' + ChatMsgContent.ShortFileName} sx={{ mt: 1, width: '360px', borderRadius: '5px' }}/>
+                        <LinkStyled target='_blank' href={authConfig.backEndApi + '/api/audio/' + ChatMsgContent.ShortFileName}>
+                          <CardMedia component="audio" controls src={authConfig.backEndApi + '/api/audio/' + ChatMsgContent.ShortFileName} sx={{ mt: 1, width: '360px', borderRadius: '5px' }}/>
                         </LinkStyled>
                         <Box
                             sx={{

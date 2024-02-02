@@ -86,7 +86,6 @@ const Customizer = () => {
     footer,
     layout,
     navHidden,
-    direction,
     appBarBlur,
     themeColor,
     navCollapsed,
@@ -300,16 +299,6 @@ const Customizer = () => {
                 onChange={e => handleChange('appBarBlur', e.target.checked)}
               />
             </Box>
-
-            {/* RTL */}
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography>RTL</Typography>
-              <Switch
-                name='direction'
-                checked={direction === 'rtl'}
-                onChange={e => handleChange('direction', e.target.checked ? 'rtl' : 'ltr')}
-              />
-            </Box>
           </CustomizerSpacing>
 
           <Divider sx={{ m: '0 !important' }} />
@@ -322,26 +311,6 @@ const Customizer = () => {
             >
               Menu
             </Typography>
-
-            {/* Menu Layout */}
-            <Box sx={{ mb: layout === 'horizontal' && appBar === 'hidden' ? {} : 4 }}>
-              <Typography>Menu Layout</Typography>
-              <RadioGroup
-                row
-                value={layout}
-                onChange={(e: any) => {
-                  saveSettings({
-                    ...settings,
-                    layout: e.target.value as Settings['layout'],
-                    lastLayout: e.target.value as Settings['lastLayout']
-                  })
-                }}
-                sx={{ '& .MuiFormControlLabel-label': { fontSize: '.875rem', color: 'text.secondary' } }}
-              >
-                <FormControlLabel value='vertical' label='Vertical' control={<Radio />} />
-                <FormControlLabel value='horizontal' label='Horizontal' control={<Radio />} />
-              </RadioGroup>
-            </Box>
 
             {/* Menu Toggle */}
             {navHidden || layout === 'horizontal' ? null : (

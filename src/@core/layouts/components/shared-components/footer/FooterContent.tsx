@@ -26,16 +26,13 @@ const FooterContent = () => {
         </Box>
         {` by `}
         <LinkStyled target='_blank' href='https://chatbookai.net/'>
-        ChatBook
+        ChatBookAI
         </LinkStyled>
       </Typography>
       {hidden ? null : (
         <Box sx={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', '& :not(:last-child)': { mr: 4 } }}>
           <LinkStyled target='_blank' href='https://github.com/chatbookai/ChatBook'>
             Github
-          </LinkStyled>
-          <LinkStyled target='_blank' href='https://chatbookai.net/about/'>
-            About Us
           </LinkStyled>
         </Box>
       )}

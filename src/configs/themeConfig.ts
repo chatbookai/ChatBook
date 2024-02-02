@@ -57,7 +57,7 @@ const themeConfig: ThemeConfig = {
   direction: 'ltr' /* ltr | rtl */,
   skin: 'default' /* default | bordered */,
   contentWidth: 'boxed' /* full | boxed */,
-  footer: 'static' /* fixed | static | hidden */,
+  footer: 'hidden' /* fixed | static | hidden */,
 
   // ** Routing Configs
   routingLoader: true /* true | false */,

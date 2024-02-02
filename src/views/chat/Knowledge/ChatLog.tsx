@@ -187,7 +187,7 @@ const ChatLog = (props: any) => {
                         backgroundColor: isSender ? 'primary.main' : 'background.paper'
                       }}
                     > 
-                      <ReactMarkdown>{chat.msg}</ReactMarkdown>
+                      <ReactMarkdown>{chat.msg.replace('\n', '  \n')}</ReactMarkdown>
                     </Typography>
                   </div>
                   {index + 1 === length ? (

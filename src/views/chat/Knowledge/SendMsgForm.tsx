@@ -41,16 +41,36 @@ const SendMsgForm = (props: SendMsgComponentType) => {
     setMsg('')
   }
 
+  const maxRows = 5
+
+  const handleKeyDown = (e: any) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault(); // Prevents the default behavior of the enter key
+      // Perform your send logic here
+      console.log('Sending message:', msg);
+    }
+  };
+
+  const handleChange = (e: any) => {
+    const lines = e.target.value.split('\n');
+    if (lines.length <= maxRows) {
+      setMsg(e.target.value);
+    }
+  };
+
   return (
     <Form onSubmit={handleSendMsg}>
       <ChatFormWrapper>
         <Box sx={{ flexGrow: 1, display: 'flex', alignItems: 'center' }}>
           <TextField
+            multiline
+            rows={1}
             fullWidth
             value={msg}
             size='small'
+            onChange={handleChange}
+            onKeyDown={handleKeyDown}
             placeholder={sendInputText}
-            onChange={e => setMsg(e.target.value)}
             disabled={sendButtonDisable}
             sx={{ '& .MuiOutlinedInput-input': { pl: 0 }, '& fieldset': { border: '0 !important' } }}
           />

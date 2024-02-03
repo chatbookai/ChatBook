@@ -3,7 +3,7 @@
 
   import { checkUserToken } from '../utils/user';
 
-  import { getModels, getModelDetail, TextToImageBySD, Base64ToImg } from '../utils/getimg';
+  import { getModels, getModelDetail, TextToImageBySD, getModelsToGenereateImage, TextToImageALL, TextToImageAllLatentConsistency, Base64ToImg } from '../utils/getimg';
 
   const app = express();
 
@@ -27,6 +27,12 @@
     */
   });
 
+  app.get('/api/getModelsToGenereateImage', async (req: Request, res: Response) => {
+    const getModelsToGenereateImageData = await getModelsToGenereateImage();
+    //console.log("getModelsToGenereateImageData", getModelsToGenereateImageData)
+    res.status(200).json(getModelsToGenereateImageData).end();
+  });
+
   app.get('/api/getModelDetail/:id', async (req: Request, res: Response) => {
     const { id } = req.params;
     const getModelDetailData = await getModelDetail(id);
@@ -34,19 +40,39 @@
     res.status(200).json(getModelDetailData).end();
   });
 
-  app.get('/api/TextToImageBySD', async (req: Request, res: Response) => {
-    const TextToImageBySDData = await TextToImageBySD("id");
-    console.log("TextToImageBySDData", TextToImageBySDData)
-    res.status(200).json(TextToImageBySDData).end();
+  app.get('/api/TextToImageALL', async (req: Request, res: Response) => {
+    const TextToImageALLData = await TextToImageALL();
+    console.log("TextToImageALLData", TextToImageALLData);
+    let TextToImageALLDataHtml = '';
+    TextToImageALLData.map((FileName: string)=>{
+        if(FileName) {
+            TextToImageALLDataHtml += "<img src='/api/image/"+FileName+"' border=0 width=600>";
+        }
+    })
+    res.status(200).send(TextToImageALLDataHtml).end();
   });
+
+  app.get('/api/TextToImageAllLatentConsistency', async (req: Request, res: Response) => {
+    const TextToImageAllLatentConsistencyData = await TextToImageAllLatentConsistency();
+    console.log("TextToImageAllLatentConsistencyData", TextToImageAllLatentConsistencyData);
+    let TextToImageAllLatentConsistencyDataHtml = '';
+    TextToImageAllLatentConsistencyData.map((FileName: string)=>{
+        if(FileName) {
+            TextToImageAllLatentConsistencyDataHtml += "<img src='/api/image/"+FileName+"' border=0 width=600>";
+        }
+    })
+    res.status(200).send(TextToImageAllLatentConsistencyDataHtml).end();
+  });
+
+
+  
 
   app.get('/api/Base64ToImg', async (req: Request, res: Response) => {
     const Base64IMG = ""
-    const Base64ToImgData = await Base64ToImg(Base64IMG);
+    const Base64ToImgData = await Base64ToImg(Base64IMG, 'absolute-reality-v1-8-1');
     console.log("Base64ToImgData", Base64ToImgData)
     res.status(200).json(Base64ToImgData).end();
   });
 
-  
 
   export default app;

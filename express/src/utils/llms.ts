@@ -408,7 +408,7 @@ let ChatBaiduWenxinModel: any = null
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${OPENAI_API_KEY}`,
           },
-        });  
+        });
         const generatedImage = response.data;
 
         if(generatedImage && generatedImage['data'] && generatedImage['data'][0] && generatedImage['data'][0]['url']) {

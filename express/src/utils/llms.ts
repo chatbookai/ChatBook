@@ -523,7 +523,7 @@ let ChatBaiduWenxinModel: any = null
   export async function compressPng(file: string) {
     const FileName = path.join(DataDir, "/image/"+ file + ".png");
     const FileNameNew = path.join(DataDir, "/image/"+ file + "_thumbnail.png");
-    if(!isFile(FileNameNew))   {
+    if(!isFile(FileNameNew) && isFile(FileName))   {
       const quality = 80;
       await sharp(FileName).resize({ fit: 'inside', width: 800, withoutEnlargement: true }).png({ quality }).toFile(FileNameNew);
     }

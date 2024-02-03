@@ -167,7 +167,7 @@ const KnowledgeLeft = (props: any) => {
         <Box
           sx={{
             px: 5,
-            py: 3.125,
+            py: 3.6,
             display: 'flex',
             alignItems: 'center',
             borderBottom: theme => `1px solid ${theme.palette.divider}`

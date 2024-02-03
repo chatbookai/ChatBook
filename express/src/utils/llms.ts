@@ -42,7 +42,7 @@ import { CSVLoader } from 'langchain/document_loaders/fs/csv';
 import { UnstructuredLoader } from 'langchain/document_loaders/fs/unstructured';
 */
 
-//import { Document } from '@langchain/core/documents';
+import { Document } from '@langchain/core/documents';
 import { RunnableSequence } from '@langchain/core/runnables';
 import { StringOutputParser } from '@langchain/core/output_parsers';
 

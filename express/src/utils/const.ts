@@ -35,6 +35,11 @@ export const MenuListAdmin = [
     path: '/chat/chat'
   },
   {
+    title: 'Image',
+    icon: 'material-symbols:imagesmode',
+    path: '/chat/getimg'
+  },
+  {
     title: 'Knowledge Chat',
     icon: 'material-symbols:chat',
     path: '/chat/knowledge'

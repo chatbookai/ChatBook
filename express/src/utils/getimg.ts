@@ -46,68 +46,91 @@ export async function getModelDetail(id: string) {
     return response;
 }
 
-export async function TextToImageBySD(model: string) {
+interface StableDiffusionV1 {
+  model: string
+  prompt: string
+  negativePrompt: string
+  width: number
+  height: number
+  steps: number
+  guidanceScale: number
+  numberOfImages: number
+  sampler: string
+  outpuFormat: string
+  seed: number | string
+}
+
+export async function generateimage(data: StableDiffusionV1) {
+    //return "realistic-vision-v5-1-1706996772820-667074977";
     const url = 'https://api.getimg.ai/v1/stable-diffusion/text-to-image';
     const POSTDATA: any = {}
-    POSTDATA['model'] = model
-    POSTDATA['prompt'] = 'pretty chinese girl, double eyelids, hair in a bun, pin sweater, studying, at night'
-    POSTDATA['negative_prompt'] = 'Disfigured, cartoon, blurry'
-    POSTDATA['width'] = 512
-    POSTDATA['height'] = 512
-    POSTDATA['steps'] = 30
-    POSTDATA['guidance'] = 7.5
-    POSTDATA['seed'] = 0
-    POSTDATA['scheduler'] = 'dpmsolver++'
-    POSTDATA['output_format'] = 'png'
-    const res = await axios.post(url, POSTDATA, {
-        headers: {
-          'accept': 'application/json',
-          'content-type': 'application/json',
-          'authorization': `Bearer ${GETIMG_AI_SECRET_KEY}`,
-        },
-      });
-    //console.log("response", response)
-    if(res.status == 200 && res.data) {
-        const Base64ToImgData = await Base64ToImg(res.data.image, model)
-        return Base64ToImgData;
+    POSTDATA['model'] = data.model
+    POSTDATA['prompt'] = data.prompt
+    POSTDATA['negative_prompt'] = data.negativePrompt
+    POSTDATA['width'] = data.width
+    POSTDATA['height'] = data.height
+    POSTDATA['steps'] = data.steps
+    POSTDATA['guidance'] = data.guidanceScale
+    const seed = data.seed && data.seed !='' ? data.seed : Math.random()
+    POSTDATA['seed'] = Number(seed)
+    POSTDATA['scheduler'] = data.sampler
+    POSTDATA['output_format'] = data.outpuFormat
+    console.log("POSTDATA: ", POSTDATA)
+    try {
+      const res = await axios.post(url, POSTDATA, {
+          headers: {
+            'accept': 'application/json',
+            'content-type': 'application/json',
+            'authorization': `Bearer ${GETIMG_AI_SECRET_KEY}`,
+          },
+        });
+      if(res.status == 200 && res.data) {
+          const Base64ToImgData = await Base64ToImg(res.data.image, data.model)
+          return Base64ToImgData;
+      }
+      else {
+          return null;
+      }
     }
-    else {
-        return null;
+    catch(error: any) {
+      console.log("generateimage Error", error.message)
+      return null;
     }
+    
 }
 
 export async function TextToImageALL() {
     const FilesList: any[] = [];
-    //FilesList.push(await TextToImageBySD("stable-diffusion-v1-5"))
-    //FilesList.push(await TextToImageBySD("stable-diffusion-v2-1"))
-    //FilesList.push(await TextToImageBySD("realistic-vision-v1-3"))
-    //FilesList.push(await TextToImageBySD("realistic-vision-v3"))
-    FilesList.push(await TextToImageBySD("realistic-vision-v5-1"))
+    //FilesList.push(await generateimage("stable-diffusion-v1-5"))
+    //FilesList.push(await generateimage("stable-diffusion-v2-1"))
+    //FilesList.push(await generateimage("realistic-vision-v1-3"))
+    //FilesList.push(await generateimage("realistic-vision-v3"))
+    //FilesList.push(await generateimage("realistic-vision-v5-1"))
     /*
-    FilesList.push(await TextToImageBySD("absolute-reality-v1-8-1"))
-    FilesList.push(await TextToImageBySD("dream-shaper-v8"))
-    FilesList.push(await TextToImageBySD("dark-sushi-mix-v2-25"))
-    FilesList.push(await TextToImageBySD("absolute-reality-v1-6"))
-    FilesList.push(await TextToImageBySD("synthwave-punk-v2"))
-    FilesList.push(await TextToImageBySD("arcane-diffusion"))
-    FilesList.push(await TextToImageBySD("moonfilm-reality-v3"))
-    FilesList.push(await TextToImageBySD("moonfilm-utopia-v3"))
-    FilesList.push(await TextToImageBySD("moonfilm-film-grain-v1"))
-    FilesList.push(await TextToImageBySD("openjourney-v4"))
-    FilesList.push(await TextToImageBySD("icbinp"))
-    FilesList.push(await TextToImageBySD("icbinp-final"))
-    FilesList.push(await TextToImageBySD("icbinp-relapse"))
-    FilesList.push(await TextToImageBySD("icbinp-afterburn"))
-    FilesList.push(await TextToImageBySD("icbinp-seco"))
-    FilesList.push(await TextToImageBySD("xsarchitectural-interior-design"))
-    FilesList.push(await TextToImageBySD("mo-di-diffusion"))
-    FilesList.push(await TextToImageBySD("anashel-rpg"))
-    FilesList.push(await TextToImageBySD("eimis-anime-diffusion-v1-0"))
-    FilesList.push(await TextToImageBySD("something-v2-2"))
-    FilesList.push(await TextToImageBySD("analog-diffusion"))
-    FilesList.push(await TextToImageBySD("neverending-dream"))
-    FilesList.push(await TextToImageBySD("van-gogh-diffusion"))
-    FilesList.push(await TextToImageBySD("openjourney-v1-0"))
+    FilesList.push(await generateimage("absolute-reality-v1-8-1"))
+    FilesList.push(await generateimage("dream-shaper-v8"))
+    FilesList.push(await generateimage("dark-sushi-mix-v2-25"))
+    FilesList.push(await generateimage("absolute-reality-v1-6"))
+    FilesList.push(await generateimage("synthwave-punk-v2"))
+    FilesList.push(await generateimage("arcane-diffusion"))
+    FilesList.push(await generateimage("moonfilm-reality-v3"))
+    FilesList.push(await generateimage("moonfilm-utopia-v3"))
+    FilesList.push(await generateimage("moonfilm-film-grain-v1"))
+    FilesList.push(await generateimage("openjourney-v4"))
+    FilesList.push(await generateimage("icbinp"))
+    FilesList.push(await generateimage("icbinp-final"))
+    FilesList.push(await generateimage("icbinp-relapse"))
+    FilesList.push(await generateimage("icbinp-afterburn"))
+    FilesList.push(await generateimage("icbinp-seco"))
+    FilesList.push(await generateimage("xsarchitectural-interior-design"))
+    FilesList.push(await generateimage("mo-di-diffusion"))
+    FilesList.push(await generateimage("anashel-rpg"))
+    FilesList.push(await generateimage("eimis-anime-diffusion-v1-0"))
+    FilesList.push(await generateimage("something-v2-2"))
+    FilesList.push(await generateimage("analog-diffusion"))
+    FilesList.push(await generateimage("neverending-dream"))
+    FilesList.push(await generateimage("van-gogh-diffusion"))
+    FilesList.push(await generateimage("openjourney-v1-0"))
     */
     
     return FilesList;

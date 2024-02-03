@@ -4,10 +4,6 @@ import { Fragment, useEffect, useState } from 'react'
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
-import useMediaQuery from '@mui/material/useMediaQuery'
-
-// ** Types
-import { StatusObjType } from 'src/types/apps/chatTypes'
 
 // ** Hooks
 import { useSettings } from 'src/@core/hooks/useSettings'
@@ -19,7 +15,7 @@ import GetImgContent from 'src/views/chat/GetImg/GetImgContent'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
-import { GetAllLLMS, ChatChatInit, ChatChatNameList, ChatChatInput, ChatChatOutput, CheckPermission  } from 'src/functions/ChatBook'
+import { GetAllLLMS, ChatChatNameList, CheckPermission  } from 'src/functions/ChatBook'
 
 // ** Axios Imports
 import axios from 'axios'
@@ -37,144 +33,87 @@ const AppChat = () => {
     CheckPermission(auth, router)
   }, [])
   
-  
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
-  const [llms, setLlms] = useState<any>([])
-  const [chatId, setChatId] = useState<number | string>(-1)
-  const [chatName, setChatName] = useState<string>("")
 
   const AllLLMS: any[] = GetAllLLMS()
 
   useEffect(() => {
-    setLlms(AllLLMS)
-    setChatId(AllLLMS[0].id)
-    setChatName(AllLLMS[0].name)
     getChatLogList(AllLLMS[0].id)
     console.log("AllLLMS", AllLLMS)
   }, [])
 
   const getChatLogList = async function (knowledgeId: number | string) {
-    if (auth && auth.user) {
-      const RS = await axios.get(authConfig.backEndApi + '/api/chatlog/' + knowledgeId + '/' + auth.user.id + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
-      if(RS['data'])  {
-        const ChatChatInitList = ChatChatInit(RS['data'].reverse())
-        console.log("ChatChatInitList**************", ChatChatInitList)
-        const selectedChat = {
-          "chat": {
-              "id": 1,
-              "userId": auth.user.id,
-              "unseenMsgs": 0,
-              "chat": ChatChatInitList
-          }
-        }
-        const storeInit = {
-          "chats": [],
-          "userProfile": {
-              "id": auth.user.id,
-              "avatar": "/images/avatars/1.png",
-              "fullName": "Current User",
-          },
-          "selectedChat": selectedChat
-        }
-        setStore(storeInit)
-      }
-    }
-  }
-
-  const setActiveId = function (Id: string, Name: string) {
-    setChatId(Id)
-    setChatName(Name)
-    getChatLogList(Id)
-    setRefreshChatCounter(refreshChatCounter + 1)
+    
   }
 
   // ** States
-  const [store, setStore] = useState<any>(null)
   const [sendButtonDisable, setSendButtonDisable] = useState<boolean>(false)
   const [sendButtonText, setSendButtonText] = useState<string>('')
-  const [sendInputText, setSendInputText] = useState<string>('')
-  const [lastMessage, setLastMessage] = useState("")
-  const lastChat = {
-    "message": lastMessage,
-    "time": String(Date.now()),
-    "senderId": 999999,
-    "knowledgeId": 0,
-    "feedback": {
-        "isSent": true,
-        "isDelivered": false,
-        "isSeen": false
-    }
-  }
 
   // ** Hooks
   const theme = useTheme()
   const { settings } = useSettings()
-  const hidden = useMediaQuery(theme.breakpoints.down('lg'))
-
-  useEffect(() => {
-    if(auth.user)   {
-      const ChatChatText = window.localStorage.getItem("ChatChat")      
-      const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
-      if(lastMessage && lastMessage!="") {
-        ChatChatList.push(lastChat)
-      }
-      const selectedChat = {
-        "chat": {
-            "id": auth.user.id,
-            "userId": auth.user.id,
-            "unseenMsgs": 0,
-            "chat": ChatChatList
-        }
-      }
-      const storeInit = {
-        "chats": [],
-        "userProfile": {
-            "id": auth.user.id,
-            "avatar": "/images/avatars/1.png",
-            "fullName": "Current User",
-        },
-        "selectedChat": selectedChat
-      }
-      setStore(storeInit)
-    }
-  }, [refreshChatCounter, lastMessage, auth])
 
   useEffect(() => {
     const ChatChatNameListData: string[] = ChatChatNameList()
     if(ChatChatNameListData.length == 0) {
       setRefreshChatCounter(refreshChatCounter + 1)
     }
-    setSendButtonText(t("Send") as string)
-    setSendInputText(t("Type your message here...") as string)    
+    setSendButtonText(t("Generate images") as string)
   }, [])
 
 
-  const sendMsg = async (Obj: any) => {
+  const [pendingImagesCount, setPendingImagesCount] = useState<number>(0)
+  const [imageList, setImageList] = useState<any[]>([])
+
+  const handleGenerateImage = async (data: any) => {
     if(auth.user && auth.user.token)  {
       setSendButtonDisable(true)
-      setSendButtonText(t("Sending") as string)
-      setSendInputText(t("Generating the answer...") as string)
-      ChatChatInput(Obj.message, auth.user.id)
+      setSendButtonText(t("Generating images...") as string)
       setRefreshChatCounter(refreshChatCounter + 1)
-      const ChatChatOutputStatus = await ChatChatOutput(Obj.message, auth.user.token, auth.user.id, chatId, setLastMessage)
-      if(ChatChatOutputStatus) {
+      setPendingImagesCount(data.numberOfImages)
+      const numberOfImages = data.numberOfImages
+      try {
+        const ImageListData = await Promise.all(
+          Array.from({ length: numberOfImages }, async (_, index) => {
+            const ImageName = await axios.post(authConfig.backEndApi + '/api/generateimage/', data, {
+              headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
+            }).then(res => res.data);
+            console.log("ImageName", ImageName);
+            return ImageName;
+          })
+        );
+        console.error("ImageListData:", ImageListData);
+        if(ImageListData && ImageListData.length > 0 && ImageListData[0]!=null) {
+          setSendButtonDisable(false)
+          setRefreshChatCounter(refreshChatCounter + 2)
+          setSendButtonText(t("Generate images") as string)
+          setImageList([...ImageListData, ...imageList].filter((element) => element != null))
+          console.error("imageListimageListimageListimageListimageList:", imageList)
+          setPendingImagesCount(0)
+        }
+        if(ImageListData && ImageListData.length > 0 && ImageListData[0]==null) {
+          setSendButtonDisable(false)
+          setSendButtonText(t("Generate images") as string)
+          setPendingImagesCount(0)
+        }
+      } 
+      catch (error) {
         setSendButtonDisable(false)
-        setRefreshChatCounter(refreshChatCounter + 2)
-        setSendButtonText(t("Send") as string)
-        setSendInputText(t("Type your message here...") as string)  
+        setSendButtonText(t("Generate images") as string)
+        setPendingImagesCount(0)
+        console.error("handleGenerateImage Error fetching images:", error);
       }
     }
   }
 
+  const handleSubmitText = (Text: string) => {
+    setSendButtonText(t(Text) as string)
+  }
+  
+
   // ** Vars
   const { skin } = settings
-  const mdAbove = useMediaQuery(theme.breakpoints.up('md'))
-  const statusObj: StatusObjType = {
-    busy: 'error',
-    away: 'warning',
-    online: 'success',
-    offline: 'secondary'
-  }
 
   return (
     <Fragment>
@@ -193,23 +132,14 @@ const AppChat = () => {
       }}
     >
       <GetImgLeft
-        llms={llms}
-        setActiveId={setActiveId}
-        hidden={false}
-        chatId={chatId}
-        chatName={chatName}
-      />
-      <GetImgContent
-        store={store}
-        hidden={hidden}
-        sendMsg={sendMsg}
-        mdAbove={mdAbove}
-        statusObj={statusObj}
+        handleGenerateImage={handleGenerateImage}
+        handleSubmitText={handleSubmitText}
         sendButtonDisable={sendButtonDisable}
         sendButtonText={sendButtonText}
-        sendInputText={sendInputText}
-        chatId={chatId}
-        chatName={chatName}
+      />
+      <GetImgContent
+        imageList={imageList}
+        pendingImagesCount={pendingImagesCount}
       />
       </Box>
       :

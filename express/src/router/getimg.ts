@@ -3,7 +3,7 @@
 
   import { checkUserToken } from '../utils/user';
 
-  import { getModels, getModelDetail, TextToImageBySD, getModelsToGenereateImage, TextToImageALL, TextToImageAllLatentConsistency, Base64ToImg } from '../utils/getimg';
+  import { getModels, getModelDetail, generateimage, getModelsToGenereateImage, TextToImageALL, TextToImageAllLatentConsistency, Base64ToImg } from '../utils/getimg';
 
   const app = express();
 
@@ -64,14 +64,17 @@
     res.status(200).send(TextToImageAllLatentConsistencyDataHtml).end();
   });
 
-
-  
-
   app.get('/api/Base64ToImg', async (req: Request, res: Response) => {
     const Base64IMG = ""
     const Base64ToImgData = await Base64ToImg(Base64IMG, 'absolute-reality-v1-8-1');
     console.log("Base64ToImgData", Base64ToImgData)
     res.status(200).json(Base64ToImgData).end();
+  });
+
+  app.post('/api/generateimage', async (req: Request, res: Response) => {
+    const generateimageData = await generateimage(req.body);
+    console.log("generateimageData", generateimageData);
+    res.status(200).json(generateimageData).end();
   });
 
 

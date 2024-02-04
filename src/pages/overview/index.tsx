@@ -107,12 +107,6 @@ const AnalyticsDashboard = () => {
         <Grid item xs={12} md={6} lg={6}>
           <AnalyticsLine dataX={dataX} dataY={NewActivitesPerDay} title={`${t(`New activites per day`)}`} bottomText={""}/>
         </Grid>
-        <Grid item xs={12} md={6} lg={6}>
-          <AnalyticsLine dataX={dataX} dataY={NewFilesPerDay} title={`${t(`New files per day`)}`} bottomText={""}/>
-        </Grid>
-        <Grid item xs={12} md={6} lg={6}>
-          <AnalyticsLine dataX={dataX} dataY={NewUserPerDay} title={`${t(`New users per day`)}`} bottomText={""}/>
-        </Grid>
       </Grid>
     </ApexChartWrapper>
   )

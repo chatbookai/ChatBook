@@ -11,27 +11,15 @@ import AnalyticsTransactionsCard from 'src/views/dashboards/analytics/AnalyticsT
 
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
+import TransitionPage from 'src/views/chat/GetImg/TransitionPage'
+import Card from '@mui/material/Card'
+import CardMedia from '@mui/material/CardMedia'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
 // ** React Imports
 import { useState, useEffect, Fragment } from 'react'
-
-interface ChainInfoType {
-  network: string
-  version: number
-  release: number
-  height: number
-  current: string
-  blocks: number
-  peers: number
-  time: number
-  miningtime: number
-  weave_size: number
-  denomination: number
-  diff: string
-}
 
 const AnalyticsDashboard = () => {
   // ** Hook
@@ -45,9 +33,9 @@ const AnalyticsDashboard = () => {
   const [NewUserPerDay, setNewUserPerDay] = useState<number[]>([])
   const [NewImagesPerDay, setNewImagesPerDay] = useState<number[]>([])
 
-  useEffect(() => {
+  const [imageList, setImageList] = useState<any[]>([])
 
-    
+  useEffect(() => {
     axios.get(authConfig.backEndApi + '/api/static/site', { headers: { }, params: { } })
     .then((res) => {
       setDataX(res.data.DateList)
@@ -57,6 +45,19 @@ const AnalyticsDashboard = () => {
       setNewActivitesPerDay(res.data.NewActivitesPerDay)
       setSiteInfo(res.data)
     })
+
+    axios.post(authConfig.backEndApi + '/api/getUserImagesAll/', {pageid: 0, pagesize: 12}, {
+      headers: { 'Content-Type': 'application/json' },
+    })
+    .then(res => res.data)
+    .then((res: any)=>{
+      const imageListInitial: string[] = []
+      res.data.map((Item: any)=>{
+        imageListInitial.push(Item.filename)
+      })
+      console.log("res", res)
+      setImageList(imageListInitial)
+    });
 
   }, [])
 
@@ -77,6 +78,29 @@ const AnalyticsDashboard = () => {
             <Fragment></Fragment>
           }         
         </Grid>
+
+        <Grid item xs={12} md={6} lg={12}>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sx={{ height: '100%', overflowY: 'auto', scrollbarWidth: 'thin', scrollbarColor: '#ffffff' }}>
+              <Card sx={{ px: 3, pt: 1}}>
+                {true ? (
+                  <Fragment>
+                    <Grid container spacing={2}>
+                      {imageList && imageList.map((item: any, index: number) => (
+                        <Grid item key={index} xs={12} sm={6} md={3} lg={3} sx={{pl: 2, mt: 4}}>
+                          <CardMedia image={`${authConfig.backEndApi}/api/image/${item}`} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1 }}/>
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </Fragment>
+                ) : (
+                  <Fragment></Fragment>
+                )}
+              </Card>
+            </Grid>
+          </Grid>
+        </Grid>
+
         <Grid item xs={12} md={6} lg={6}>
           <AnalyticsLine dataX={dataX} dataY={NewImagesPerDay} title={`${t(`New images per day`)}`} bottomText={""}/>
         </Grid>

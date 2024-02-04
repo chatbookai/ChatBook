@@ -3,7 +3,7 @@
 
   import { checkUserToken } from '../utils/user';
 
-  import { getModels, getModelDetail, generateimage, getModelsToGenereateImage, TextToImageALL, TextToImageAllLatentConsistency, Base64ToImg, getUserImages } from '../utils/getimg';
+  import { getModels, getModelDetail, generateimage, getModelsToGenereateImage, TextToImageALL, TextToImageAllLatentConsistency, Base64ToImg, getUserImages, getUserImagesAll } from '../utils/getimg';
 
   const app = express();
 
@@ -96,6 +96,13 @@
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null}).end();
     }
+  });
+
+  app.post('/api/getUserImagesAll', async (req: Request, res: Response) => {
+    const { pageid, pagesize } = req.body;
+    const getUserImagesAllData = await getUserImagesAll(pageid, pagesize);
+    console.log("getUserImagesAllData", getUserImagesAllData);
+    res.status(200).json(getUserImagesAllData).end();
   });
 
 

@@ -272,25 +272,8 @@ const GetImgLeft = (props: any) => {
                 <Grid item xs={12}>
                   <TextField multiline rows={2} fullWidth label='Negative prompt' placeholder='' defaultValue={negativePromptValue} onClick={(event: any)=>setNegativePromptValue(event.target.value)}/>
                 </Grid>
+
                 
-              </Grid>
-            </AccordionDetails>
-          </Accordion>
-          
-          <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
-            <AccordionSummary
-              expandIcon={<Icon icon='mdi:chevron-down' />}
-              id='form-layouts-collapsible-header-2'
-              aria-controls='form-layouts-collapsible-content-2'
-            >
-              <Typography variant='subtitle1' sx={{ fontWeight: 500 }}>
-                Output Options
-              </Typography>
-            </AccordionSummary>
-            <Divider sx={{ m: '0 !important' }} />
-            <AccordionDetails sx={{ pt: 6, pb: 6 }}>
-              
-              <Grid container spacing={5}>
                 <Grid item xs={12}>
                   <InputLabel >Resolution:</InputLabel>
                   <FormControl fullWidth>
@@ -322,11 +305,11 @@ const GetImgLeft = (props: any) => {
                     </RadioGroup>
                   </FormControl>
                 </Grid>
+                
               </Grid>
-
             </AccordionDetails>
           </Accordion>
-
+          
           <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
             <AccordionSummary
               expandIcon={<Icon icon='mdi:chevron-down' />}

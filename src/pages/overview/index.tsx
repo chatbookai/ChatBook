@@ -11,7 +11,6 @@ import AnalyticsTransactionsCard from 'src/views/dashboards/analytics/AnalyticsT
 
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
-import TransitionPage from 'src/views/chat/GetImg/TransitionPage'
 import Card from '@mui/material/Card'
 import CardMedia from '@mui/material/CardMedia'
 
@@ -44,6 +43,8 @@ const AnalyticsDashboard = () => {
       setNewFilesPerDay(res.data.NewFilesPerDay)
       setNewActivitesPerDay(res.data.NewActivitesPerDay)
       setSiteInfo(res.data)
+      console.log("NewUserPerDay", NewUserPerDay)
+      console.log("NewFilesPerDay", NewFilesPerDay)
     })
 
     axios.post(authConfig.backEndApi + '/api/getUserImagesAll/', {pageid: 0, pagesize: 12}, {

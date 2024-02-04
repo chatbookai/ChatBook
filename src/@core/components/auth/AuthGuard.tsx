@@ -1,5 +1,5 @@
 // ** React Imports
-import { ReactNode, ReactElement, useEffect } from 'react'
+import { ReactNode, ReactElement } from 'react'
 
 // ** Hooks Import
 import { useAuth } from 'src/hooks/useAuth'

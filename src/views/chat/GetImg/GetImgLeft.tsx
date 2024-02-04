@@ -11,7 +11,7 @@ import Drawer from '@mui/material/Drawer'
 import MenuItem from '@mui/material/MenuItem'
 import RadioGroup from '@mui/material/RadioGroup'
 import Typography from '@mui/material/Typography'
-import Box, { BoxProps } from '@mui/material/Box'
+import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
 import TextField from '@mui/material/TextField'
@@ -97,7 +97,7 @@ const GetImgLeft = (props: any) => {
     setExpanded(isExpanded ? panel : false)
   }
   
-  const expandIcon = (value: string) => <Icon icon={expanded === value ? 'mdi:minus' : 'mdi:plus'} />
+  //const expandIcon = (value: string) => <Icon icon={expanded === value ? 'mdi:minus' : 'mdi:plus'} />
 
   const [modelValue, setModelValue] = useState<string>('realistic-vision-v5-1')
   const ModelList: any[] = []
@@ -250,15 +250,15 @@ const GetImgLeft = (props: any) => {
               <Grid container spacing={5}>
                 <Grid item xs={12} sm={12}>
                   <FormControl fullWidth>
-                    <InputLabel >Model</InputLabel>
+                    <InputLabel >{t('Model') as string}</InputLabel>
                     <Select
                       label='Model'
                       defaultValue={modelValue}
                       size="small"
                       onChange={handleModelChange}
                     >
-                      {ModelList.map((Item: any)=>{
-                        return (<MenuItem value={Item.value}>{Item.name}</MenuItem>)                          
+                      {ModelList.map((Item: any, Index: number)=>{
+                        return (<MenuItem key={Index} value={Item.value}>{Item.name}</MenuItem>)                          
                       })}
                     </Select>
                   </FormControl>
@@ -286,8 +286,8 @@ const GetImgLeft = (props: any) => {
                       name='Resolution'
                       onChange={handleResolutionChange}
                       >
-                      {ResolutionList.map((Item: any)=>{
-                        return (<FormControlLabel value={Item.value} control={<Radio />} label={Item.name} />)                          
+                      {ResolutionList.map((Item: any, Index: number)=>{
+                        return (<FormControlLabel key={Index} value={Item.value} control={<Radio />} label={Item.name} />)                          
                       })}
                     </RadioGroup>
                   </FormControl>
@@ -301,8 +301,8 @@ const GetImgLeft = (props: any) => {
                       name='NumberOfImages'
                       onChange={handleNumberOfImagesChange}
                       >
-                      {NumberOfImagesList.map((Item: any)=>{
-                        return (<FormControlLabel value={Item.value} control={<Radio />} label={Item.name} />)                          
+                      {NumberOfImagesList.map((Item: any, Index: number)=>{
+                        return (<FormControlLabel key={Index} value={Item.value} control={<Radio />} label={Item.name} />)                          
                       })}
                     </RadioGroup>
                   </FormControl>
@@ -365,8 +365,8 @@ const GetImgLeft = (props: any) => {
                       size="small"
                       onChange={handleSamplerChange}
                     >
-                      {SamplerList.map((Item: any)=>{
-                        return (<MenuItem value={Item.value}>{Item.name}</MenuItem>)                          
+                      {SamplerList.map((Item: any, Index: number)=>{
+                        return (<MenuItem key={Index} value={Item.value}>{Item.name}</MenuItem>)                          
                       })}
                     </Select>
                   </FormControl>

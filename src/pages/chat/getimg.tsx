@@ -84,11 +84,12 @@ const AppChat = () => {
       const numberOfImages = data.numberOfImages
       try {
         const ImageListData = await Promise.all(
-          Array.from({ length: numberOfImages }, async (_, index) => {
+          Array.from({ length: numberOfImages }, async () => {
             const ImageName = await axios.post(authConfig.backEndApi + '/api/generateimage/', data, {
               headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
             }).then(res => res.data);
             console.log("ImageName", ImageName);
+            
             return ImageName;
           })
         );

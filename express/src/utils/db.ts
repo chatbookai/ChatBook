@@ -143,7 +143,7 @@ export async function initChatBookDb() {
                 filename TEXT not null,
                 data TEXT not null,
                 date INTEGER not null default 0,
-                creattime INTEGER not null default 0,
+                createtime INTEGER not null default 0,
                 cost_usd INTEGER not null default 0,
                 cost_xwe INTEGER not null default 0,
                 cost_api INTEGER not null default 0,

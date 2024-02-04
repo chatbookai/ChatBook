@@ -97,7 +97,7 @@ export async function generateimage(checkUserTokenData: any, data: StableDiffusi
           const orderTX = ''
           const orderId = Base64ToImgData
           try {
-            const insertSetting = db.prepare('INSERT INTO userimages (userId, email, model, `prompt`, negative_prompt, steps, sampler, filename, data, `date`, creattime, cost_usd, cost_xwe, cost_api, orderId, orderTX, source ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+            const insertSetting = db.prepare('INSERT INTO userimages (userId, email, model, `prompt`, negative_prompt, steps, sampler, filename, data, `date`, createtime, cost_usd, cost_xwe, cost_api, orderId, orderTX, source ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
             insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, POSTDATA['model'], POSTDATA['prompt'], POSTDATA['negative_prompt'], POSTDATA['steps'], POSTDATA['scheduler'], Base64ToImgData, JSON.stringify({}), timestampToDate(Date.now()), Date.now(), cost_usd, cost_xwe, res.data.cost, orderId, orderTX, 'getimg');
           }
           catch(error: any) {
@@ -208,7 +208,7 @@ export async function getUserImages(userId: string, pageid: number, pagesize: nu
   const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from userimages where userId = ? ", [userId]);
   const RecordsTotal: number = Records ? Records.NUM : 0;
 
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)('SELECT id, userId, email, model, `prompt`, negative_prompt, steps, sampler, filename, data, `date`, creattime FROM userimages where userId = ? ORDER BY id DESC LIMIT ? OFFSET ? ', [userId, pagesizeFiler, From]) || [];
+  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)('SELECT id, userId, email, model, `prompt`, negative_prompt, steps, sampler, filename, data, `date`, createtime FROM userimages where userId = ? ORDER BY id DESC LIMIT ? OFFSET ? ', [userId, pagesizeFiler, From]) || [];
 
   const RS: any = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);

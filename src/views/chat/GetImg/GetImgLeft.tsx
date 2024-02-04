@@ -105,6 +105,8 @@ const GetImgLeft = (props: any) => {
   ModelList.push({name: "stable-diffusion-v2-1", value: "stable-diffusion-v2-1"})
   ModelList.push({name: "realistic-vision-v1-3", value: "realistic-vision-v1-3"})
   ModelList.push({name: "realistic-vision-v5-1", value: "realistic-vision-v5-1"})
+  ModelList.push({name: "openjourney-v4", value: "openjourney-v4"})
+  ModelList.push({name: "openjourney-v1-0", value: "openjourney-v1-0"})
   const handleModelChange = (event: any) => {
     setModelValue(event.target.value);
   }

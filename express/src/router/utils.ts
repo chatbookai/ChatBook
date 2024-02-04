@@ -4,7 +4,7 @@
 
   import { MenuListAdmin, MenuListUser } from '../utils/const';
   import { checkUserToken } from '../utils/user';
-  import { getLogsPage, getTemplate, getLLMSSetting, getFilesPage, getFilesKnowledgeId, getChatLogByKnowledgeIdAndUserId, addKnowledge, setOpenAISetting, setTemplate, getKnowledgePage } from '../utils/utils';
+  import { getLogsPage, getTemplate, getLLMSSetting, getFilesPage, getFilesKnowledgeId, getChatLogByKnowledgeIdAndUserId, addKnowledge, setOpenAISetting, setTemplate, getKnowledgePage, wholeSiteStatics } from '../utils/utils';
 
   const app = express();
 
@@ -157,7 +157,7 @@
         res.status(200).json(MenuListUser);
     }
     else {
-        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+        res.status(200).json(MenuListUser);
     }
     res.end();
   });
@@ -172,9 +172,14 @@
         res.status(200).json(MenuListUser);
     }
     else {
-        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+        res.status(200).json(MenuListUser);
     }
     res.end();
+  });
+
+  app.get('/api/static/site', async (req: Request, res: Response) => {
+    const checkUserTokenData: any = await wholeSiteStatics();
+    res.status(200).json(checkUserTokenData).end();
   });
 
   export default app;

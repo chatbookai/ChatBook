@@ -500,3 +500,37 @@ export function formatDateFromTimestamp(timestamp: number | string) {
 export const isEmailValid = (email: string): boolean => {
   return validator.isEmail(email);
 };
+
+export async function wholeSiteStatics() {
+  const NewUserPerDayData: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT strftime('%Y-%m-%d', datetime(createtime / 1000, 'unixepoch')) AS date, count(*) AS NUM from user group by date order by date asc`) as any[];
+  const NewUserPerDay = NewUserPerDayData.map(Item => Item.NUM)
+
+  const NewImagesPerDayData: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT strftime('%Y-%m-%d', datetime(createtime / 1000, 'unixepoch')) AS date, count(*) AS NUM from userimages group by date order by date asc`) as any[];
+  const NewImagesPerDay = NewImagesPerDayData.map(Item => Item.NUM)
+
+  const NewFilesPerDayData: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT strftime('%Y-%m-%d', datetime(timestamp / 1000, 'unixepoch')) AS date, count(*) AS NUM from files group by date order by date asc`) as any[];
+  const NewFilesPerDay = NewFilesPerDayData.map(Item => Item.NUM)
+
+  const NewActivitesPerDayData: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT strftime('%Y-%m-%d', datetime(timestamp / 1000, 'unixepoch')) AS date, count(*) AS NUM from chatlog group by date order by date asc`) as any[];
+  const NewActivitesPerDay = NewActivitesPerDayData.map(Item => Item.NUM)
+
+  const DateListData: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT distinct strftime('%Y-%m-%d', datetime(timestamp / 1000, 'unixepoch')) AS date from chatlog order by date asc`) as any[];
+  const DateList = DateListData.map(Item => Item.date)
+
+  const Records1: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from userimages");
+  const TotalImages: number = Records1 ? Records1.NUM : 0;
+
+  const Records2: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from chatlog");
+  const TotalActivites: number = Records2 ? Records2.NUM : 0;
+
+  const Records3: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from user");
+  const TotalUsers: number = Records3 ? Records3.NUM : 0;
+
+  const Records4: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from files");
+  const TotalFiles: number = Records4 ? Records4.NUM : 0;
+
+  const Records5: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from knowledge");
+  const TotalKnowledges: number = Records5 ? Records5.NUM : 0;
+  
+  return {NewUserPerDay, NewImagesPerDay, NewFilesPerDay, NewActivitesPerDay, DateList, TotalImages, TotalActivites, TotalUsers, TotalFiles, TotalKnowledges}
+}

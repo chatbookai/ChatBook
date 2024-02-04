@@ -79,7 +79,7 @@ const AnalyticsDashboard = () => {
           }         
         </Grid>
 
-        <Grid item xs={12} md={6} lg={12}>
+        <Grid item xs={12} md={12} lg={12}>
           <Grid container spacing={2}>
             <Grid item xs={12} sx={{ height: '100%', overflowY: 'auto', scrollbarWidth: 'thin', scrollbarColor: '#ffffff' }}>
               <Card sx={{ px: 3, pt: 1}}>

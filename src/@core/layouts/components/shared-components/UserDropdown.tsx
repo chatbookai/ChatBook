@@ -157,7 +157,7 @@ const UserDropdown = (props: Props) => {
           </Menu>
         </Fragment>
         :
-        null
+        <Avatar alt='John Doe' src='/images/avatars/1.png' sx={{ width: '2.5rem', height: '2.5rem', cursor: 'pointer' }} onClick={() => handleDropdownClose('/login')}/>
       }
     </Fragment>
   )

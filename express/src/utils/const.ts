@@ -27,6 +27,13 @@ Helpful answer in markdown:`;
 
 export const MenuListAdmin = [
   {
+    title: 'Dashboards',
+    icon: 'mdi:home-outline',
+    badgeContent: 'new',
+    badgeColor: 'error',
+    path: '/overview'
+  },
+  {
     sectionTitle: 'Chat'
   },
   {
@@ -95,6 +102,13 @@ export const MenuListAdmin = [
 ]
 
 export const MenuListUser = [
+  {
+    title: 'Dashboards',
+    icon: 'mdi:home-outline',
+    badgeContent: 'new',
+    badgeColor: 'error',
+    path: '/overview'
+  },
   {
     sectionTitle: 'Chat'
   },

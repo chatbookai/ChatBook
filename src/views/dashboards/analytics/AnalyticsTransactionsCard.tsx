@@ -89,7 +89,7 @@ const AnalyticsTransactionsCard = (props: propsType) => {
   return (
     <Card>
       <CardHeader
-        title={`${t(`Network Info`)}`}
+        title={`${t(`Site Info`)}`}
         subheader={
           <Typography variant='body2'>
             <Box component='span' sx={{ fontWeight: 600, color: 'text.primary' }}>

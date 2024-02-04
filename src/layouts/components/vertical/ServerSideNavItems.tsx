@@ -17,18 +17,16 @@ const ServerSideNavItems = () => {
   const router = useRouter()
 
   useEffect(() => {
-    if(auth && auth.user && auth.user.token) {
-      axios.get(authConfig.backEndApi + '/api/menu/vertical', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' }, params: { } }).then(response => {
-        const menuArray = response.data
-        if(menuArray && menuArray.status == 'error') {
-          router.push('/overview')
-        }
-        else {
-          setMenuItems(menuArray)
-        }
+    axios.get(authConfig.backEndApi + '/api/menu/vertical', { headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' }, params: { } }).then(response => {
+      const menuArray = response.data
+      if(menuArray && menuArray.status == 'error') {
+        router.push('/overview')
+      }
+      else {
+        setMenuItems(menuArray)
+      }
 
-      })
-    }
+    })
   }, [])
 
   return { menuItems }

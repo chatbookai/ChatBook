@@ -2,6 +2,9 @@ import axios from 'axios'
 import * as fs from 'fs'
 import { DataDir } from './const'
 
+import { db, getDbRecord, getDbRecordALL } from './db'
+import { timestampToDate } from './utils'
+
 const GETIMG_AI_SECRET_KEY = "key-41NQSolFm07MWJ3o2MrRQeT96nCqylPEKzGr5gSUKbP8thz9sHYeAZ8UrtR2RfJfUrXWVEdhXAjrYERcH7O8zcw514lWJma9"
 
 
@@ -60,7 +63,7 @@ interface StableDiffusionV1 {
   seed: number | string
 }
 
-export async function generateimage(data: StableDiffusionV1) {
+export async function generateimage(checkUserTokenData: any, data: StableDiffusionV1) {
     //return "realistic-vision-v5-1-1706996772820-667074977";
     const url = 'https://api.getimg.ai/v1/stable-diffusion/text-to-image';
     const POSTDATA: any = {}
@@ -71,11 +74,12 @@ export async function generateimage(data: StableDiffusionV1) {
     POSTDATA['height'] = data.height
     POSTDATA['steps'] = data.steps
     POSTDATA['guidance'] = data.guidanceScale
-    const seed = data.seed && data.seed !='' ? data.seed : Math.random()
+    const seed = data.seed && data.seed !='' ? data.seed : Math.floor( Math.random() * 1000000)
     POSTDATA['seed'] = Number(seed)
     POSTDATA['scheduler'] = data.sampler
     POSTDATA['output_format'] = data.outpuFormat
     console.log("POSTDATA: ", POSTDATA)
+
     try {
       const res = await axios.post(url, POSTDATA, {
           headers: {
@@ -85,7 +89,18 @@ export async function generateimage(data: StableDiffusionV1) {
           },
         });
       if(res.status == 200 && res.data) {
-          const Base64ToImgData = await Base64ToImg(res.data.image, data.model)
+          const Base64ToImgData = await Base64ToImg(res.data.image, data.model)      
+          const cost_usd = 0.01    
+          const cost_xwe = 0    
+          const orderTX = ''
+          const orderId = Base64ToImgData
+          try {
+            const insertSetting = db.prepare('INSERT INTO userimages (userId, email, model, `prompt`, negative_prompt, steps, sampler, filename, data, `date`, creattime, cost_usd, cost_xwe, cost_api, orderId, orderTX, source ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+            insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, POSTDATA['model'], POSTDATA['prompt'], POSTDATA['negative_prompt'], POSTDATA['steps'], POSTDATA['scheduler'], Base64ToImgData, JSON.stringify({}), timestampToDate(Date.now()), Date.now(), cost_usd, cost_xwe, res.data.cost, orderId, orderTX, 'getimg');
+          }
+          catch(error: any) {
+            console.log("generateimage insertSetting Error", error.message)
+          }
           return Base64ToImgData;
       }
       else {

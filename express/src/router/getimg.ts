@@ -72,9 +72,16 @@
   });
 
   app.post('/api/generateimage', async (req: Request, res: Response) => {
-    const generateimageData = await generateimage(req.body);
-    console.log("generateimageData", generateimageData);
-    res.status(200).json(generateimageData).end();
+    const { authorization } = req.headers;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
+      const generateimageData = await generateimage(checkUserTokenData, req.body);
+      console.log("generateimageData", generateimageData);
+      res.status(200).json(generateimageData).end();
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null}).end();
+    }
   });
 
 

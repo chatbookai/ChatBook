@@ -130,6 +130,32 @@ export async function initChatBookDb() {
         `);
         db.run(`insert or ignore into user (email, username, role, password, createtime) values('chatbook-admin@gmail.com', 'chatbook-admin', 'admin', '$2b$10$JWPrDnyv3v3ov3B0BuQXtOvy.rpci6RY4Cqi33kFAeDx1RfhUjN6.', '`+Date.now()+`');`);
         db.run(`insert or ignore into user (email, username, role, password, createtime) values('chatbook-user@gmail.com', 'chatbook-user', 'user', '$2b$10$JWPrDnyv3v3ov3B0BuQXtOvy.rpci6RY4Cqi33kFAeDx1RfhUjN6.', '`+Date.now()+`');`);
+        db.run(`
+            CREATE TABLE IF NOT EXISTS userimages (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                userId TEXT not null,
+                email TEXT not null,
+                model TEXT not null,
+                prompt TEXT not null,
+                negative_prompt TEXT not null,
+                steps TEXT not null,
+                sampler TEXT not null,
+                filename TEXT not null,
+                data TEXT not null,
+                date INTEGER not null default 0,
+                creattime INTEGER not null default 0,
+                cost_usd INTEGER not null default 0,
+                cost_xwe INTEGER not null default 0,
+                cost_api INTEGER not null default 0,
+                orderId TEXT not null,
+                orderTX TEXT not null,
+                source TEXT not null,
+                star INTEGER not null default 0,
+                like INTEGER not null default 0,
+                favorite INTEGER not null default 0,
+                referee INTEGER not null default 0
+            );
+        `);   
     });
 }
 

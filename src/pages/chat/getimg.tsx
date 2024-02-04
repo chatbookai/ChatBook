@@ -57,10 +57,10 @@ const AppChat = () => {
   const [imageList, setImageList] = useState<any[]>([])
 
   useEffect(() => {
-    getChatLogList()
-  }, [])
+    getImagesList()
+  }, [refreshChatCounter])
 
-  const getChatLogList = async function () {
+  const getImagesList = async function () {
     if(auth.user && auth.user.token)  {
       const RS = await axios.post(authConfig.backEndApi + '/api/getUserImages/', {pageid: 0, pagesize: 30}, {
         headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
@@ -79,7 +79,6 @@ const AppChat = () => {
     if(auth.user && auth.user.token)  {
       setSendButtonDisable(true)
       setSendButtonText(t("Generating images...") as string)
-      setRefreshChatCounter(refreshChatCounter + 1)
       setPendingImagesCount(data.numberOfImages)
       const numberOfImages = data.numberOfImages
       try {

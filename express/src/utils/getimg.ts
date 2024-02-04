@@ -5,7 +5,9 @@ import { DataDir } from './const'
 import { db, getDbRecord, getDbRecordALL } from './db'
 import { timestampToDate } from './utils'
 
-const GETIMG_AI_SECRET_KEY = "key-41NQSolFm07MWJ3o2MrRQeT96nCqylPEKzGr5gSUKbP8thz9sHYeAZ8UrtR2RfJfUrXWVEdhXAjrYERcH7O8zcw514lWJma9"
+const GETIMG_AI_SECRET_KEY = "key-1lR6hvhiLD9jVIcFeFS2yssck9679aXDVmpHsVRZrz8pF7OSyOdqP3hOajxmPkUcL79jvRdum4mQsXfSl3ohky5cerjnxLDY"
+
+type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
 
 
@@ -196,6 +198,28 @@ export async function Base64ToImg(Base64IMG: string, model: string) {
     return uniqueSuffix;
 }
 
+export async function getUserImages(userId: string, pageid: number, pagesize: number) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+  const From = pageidFiler * pagesizeFiler;
+  console.log("pageidFiler", pageidFiler)
+  console.log("pagesizeFiler", pagesizeFiler)
+
+  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from userimages where userId = ? ", [userId]);
+  const RecordsTotal: number = Records ? Records.NUM : 0;
+
+  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)('SELECT id, userId, email, model, `prompt`, negative_prompt, steps, sampler, filename, data, `date`, creattime FROM userimages where userId = ? ORDER BY id DESC LIMIT ? OFFSET ? ', [userId, pagesizeFiler, From]) || [];
+
+  const RS: any = {};
+  RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
+  RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
+  RS['from'] = From;
+  RS['pageid'] = pageidFiler;
+  RS['pagesize'] = pagesizeFiler;
+  RS['total'] = RecordsTotal;
+
+  return RS;
+}
 
 
 

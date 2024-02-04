@@ -15,13 +15,14 @@ import GetImgContent from 'src/views/chat/GetImg/GetImgContent'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
-import { GetAllLLMS, ChatChatNameList, CheckPermission  } from 'src/functions/ChatBook'
+import { ChatChatNameList, CheckPermission  } from 'src/functions/ChatBook'
 
 // ** Axios Imports
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
 import { useRouter } from 'next/router'
+import toast from 'react-hot-toast'
 
 const AppChat = () => {
 
@@ -34,17 +35,6 @@ const AppChat = () => {
   }, [])
   
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
-
-  const AllLLMS: any[] = GetAllLLMS()
-
-  useEffect(() => {
-    getChatLogList(AllLLMS[0].id)
-    console.log("AllLLMS", AllLLMS)
-  }, [])
-
-  const getChatLogList = async function (knowledgeId: number | string) {
-    
-  }
 
   // ** States
   const [sendButtonDisable, setSendButtonDisable] = useState<boolean>(false)
@@ -65,6 +55,25 @@ const AppChat = () => {
 
   const [pendingImagesCount, setPendingImagesCount] = useState<number>(0)
   const [imageList, setImageList] = useState<any[]>([])
+
+  useEffect(() => {
+    getChatLogList()
+  }, [])
+
+  const getChatLogList = async function () {
+    if(auth.user && auth.user.token)  {
+      const RS = await axios.post(authConfig.backEndApi + '/api/getUserImages/', {pageid: 0, pagesize: 30}, {
+        headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
+      }).then(res => res.data);
+      if(RS && RS.data) {
+        const imageListInitial: string[] = []
+        RS.data.map((Item: any)=>{
+          imageListInitial.push(Item.filename)
+        })
+        setImageList([...imageListInitial, ...imageList].filter((element) => element != null))
+      }
+    }
+  }
 
   const handleGenerateImage = async (data: any) => {
     if(auth.user && auth.user.token)  {
@@ -96,6 +105,9 @@ const AppChat = () => {
           setSendButtonDisable(false)
           setSendButtonText(t("Generate images") as string)
           setPendingImagesCount(0)
+          toast.error('Failed to generate the image, please modify your input parameters and try again', {
+            duration: 4000
+          })
         }
       } 
       catch (error) {

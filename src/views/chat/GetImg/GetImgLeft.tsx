@@ -101,18 +101,40 @@ const GetImgLeft = (props: any) => {
 
   const [modelValue, setModelValue] = useState<string>('realistic-vision-v5-1')
   const ModelList: any[] = []
+  ModelList.push({name: "dream-shaper-v8", value: "dream-shaper-v8"})
   ModelList.push({name: "stable-diffusion-v1-5", value: "stable-diffusion-v1-5"})
   ModelList.push({name: "stable-diffusion-v2-1", value: "stable-diffusion-v2-1"})
   ModelList.push({name: "realistic-vision-v1-3", value: "realistic-vision-v1-3"})
   ModelList.push({name: "realistic-vision-v5-1", value: "realistic-vision-v5-1"})
+  ModelList.push({name: "absolute-reality-v1-6", value: "absolute-reality-v1-6"})
+  ModelList.push({name: "absolute-reality-v1-8-1", value: "absolute-reality-v1-8-1"})
+  ModelList.push({name: "neverending-dream", value: "neverending-dream"})
+  ModelList.push({name: "dark-sushi-mix-v2-25", value: "dark-sushi-mix-v2-25"})
+  ModelList.push({name: "synthwave-punk-v2", value: "synthwave-punk-v2"})
+  ModelList.push({name: "arcane-diffusion", value: "arcane-diffusion"})
+  ModelList.push({name: "analog-diffusion", value: "analog-diffusion"})
+  ModelList.push({name: "mo-di-diffusion", value: "mo-di-diffusion"})
+  ModelList.push({name: "eimis-anime-diffusion-v1-0", value: "eimis-anime-diffusion-v1-0"})
+  ModelList.push({name: "van-gogh-diffusion", value: "van-gogh-diffusion"})
+  ModelList.push({name: "moonfilm-reality-v3", value: "moonfilm-reality-v3"})
+  ModelList.push({name: "moonfilm-utopia-v3", value: "moonfilm-utopia-v3"})
+  ModelList.push({name: "moonfilm-film-grain-v1", value: "moonfilm-film-grain-v1"})
+  ModelList.push({name: "icbinp", value: "icbinp"})
+  ModelList.push({name: "icbinp-final", value: "icbinp-final"})
+  ModelList.push({name: "icbinp-relapse", value: "icbinp-relapse"})
+  ModelList.push({name: "icbinp-afterburn", value: "icbinp-afterburn"})
+  ModelList.push({name: "icbinp-seco", value: "icbinp-seco"})
   ModelList.push({name: "openjourney-v4", value: "openjourney-v4"})
   ModelList.push({name: "openjourney-v1-0", value: "openjourney-v1-0"})
+  ModelList.push({name: "xsarchitectural-interior-design", value: "xsarchitectural-interior-design"})
+  ModelList.push({name: "anashel-rpg", value: "anashel-rpg"})
+  ModelList.push({name: "something-v2-2", value: "something-v2-2"})
   const handleModelChange = (event: any) => {
     setModelValue(event.target.value);
   }
 
-  const [promptValue, setPromptValue] = useState<string>('busy tavern scene, Ultra realistic, intricate, mysterious, cinematic, Victorian, by Tony Sart and Anato Finnstark, 4k, 8k, illustration, concept art, photorealistic, award winning on Artstation, deviantart')
-  const [negativePromptValue, setNegativePromptValue] = useState<string>('Disfigured, cartoon, blurry, nude')
+  const [promptValue, setPromptValue] = useState<string>('')
+  const [negativePromptValue, setNegativePromptValue] = useState<string>('')
 
   const [samplerValue, setSamplerValue] = useState<string>('dpmsolver++')
   const SamplerList: any[] = []
@@ -166,7 +188,7 @@ const GetImgLeft = (props: any) => {
     setResolutionValue(event.target.value);
   }
 
-  const [numberOfImagesValue, setNumberOfImagesValue] = useState<number>(2)
+  const [numberOfImagesValue, setNumberOfImagesValue] = useState<number>(1)
   const NumberOfImagesList: any[] = []
   NumberOfImagesList.push({name: "1", value: 1})
   NumberOfImagesList.push({name: "2", value: 2})
@@ -264,7 +286,7 @@ const GetImgLeft = (props: any) => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField multiline rows={8} fullWidth label='Prompt' placeholder='' defaultValue={promptValue} onClick={(event: any)=>setPromptValue(event.target.value)}/>
+                  <TextField multiline rows={8} fullWidth label='Prompt' placeholder='' defaultValue={promptValue} onChange={(event: any)=>setPromptValue(event.target.value)}/>
                   <Box sx={{ display: 'flex', alignItems: 'right', justifyContent: 'right'}} >
                     <Button size='small' type='button' variant='contained' sx={{ mt: 1 }} >
                       Random
@@ -272,12 +294,12 @@ const GetImgLeft = (props: any) => {
                   </Box>
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField multiline rows={2} fullWidth label='Negative prompt' placeholder='' defaultValue={negativePromptValue} onClick={(event: any)=>setNegativePromptValue(event.target.value)}/>
+                  <TextField multiline rows={4} fullWidth label='Negative prompt' placeholder='' defaultValue={negativePromptValue} onChange={(event: any)=>setNegativePromptValue(event.target.value)}/>
                 </Grid>
 
                 
                 <Grid item xs={12}>
-                  <InputLabel >Resolution:</InputLabel>
+                  <InputLabel >Resolution: {resolutionValue}</InputLabel>
                   <FormControl fullWidth>
                     <RadioGroup
                       row
@@ -287,21 +309,6 @@ const GetImgLeft = (props: any) => {
                       onChange={handleResolutionChange}
                       >
                       {ResolutionList.map((Item: any, Index: number)=>{
-                        return (<FormControlLabel key={Index} value={Item.value} control={<Radio />} label={Item.name} />)                          
-                      })}
-                    </RadioGroup>
-                  </FormControl>
-                </Grid>
-                <Grid item xs={12}>
-                  <InputLabel >Number of images:</InputLabel>
-                  <FormControl fullWidth>
-                    <RadioGroup
-                      row
-                      defaultValue={numberOfImagesValue}
-                      name='NumberOfImages'
-                      onChange={handleNumberOfImagesChange}
-                      >
-                      {NumberOfImagesList.map((Item: any, Index: number)=>{
                         return (<FormControlLabel key={Index} value={Item.value} control={<Radio />} label={Item.name} />)                          
                       })}
                     </RadioGroup>
@@ -326,7 +333,22 @@ const GetImgLeft = (props: any) => {
             <AccordionDetails sx={{ pt: 6, pb: 6 }}>
               <Grid container spacing={5}>
                 <Grid item xs={12}>
-                  <FormControl sx={{ flexWrap: 'wrap', width: '100%' }}>
+                  <InputLabel >Number of images:</InputLabel>
+                  <FormControl fullWidth>
+                    <RadioGroup
+                      row
+                      defaultValue={numberOfImagesValue}
+                      name='NumberOfImages'
+                      onChange={handleNumberOfImagesChange}
+                      >
+                      {NumberOfImagesList.map((Item: any, Index: number)=>{
+                        return (<FormControlLabel key={Index} value={Item.value} control={<Radio />} label={Item.name} />)                          
+                      })}
+                    </RadioGroup>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12}>
+                  <FormControl sx={{ flexWrap: 'wrap', width: '98%' }}>
                     <FormLabel>Steps: {stepsValue}</FormLabel>
                     <Slider
                       min={1}
@@ -340,7 +362,7 @@ const GetImgLeft = (props: any) => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                  <FormControl sx={{ flexWrap: 'wrap', width: '100%' }}>
+                  <FormControl sx={{ flexWrap: 'wrap', width: '98%' }}>
                     <FormLabel>Guidance scale: {guidanceScaleValue}</FormLabel>
                     <Slider
                       min={0}

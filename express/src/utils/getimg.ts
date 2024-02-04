@@ -5,7 +5,7 @@ import { DataDir } from './const'
 import { db, getDbRecord, getDbRecordALL } from './db'
 import { timestampToDate } from './utils'
 
-const GETIMG_AI_SECRET_KEY = "key-1lR6hvhiLD9jVIcFeFS2yssck9679aXDVmpHsVRZrz8pF7OSyOdqP3hOajxmPkUcL79jvRdum4mQsXfSl3ohky5cerjnxLDY"
+const GETIMG_AI_SECRET_KEY = "key-2rlwQf4DXwZNEWowngCKVtvxcpaXThm2EAJhpPhfF5z0C1hS4yjLwgz5vC6y8ciD6CYrQtOKTSV9VcOoJZlVE03jMlP1nOXZ"
 
 type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
@@ -98,7 +98,7 @@ export async function generateimage(checkUserTokenData: any, data: StableDiffusi
           const orderId = Base64ToImgData
           try {
             const insertSetting = db.prepare('INSERT INTO userimages (userId, email, model, `prompt`, negative_prompt, steps, sampler, filename, data, `date`, createtime, cost_usd, cost_xwe, cost_api, orderId, orderTX, source ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-            insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, POSTDATA['model'], POSTDATA['prompt'], POSTDATA['negative_prompt'], POSTDATA['steps'], POSTDATA['scheduler'], Base64ToImgData, JSON.stringify({}), timestampToDate(Date.now()), Date.now(), cost_usd, cost_xwe, res.data.cost, orderId, orderTX, 'getimg');
+            insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, POSTDATA['model'], POSTDATA['prompt'], POSTDATA['negative_prompt'], POSTDATA['steps'], POSTDATA['scheduler'], Base64ToImgData, JSON.stringify(POSTDATA), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, res.data.cost, orderId, orderTX, 'getimg');
           }
           catch(error: any) {
             console.log("generateimage insertSetting Error", error.message)

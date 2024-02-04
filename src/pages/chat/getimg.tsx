@@ -68,7 +68,7 @@ const AppChat = () => {
       if(RS && RS.data) {
         const imageListInitial: string[] = []
         RS.data.map((Item: any)=>{
-          imageListInitial.push(Item.filename)
+          imageListInitial.push(Item)
         })
         setImageList([...imageListInitial, ...imageList].filter((element) => element != null))
       }
@@ -89,7 +89,7 @@ const AppChat = () => {
               headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
             }).then(res => res.data);
             console.log("ImageName", ImageName);
-            
+
             return ImageName;
           })
         );

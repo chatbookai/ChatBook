@@ -1,9 +1,11 @@
 // ** React Imports
 import { Fragment, Ref, useState, forwardRef, ReactElement, useEffect } from 'react'
+import { saveAs } from 'file-saver';
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
+import Button from '@mui/material/Button'
 import CardMedia from '@mui/material/CardMedia'
 import authConfig from 'src/configs/auth'
 import Dialog from '@mui/material/Dialog'
@@ -29,7 +31,8 @@ const ChatContent = (props: any) => {
   // ** Props
   const {
     imageList,
-    pendingImagesCount
+    pendingImagesCount,
+    handleGenerateSimilarGetImg
   } = props
 
   const Transition = forwardRef(function Transition(
@@ -57,6 +60,23 @@ const ChatContent = (props: any) => {
     console.log("showImg", showImg)
     console.log("showImgData", showImgData)
   }
+
+  const handleDownload = (DownloadUrl: string, FileName: string) => {
+    fetch(DownloadUrl)
+      .then(response => response.blob())
+      .then(blob => {
+        saveAs(blob, FileName);
+      })
+      .catch(error => {
+        console.log('Error downloading file:', error);
+      });
+  };
+
+  const handleGenerateSimilar = (showImg: any) => {
+    handleGenerateSimilarGetImg(showImg)
+    setShow(false)
+    console.log('handleGenerateSimilar showImg:', showImg);
+  };
 
   const renderContent = () => {
       return (
@@ -106,6 +126,8 @@ const ChatContent = (props: any) => {
                   <Grid container spacing={2}>
                     <Grid item xs={6}>
                         <CardMedia image={`${authConfig.backEndApi}/api/image/${showImg?.filename}`} sx={{ height: '500px', objectFit: 'cover', borderRadius: 1 }}/>
+                        <Button variant='outlined' sx={{ mt: 3, mr: 3 }} size="small" onClick={()=>handleDownload(authConfig.backEndApi + '/api/imageorigin/' + showImg?.filename, showImg?.filename + '.png')} >{t('Download') as string}</Button>
+                        <Button variant='outlined' sx={{ mt: 3, mr: 3 }} size="small" onClick={()=>handleGenerateSimilar(showImg)}>{t('Generate similar') as string}</Button>
                     </Grid>
                     <Grid item xs={6}>
                       <Grid sx={{ height: '100%', px: 4 }}>

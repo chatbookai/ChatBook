@@ -23,6 +23,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 import Icon from 'src/@core/components/icon'
+import toast from 'react-hot-toast'
 
 import MuiAccordion, { AccordionProps } from '@mui/material/Accordion'
 import MuiAccordionSummary, { AccordionSummaryProps } from '@mui/material/AccordionSummary'
@@ -86,7 +87,8 @@ const GetImgLeft = (props: any) => {
     handleGenerateImage,
     handleSubmitText,
     sendButtonDisable,
-    sendButtonText
+    sendButtonText,
+    generateSimilarData
   } = props
 
   // ** States
@@ -167,8 +169,33 @@ const GetImgLeft = (props: any) => {
     }
   }, [numberOfImagesValue])
 
+  useEffect(()=>{
+    if(generateSimilarData) {
+      console.log("generateSimilarData 111111", generateSimilarData)
+      setModelValue(generateSimilarData.model)
+      setPromptValue(generateSimilarData.prompt)
+      setNegativePromptValue(generateSimilarData.negative_prompt)
+      setStyleValue(generateSimilarData.style)
+      setStepsValue(generateSimilarData.steps)
+
+      //setSeedValue('')
+      //setCFGScaleValue(generateSimilarData.steps)
+    }
+  }, [generateSimilarData])
+
+
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault()
+    if(promptValue == null || promptValue == '') {      
+      toast.error(t('Prompt Must Not Null') as string, { duration: 4000 })
+
+      return
+    }
+    if(negativePromptValue == null || negativePromptValue == '') {      
+      toast.error(t('Negative Prompt Must Not Null') as string, { duration: 4000 })
+
+      return
+    }
     const PostData: any = {}
     PostData['model'] = modelValue
     PostData['prompt'] = promptValue
@@ -234,6 +261,7 @@ const GetImgLeft = (props: any) => {
                     <Select
                       label={t('Model') as string}
                       defaultValue={modelValue}
+                      value={modelValue}
                       size="small"
                       onChange={handleModelChange}
                     >
@@ -244,7 +272,7 @@ const GetImgLeft = (props: any) => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField multiline rows={8} fullWidth label={t('Prompt') as string} placeholder='' defaultValue={promptValue} onChange={(event: any)=>setPromptValue(event.target.value)}/>
+                  <TextField multiline rows={8} fullWidth label={t('Prompt') as string} placeholder='' value={promptValue} onChange={(event: any)=>setPromptValue(event.target.value)}/>
                 </Grid>
                 <Grid item xs={12}>
                   <TextField multiline rows={4} fullWidth label={t('Negative Prompt') as string} placeholder='' defaultValue={negativePromptValue} onChange={(event: any)=>setNegativePromptValue(event.target.value)}/>
@@ -319,6 +347,7 @@ const GetImgLeft = (props: any) => {
                     <Select
                       label={t('Style') as string}
                       defaultValue={StyleValue}
+                      value={StyleValue}
                       size="small"
                       onChange={handleStyleChange}
                     >

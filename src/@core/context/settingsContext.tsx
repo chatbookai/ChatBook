@@ -91,7 +91,7 @@ const restoreSettings = (): Settings | null => {
       settings = initialSettings
     }
   } catch (err) {
-    console.error(err)
+    console.log(err)
   }
 
   return settings

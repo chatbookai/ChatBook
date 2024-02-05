@@ -550,6 +550,26 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
+  export async function outputImageOrigin(res: Response, file: string) {
+    try {
+      await compressPng(file);
+      const FileName = path.join(DataDir, "/image/"+ file + ".png");
+      if(isFile(FileName))   {
+        const readStream = fs.createReadStream(FileName);
+        res.setHeader('Content-Type', 'image/png');
+        readStream.pipe(res);
+        console.log("FileName Exist: ", FileName)
+      }
+      else {
+        res.status(200).json({ error: 'File not exist' })
+      }
+    } 
+    catch (error) {
+        console.error('outputImage Error:', error);
+        res.status(200).json({ error: 'File not exist' })
+    }
+  }
+
   export async function parseFiles() {
     try {
       const RecordsAll: any[] = await getDbRecordALL(`SELECT * from files where status = '0' order by id asc limit 2`) as any[];

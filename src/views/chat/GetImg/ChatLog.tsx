@@ -67,7 +67,7 @@ const ChatLog = (props: any) => {
         saveAs(blob, FileName);
       })
       .catch(error => {
-        console.error('Error downloading file:', error);
+        console.log('Error downloading file:', error);
       });
   };
 

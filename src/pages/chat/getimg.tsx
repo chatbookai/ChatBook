@@ -92,13 +92,13 @@ const AppChat = () => {
             return ImageName;
           })
         );
-        console.error("ImageListData:", ImageListData);
+        console.log("ImageListData:", ImageListData);
         if(ImageListData && ImageListData.length > 0 && ImageListData[0]!=null) {
           setSendButtonDisable(false)
           setRefreshChatCounter(refreshChatCounter + 2)
           setSendButtonText(t("Generate images") as string)
           setImageList([...ImageListData, ...imageList].filter((element) => element != null))
-          console.error("imageListimageListimageListimageListimageList:", imageList)
+          console.log("imageListimageListimageListimageListimageList:", imageList)
           setPendingImagesCount(0)
         }
         if(ImageListData && ImageListData.length > 0 && ImageListData[0]==null) {
@@ -114,13 +114,18 @@ const AppChat = () => {
         setSendButtonDisable(false)
         setSendButtonText(t("Generate images") as string)
         setPendingImagesCount(0)
-        console.error("handleGenerateImage Error fetching images:", error);
+        console.log("handleGenerateImage Error fetching images:", error);
       }
     }
   }
 
   const handleSubmitText = (Text: string) => {
     setSendButtonText(t(Text) as string)
+  }
+
+  const [generateSimilarData, setGenerateSimilarData] = useState<any>(null)
+  const handleGenerateSimilarGetImg = (showImg: any) => {
+    setGenerateSimilarData(showImg)
   }
   
 
@@ -148,10 +153,12 @@ const AppChat = () => {
         handleSubmitText={handleSubmitText}
         sendButtonDisable={sendButtonDisable}
         sendButtonText={sendButtonText}
+        generateSimilarData={generateSimilarData}
       />
       <GetImgContent
         imageList={imageList}
         pendingImagesCount={pendingImagesCount}
+        handleGenerateSimilarGetImg={handleGenerateSimilarGetImg}
       />
       </Box>
       :

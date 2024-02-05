@@ -5,10 +5,14 @@
   import jwt from 'jsonwebtoken';
   import axios from 'axios'
   import useragent from 'useragent';
+  import Arweave from 'arweave'
 
   dotenv.config();
 
   import { db, getDbRecord, getDbRecordALL } from './db'
+
+  const arweave = Arweave.init(urlToSettings("http://112.170.68.77:1985"))
+
 
   type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
@@ -61,6 +65,69 @@
     else {
         return {"status":"error", "msg":"Token is valid"}
     }
+  }
+
+  export async function checkUserTokenXWE(token: string) {
+    const buffer = Buffer.from(token, 'base64');
+    const TxText = buffer.toString('utf-8');
+    const Tx = JSON.parse(TxText)
+    if(Tx && Tx.id && Tx.last_tx && Tx.format && Tx.format == 2 && Tx.owner && Tx.target && Tx.target == '72i2l5UJFwIb53gbUuiS9tKM-y1ooJnJFnyWltNEEBo' && Tx.quantity && Tx.signature) {
+      if(Tx.quantity == 5000000000000) {
+        //Check TX to remote host
+        try {
+          const txResult = await arweave.transactions.post(Tx);
+          console.log("checkUserTokenXWE tx Result", txResult)
+          if(txResult.status == 200 && txResult.statusText == 'OK') {
+            //OK
+            const Address = await ownerToAddress(Tx.owner)
+            let getOneUserData = await getOneUser(Address)
+            if(getOneUserData == null)  {
+              const hashedPassword = await hashPassword(Address + Date.now());
+              const insertUser = db.prepare('INSERT OR IGNORE INTO user (email, username, password, language, createtime) VALUES (?, ?, ?, ?, ?)');
+              insertUser.run(Address, Address, hashedPassword, 'en', Date.now());
+              insertUser.finalize();
+            }
+            getOneUserData = await getOneUser(Address)            
+            console.log("getOneUserData", getOneUserData)
+
+            return {"status":"ok", "msg":"User token is valid", "data": getOneUserData}
+          }
+          else {
+            console.log("checkUserTokenXWE tx Error", txResult)
+          }
+        }
+        catch(error: any) {
+          console.log("checkUserTokenXWE TX Error", error)
+        }
+      }
+
+    }
+
+    return {"status":"error", "msg":"Token is valid"}
+  }
+
+  export async function checkUserTokenXWENotCostAmount(token: string) {
+    const buffer = Buffer.from(token, 'base64');
+    const TxText = buffer.toString('utf-8');
+    const Tx = JSON.parse(TxText)
+    if(Tx && Tx.id && Tx.last_tx && Tx.format && Tx.format == 2 && Tx.owner && Tx.target && Tx.target == '72i2l5UJFwIb53gbUuiS9tKM-y1ooJnJFnyWltNEEBo' && Tx.quantity && Tx.signature) {
+      if(true) {
+        const Address = await ownerToAddress(Tx.owner)
+        const getOneUserData = await getOneUser(Address)            
+        console.log("getOneUserData", getOneUserData)
+        return {"status":"ok", "msg":"User token is valid", "data": getOneUserData}
+      }
+    }
+    return {"status":"error", "msg":"Token is valid"}
+  }
+
+  export async function ownerToAddress(owner: string) {
+    const pubJwk = {
+        kty: 'RSA',
+        e: 'AQAB',
+        n: owner,
+    }
+    return await arweave.wallets.getAddress(pubJwk)
   }
 
   export async function userLoginLog(req: Request, email: string, action: string, msg: string) {
@@ -205,9 +272,9 @@
           return {"status":"error", "msg":"This email have used before"}
         }
         const hashedPassword = await hashPassword(password);
-        const insertSetting = db.prepare('INSERT OR IGNORE INTO user (email, username, password, language, createtime) VALUES (?, ?, ?, ?, ?)');
-        insertSetting.run(email, username, hashedPassword, language, Date.now());
-        insertSetting.finalize();
+        const insertUser = db.prepare('INSERT OR IGNORE INTO user (email, username, password, language, createtime) VALUES (?, ?, ?, ?, ?)');
+        insertUser.run(email, username, hashedPassword, language, Date.now());
+        insertUser.finalize();
     }
     catch (error: any) {
       log('Error registerUser:', error.message);
@@ -308,4 +375,13 @@
     RS['total'] = RecordsTotal;
   
     return RS;
+  }
+
+  export function urlToSettings (url: string) {
+    const obj = new URL(url)
+    const protocol = obj.protocol.replace(':', '')
+    const host = obj.hostname
+    const port = obj.port ? parseInt(obj.port) : protocol === 'https' ? 443 : 80
+    
+    return { protocol, host, port }
   }

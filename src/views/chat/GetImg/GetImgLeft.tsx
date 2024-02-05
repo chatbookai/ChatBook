@@ -99,68 +99,42 @@ const GetImgLeft = (props: any) => {
   
   //const expandIcon = (value: string) => <Icon icon={expanded === value ? 'mdi:minus' : 'mdi:plus'} />
 
-  const [modelValue, setModelValue] = useState<string>('realistic-vision-v5-1')
+  const [modelValue, setModelValue] = useState<string>('stable-diffusion-v1-6')
   const ModelList: any[] = []
-  ModelList.push({name: "dream-shaper-v8", value: "dream-shaper-v8"})
-  ModelList.push({name: "stable-diffusion-v1-5", value: "stable-diffusion-v1-5"})
-  ModelList.push({name: "stable-diffusion-v2-1", value: "stable-diffusion-v2-1"})
-  ModelList.push({name: "realistic-vision-v1-3", value: "realistic-vision-v1-3"})
-  ModelList.push({name: "realistic-vision-v5-1", value: "realistic-vision-v5-1"})
-  ModelList.push({name: "absolute-reality-v1-6", value: "absolute-reality-v1-6"})
-  ModelList.push({name: "absolute-reality-v1-8-1", value: "absolute-reality-v1-8-1"})
-  ModelList.push({name: "neverending-dream", value: "neverending-dream"})
-  ModelList.push({name: "dark-sushi-mix-v2-25", value: "dark-sushi-mix-v2-25"})
-  ModelList.push({name: "synthwave-punk-v2", value: "synthwave-punk-v2"})
-  ModelList.push({name: "arcane-diffusion", value: "arcane-diffusion"})
-  ModelList.push({name: "analog-diffusion", value: "analog-diffusion"})
-  ModelList.push({name: "mo-di-diffusion", value: "mo-di-diffusion"})
-  ModelList.push({name: "eimis-anime-diffusion-v1-0", value: "eimis-anime-diffusion-v1-0"})
-  ModelList.push({name: "van-gogh-diffusion", value: "van-gogh-diffusion"})
-  ModelList.push({name: "moonfilm-reality-v3", value: "moonfilm-reality-v3"})
-  ModelList.push({name: "moonfilm-utopia-v3", value: "moonfilm-utopia-v3"})
-  ModelList.push({name: "moonfilm-film-grain-v1", value: "moonfilm-film-grain-v1"})
-  ModelList.push({name: "icbinp", value: "icbinp"})
-  ModelList.push({name: "icbinp-final", value: "icbinp-final"})
-  ModelList.push({name: "icbinp-relapse", value: "icbinp-relapse"})
-  ModelList.push({name: "icbinp-afterburn", value: "icbinp-afterburn"})
-  ModelList.push({name: "icbinp-seco", value: "icbinp-seco"})
-  ModelList.push({name: "openjourney-v4", value: "openjourney-v4"})
-  ModelList.push({name: "openjourney-v1-0", value: "openjourney-v1-0"})
-  ModelList.push({name: "xsarchitectural-interior-design", value: "xsarchitectural-interior-design"})
-  ModelList.push({name: "anashel-rpg", value: "anashel-rpg"})
-  ModelList.push({name: "something-v2-2", value: "something-v2-2"})
+  ModelList.push({name: "Stable Diffusion XL 1.0", value: "stable-diffusion-xl-1024-v1-0"})
+  ModelList.push({name: "Stable Diffusion 1.6", value: "stable-diffusion-v1-6"})
   const handleModelChange = (event: any) => {
     setModelValue(event.target.value);
   }
 
-  const [promptValue, setPromptValue] = useState<string>('')
-  const [negativePromptValue, setNegativePromptValue] = useState<string>('')
+  const [promptValue, setPromptValue] = useState<string>("A captivating portrait of a Chinese girl radiating grace and elegance. The painting captures her intriguing beauty in intricate detail, showcasing a serene aura that captivates the viewer's gaze. The girl's delicate features are adorned with traditional Chinese attire, further emphasizing her cultural heritage")
+  const [negativePromptValue, setNegativePromptValue] = useState<string>('blurry, bad')
 
-  const [samplerValue, setSamplerValue] = useState<string>('dpmsolver++')
-  const SamplerList: any[] = []
-  SamplerList.push({name: "Euler Ancestral", value: "euler_a"})
-  SamplerList.push({name: "Euler", value: "euler"})
-  SamplerList.push({name: "LMS", value: "lms"})
-  SamplerList.push({name: "LMS Karras", value: "lms_karras"})
-  SamplerList.push({name: "DPM-Solver++", value: "dpmsolver++"})
-  SamplerList.push({name: "DPM-Solver++ Karras", value: "dpmsolver++karras"})
-  SamplerList.push({name: "DPM++ 2M SDE", value: "dpmsolver++2m_sde"})
-  SamplerList.push({name: "DPM++ 2M SDE Karras", value: "dpmsolver++2m_sde_karras"})
-  SamplerList.push({name: "DPM-Solver SDE", value: "dpmsolver_sde"})
-  SamplerList.push({name: "PLMS", value: "pndm"})
-  SamplerList.push({name: "DDIM", value: "ddim"})
-  SamplerList.push({name: "KDPM", value: "kdpm2"})
-  SamplerList.push({name: "KDPM Ancestral", value: "kdpm2_a"})
-  SamplerList.push({name: "Heun", value: "heun"})
-  SamplerList.push({name: "UniPC", value: "unipc"})
-  SamplerList.push({name: "DEIS", value: "deis"})
-  SamplerList.push({name: "KDPM Karras", value: "kdpm2_karras"})
-  SamplerList.push({name: "KDPM Karras Ancestral", value: "kdpm2_a_karras"})
-  const handleSamplerChange = (event: any) => {
-    setSamplerValue(event.target.value);
+  const [StyleValue, setStyleValue] = useState<string>('enhance')
+  const StyleList: any[] = []
+  StyleList.push({name: "enhance", value: "enhance"})
+  StyleList.push({name: "analog-film", value: "analog-film"})
+  StyleList.push({name: "anime", value: "anime"})
+  StyleList.push({name: "cinematic", value: "cinematic"})
+  StyleList.push({name: "comic-book", value: "comic-book"})
+  StyleList.push({name: "digital-art", value: "digital-art"})
+  StyleList.push({name: "fantasy-art", value: "fantasy-art"})
+  StyleList.push({name: "isometric", value: "isometric"})
+  StyleList.push({name: "line-art", value: "line-art"})
+  StyleList.push({name: "low-poly", value: "low-poly"})
+  StyleList.push({name: "modeling-compound", value: "modeling-compound"})
+  StyleList.push({name: "neon-punk", value: "neon-punk"})
+  StyleList.push({name: "origami", value: "origami"})
+  StyleList.push({name: "photographic", value: "photographic"})
+  StyleList.push({name: "pixel-art", value: "pixel-art"})
+  StyleList.push({name: "tile-texture", value: "tile-texture"})
+  StyleList.push({name: "3d-model ", value: "3d-model "})
+
+  const handleStyleChange = (event: any) => {
+    setStyleValue(event.target.value);
   }
 
-  const [stepsValue, setStepsValue] = useState<number>(25)
+  const [stepsValue, setStepsValue] = useState<number>(40)
   const handleStepsChange = (event: any) => {
     setStepsValue(event.target.value);
   };
@@ -170,23 +144,10 @@ const GetImgLeft = (props: any) => {
     setSeedValue(event.target.value);
   };
 
-  const [guidanceScaleValue, setGuidanceScaleValue] = useState<number>(1)
-  const handleGuidanceScaleChange = (event: any) => {
-    setGuidanceScaleValue(event.target.value);
+  const [CFGScaleValue, setCFGScaleValue] = useState<number>(1)
+  const handleCFGScaleChange = (event: any) => {
+    setCFGScaleValue(event.target.value);
   };
-
-  const [resolutionValue, setResolutionValue] = useState<string>('512px × 512px')
-  const ResolutionList: any[] = []
-  ResolutionList.push({name: "1:1", value: "512px × 512px"})
-  ResolutionList.push({name: "4:5", value: "512px × 640px"})
-  ResolutionList.push({name: "2:3", value: "512px × 768px"})
-  ResolutionList.push({name: "4:7", value: "512px × 896px"})
-  ResolutionList.push({name: "5:4", value: "640px × 512px"})
-  ResolutionList.push({name: "3:2", value: "768px × 512px"})
-  ResolutionList.push({name: "7:4", value: "896px × 512px"})
-  const handleResolutionChange = (event: any) => {
-    setResolutionValue(event.target.value);
-  }
 
   const [numberOfImagesValue, setNumberOfImagesValue] = useState<number>(1)
   const NumberOfImagesList: any[] = []
@@ -209,17 +170,16 @@ const GetImgLeft = (props: any) => {
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault()
-    const resolutionValueArray = resolutionValue.replaceAll('px', '').split(' × ')
     const PostData: any = {}
     PostData['model'] = modelValue
     PostData['prompt'] = promptValue
     PostData['negativePrompt'] = negativePromptValue
-    PostData['sampler'] = samplerValue
+    PostData['style'] = StyleValue
     PostData['steps'] = stepsValue
     PostData['seed'] = seedValue
-    PostData['guidanceScale'] = guidanceScaleValue
-    PostData['width'] = Number(resolutionValueArray[0])
-    PostData['height'] = Number(resolutionValueArray[1])
+    PostData['CFGScale'] = CFGScaleValue
+    PostData['width'] = 512
+    PostData['height'] = 512
     PostData['numberOfImages'] = numberOfImagesValue
     PostData['outpuFormat'] = "png"
     console.log("PostData: ", PostData)
@@ -287,34 +247,11 @@ const GetImgLeft = (props: any) => {
                 </Grid>
                 <Grid item xs={12}>
                   <TextField multiline rows={8} fullWidth label='Prompt' placeholder='' defaultValue={promptValue} onChange={(event: any)=>setPromptValue(event.target.value)}/>
-                  <Box sx={{ display: 'flex', alignItems: 'right', justifyContent: 'right'}} >
-                    <Button size='small' type='button' variant='contained' sx={{ mt: 1 }} >
-                      Random
-                    </Button>
-                  </Box>
                 </Grid>
                 <Grid item xs={12}>
                   <TextField multiline rows={4} fullWidth label='Negative prompt' placeholder='' defaultValue={negativePromptValue} onChange={(event: any)=>setNegativePromptValue(event.target.value)}/>
                 </Grid>
 
-                
-                <Grid item xs={12}>
-                  <InputLabel >Resolution: {resolutionValue}</InputLabel>
-                  <FormControl fullWidth>
-                    <RadioGroup
-                      row
-                      defaultValue={resolutionValue}
-                      value={resolutionValue}
-                      name='Resolution'
-                      onChange={handleResolutionChange}
-                      >
-                      {ResolutionList.map((Item: any, Index: number)=>{
-                        return (<FormControlLabel key={Index} value={Item.value} control={<Radio />} label={Item.name} />)                          
-                      })}
-                    </RadioGroup>
-                  </FormControl>
-                </Grid>
-                
               </Grid>
             </AccordionDetails>
           </Accordion>
@@ -363,14 +300,14 @@ const GetImgLeft = (props: any) => {
                 </Grid>
                 <Grid item xs={12}>
                   <FormControl sx={{ flexWrap: 'wrap', width: '98%' }}>
-                    <FormLabel>Guidance scale: {guidanceScaleValue}</FormLabel>
+                    <FormLabel>CFG scale: {CFGScaleValue}</FormLabel>
                     <Slider
                       min={0}
                       max={20}
                       step={1}
-                      defaultValue={guidanceScaleValue}
-                      value={guidanceScaleValue}
-                      onChange={handleGuidanceScaleChange}
+                      defaultValue={CFGScaleValue}
+                      value={CFGScaleValue}
+                      onChange={handleCFGScaleChange}
                       aria-labelledby='continuous-slider'
                     />
                   </FormControl>
@@ -380,14 +317,14 @@ const GetImgLeft = (props: any) => {
                 </Grid>
                 <Grid item xs={12} sm={12}>
                   <FormControl fullWidth>
-                    <InputLabel >Sampler</InputLabel>
+                    <InputLabel >Style</InputLabel>
                     <Select
-                      label='Sampler'
-                      defaultValue={samplerValue}
+                      label='Style'
+                      defaultValue={StyleValue}
                       size="small"
-                      onChange={handleSamplerChange}
+                      onChange={handleStyleChange}
                     >
-                      {SamplerList.map((Item: any, Index: number)=>{
+                      {StyleList.map((Item: any, Index: number)=>{
                         return (<MenuItem key={Index} value={Item.value}>{Item.name}</MenuItem>)                          
                       })}
                     </Select>

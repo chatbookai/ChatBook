@@ -6,15 +6,9 @@ import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import CardMedia from '@mui/material/CardMedia'
 import authConfig from 'src/configs/auth'
-
-import Box from '@mui/material/Box'
-import Switch from '@mui/material/Switch'
 import Dialog from '@mui/material/Dialog'
-import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import InputLabel from '@mui/material/InputLabel'
-import CardContent from '@mui/material/CardContent'
 import Fade, { FadeProps } from '@mui/material/Fade'
 import DialogContent from '@mui/material/DialogContent'
 import Divider from '@mui/material/Divider'
@@ -143,10 +137,10 @@ const ChatContent = (props: any) => {
                           </Grid>
                           <Grid item xs={6}>
                             <Typography variant="body1">
-                              <strong>Guidance scale:</strong>
+                              <strong>CFG scale:</strong>
                             </Typography>
                             <Typography variant="body1">
-                              {showImgData.guidance}
+                              {showImgData.cfg_scale}
                             </Typography>
                           </Grid>
                           <Grid item xs={6}>
@@ -167,10 +161,10 @@ const ChatContent = (props: any) => {
                           </Grid>
                           <Grid item xs={6}>
                             <Typography variant="body1">
-                              <strong>Sampler: </strong>
+                              <strong>Style Preset: </strong>
                             </Typography>
                             <Typography variant="body1">
-                              {showImgData.scheduler}
+                              {showImgData.style_preset}
                             </Typography>
                           </Grid>
                           <Grid item xs={6}>
@@ -178,7 +172,7 @@ const ChatContent = (props: any) => {
                               <strong>AI model: </strong>
                             </Typography>
                             <Typography variant="body1">
-                              {showImgData.model}
+                              {showImg.model}
                             </Typography>
                           </Grid>
                           <Grid item xs={12}>

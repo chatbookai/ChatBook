@@ -3,7 +3,7 @@
 
   import { checkUserToken } from '../utils/user';
 
-  import { getModels, getModelDetail, generateimage, getModelsToGenereateImage, TextToImageALL, TextToImageAllLatentConsistency, Base64ToImg, getUserImages, getUserImagesAll } from '../utils/getimg';
+  import { getModels, getModelDetail, TextToImageALL, getUserImages, getUserImagesAll, generateImageStabilityAi } from '../utils/getimg';
 
   const app = express();
 
@@ -27,12 +27,6 @@
     */
   });
 
-  app.get('/api/getModelsToGenereateImage', async (req: Request, res: Response) => {
-    const getModelsToGenereateImageData = await getModelsToGenereateImage();
-    //console.log("getModelsToGenereateImageData", getModelsToGenereateImageData)
-    res.status(200).json(getModelsToGenereateImageData).end();
-  });
-
   app.get('/api/getModelDetail/:id', async (req: Request, res: Response) => {
     const { id } = req.params;
     const getModelDetailData = await getModelDetail(id);
@@ -50,38 +44,6 @@
         }
     })
     res.status(200).send(TextToImageALLDataHtml).end();
-  });
-
-  app.get('/api/TextToImageAllLatentConsistency', async (req: Request, res: Response) => {
-    const TextToImageAllLatentConsistencyData = await TextToImageAllLatentConsistency();
-    console.log("TextToImageAllLatentConsistencyData", TextToImageAllLatentConsistencyData);
-    let TextToImageAllLatentConsistencyDataHtml = '';
-    TextToImageAllLatentConsistencyData.map((FileName: string)=>{
-        if(FileName) {
-            TextToImageAllLatentConsistencyDataHtml += "<img src='/api/image/"+FileName+"' border=0 width=600>";
-        }
-    })
-    res.status(200).send(TextToImageAllLatentConsistencyDataHtml).end();
-  });
-
-  app.get('/api/Base64ToImg', async (req: Request, res: Response) => {
-    const Base64IMG = ""
-    const Base64ToImgData = await Base64ToImg(Base64IMG, 'absolute-reality-v1-8-1');
-    console.log("Base64ToImgData", Base64ToImgData)
-    res.status(200).json(Base64ToImgData).end();
-  });
-
-  app.post('/api/generateimage', async (req: Request, res: Response) => {
-    const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
-      const generateimageData = await generateimage(checkUserTokenData, req.body);
-      console.log("generateimageData", generateimageData);
-      res.status(200).json(generateimageData).end();
-    }
-    else {
-        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null}).end();
-    }
   });
 
   app.post('/api/getUserImages', async (req: Request, res: Response) => {
@@ -105,7 +67,18 @@
     res.status(200).json(getUserImagesAllData).end();
   });
 
-
+  app.post('/api/generateImageStabilityAi', async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
+      const generateImageStabilityAiData = await generateImageStabilityAi(checkUserTokenData, req.body);
+      console.log("generateImageStabilityAiData", generateImageStabilityAiData);
+      res.status(200).json(generateImageStabilityAiData).end();
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null}).end();
+    }
+  });
 
   
   export default app;

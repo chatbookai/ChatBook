@@ -77,7 +77,6 @@ const AccordionDetails = styled(MuiAccordionDetails)<AccordionDetailsProps>(({ t
   padding: `${theme.spacing(4)} !important`
 }))
 
-
 const GetImgLeft = (props: any) => {
   // ** Hook
   const { t } = useTranslation()
@@ -161,10 +160,10 @@ const GetImgLeft = (props: any) => {
 
   useEffect(()=>{
     if(numberOfImagesValue > 1) {
-      handleSubmitText(`Generate ${numberOfImagesValue} images`)
+      handleSubmitText(`${t('Generate') as string} ${numberOfImagesValue} ${t('images') as string}`)
     }
     else {
-      handleSubmitText(`Generate ${numberOfImagesValue} image`)
+      handleSubmitText(`${t('Generate') as string} ${numberOfImagesValue} ${t('image') as string}`)
     }
   }, [numberOfImagesValue])
 
@@ -189,7 +188,6 @@ const GetImgLeft = (props: any) => {
 
   return (
     <div>
-    
       <Drawer
         open={true}
         variant={'permanent'}
@@ -224,7 +222,7 @@ const GetImgLeft = (props: any) => {
               aria-controls='form-layouts-collapsible-content-1'
             >
               <Typography variant='subtitle1' sx={{ fontWeight: 500 }}>
-              Model & Prompt
+              {t('Model & Prompt') as string}
               </Typography>
             </AccordionSummary>
             <Divider sx={{ m: '0 !important' }} />
@@ -234,7 +232,7 @@ const GetImgLeft = (props: any) => {
                   <FormControl fullWidth>
                     <InputLabel >{t('Model') as string}</InputLabel>
                     <Select
-                      label='Model'
+                      label={t('Model') as string}
                       defaultValue={modelValue}
                       size="small"
                       onChange={handleModelChange}
@@ -246,10 +244,10 @@ const GetImgLeft = (props: any) => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField multiline rows={8} fullWidth label='Prompt' placeholder='' defaultValue={promptValue} onChange={(event: any)=>setPromptValue(event.target.value)}/>
+                  <TextField multiline rows={8} fullWidth label={t('Prompt') as string} placeholder='' defaultValue={promptValue} onChange={(event: any)=>setPromptValue(event.target.value)}/>
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField multiline rows={4} fullWidth label='Negative prompt' placeholder='' defaultValue={negativePromptValue} onChange={(event: any)=>setNegativePromptValue(event.target.value)}/>
+                  <TextField multiline rows={4} fullWidth label={t('Negative Prompt') as string} placeholder='' defaultValue={negativePromptValue} onChange={(event: any)=>setNegativePromptValue(event.target.value)}/>
                 </Grid>
 
               </Grid>
@@ -263,14 +261,14 @@ const GetImgLeft = (props: any) => {
               aria-controls='form-layouts-collapsible-content-3'
             >
               <Typography variant='subtitle1' sx={{ fontWeight: 500 }}>
-                Advanced
+              {t('Advanced') as string}
               </Typography>
             </AccordionSummary>
             <Divider sx={{ m: '0 !important' }} />
             <AccordionDetails sx={{ pt: 6, pb: 6 }}>
               <Grid container spacing={5}>
                 <Grid item xs={12}>
-                  <InputLabel >Number of images:</InputLabel>
+                  <InputLabel >{t('Number of images') as string}:</InputLabel>
                   <FormControl fullWidth>
                     <RadioGroup
                       row
@@ -286,7 +284,7 @@ const GetImgLeft = (props: any) => {
                 </Grid>
                 <Grid item xs={12}>
                   <FormControl sx={{ flexWrap: 'wrap', width: '98%' }}>
-                    <FormLabel>Steps: {stepsValue}</FormLabel>
+                    <FormLabel>{t('Steps') as string}: {stepsValue}</FormLabel>
                     <Slider
                       min={1}
                       max={50}
@@ -300,7 +298,7 @@ const GetImgLeft = (props: any) => {
                 </Grid>
                 <Grid item xs={12}>
                   <FormControl sx={{ flexWrap: 'wrap', width: '98%' }}>
-                    <FormLabel>CFG scale: {CFGScaleValue}</FormLabel>
+                    <FormLabel>{t('CFG Scale') as string}: {CFGScaleValue}</FormLabel>
                     <Slider
                       min={0}
                       max={20}
@@ -313,13 +311,13 @@ const GetImgLeft = (props: any) => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField type="number" fullWidth label='Seed' name='Seed' placeholder='' size="small" defaultValue={seedValue} onChange={handleSeedChange}/>
+                  <TextField type="number" fullWidth label={t('Seed') as string} name='Seed' placeholder='' size="small" defaultValue={seedValue} onChange={handleSeedChange}/>
                 </Grid>
                 <Grid item xs={12} sm={12}>
                   <FormControl fullWidth>
-                    <InputLabel >Style</InputLabel>
+                    <InputLabel >{t('Style') as string}</InputLabel>
                     <Select
-                      label='Style'
+                      label={t('Style') as string}
                       defaultValue={StyleValue}
                       size="small"
                       onChange={handleStyleChange}

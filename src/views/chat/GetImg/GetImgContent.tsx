@@ -20,8 +20,12 @@ import Icon from 'src/@core/components/icon'
 import { formatTimestamp } from 'src/configs/functions'
 
 import TransitionPage from './TransitionPage'
+import { useTranslation } from 'react-i18next'
 
 const ChatContent = (props: any) => {
+  // ** Hook
+  const { t } = useTranslation()
+
   // ** Props
   const {
     imageList,
@@ -42,7 +46,6 @@ const ChatContent = (props: any) => {
   useEffect(()=>{
     if(imageList) {
       setShowImg(imageList[0])
-      console.log("imageList[0]", imageList[0])
     }
   }, [])
 
@@ -107,12 +110,12 @@ const ChatContent = (props: any) => {
                     <Grid item xs={6}>
                       <Grid sx={{ height: '100%', px: 4 }}>
                         <Typography variant="h5" sx={{ marginBottom: 2 }}>
-                          Image Information
+                          {t('Image Information') as string}
                         </Typography>
                         <Grid container spacing={2}>
                           <Grid item xs={12}>
                             <Typography variant="body1">
-                              <strong>Prompt:</strong>
+                              <strong>{t('Prompt') as string}:</strong>
                             </Typography>
                             <Typography variant="body1">
                               {showImg.prompt}
@@ -120,7 +123,7 @@ const ChatContent = (props: any) => {
                           </Grid>
                           <Grid item xs={12}>
                             <Typography variant="body1">
-                              <strong>Negative Prompt:</strong>
+                              <strong>{t('Negative Prompt') as string}:</strong>
                             </Typography>
                             <Typography variant="body1">
                               {showImg.negative_prompt || '　'}
@@ -129,7 +132,7 @@ const ChatContent = (props: any) => {
                           <Divider sx={{ mt: '0 !important' }} />
                           <Grid item xs={6}>
                             <Typography variant="body1">
-                              <strong>Size:</strong>
+                              <strong>{t('Size') as string}:</strong>
                             </Typography>
                             <Typography variant="body1">
                               {showImgData.width} * {showImgData.height}
@@ -137,7 +140,7 @@ const ChatContent = (props: any) => {
                           </Grid>
                           <Grid item xs={6}>
                             <Typography variant="body1">
-                              <strong>CFG scale:</strong>
+                              <strong>{t('CFG Scale') as string}:</strong>
                             </Typography>
                             <Typography variant="body1">
                               {showImgData.cfg_scale}
@@ -145,7 +148,7 @@ const ChatContent = (props: any) => {
                           </Grid>
                           <Grid item xs={6}>
                             <Typography variant="body1">
-                              <strong>Steps:</strong>
+                              <strong>{t('Steps') as string}:</strong>
                             </Typography>
                             <Typography variant="body1">
                               {showImgData.steps}
@@ -153,7 +156,7 @@ const ChatContent = (props: any) => {
                           </Grid>
                           <Grid item xs={6}>
                             <Typography variant="body1">
-                              <strong>Seed:</strong>
+                              <strong>{t('Seed') as string}:</strong>
                             </Typography>
                             <Typography variant="body1">
                               {showImgData.seed}
@@ -161,7 +164,7 @@ const ChatContent = (props: any) => {
                           </Grid>
                           <Grid item xs={6}>
                             <Typography variant="body1">
-                              <strong>Style Preset: </strong>
+                              <strong>{t('Style Preset') as string}: </strong>
                             </Typography>
                             <Typography variant="body1">
                               {showImgData.style_preset}
@@ -169,7 +172,7 @@ const ChatContent = (props: any) => {
                           </Grid>
                           <Grid item xs={6}>
                             <Typography variant="body1">
-                              <strong>AI model: </strong>
+                              <strong>{t('AI Model') as string}: </strong>
                             </Typography>
                             <Typography variant="body1">
                               {showImg.model}
@@ -177,7 +180,7 @@ const ChatContent = (props: any) => {
                           </Grid>
                           <Grid item xs={12}>
                             <Typography variant="body1">
-                              <strong>Created: </strong>
+                              <strong>{t('Created') as string}: </strong>
                             </Typography>
                             <Typography variant="body1">
                               {formatTimestamp(showImg.createtime)}

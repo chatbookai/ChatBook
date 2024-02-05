@@ -69,7 +69,7 @@ const Knowledge = () => {
 
   const fetchData = async function (paginationModel: any) {
     if (auth && auth.user) {
-      const RS = await axios.get(authConfig.backEndApi + '/api/knowledge/' + paginationModel.page + '/' + paginationModel.pageSize, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' }, params: { } }).then(res=>res.data)
+      const RS = await axios.get(authConfig.backEndApiChatBook + '/api/knowledge/' + paginationModel.page + '/' + paginationModel.pageSize, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' }, params: { } }).then(res=>res.data)
       console.log("RS", RS)
       setStore(RS)  
     }
@@ -191,7 +191,7 @@ const Knowledge = () => {
 
     if (auth && auth.user) {
       const PostParams = {name, summary}
-      const FormSubmit: any = await axios.post(authConfig.backEndApi + '/api/addknowledge', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/addknowledge', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit:", FormSubmit)
       if(FormSubmit?.status == "ok") {
           toast.success(t(FormSubmit.msg) as string, { duration: 4000 })

@@ -95,7 +95,7 @@ const ChatContent = (props: any) => {
                     })}
                     {imageList && imageList.map((item: any, index: number) => (
                       <Grid item key={index} xs={12} sm={6} md={3} lg={3} sx={{mt: 2}}>
-                        <CardMedia image={`${authConfig.backEndApi}/api/image/${item.filename}`} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1, cursor: 'pointer' }} onClick={()=>handleImgInfo(index)}/>
+                        <CardMedia image={`${authConfig.backEndApiChatBook}/api/image/${item.filename}`} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1, cursor: 'pointer' }} onClick={()=>handleImgInfo(index)}/>
                       </Grid>
                     ))}
                   </Grid>
@@ -125,8 +125,8 @@ const ChatContent = (props: any) => {
                 <Container>
                   <Grid container spacing={2}>
                     <Grid item xs={6}>
-                        <CardMedia image={`${authConfig.backEndApi}/api/image/${showImg?.filename}`} sx={{ height: '500px', objectFit: 'cover', borderRadius: 1 }}/>
-                        <Button variant='outlined' sx={{ mt: 3, mr: 3 }} size="small" onClick={()=>handleDownload(authConfig.backEndApi + '/api/imageorigin/' + showImg?.filename, showImg?.filename + '.png')} >{t('Download') as string}</Button>
+                        <CardMedia image={`${authConfig.backEndApiChatBook}/api/image/${showImg?.filename}`} sx={{ height: '500px', objectFit: 'cover', borderRadius: 1 }}/>
+                        <Button variant='outlined' sx={{ mt: 3, mr: 3 }} size="small" onClick={()=>handleDownload(authConfig.backEndApiChatBook + '/api/imageorigin/' + showImg?.filename, showImg?.filename + '.png')} >{t('Download') as string}</Button>
                         <Button variant='outlined' sx={{ mt: 3, mr: 3 }} size="small" onClick={()=>handleGenerateSimilar(showImg)}>{t('Generate similar') as string}</Button>
                     </Grid>
                     <Grid item xs={6}>

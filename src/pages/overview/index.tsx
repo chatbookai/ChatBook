@@ -35,7 +35,7 @@ const AnalyticsDashboard = () => {
   const [imageList, setImageList] = useState<any[]>([])
 
   useEffect(() => {
-    axios.get(authConfig.backEndApi + '/api/static/site', { headers: { }, params: { } })
+    axios.get(authConfig.backEndApiChatBook + '/api/static/site', { headers: { }, params: { } })
     .then((res) => {
       setDataX(res.data.DateList)
       setNewUserPerDay(res.data.NewUserPerDay)
@@ -47,7 +47,7 @@ const AnalyticsDashboard = () => {
       console.log("NewFilesPerDay", NewFilesPerDay)
     })
 
-    axios.post(authConfig.backEndApi + '/api/getUserImagesAll/', {pageid: 0, pagesize: 12}, {
+    axios.post(authConfig.backEndApiChatBook + '/api/getUserImagesAll/', {pageid: 0, pagesize: 12}, {
       headers: { 'Content-Type': 'application/json' },
     })
     .then(res => res.data)
@@ -89,7 +89,7 @@ const AnalyticsDashboard = () => {
                     <Grid container spacing={2}>
                       {imageList && imageList.map((item: any, index: number) => (
                         <Grid item key={index} xs={12} sm={6} md={3} lg={3} sx={{pl: 2, mt: 4}}>
-                          <CardMedia image={`${authConfig.backEndApi}/api/image/${item}`} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1 }}/>
+                          <CardMedia image={`${authConfig.backEndApiChatBook}/api/image/${item}`} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1 }}/>
                         </Grid>
                       ))}
                     </Grid>

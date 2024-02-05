@@ -62,7 +62,7 @@ const AppChat = () => {
 
   const getImagesList = async function () {
     if(auth.user && auth.user.token)  {
-      const RS = await axios.post(authConfig.backEndApi + '/api/getUserImages/', {pageid: 0, pagesize: 30}, {
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getUserImages/', {pageid: 0, pagesize: 30}, {
         headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
       }).then(res => res.data);
       if(RS && RS.data) {
@@ -84,7 +84,7 @@ const AppChat = () => {
       try {
         const ImageListData = await Promise.all(
           Array.from({ length: numberOfImages }, async () => {
-            const ImageName = await axios.post(authConfig.backEndApi + '/api/generateImageStabilityAi/', data, {
+            const ImageName = await axios.post(authConfig.backEndApiChatBook + '/api/generateImageStabilityAi/', data, {
               headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
             }).then(res => res.data);
             console.log("ImageName", ImageName);

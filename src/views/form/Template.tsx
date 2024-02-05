@@ -66,7 +66,7 @@ const TemplateModelForm = (props: any) => {
 
   const handleGetData = async () => {
     if (auth && auth.user) {
-        const GetData: any = await axios.get(authConfig.backEndApi + '/api/gettemplate/' + knowledgeId, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+        const GetData: any = await axios.get(authConfig.backEndApiChatBook + '/api/gettemplate/' + knowledgeId, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
         console.log("GetData:", GetData)
         setCONDENSE_TEMPLATE(GetData.CONDENSE_TEMPLATE || '')
         setQA_TEMPLATE(GetData.QA_TEMPLATE || '')
@@ -87,7 +87,7 @@ const TemplateModelForm = (props: any) => {
     }
     if (auth && auth.user) {
         const PostParams = {CONDENSE_TEMPLATE: CONDENSE_TEMPLATE, QA_TEMPLATE: QA_TEMPLATE, knowledgeId: knowledgeId}
-        const FormSubmit: any = await axios.post(authConfig.backEndApi + '/api/settemplate', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+        const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/settemplate', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
         console.log("FormSubmit:", FormSubmit)
         if(FormSubmit?.status == "ok") {
             toast.success(t(FormSubmit.msg) as string, { duration: 4000 })

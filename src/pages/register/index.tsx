@@ -128,7 +128,7 @@ const RegisterV1 = () => {
     }
 
     const username = email
-    axios.post(authConfig.backEndApi + '/api/user/register', { email, username, password }) .then(res => {
+    axios.post(authConfig.backEndApiChatBook + '/api/user/register', { email, username, password }) .then(res => {
       if (res.data.status == 'ok') {
         //handleLogin({ email: params.email, password: params.password })
         toast.success(t(res.data.msg) as string, { duration: 4000 })

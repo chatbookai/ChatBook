@@ -56,7 +56,7 @@ const Files = (props: any) => {
 
   const fetchData = async function (paginationModel: any) {
     if (auth && auth.user) {
-      const RS = await axios.get(authConfig.backEndApi + '/api/files/' + knowledgeId + '/' + paginationModel.page + '/' + paginationModel.pageSize, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' }, params: { } }).then(res=>res.data)
+      const RS = await axios.get(authConfig.backEndApiChatBook + '/api/files/' + knowledgeId + '/' + paginationModel.page + '/' + paginationModel.pageSize, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' }, params: { } }).then(res=>res.data)
       console.log("RS", RS)
       setStore(RS)  
     }

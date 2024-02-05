@@ -12,7 +12,7 @@ interface DataParams {
 
 // ** Fetch Data
 export const fetchData = createAsyncThunk('appBlocks/fetchData', async (params: DataParams) => {
-  const response = await axios.get(authConfig.backEndApi + '/knowledge/'+ `${params.pageId}` + '/'+params.pageSize)
+  const response = await axios.get(authConfig.backEndApiChatBook + '/knowledge/'+ `${params.pageId}` + '/'+params.pageSize)
   
   const NewData: any[] = response.data.data.filter((record: any) => record.id)
   response.data.data = NewData

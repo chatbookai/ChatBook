@@ -15,7 +15,7 @@ const ServerSideNavItems = () => {
   const auth = useAuth()
 
   useEffect(() => {
-    axios.get(authConfig.backEndApi + '/api/menu/horizontal', { headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' }, params: { } }).then(response => {
+    axios.get(authConfig.backEndApiChatBook + '/api/menu/horizontal', { headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' }, params: { } }).then(response => {
       const menuArray = response.data
       if(menuArray && menuArray.status == 'error') {
         //router.push('/overview')

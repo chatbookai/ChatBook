@@ -185,7 +185,7 @@ const FileUploaderMultiple = (props: any) => {
       files.map((file: File)=>{
         formData.append('files', file);
       })
-      const FormSubmit: any = await axios.post(authConfig.backEndApi + '/api/uploadfiles', formData, {
+      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/uploadfiles', formData, {
         headers: {
           Authorization: auth.user.token,
           'Content-Type': 'multipart/form-data',

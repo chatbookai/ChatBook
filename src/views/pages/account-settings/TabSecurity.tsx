@@ -45,7 +45,7 @@ const TabSecurity = () => {
   const fetchData = async function () {
     if (auth && auth.user) {
       const data: any = {pageid: 0, pagesize: 6}
-      const RS = await axios.post(authConfig.backEndApi + '/api/user/getuserlogs', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/user/getuserlogs', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       if(RS && RS.data) {
         setRecentDeviceData(RS.data)
       }

@@ -19,6 +19,7 @@ export async function initChatBookDb() {
     enableDir(DataDir + '/audio/');
     enableDir(DataDir + '/image/');
     enableDir(DataDir + '/video/');
+    enableDir(DataDir + '/imageforvideo/');
     
     db.serialize(() => {
         db.run(`

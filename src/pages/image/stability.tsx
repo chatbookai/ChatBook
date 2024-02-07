@@ -9,8 +9,8 @@ import { useTheme } from '@mui/material/styles'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Chat App Components Imports
-import GetImgLeft from 'src/views/chat/GetImg/GetImgLeft'
-import GetImgContent from 'src/views/chat/GetImg/GetImgContent'
+import GetImgLeft from 'src/views/image/stability/GetImgLeft'
+import GetImgContent from 'src/views/image/stability/GetImgContent'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'

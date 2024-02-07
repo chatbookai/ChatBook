@@ -3,7 +3,7 @@
 
   import { checkUserToken, checkUserTokenXWE, checkUserTokenXWENotCostAmount } from '../utils/user';
 
-  import { getUserImages, getUserImagesAll, getUserVideos, getUserVideosAll, generateImageStabilityAi, generateVideoStabilityAi, getVideoStabilityAi, outputVideo, outputVideoImage } from '../utils/getimg';
+  import { getUserImages, getUserImagesAll, getUserVideos, getUserVideosAll, generateImageStabilityAi, generateVideoStabilityAi, getVideoStabilityAi, outputVideo, outputVideoImage } from '../utils/stability';
 
   import { uploadimageforvideo } from '../utils/utils';
 

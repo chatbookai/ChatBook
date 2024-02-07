@@ -8,12 +8,12 @@ import { join } from 'path';
 
 import { initChatBookDbExec } from './utils/db';
 import { debug, parseFiles } from './utils/llms';
-import { downloadVideoFromAPI } from './utils/getimg';
+import { downloadVideoFromAPI } from './utils/stability';
 
 import userRouter from './router/user'
 import llmsRouter from './router/llms'
 import utilsRouter from './router/utils'
-import getimgRouter from './router/getimg'
+import getimgRouter from './router/stability'
 
 //Start Express Server
 const app = express();

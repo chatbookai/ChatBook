@@ -9,8 +9,8 @@ import { useTheme } from '@mui/material/styles'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Chat App Components Imports
-import VideoLeft from 'src/views/chat/Video/VideoLeft'
-import VideoContent from 'src/views/chat/Video/VideoContent'
+import VideoLeft from 'src/views/video/stability/VideoLeft'
+import VideoContent from 'src/views/video/stability/VideoContent'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'

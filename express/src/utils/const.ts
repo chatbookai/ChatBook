@@ -44,12 +44,12 @@ export const MenuListAdmin = [
   {
     title: 'Image',
     icon: 'material-symbols:imagesmode',
-    path: '/chat/getimg'
+    path: '/image/stability'
   },
   {
     title: 'Video',
     icon: 'mdi:video-box',
-    path: '/chat/video'
+    path: '/video/stability'
   },
   {
     title: 'Knowledge Chat',
@@ -125,12 +125,12 @@ export const MenuListUser = [
   {
     title: 'Image',
     icon: 'material-symbols:imagesmode',
-    path: '/chat/getimg'
+    path: '/image/stability'
   },
   {
     title: 'Video',
     icon: 'mdi:video-box',
-    path: '/chat/video'
+    path: '/video/stability'
   },
   {
     title: 'Knowledge Chat',

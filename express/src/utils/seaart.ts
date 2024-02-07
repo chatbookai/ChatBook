@@ -13,7 +13,7 @@ const GETIMG_AI_SECRET_KEY = process.env.STABILITY_API_KEY
 type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
 
-interface StabilityAi {
+interface SeaArt {
   model: string
   prompt: string
   negativePrompt: string
@@ -27,7 +27,7 @@ interface StabilityAi {
   seed: number | string
 }
 
-export async function generateImageStabilityAi(checkUserTokenData: any, data: StabilityAi) {
+export async function generateImageSeaArt(checkUserTokenData: any, data: SeaArt) {
   //return "realistic-vision-v5-1-1706996772820-667074977";
   let url = "https://api.stability.ai/v1/generation/stable-diffusion-v1-6/text-to-image";
   data.width = 512
@@ -77,7 +77,7 @@ export async function generateImageStabilityAi(checkUserTokenData: any, data: St
           insertSetting.finalize();
         }
         catch(error: any) {
-          console.log("generateImageStabilityAiV16 insertSetting Error", error.message)
+          console.log("generateImageSeaArtV16 insertSetting Error", error.message)
         }
         return orderId;
     }
@@ -86,7 +86,7 @@ export async function generateImageStabilityAi(checkUserTokenData: any, data: St
     }
   }
   catch(error: any) {
-    console.log("generateImageStabilityAiV16 Error", error.message)
+    console.log("generateImageSeaArtV16 Error", error.message)
     return null;
   }
   
@@ -100,7 +100,7 @@ export function Base64ToImg(Base64IMG: string, model: string) {
     return uniqueSuffix;
 }
 
-export async function getUserImages(userId: string, pageid: number, pagesize: number) {
+export async function getUserImagesSeaArt(userId: string, pageid: number, pagesize: number) {
   const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
   const From = pageidFiler * pagesizeFiler;
@@ -146,7 +146,7 @@ export async function getUserImagesAll(pageid: number, pagesize: number) {
   return RS;
 }
 
-export async function generateVideoStabilityAi(checkUserTokenData: any, PostData:any, files: any) {
+export async function generateVideoSeaArt(checkUserTokenData: any, PostData:any, files: any) {
   if(files==null || files[0]==null || files[0].filename==null) {
     return {status: 'error', statusText: 'Please upload the file first' };
   }
@@ -183,7 +183,7 @@ export async function generateVideoStabilityAi(checkUserTokenData: any, PostData
           insertSetting.finalize();
         }
         catch(error: any) {
-          console.log("generateVideoStabilityAi insertSetting Error", error)
+          console.log("generateVideoSeaArt insertSetting Error", error)
         }
         
         return {status: 'ok', statusText: 'It has been submitted to the queue and the video will be generated in a few minutes.', id: orderId};
@@ -193,13 +193,13 @@ export async function generateVideoStabilityAi(checkUserTokenData: any, PostData
     }
   }
   catch(error: any) {
-    console.log("generateVideoStabilityAi Error", error.message)
+    console.log("generateVideoSeaArt Error", error.message)
     return {status: 'error', statusText: 'Submit failed', errorText: error.message };
   }
   
 }
 
-export async function getVideoStabilityAi(generationID: string) {
+export async function getVideoSeaArt(generationID: string) {
 
   const response = await axios.request({
     url: `https://api.stability.ai/v2alpha/generation/image-to-video/result/${generationID}`,
@@ -238,8 +238,8 @@ export async function downloadVideoFromAPI() {
     await Promise.all(
       RecordsAll.map(async (Item: any)=>{
           console.log("downloadVideoFromAPI Item", Item.id, Item.orderId)
-          const getVideoStabilityAiData = await getVideoStabilityAi(Item.orderId);
-          if(getVideoStabilityAiData) {
+          const getVideoSeaArtData = await getVideoSeaArt(Item.orderId);
+          if(getVideoSeaArtData) {
             const updateSetting = db.prepare('update uservideos set status = ? where id = ?');
             updateSetting.run(1, Item.id);
             updateSetting.finalize();

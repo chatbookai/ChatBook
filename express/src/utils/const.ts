@@ -47,6 +47,11 @@ export const MenuListAdmin = [
     path: '/image/stability'
   },
   {
+    title: 'Image',
+    icon: 'material-symbols:imagesmode',
+    path: '/image/seaart'
+  },
+  {
     title: 'Video',
     icon: 'mdi:video-box',
     path: '/video/stability'
@@ -126,6 +131,11 @@ export const MenuListUser = [
     title: 'Image',
     icon: 'material-symbols:imagesmode',
     path: '/image/stability'
+  },
+  {
+    title: 'Image',
+    icon: 'material-symbols:imagesmode',
+    path: '/image/seaart'
   },
   {
     title: 'Video',

@@ -250,7 +250,7 @@ export async function downloadVideoFromAPI() {
   }
 }
 
-export async function getUserVideosStabilityAi(userId: string, pageid: number, pagesize: number) {
+export async function getUserVideosSeaArt(userId: string, pageid: number, pagesize: number) {
   const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
   const From = pageidFiler * pagesizeFiler;
@@ -273,7 +273,7 @@ export async function getUserVideosStabilityAi(userId: string, pageid: number, p
   return RS;
 }
 
-export async function getUserVideosStabilityAiAll(pageid: number, pagesize: number) {
+export async function getUserVideosSeaArtAll(pageid: number, pagesize: number) {
   const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
   const From = pageidFiler * pagesizeFiler;

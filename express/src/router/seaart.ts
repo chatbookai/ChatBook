@@ -3,7 +3,7 @@
 
   import { checkUserToken, checkUserTokenXWE, checkUserTokenXWENotCostAmount } from '../utils/user';
 
-  import { getUserImagesSeaArt, getUserImagesAll, getUserVideosStabilityAi, getUserVideosStabilityAiAll, generateImageSeaArt, generateVideoSeaArt, getVideoSeaArt, outputVideo, outputVideoImage } from '../utils/seaart';
+  import { getUserImagesSeaArt, getUserImagesAll, getUserVideosSeaArt, getUserVideosSeaArtAll, generateImageSeaArt, generateVideoSeaArt, getVideoSeaArt } from '../utils/seaart';
 
   import { uploadimageforvideo } from '../utils/utils';
 
@@ -23,7 +23,7 @@
     }
   });
 
-  app.post('/api/getUserImagesAll', async (req: Request, res: Response) => {
+  app.post('/api/getUserImagesSeaArtAll', async (req: Request, res: Response) => {
     const { pageid, pagesize } = req.body;
     const getUserImagesAllData = await getUserImagesAll(pageid, pagesize);
     console.log("getUserImagesAllData", getUserImagesAllData);
@@ -92,37 +92,26 @@
     res.status(200).send(getVideoSeaArtData).end();
   });
 
-  app.post('/api/getUserVideosStabilityAi', async (req: Request, res: Response) => {
+  app.post('/api/getUserVideosSeaArt', async (req: Request, res: Response) => {
     const { authorization } = req.headers;
     const { pageid, pagesize } = req.body;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
-      const getUserVideosStabilityAiData = await getUserVideosStabilityAi(checkUserTokenData.data.id, pageid, pagesize);
-      //console.log("getUserVideosStabilityAiData", getUserVideosStabilityAiData);
-      res.status(200).json(getUserVideosStabilityAiData).end();
+      const getUserVideosSeaArtData = await getUserVideosSeaArt(checkUserTokenData.data.id, pageid, pagesize);
+      //console.log("getUserVideosSeaArtData", getUserVideosSeaArtData);
+      res.status(200).json(getUserVideosSeaArtData).end();
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null}).end();
     }
   });
 
-  app.post('/api/getUserVideosStabilityAiAll', async (req: Request, res: Response) => {
+  app.post('/api/getUserVideosSeaArtAll', async (req: Request, res: Response) => {
     const { pageid, pagesize } = req.body;
-    const getUserVideosStabilityAiAllData = await getUserVideosStabilityAiAll(pageid, pagesize);
-    //console.log("getUserVideosStabilityAiAllData", getUserVideosStabilityAiAllData);
-    res.status(200).json(getUserVideosStabilityAiAllData).end();
+    const getUserVideosSeaArtAllData = await getUserVideosSeaArtAll(pageid, pagesize);
+    //console.log("getUserVideosSeaArtAllData", getUserVideosSeaArtAllData);
+    res.status(200).json(getUserVideosSeaArtAllData).end();
   });
 
-  app.get('/api/video/:file', async (req: Request, res: Response) => {
-    const { file } = req.params;
-    outputVideo(res, file);
-  });
-
-  app.get('/api/videoimage/:file', async (req: Request, res: Response) => {
-    const { file } = req.params;
-    outputVideoImage(res, file);
-  });
-
-  
 
   export default app;

@@ -63,7 +63,7 @@
         return {"status":"ok", "msg":"User token is valid", "data": userTokenData}
     }
     else {
-        return {"status":"error", "msg":"Token is valid"}
+        return {"status":"error", "msg":"Token is invalid"}
     }
   }
 

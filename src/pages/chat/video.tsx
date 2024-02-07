@@ -9,8 +9,8 @@ import { useTheme } from '@mui/material/styles'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Chat App Components Imports
-import GetImgLeft from 'src/views/chat/GetImg/GetImgLeft'
-import GetImgContent from 'src/views/chat/GetImg/GetImgContent'
+import VideoLeft from 'src/views/chat/Video/VideoLeft'
+import VideoContent from 'src/views/chat/Video/VideoContent'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
@@ -62,7 +62,7 @@ const AppChat = () => {
 
   const getImagesList = async function () {
     if(auth.user && auth.user.token)  {
-      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getUserImages/', {pageid: 0, pagesize: 30}, {
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getUserVideos/', {pageid: 0, pagesize: 30}, {
         headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
       }).then(res => res.data);
       if(RS && RS.data) {
@@ -75,46 +75,39 @@ const AppChat = () => {
     }
   }
 
-  const handleGenerateImage = async (data: any) => {
+  const handleGenerateVideo = async (data: any) => {
     if(auth.user && auth.user.token)  {
       setSendButtonDisable(true)
-      setSendButtonText(t("Generating images...") as string)
-      setPendingImagesCount(data.numberOfImages)
-      const numberOfImages = data.numberOfImages
+      setSendButtonText(t("Generating video...") as string)
       try {
-        const ImageListData = await Promise.all(
-          Array.from({ length: numberOfImages }, async () => {
-            const ImageName = await axios.post(authConfig.backEndApiChatBook + '/api/generateImageStabilityAi/', data, {
-              headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
-            }).then(res => res.data);
-            console.log("ImageName", ImageName);
-
-            return ImageName;
-          })
-        );
-        console.log("ImageListData:", ImageListData);
-        if(ImageListData && ImageListData.length > 0 && ImageListData[0]!=null) {
+        const GenerateStatus = await axios.post(authConfig.backEndApiChatBook + '/api/generateVideoStabilityAi/', data, {
+                                    headers: { Authorization: auth?.user?.token, 'Content-Type': 'multipart/form-data' },
+                                }).then(res => res.data);
+        console.log("GenerateStatus:", GenerateStatus);
+        if(GenerateStatus && GenerateStatus.status == 'ok') {
           setSendButtonDisable(false)
           setRefreshChatCounter(refreshChatCounter + 2)
-          setSendButtonText(t("Generate images") as string)
-          setImageList([...ImageListData, ...imageList].filter((element) => element != null))
-          console.log("imageListimageListimageListimageListimageList:", imageList)
+          setSendButtonText(t("Generate video") as string)
           setPendingImagesCount(0)
-        }
-        if(ImageListData && ImageListData.length > 0 && ImageListData[0]==null) {
-          setSendButtonDisable(false)
-          setSendButtonText(t("Generate images") as string)
-          setPendingImagesCount(0)
-          toast.error(t('Failed to generate the image, please modify your input parameters and try again'), {
+          toast.success(t(GenerateStatus.statusText), {
             duration: 4000
           })
         }
+        if(GenerateStatus && GenerateStatus.status == 'error') {
+            setSendButtonDisable(false)
+            setRefreshChatCounter(refreshChatCounter + 2)
+            setSendButtonText(t("Generate video") as string)
+            setPendingImagesCount(0)
+            toast.error(t(GenerateStatus.statusText), {
+              duration: 4000
+            })
+          }
       } 
       catch (error) {
         setSendButtonDisable(false)
-        setSendButtonText(t("Generate images") as string)
+        setSendButtonText(t("Generate video") as string)
         setPendingImagesCount(0)
-        console.log("handleGenerateImage Error fetching images:", error);
+        console.log("handleGenerateVideo Error fetching video:", error);
       }
     }
   }
@@ -122,12 +115,6 @@ const AppChat = () => {
   const handleSubmitText = (Text: string) => {
     setSendButtonText(t(Text) as string)
   }
-
-  const [generateSimilarData, setGenerateSimilarData] = useState<any>(null)
-  const handleGenerateSimilarGetImg = (showImg: any) => {
-    setGenerateSimilarData(showImg)
-  }
-  
 
   // ** Vars
   const { skin } = settings
@@ -148,17 +135,16 @@ const AppChat = () => {
         ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
       }}
     >
-      <GetImgLeft
-        handleGenerateImage={handleGenerateImage}
+      <VideoLeft
+        handleGenerateVideo={handleGenerateVideo}
         handleSubmitText={handleSubmitText}
         sendButtonDisable={sendButtonDisable}
+        setSendButtonDisable={setSendButtonDisable}
         sendButtonText={sendButtonText}
-        generateSimilarData={generateSimilarData}
       />
-      <GetImgContent
+      <VideoContent
         imageList={imageList}
         pendingImagesCount={pendingImagesCount}
-        handleGenerateSimilarGetImg={handleGenerateSimilarGetImg}
       />
       </Box>
       :

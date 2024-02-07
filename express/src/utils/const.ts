@@ -47,6 +47,11 @@ export const MenuListAdmin = [
     path: '/chat/getimg'
   },
   {
+    title: 'Video',
+    icon: 'mdi:video-box',
+    path: '/chat/video'
+  },
+  {
     title: 'Knowledge Chat',
     icon: 'material-symbols:chat',
     path: '/chat/knowledge'
@@ -121,6 +126,11 @@ export const MenuListUser = [
     title: 'Image',
     icon: 'material-symbols:imagesmode',
     path: '/chat/getimg'
+  },
+  {
+    title: 'Video',
+    icon: 'mdi:video-box',
+    path: '/chat/video'
   },
   {
     title: 'Knowledge Chat',

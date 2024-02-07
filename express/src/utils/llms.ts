@@ -552,7 +552,6 @@ let ChatBaiduWenxinModel: any = null
 
   export async function outputImageOrigin(res: Response, file: string) {
     try {
-      await compressPng(file);
       const FileName = path.join(DataDir, "/image/"+ file + ".png");
       if(isFile(FileName))   {
         const readStream = fs.createReadStream(FileName);

@@ -157,6 +157,32 @@ export async function initChatBookDb() {
                 referee INTEGER not null default 0
             );
         `);   
+        db.run(`
+            CREATE TABLE IF NOT EXISTS uservideos (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                userId TEXT not null,
+                email TEXT not null,
+                model TEXT not null,
+                motion INTEGER not null default 0,
+                cfg_scale INTEGER not null default 0,
+                seed INTEGER not null default 0,
+                filename TEXT not null,
+                data TEXT not null,
+                date INTEGER not null default 0,
+                createtime INTEGER not null default 0,
+                cost_usd INTEGER not null default 0,
+                cost_xwe INTEGER not null default 0,
+                cost_api INTEGER not null default 0,
+                orderId TEXT not null,
+                orderTX TEXT not null,
+                source TEXT not null,
+                star INTEGER not null default 0,
+                like INTEGER not null default 0,
+                favorite INTEGER not null default 0,
+                referee INTEGER not null default 0,
+                status INTEGER not null default 0
+            );
+        `);   
     });
 }
 

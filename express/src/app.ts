@@ -8,7 +8,7 @@ import { join } from 'path';
 
 import { initChatBookDbExec } from './utils/db';
 import { debug, parseFiles } from './utils/llms';
-
+import { downloadVideoFromAPI } from './utils/getimg';
 
 import userRouter from './router/user'
 import llmsRouter from './router/llms'
@@ -27,9 +27,10 @@ dotenv.config();
 initChatBookDbExec()
 
 //Schedule Task for Parse Upload Files
-cron.schedule('*/3 * * * *', () => {
+cron.schedule('*/1 * * * *', () => {
   console.log('Task Begin !');
   parseFiles();
+  downloadVideoFromAPI();
   console.log('Task End !');
 });
 

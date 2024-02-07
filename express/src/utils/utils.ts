@@ -171,6 +171,23 @@ export function uploadfiles() {
   return upload
 }
 
+export function uploadimageforvideo() {
+  const storage = multer.diskStorage({
+    destination: (req: any, file: any, cb: any) => {
+      cb(null, DataDir + '/imageforvideo/'); // 设置上传文件保存的目录
+    },
+    filename: (req: any, file: any, cb: any) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      const FileNameNew = file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase();
+      cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase());
+      log("uploadfiles FileNameNew", FileNameNew)
+    },
+  });
+  const upload = multer({ storage: storage });
+
+  return upload
+}
+
 export async function uploadfilesInsertIntoDb(files: any[], knowledgeId: number | string, userId: string) {
   //const originalName = Buffer.from(files[0].originalname, 'hex').toString('utf8');
   //log("originalName", files[0].originalname)

@@ -8,7 +8,8 @@ import { db, getDbRecord, getDbRecordALL } from './db'
 import { timestampToDate, isFile } from './utils'
 import FormData from "form-data"
 
-const GETIMG_AI_SECRET_KEY = process.env.STABILITY_API_KEY
+const GETIMG_AI_SECRET_KEY_IMAGE = process.env.STABILITY_API_KEY_IMAGE
+const GETIMG_AI_SECRET_KEY_VIDEO = process.env.STABILITY_API_KEY_VIDEO
 
 type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
@@ -56,7 +57,7 @@ export async function generateImageStabilityAi(checkUserTokenData: any, data: St
         headers: {
           'accept': 'application/json',
           'content-type': 'application/json',
-          'authorization': `Bearer ${GETIMG_AI_SECRET_KEY}`,
+          'authorization': `Bearer ${GETIMG_AI_SECRET_KEY_IMAGE}`,
         },
       });
     console.log("res.data", res.data)
@@ -165,7 +166,7 @@ export async function generateVideoStabilityAi(checkUserTokenData: any, PostData
       method: "post",
       validateStatus: undefined,
       headers: {
-        'authorization': `Bearer ${GETIMG_AI_SECRET_KEY}`,
+        'authorization': `Bearer ${GETIMG_AI_SECRET_KEY_VIDEO}`,
         ...data.getHeaders(),
       },
       data: data,
@@ -208,7 +209,7 @@ export async function getVideoStabilityAi(generationID: string) {
     responseType: "arraybuffer",
     headers: {
       accept: "video/*", // Use 'application/json' to receive base64 encoded JSON
-      authorization: `Bearer ${GETIMG_AI_SECRET_KEY}`,
+      authorization: `Bearer ${GETIMG_AI_SECRET_KEY_VIDEO}`,
     },
   });
   

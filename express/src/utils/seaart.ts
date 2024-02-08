@@ -6,12 +6,13 @@ import { DataDir } from './const'
 import path from 'path'
 import { db, getDbRecord, getDbRecordALL } from './db'
 import { timestampToDate, isFile } from './utils'
-import FormData from "form-data"
-
-const GETIMG_AI_SECRET_KEY = process.env.STABILITY_API_KEY
+import sharp from 'sharp'
 
 type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
+const backEndApi = "https://openapi.seaart.ai"
+const SEAART_CLIENT_ID = process.env.SEAART_CLIENT_ID
+const SEAART_SECRET_KEY = process.env.SEAART_SECRET_KEY
 
 interface SeaArt {
   model: string
@@ -28,69 +29,125 @@ interface SeaArt {
 }
 
 export async function generateImageSeaArt(checkUserTokenData: any, data: SeaArt) {
-  //return "realistic-vision-v5-1-1706996772820-667074977";
-  let url = "https://api.stability.ai/v1/generation/stable-diffusion-v1-6/text-to-image";
-  data.width = 512
-  data.height = 512
-  if(data.model == "stable-diffusion-xl-1024-v1-0") {
-    url = "https://api.stability.ai/v1/generation/stable-diffusion-xl-1024-v1-0/text-to-image";
-    data.width = 1024
-    data.height = 1024
+
+  const SimpleData = {
+    "category": 4,
+    "art_model_no": "",
+    "prompt": "A captivating portrait of a Chinese girl radiating grace and elegance. The painting captures her intriguing beauty in intricate detail, showcasing a serene aura that captivates the viewer's gaze. The girl's delicate features are adorned with traditional Chinese attire, further emphasizing her cultural heritage",
+    "width": 768,
+    "height": 768,
+    "num": 1,
+    "restore_faces": false,
+    "loras": [
+    ]
   }
-
+  const getTokenSeaArtData = await getTokenSeaArt();
+  const access_token = getTokenSeaArtData.data.access_token;
   const POSTDATA: any = {}
-  POSTDATA['steps'] = Number(data.steps)
-  POSTDATA['width'] = Number(data.width)
-  POSTDATA['height'] = Number(data.height)
-  const seed = data.seed && data.seed !='' ? data.seed : Math.floor( Math.random() * 1000000)
-  POSTDATA['seed'] = Math.floor(Number(seed))
-  POSTDATA['cfg_scale'] = data.CFGScale ?? 5
-  POSTDATA['samples'] = 1
-  POSTDATA['style_preset'] = data.style ?? "digital-art"
-  POSTDATA['text_prompts'] = [{text: data.prompt, weight: 1},{text: data.negativePrompt, weight: -1}]
-
+  POSTDATA['width'] = 768
+  POSTDATA['height'] = 1024
+  POSTDATA['num'] = 1
+  POSTDATA['category'] = 2
+  POSTDATA['art_model_no'] = "3b2dd6548356f55d9c227ae035215f38"
+  POSTDATA['restore_faces'] = false
+  POSTDATA['prompt'] = data.prompt
+  POSTDATA['negative_prompt'] = data.negativePrompt
+  POSTDATA['cfg_scale'] = 5
+  POSTDATA['steps'] = 40
+  POSTDATA['sample_name'] = ''
+  POSTDATA['seed'] = -1
+  POSTDATA['loras'] = []
+  
   console.log("POSTDATA", POSTDATA)
 
   try {
-    const res = await axios.post(url, JSON.stringify(POSTDATA), {
+    const res = await axios.post(backEndApi + "/v1/api/task/text-to-img", JSON.stringify(POSTDATA), {
         headers: {
-          'accept': 'application/json',
           'content-type': 'application/json',
-          'authorization': `Bearer ${GETIMG_AI_SECRET_KEY}`,
+          'authorization': `Bearer ${access_token}`,
         },
       });
-    console.log("res.data", res.data)
-    if(res.status == 200 && res.data) {
-        let FileNamePath = ''
-        res.data.artifacts.forEach((image: any, index: number) => {          
-          FileNamePath = Base64ToImg(image.base64, 'v16_' + image.seed);
-        })     
-        console.log("FileNamePath", FileNamePath)
+    if(res.status == 200 && res.data && res.data.data && res.data.data.id) {
         const cost_api = 0.005   
         const cost_usd = 0.01  
         const cost_xwe = 0    
         const orderTX = ''
-        const orderId = FileNamePath
+        const orderId = res.data.data.id
         try {
-          const insertSetting = db.prepare('INSERT INTO userimages (userId, email, model, `prompt`, negative_prompt, steps, seed, style, filename, data, `date`, createtime, cost_usd, cost_xwe, cost_api, orderId, orderTX, source ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-          insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, data.model, data.prompt, data.negativePrompt, data.steps, POSTDATA['seed'], POSTDATA['style_preset'], orderId, JSON.stringify(POSTDATA), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, 'stability.ai');
-          insertSetting.finalize();
+            const insertSetting = db.prepare('INSERT INTO userimages (userId, email, model, `prompt`, negative_prompt, steps, seed, style, filename, data, `date`, createtime, cost_usd, cost_xwe, cost_api, orderId, orderTX, source ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+            insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, data.model, data.prompt, data.negativePrompt, data.steps, 0, "", orderId, JSON.stringify(POSTDATA), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, 'seaart.ai');
+            insertSetting.finalize();
+            const FileName = path.join(DataDir, "/image/"+ orderId + ".png");
+            while (!isFile(FileName) && orderId != undefined && orderId != null && orderId != '') {
+                await sleep(3500);
+                await checkImageProcessSeaArt([orderId])
+            }
+            return orderId;
         }
         catch(error: any) {
-          console.log("generateImageSeaArtV16 insertSetting Error", error.message)
+          console.log("generateImageSeaArt insertSetting Error", error.message)
+          return null;
         }
-        return orderId;
     }
     else {
-        return null;
+        console.log("generateImageSeaArt insertSetting Error", res.data)
+        return res.data.status.msg;
     }
   }
   catch(error: any) {
-    console.log("generateImageSeaArtV16 Error", error.message)
+    console.log("generateImageSeaArt Error", error.message)
     return null;
   }
   
 }
+
+export async function checkImageProcessSeaArt(ids: string[]) {
+    const getTokenSeaArtData = await getTokenSeaArt();
+    const access_token = getTokenSeaArtData.data.access_token;
+    try {
+      const res = await axios.post(backEndApi + "/v1/api/task/batch-progress", JSON.stringify({task_ids: ids}), {
+          headers: {
+            'content-type': 'application/json',
+            'authorization': `Bearer ${access_token}`,
+          },
+        }).then(res => res.data);
+      console.log("res.data.items", ids)
+      if(res.status.code == 10000 && res.data.items) {
+        res.data.items.map((Item: any, Index: number) => {
+            const task_id = Item.task_id
+            const type = Item.type
+            const process = Item.process
+            const image = Item.image
+            const images = Item.images
+            const status = Item.status
+            const status_desc = Item.status_desc
+            if(status_desc == "finish" && images) {
+                console.log("images", images)
+                images.map((ImageItem: any, ImageItemIndex: number)=>{
+                    console.log("ImageItem", ImageItem.url)
+                    if(ImageItem.url && ImageItem.url != "")  {
+                        downloadAndConvert(ImageItem.url, task_id)
+                        return true;
+                    }
+                })
+            }
+            else {
+                console.log("res.data.items Index", Index)
+                console.log("res.data.items image", image, status_desc, "process", process) 
+            }           
+        })
+        //console.log("res.data.items", res.data.items)
+        return false;
+      }
+      else {
+        return false;
+      }
+    }
+    catch(error: any) {
+      console.log("checkImageProcessSeaArt Error", error.message)
+      return false;
+    }
+  }
 
 export function Base64ToImg(Base64IMG: string, model: string) {
     const decodedImg = Buffer.from(Base64IMG, 'base64');
@@ -98,6 +155,43 @@ export function Base64ToImg(Base64IMG: string, model: string) {
     const FileName = DataDir + "/image/" +uniqueSuffix + '.png';
     fs.writeFileSync(FileName, decodedImg);
     return uniqueSuffix;
+}
+
+export async function downloadAndConvert(webpUrl: string, filename: string) {
+    try {
+        const webpFilePath = DataDir + "/image/" +filename + '.webp';
+        const pngFilePath = DataDir + "/image/" +filename + '.png';
+        fetch(webpUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch image');
+                }
+                return response.arrayBuffer();
+            })
+            .then(arrayBuffer => {
+                const imageBuffer = Buffer.from(arrayBuffer);
+                fs.writeFileSync(webpFilePath, imageBuffer);
+                if (fs.existsSync(webpFilePath)) {
+                    sharp(webpFilePath)
+                        .png()
+                        .toFile(pngFilePath)
+                        .then(() => {
+                            console.log('Conversion successful!');
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                        });
+                } else {
+                    console.error('Failed to save WEBP file:', webpFilePath);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching image:', error);
+            });
+    } 
+    catch (error) {
+      console.error('Error:', error);
+    }
 }
 
 export async function getUserImagesSeaArt(userId: string, pageid: number, pagesize: number) {
@@ -146,195 +240,42 @@ export async function getUserImagesAll(pageid: number, pagesize: number) {
   return RS;
 }
 
-export async function generateVideoSeaArt(checkUserTokenData: any, PostData:any, files: any) {
-  if(files==null || files[0]==null || files[0].filename==null) {
-    return {status: 'error', statusText: 'Please upload the file first' };
-  }
-  const FileName = files[0].filename
-  const FilePath = files[0].path
-  console.log("files", files)
-  const data: any = new FormData();
-  data.append("image", fs.readFileSync(FilePath), FileName);
-  data.append("seed", Number(PostData.seed));
-  data.append("cfg_scale", Number(PostData.cfg_scale));
-  data.append("motion_bucket_id", Number(PostData.motion_bucket_id));
+export async function getTokenSeaArt() {
+    const POSTDATA = { client_id: SEAART_CLIENT_ID, secret: SEAART_SECRET_KEY}
+    const res = await axios.post(backEndApi + "/v1/api/auth/token", JSON.stringify(POSTDATA), {
+        headers: {
+        'content-type': 'application/json',
+        },
+    }).then(res => res.data);
+    return res;  
+}
 
-  try {
-    const res = await axios.request({
-      url: `https://api.stability.ai/v2alpha/generation/image-to-video`,
-      method: "post",
-      validateStatus: undefined,
-      headers: {
-        'authorization': `Bearer ${GETIMG_AI_SECRET_KEY}`,
-        ...data.getHeaders(),
-      },
-      data: data,
-    });
-    console.log("res.data************************", res.data)
-    if(res.status == 200 && res.data && res.data.id) {
-        const cost_api = 0.025   
-        const cost_usd = 0.05  
-        const cost_xwe = 0    
-        const orderTX = res.data.id
-        const orderId = res.data.id
-        try {
-          const insertSetting = db.prepare('INSERT INTO uservideos (userId, email, model, motion, cfg_scale, seed, filename, data, `date`, createtime, cost_usd, cost_xwe, cost_api, orderId, orderTX, source ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-          insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, 'stability.ai', PostData.motion_bucket_id, PostData.cfg_scale, PostData.seed, FileName.replace(".png","").replace(".jpg","").replace(".jpeg",""), JSON.stringify(PostData), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, 'stability.ai');
-          insertSetting.finalize();
-        }
-        catch(error: any) {
-          console.log("generateVideoSeaArt insertSetting Error", error)
-        }
-        
-        return {status: 'ok', statusText: 'It has been submitted to the queue and the video will be generated in a few minutes.', id: orderId};
-    }
-    else {
-      return {status: 'error', statusText: 'Submit failed', errorText: res.data.toString() };
+function sleep(ms: number) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+export async function outputImageSeaArt(res: Response, file: string) {
+    try {
+      const FileName = path.join(DataDir, "/image/"+ file + ".png");
+      while (!isFile(FileName) && file != undefined && file != null && file != '') {
+        await sleep(3500); // 暂停 2 秒
+        await checkImageProcessSeaArt([file])
+      }
+      if(isFile(FileName))   {
+        const readStream = fs.createReadStream(FileName);
+        res.setHeader('Content-Type', 'image/png');
+        readStream.pipe(res);
+        console.log("outputImageSeaArt FileName Exist: ", FileName)
+      }
+      else {
+        res.status(200).json({ error: 'File not exist' })
+      }
+    } 
+    catch (error) {
+        console.error('outputImage Error:', error);
+        res.status(200).json({ error: 'File not exist' })
     }
   }
-  catch(error: any) {
-    console.log("generateVideoSeaArt Error", error.message)
-    return {status: 'error', statusText: 'Submit failed', errorText: error.message };
-  }
-  
-}
-
-export async function getVideoSeaArt(generationID: string) {
-
-  const response = await axios.request({
-    url: `https://api.stability.ai/v2alpha/generation/image-to-video/result/${generationID}`,
-    method: "GET",
-    validateStatus: undefined,
-    responseType: "arraybuffer",
-    headers: {
-      accept: "video/*", // Use 'application/json' to receive base64 encoded JSON
-      authorization: `Bearer ${GETIMG_AI_SECRET_KEY}`,
-    },
-  });
-  
-  if (response.status === 202) {
-    console.log("Generation is still running, try again in 10 seconds.");
-
-    return false 
-  } else if (response.status === 200) {
-    console.log("Generation is complete!");
-    fs.writeFileSync(DataDir + '/video/' + generationID + ".mp4", Buffer.from(response.data));
-
-    return true 
-  } else if (response.status === 404) {
-    console.log(`Response ${response.status}: ${response.data.toString()}`);
-
-    return false
-  } else {
-    console.log(`Response ${response.status}: ${response.data.toString()}`);
-
-    return false
-  } 
-}
-
-export async function downloadVideoFromAPI() {
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)('SELECT id, filename, orderId FROM uservideos where status = 0 order by id desc LIMIT 10 OFFSET 0 ') || [];
-  if(RecordsAll != undefined) {
-    await Promise.all(
-      RecordsAll.map(async (Item: any)=>{
-          console.log("downloadVideoFromAPI Item", Item.id, Item.orderId)
-          const getVideoSeaArtData = await getVideoSeaArt(Item.orderId);
-          if(getVideoSeaArtData) {
-            const updateSetting = db.prepare('update uservideos set status = ? where id = ?');
-            updateSetting.run(1, Item.id);
-            updateSetting.finalize();
-            console.log("Download Video Success ", Item.id, Item.orderId)
-          }
-        })
-    );
-  }
-}
-
-export async function getUserVideosSeaArt(userId: string, pageid: number, pagesize: number) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
-  const From = pageidFiler * pagesizeFiler;
-  console.log("pageidFiler", pageidFiler)
-  console.log("pagesizeFiler", pagesizeFiler)
-
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from uservideos where userId = ? ", [userId]);
-  const RecordsTotal: number = Records ? Records.NUM : 0;
-
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)('SELECT * FROM uservideos where userId = ? ORDER BY id DESC LIMIT ? OFFSET ? ', [userId, pagesizeFiler, From]) || [];
-
-  const RS: any = {};
-  RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
-  RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
-  RS['from'] = From;
-  RS['pageid'] = pageidFiler;
-  RS['pagesize'] = pagesizeFiler;
-  RS['total'] = RecordsTotal;
-
-  return RS;
-}
-
-export async function getUserVideosSeaArtAll(pageid: number, pagesize: number) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
-  const From = pageidFiler * pagesizeFiler;
-  console.log("pageidFiler", pageidFiler)
-  console.log("pagesizeFiler", pagesizeFiler)
-
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from uservideos where 1=1 ");
-  const RecordsTotal: number = Records ? Records.NUM : 0;
-
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)('SELECT * FROM uservideos where 1=1 ORDER BY id DESC LIMIT ? OFFSET ? ', [pagesizeFiler, From]) || [];
-
-  const RS: any = {};
-  RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
-  RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
-  RS['from'] = From;
-  RS['pageid'] = pageidFiler;
-  RS['pagesize'] = pagesizeFiler;
-  RS['total'] = RecordsTotal;
-
-  return RS;
-}
-
-export async function outputVideo(res: Response, file: string) {
-  try {
-    const FileName = path.join(DataDir, "/video/"+ file + ".mp4");
-    if(isFile(FileName))   {
-      const readStream = fs.createReadStream(FileName);
-      res.setHeader('Content-Type', 'video/mp4');
-      readStream.pipe(res);
-      console.log("FileName Exist: ", FileName)
-    }
-    else {
-      res.status(200).json({ error: 'File not exist', FileName: FileName })
-    }
-  } 
-  catch (error) {
-      console.error('outputVideo Error:', error);
-      res.status(200).json({ error: 'File not exist' })
-  }
-}
-
-export async function outputVideoImage(res: Response, file: string) {
-  try {
-    const FileName = path.join(DataDir, "/imageforvideo/"+ file + ".png");
-    if(isFile(FileName))   {
-      const readStream = fs.createReadStream(FileName);
-      res.setHeader('Content-Type', 'image/png');
-      readStream.pipe(res);
-      console.log("FileName Exist: ", FileName)
-    }
-    else {
-      res.status(200).json({ error: 'File not exist', FileName: FileName })
-    }
-  } 
-  catch (error) {
-      console.error('outputVideo Error:', error);
-      res.status(200).json({ error: 'File not exist' })
-  }
-}
-
-
 
 
 

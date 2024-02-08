@@ -131,13 +131,17 @@ const ChatContent = (props: any) => {
                 </IconButton>                
                 <Container>
                   <Grid container spacing={2}>
-                    <Grid item xs={6}>
-                        <CardMedia image={`${authConfig.backEndApiChatBook}/api/image/${showImg?.filename}`} sx={{ height: '500px', objectFit: 'cover', borderRadius: 1 }}/>
+                    <Grid item xs={8}>
+                        <CardMedia image={`${authConfig.backEndApiChatBook}/api/image/${showImg?.filename}`} sx={{ width: '700px',height: Math.floor(showImgData.width*700/showImgData.height) + 'px', objectFit: 'contain', borderRadius: 1 }}/>
                         <Button variant='outlined' sx={{ mt: 3, mr: 3 }} size="small" onClick={()=>handleDownload(authConfig.backEndApiChatBook + '/api/imageorigin/' + showImg?.filename, showImg?.filename + '.png')} >{t('Download') as string}</Button>
                         <Button variant='outlined' sx={{ mt: 3, mr: 3 }} size="small" onClick={()=>handleGenerateSimilar(showImg)}>{t('Generate similar') as string}</Button>
+                        {showImgData.width < 1600 ?
                         <Button variant='outlined' sx={{ mt: 3, mr: 3 }} size="small" onClick={()=>handleUpscale(showImg)}>{t('Upscale') as string}</Button>
+                        :
+                        null
+                        }
                     </Grid>
-                    <Grid item xs={6}>
+                    <Grid item xs={4}>
                       <Grid sx={{ height: '100%', px: 4 }}>
                         <Typography variant="h5" sx={{ marginBottom: 2 }}>
                           {t('Image Information') as string}

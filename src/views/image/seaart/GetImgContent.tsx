@@ -94,7 +94,7 @@ const ChatContent = (props: any) => {
                         )
                     })}
                     {imageList && imageList.map((item: any, index: number) => (
-                      <Fragment>
+                      <Fragment key={index}>
                         {item.filename ? 
                         <Grid item key={index} xs={12} sm={6} md={3} lg={3} sx={{mt: 2}}>
                           <CardMedia image={`${authConfig.backEndApiChatBook}/api/image/seaart/${item.filename}`} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1, cursor: 'pointer' }} onClick={()=>handleImgInfo(index)}/>

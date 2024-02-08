@@ -9,8 +9,8 @@ import { useTheme } from '@mui/material/styles'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Chat App Components Imports
-import GetImgLeft from 'src/views/image/stability/GetImgLeft'
-import GetImgContent from 'src/views/image/stability/GetImgContent'
+import GetImgLeft from 'src/views/image/GetImg/GetImgLeft'
+import GetImgContent from 'src/views/image/GetImg/GetImgContent'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
@@ -62,7 +62,7 @@ const AppChat = () => {
 
   const getImagesList = async function () {
     if(auth.user && auth.user.token)  {
-      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getUserImages/', {pageid: 0, pagesize: 30}, {
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getUserImagesGetImg/', {pageid: 0, pagesize: 30}, {
         headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
       }).then(res => res.data);
       if(RS && RS.data) {
@@ -84,7 +84,7 @@ const AppChat = () => {
       try {
         const ImageListData = await Promise.all(
           Array.from({ length: numberOfImages }, async () => {
-            const ImageName = await axios.post(authConfig.backEndApiChatBook + '/api/generateImageStabilityAi/', data, {
+            const ImageName = await axios.post(authConfig.backEndApiChatBook + '/api/generateImageGetImg/', data, {
               headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
             }).then(res => res.data);
             console.log("ImageName", ImageName);
@@ -97,7 +97,7 @@ const AppChat = () => {
           setSendButtonDisable(false)
           setRefreshChatCounter(refreshChatCounter + 2)
           setSendButtonText(t("Generate images") as string)
-          setImageList([...ImageListData, ...imageList].filter((element) => element != null))
+          setImageList(ImageListData.filter((element) => element != null))
           console.log("imageListimageListimageListimageListimageList:", imageList)
           setPendingImagesCount(0)
         }
@@ -127,7 +127,17 @@ const AppChat = () => {
   const handleGenerateSimilarGetImg = (showImg: any) => {
     setGenerateSimilarData(showImg)
   }
-  
+
+  const handleUpscaleStabilityAi = async (showImg: any) => {
+    const data = { filename: showImg.filename }
+    setPendingImagesCount(1)
+    const ImageName = await axios.post(authConfig.backEndApiChatBook + '/api/generateImageUpscaleStabilityAi/', data, {
+      headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
+    }).then(res => res.data);
+    console.log("ImageName", ImageName);
+    setPendingImagesCount(0)
+    setRefreshChatCounter(refreshChatCounter + 2)
+  }
 
   // ** Vars
   const { skin } = settings
@@ -159,6 +169,7 @@ const AppChat = () => {
         imageList={imageList}
         pendingImagesCount={pendingImagesCount}
         handleGenerateSimilarGetImg={handleGenerateSimilarGetImg}
+        handleUpscaleStabilityAi={handleUpscaleStabilityAi}
       />
       </Box>
       :

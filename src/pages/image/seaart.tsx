@@ -70,7 +70,7 @@ const AppChat = () => {
         RS.data.map((Item: any)=>{
           imageListInitial.push(Item)
         })
-        setImageList([...imageListInitial, ...imageList].filter((element) => element != null))
+        setImageList(imageListInitial.filter((element) => element != null))
       }
     }
   }

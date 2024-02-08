@@ -3,7 +3,7 @@
 
   import { checkUserToken, checkUserTokenXWE, checkUserTokenXWENotCostAmount } from '../utils/user';
 
-  import { getUserImages, getUserImagesAll, getUserVideosStabilityAi, getUserVideosStabilityAiAll, generateImageStabilityAi, generateVideoStabilityAi, getVideoStabilityAi, outputVideo, outputVideoImage } from '../utils/stability';
+  import { getUserImages, getUserImagesAll, getUserVideosStabilityAi, getUserVideosStabilityAiAll, generateImageStabilityAi, generateVideoStabilityAi, getVideoStabilityAi, outputVideo, outputVideoImage, generateImageUpscaleStabilityAi } from '../utils/stability';
 
   import { uploadimageforvideo } from '../utils/utils';
 
@@ -111,6 +111,20 @@
     const getUserVideosStabilityAiAllData = await getUserVideosStabilityAiAll(pageid, pagesize);
     //console.log("getUserVideosStabilityAiAllData", getUserVideosStabilityAiAllData);
     res.status(200).json(getUserVideosStabilityAiAllData).end();
+  });
+
+  app.post('/api/generateImageUpscaleStabilityAi', async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const { filename } = req.body;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
+      const generateImageUpscaleStabilityAiData = await generateImageUpscaleStabilityAi(checkUserTokenData, filename);
+      //console.log("generateImageUpscaleStabilityAiData", generateImageUpscaleStabilityAiData);
+      res.status(200).json(generateImageUpscaleStabilityAiData).end();
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null}).end();
+    }
   });
 
   app.get('/api/video/:file', async (req: Request, res: Response) => {

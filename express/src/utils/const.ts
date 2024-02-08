@@ -44,12 +44,12 @@ export const MenuListAdmin = [
   {
     title: 'Image',
     icon: 'material-symbols:imagesmode',
-    path: '/image/stability'
+    path: '/image/getimg'
   },
   {
     title: 'Image',
     icon: 'material-symbols:imagesmode',
-    path: '/image/seaart'
+    path: '/image/stability'
   },
   {
     title: 'Video',
@@ -130,12 +130,12 @@ export const MenuListUser = [
   {
     title: 'Image',
     icon: 'material-symbols:imagesmode',
-    path: '/image/stability'
+    path: '/image/getimg'
   },
   {
     title: 'Image',
     icon: 'material-symbols:imagesmode',
-    path: '/image/seaart'
+    path: '/image/stability'
   },
   {
     title: 'Video',

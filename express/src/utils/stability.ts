@@ -8,8 +8,8 @@ import { db, getDbRecord, getDbRecordALL } from './db'
 import { timestampToDate, isFile } from './utils'
 import FormData from "form-data"
 
-const GETIMG_AI_SECRET_KEY_IMAGE = process.env.STABILITY_API_KEY_IMAGE
-const GETIMG_AI_SECRET_KEY_VIDEO = process.env.STABILITY_API_KEY_VIDEO
+const STABILITY_API_SECRET_KEY_IMAGE = process.env.STABILITY_API_KEY_IMAGE
+const STABILITY_API_SECRET_KEY_VIDEO = process.env.STABILITY_API_KEY_VIDEO
 
 type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
@@ -57,7 +57,7 @@ export async function generateImageStabilityAi(checkUserTokenData: any, data: St
         headers: {
           'accept': 'application/json',
           'content-type': 'application/json',
-          'authorization': `Bearer ${GETIMG_AI_SECRET_KEY_IMAGE}`,
+          'authorization': `Bearer ${STABILITY_API_SECRET_KEY_IMAGE}`,
         },
       });
     console.log("res.data", res.data)
@@ -166,7 +166,7 @@ export async function generateVideoStabilityAi(checkUserTokenData: any, PostData
       method: "post",
       validateStatus: undefined,
       headers: {
-        'authorization': `Bearer ${GETIMG_AI_SECRET_KEY_VIDEO}`,
+        'authorization': `Bearer ${STABILITY_API_SECRET_KEY_VIDEO}`,
         ...data.getHeaders(),
       },
       data: data,
@@ -209,7 +209,7 @@ export async function getVideoStabilityAi(generationID: string) {
     responseType: "arraybuffer",
     headers: {
       accept: "video/*", // Use 'application/json' to receive base64 encoded JSON
-      authorization: `Bearer ${GETIMG_AI_SECRET_KEY_VIDEO}`,
+      authorization: `Bearer ${STABILITY_API_SECRET_KEY_VIDEO}`,
     },
   });
   
@@ -258,10 +258,10 @@ export async function getUserVideosStabilityAi(userId: string, pageid: number, p
   console.log("pageidFiler", pageidFiler)
   console.log("pagesizeFiler", pagesizeFiler)
 
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from uservideos where userId = ? ", [userId]);
+  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from uservideos where userId = ? and source='getimg.ai' ", [userId]);
   const RecordsTotal: number = Records ? Records.NUM : 0;
 
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)('SELECT * FROM uservideos where userId = ? ORDER BY id DESC LIMIT ? OFFSET ? ', [userId, pagesizeFiler, From]) || [];
+  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)("SELECT * FROM uservideos where userId = ? and source='getimg.ai' ORDER BY id DESC LIMIT ? OFFSET ? ", [userId, pagesizeFiler, From]) || [];
 
   const RS: any = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
@@ -281,10 +281,10 @@ export async function getUserVideosStabilityAiAll(pageid: number, pagesize: numb
   console.log("pageidFiler", pageidFiler)
   console.log("pagesizeFiler", pagesizeFiler)
 
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from uservideos where 1=1 ");
+  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from uservideos where source='getimg.ai' ");
   const RecordsTotal: number = Records ? Records.NUM : 0;
 
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)('SELECT * FROM uservideos where 1=1 ORDER BY id DESC LIMIT ? OFFSET ? ', [pagesizeFiler, From]) || [];
+  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)("SELECT * FROM uservideos where source='getimg.ai' ORDER BY id DESC LIMIT ? OFFSET ? ", [pagesizeFiler, From]) || [];
 
   const RS: any = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
@@ -335,7 +335,68 @@ export async function outputVideoImage(res: Response, file: string) {
   }
 }
 
+export async function generateImageUpscaleStabilityAi(checkUserTokenData: any, filename: string) {
 
+  const engineId = 'esrgan-v1-x2plus'
+  const apiHost = 'https://api.stability.ai'
+
+  //const filename = "xsarchitectural-interior-design-1707362982978-756088276"
+
+  console.log("filename", filename)
+
+  const FileFullPath = DataDir + "/image/" + filename + '.png';
+  if(isFile(FileFullPath))     {
+    const filenameLarge = filename + "_Large_" + Date.now()
+    const FileFullPathLarge = DataDir + "/image/" + filenameLarge + '.png';
+
+    const formData = new FormData()
+    formData.append('image', fs.readFileSync(FileFullPath), filename + '.png')
+    formData.append('width', 2048)
+
+    const res = await axios.request({
+      url: `${apiHost}/v1/generation/${engineId}/image-to-image/upscale`,
+      method: "post",
+      validateStatus: undefined,
+      headers: {
+        Accept: 'image/png',
+        'authorization': `Bearer ${STABILITY_API_SECRET_KEY_IMAGE}`,
+        ...formData.getHeaders(),
+      },
+      responseType: 'arraybuffer',
+      data: formData,
+    });
+    console.log("res.data************************", res.data)
+    if(res && res.data && res.data.message == null) {
+        fs.writeFileSync(FileFullPathLarge, Buffer.from(res.data))
+        const cost_api = 0.005   
+        const cost_usd = 0.01  
+        const cost_xwe = 0    
+        const orderTX = ''
+        const orderId = filenameLarge
+        try {
+          //需要重新更新一下width height
+          const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT * from userimages where filename = ? ", [filename]);
+          if(Records)  {
+            const insertSetting = db.prepare('INSERT INTO userimages (userId, email, model, `prompt`, negative_prompt, steps, seed, style, filename, data, `date`, createtime, cost_usd, cost_xwe, cost_api, orderId, orderTX, source ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+            insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, Records.model, Records.prompt, Records.negative_prompt, Records.steps, Records.seed, Records.style, filenameLarge, Records.data, timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, Records.source)
+            insertSetting.finalize();
+          }
+        }
+        catch(error: any) {
+          console.log("generateImageUpscaleStabilityAi insertSetting Error", error.message)
+        }
+        return orderId;
+    }
+    else {
+      console.log("res.data************************", res.data)
+    }
+
+  }
+  else {
+    console.log(`File Not Exist`, filename)
+  }
+
+}
 
 
 

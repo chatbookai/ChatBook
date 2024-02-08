@@ -13,8 +13,10 @@ import { downloadVideoFromAPI } from './utils/stability';
 import userRouter from './router/user'
 import llmsRouter from './router/llms'
 import utilsRouter from './router/utils'
-import getimgRouter from './router/stability'
-import seaartRouter from './router/seaart'
+import stabilityRouter from './router/stability'
+import getimgRouter from './router/getimg'
+
+//import seaartRouter from './router/seaart'
 
 //Start Express Server
 const app = express();
@@ -40,7 +42,9 @@ app.use('/', userRouter);
 app.use('/', llmsRouter);
 app.use('/', utilsRouter);
 app.use('/', getimgRouter);
-app.use('/', seaartRouter);
+app.use('/', stabilityRouter);
+
+//app.use('/', seaartRouter);
 
 app.get('/api/debug', async (req: Request, res: Response) => {
   await debug(res, "ChatGPT4");

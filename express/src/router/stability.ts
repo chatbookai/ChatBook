@@ -15,7 +15,7 @@
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateimageData = await getUserImages(checkUserTokenData.data.id, pageid, pagesize);
-      console.log("generateimageData", generateimageData);
+      //console.log("generateimageData", generateimageData);
       res.status(200).json(generateimageData).end();
     }
     else {
@@ -26,7 +26,7 @@
   app.post('/api/getUserImagesAll', async (req: Request, res: Response) => {
     const { pageid, pagesize } = req.body;
     const getUserImagesAllData = await getUserImagesAll(pageid, pagesize);
-    console.log("getUserImagesAllData", getUserImagesAllData);
+    //console.log("getUserImagesAllData", getUserImagesAllData);
     res.status(200).json(getUserImagesAllData).end();
   });
 
@@ -35,7 +35,7 @@
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateImageStabilityAiData = await generateImageStabilityAi(checkUserTokenData, req.body);
-      console.log("generateImageStabilityAiData", generateImageStabilityAiData);
+      //console.log("generateImageStabilityAiData", generateImageStabilityAiData);
       res.status(200).json(generateImageStabilityAiData).end();
     }
     else {
@@ -46,10 +46,10 @@
   app.post('/api/generateImageStabilityAiXWE', async (req: Request, res: Response) => {
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserTokenXWE(authorization as string);
-    console.log("checkUserTokenData", checkUserTokenData)
+    //console.log("checkUserTokenData", checkUserTokenData)
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateImageStabilityAiData = await generateImageStabilityAi(checkUserTokenData, req.body);
-      console.log("generateImageStabilityAiData", generateImageStabilityAiData);
+      //console.log("generateImageStabilityAiData", generateImageStabilityAiData);
       res.status(200).json(generateImageStabilityAiData).end();
     }
     else {
@@ -61,10 +61,10 @@
     const { pageid, pagesize } = req.body;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserTokenXWENotCostAmount(authorization as string);
-    console.log("checkUserTokenData", checkUserTokenData)
+    //console.log("checkUserTokenData", checkUserTokenData)
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateimageData = await getUserImages(checkUserTokenData.data.id, pageid, pagesize);
-      console.log("generateimageData", generateimageData);
+      //console.log("generateimageData", generateimageData);
       res.status(200).json(generateimageData).end();
     }
     else {
@@ -77,7 +77,7 @@
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateVideoStabilityAiData = await generateVideoStabilityAi(checkUserTokenData, req.body, req.files);
-      console.log("generateVideoStabilityAiData", generateVideoStabilityAiData);
+      //console.log("generateVideoStabilityAiData", generateVideoStabilityAiData);
       res.status(200).json(generateVideoStabilityAiData).end();
     }
     else {

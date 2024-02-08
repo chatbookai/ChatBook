@@ -84,16 +84,20 @@ const AppChat = () => {
       try {
         const ImageListData = await Promise.all(
           Array.from({ length: numberOfImages }, async () => {
-            const ImageName = await axios.post(authConfig.backEndApiChatBook + '/api/generateImageGetImg/', data, {
+            const generateImageInfo = await axios.post(authConfig.backEndApiChatBook + '/api/generateImageGetImg/', data, {
               headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
             }).then(res => res.data);
-            console.log("ImageName", ImageName);
-
-            return ImageName;
+            console.log("generateImageInfo", generateImageInfo);
+            if(generateImageInfo && generateImageInfo.status == 'error') {
+              toast.error(t(generateImageInfo.msg), {
+                duration: 4000
+              })
+            }
+            return generateImageInfo;
           })
         );
         console.log("ImageListData:", ImageListData);
-        if(ImageListData && ImageListData.length > 0 && ImageListData[0]!=null) {
+        if(ImageListData && ImageListData.length > 0 && ImageListData[0].status == 'ok') {
           setSendButtonDisable(false)
           setRefreshChatCounter(refreshChatCounter + 2)
           setSendButtonText(t("Generate images") as string)
@@ -101,13 +105,13 @@ const AppChat = () => {
           console.log("imageListimageListimageListimageListimageList:", imageList)
           setPendingImagesCount(0)
         }
-        if(ImageListData && ImageListData.length > 0 && ImageListData[0]==null) {
+        if(ImageListData && ImageListData.length > 0 && ImageListData[0].status == 'error') {
           setSendButtonDisable(false)
+          setRefreshChatCounter(refreshChatCounter + 2)
           setSendButtonText(t("Generate images") as string)
+          setImageList(ImageListData.filter((element) => element != null))
+          console.log("imageListimageListimageListimageListimageList:", imageList)
           setPendingImagesCount(0)
-          toast.error(t('Failed to generate the image, please modify your input parameters and try again'), {
-            duration: 4000
-          })
         }
       } 
       catch (error) {

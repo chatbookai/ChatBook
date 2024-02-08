@@ -9,6 +9,23 @@ const GETIMG_AI_SECRET_KEY = process.env.GETIMG_AI_SECRET_KEY
 
 type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
+export async function getUserBalanceGetImg() {
+  const url = 'https://api.getimg.ai/v1/account/balance';
+  const response = await axios.get(url, {
+      headers: {
+        'accept': 'application/json',
+        'authorization': `Bearer ${GETIMG_AI_SECRET_KEY}`,
+      },
+    }).then(res=>res.data);
+  console.log("getUserBalanceGetImg Balance", response)
+  if(response && response.amount && response.amount > 0.02) {
+    return true
+  }
+  else {
+    return false
+  }
+}
+
 export async function getModelsToGenereateImage() {
     const url = 'https://api.getimg.ai/v1/models?family=stable-diffusion&pipeline=text-to-image';
     const response = await axios.get(url, {
@@ -64,7 +81,10 @@ interface StableDiffusionV1 {
 }
 
 export async function generateImageGetImg(checkUserTokenData: any, data: StableDiffusionV1) {
-    //return "realistic-vision-v5-1-1706996772820-667074977";
+    const getUserBalanceGetImgStatus: boolean = await getUserBalanceGetImg();
+    if(getUserBalanceGetImgStatus == false)   {
+      return {status: 'error', msg: 'Insufficient balance'};
+    }
     const url = 'https://api.getimg.ai/v1/stable-diffusion/text-to-image';
     const POSTDATA: any = {}
     POSTDATA['model'] = data.model
@@ -103,15 +123,15 @@ export async function generateImageGetImg(checkUserTokenData: any, data: StableD
           catch(error: any) {
             console.log("generateImageGetImg insertSetting Error", error.message)
           }
-          return Base64ToImgData;
+          return {status: 'ok', msg: Base64ToImgData};
       }
       else {
-          return null;
+          return {status: 'error', msg: res.data.toString()};
       }
     }
     catch(error: any) {
       console.log("generateImageGetImg Error", error.message)
-      return null;
+      return {status: 'error', msg: error.message};
     }
     
 }

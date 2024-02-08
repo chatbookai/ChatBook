@@ -525,7 +525,13 @@ let ChatBaiduWenxinModel: any = null
     const FileNameNew = path.join(DataDir, "/image/"+ file + "_thumbnail.png");
     if(!isFile(FileNameNew) && isFile(FileName))   {
       const quality = 80;
-      await sharp(FileName).resize({ fit: 'inside', width: 800, withoutEnlargement: true }).png({ quality }).toFile(FileNameNew);
+      try { 
+        await sharp(FileName).resize({ fit: 'inside', width: 800, withoutEnlargement: true }).png({ quality }).toFile(FileNameNew);
+      }
+      catch(error: any) {
+        console.log("compressPng", file, error.message)
+      }
+
     }
   }
 

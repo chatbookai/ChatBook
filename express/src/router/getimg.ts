@@ -9,7 +9,7 @@
 
   app.get('/api/getModels', async (req: Request, res: Response) => {
     const getModelsData = await getModels();
-    console.log("getModels", getModelsData)
+    //console.log("getModels", getModelsData)
     res.status(200).json(getModelsData).end();
     /*
     const { authorization } = req.headers;
@@ -36,13 +36,13 @@
   app.get('/api/getModelDetail/:id', async (req: Request, res: Response) => {
     const { id } = req.params;
     const getModelDetailData = await getModelDetail(id);
-    console.log("getModelDetailData", getModelDetailData)
+    //console.log("getModelDetailData", getModelDetailData)
     res.status(200).json(getModelDetailData).end();
   });
 
   app.get('/api/TextToImageALL', async (req: Request, res: Response) => {
     const TextToImageALLData = await TextToImageALL();
-    console.log("TextToImageALLData", TextToImageALLData);
+    //console.log("TextToImageALLData", TextToImageALLData);
     let TextToImageALLDataHtml = '';
     TextToImageALLData.map((FileName: string)=>{
         if(FileName) {
@@ -54,7 +54,7 @@
 
   app.get('/api/TextToImageAllLatentConsistency', async (req: Request, res: Response) => {
     const TextToImageAllLatentConsistencyData = await TextToImageAllLatentConsistency();
-    console.log("TextToImageAllLatentConsistencyData", TextToImageAllLatentConsistencyData);
+    //console.log("TextToImageAllLatentConsistencyData", TextToImageAllLatentConsistencyData);
     let TextToImageAllLatentConsistencyDataHtml = '';
     TextToImageAllLatentConsistencyData.map((FileName: string)=>{
         if(FileName) {
@@ -67,7 +67,7 @@
   app.get('/api/Base64ToImg', async (req: Request, res: Response) => {
     const Base64IMG = ""
     const Base64ToImgData = await Base64ToImg(Base64IMG, 'absolute-reality-v1-8-1');
-    console.log("Base64ToImgData", Base64ToImgData)
+    //console.log("Base64ToImgData", Base64ToImgData)
     res.status(200).json(Base64ToImgData).end();
   });
 
@@ -76,7 +76,7 @@
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateimageData = await generateImageGetImg(checkUserTokenData, req.body);
-      console.log("generateimageData", generateimageData);
+      //console.log("generateimageData", generateimageData);
       res.status(200).json(generateimageData).end();
     }
     else {
@@ -90,7 +90,7 @@
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateimageData = await getUserImagesGetImg(checkUserTokenData.data.id, pageid, pagesize);
-      console.log("generateimageData", generateimageData);
+      //console.log("generateimageData", generateimageData);
       res.status(200).json(generateimageData).end();
     }
     else {
@@ -101,7 +101,7 @@
   app.post('/api/getUserImagesGetImgAll', async (req: Request, res: Response) => {
     const { pageid, pagesize } = req.body;
     const getUserImagesAllData = await getUserImagesGetImgAll(pageid, pagesize);
-    console.log("getUserImagesAllData", getUserImagesAllData);
+    //console.log("getUserImagesAllData", getUserImagesAllData);
     res.status(200).json(getUserImagesAllData).end();
   });
 

@@ -28,8 +28,30 @@ interface StabilityAi {
   seed: number | string
 }
 
+export async function getUserBalanceStabilityAi() {
+  const url = 'https://api.stability.ai/v1/user/balance';
+  const response = await axios.get(url, {
+      headers: {
+        'accept': 'application/json',
+        'authorization': `Bearer ${STABILITY_API_SECRET_KEY_IMAGE}`,
+      },
+    }).then(res=>res.data);
+  console.log("getUserBalanceStabilityAi Balance", response)
+  if(response && response.credits && response.credits > 0.02) {
+    return true
+  }
+  else {
+    return false
+  }
+}
+
 export async function generateImageStabilityAi(checkUserTokenData: any, data: StabilityAi) {
-  //return "realistic-vision-v5-1-1706996772820-667074977";
+  
+  const getUserBalanceGetImgStatus: boolean = await getUserBalanceStabilityAi();
+  if(getUserBalanceGetImgStatus == false)   {
+    return {status: 'error', msg: 'Insufficient balance 2'};
+  }
+
   let url = "https://api.stability.ai/v1/generation/stable-diffusion-v1-6/text-to-image";
   data.width = 512
   data.height = 512
@@ -60,7 +82,6 @@ export async function generateImageStabilityAi(checkUserTokenData: any, data: St
           'authorization': `Bearer ${STABILITY_API_SECRET_KEY_IMAGE}`,
         },
       });
-    console.log("res.data", res.data)
     if(res.status == 200 && res.data) {
         let FileNamePath = ''
         res.data.artifacts.forEach((image: any, index: number) => {          
@@ -171,7 +192,6 @@ export async function generateVideoStabilityAi(checkUserTokenData: any, PostData
       },
       data: data,
     });
-    console.log("res.data************************", res.data)
     if(res.status == 200 && res.data && res.data.id) {
         const cost_api = 0.025   
         const cost_usd = 0.05  
@@ -337,6 +357,11 @@ export async function outputVideoImage(res: Response, file: string) {
 
 export async function generateImageUpscaleStabilityAi(checkUserTokenData: any, filename: string) {
 
+  const getUserBalanceGetImgStatus: boolean = await getUserBalanceStabilityAi();
+  if(getUserBalanceGetImgStatus == false)   {
+    return {status: 'error', msg: 'Insufficient balance 2'};
+  }
+
   const engineId = 'esrgan-v1-x2plus'
   const apiHost = 'https://api.stability.ai'
 
@@ -365,7 +390,6 @@ export async function generateImageUpscaleStabilityAi(checkUserTokenData: any, f
       responseType: 'arraybuffer',
       data: formData,
     });
-    console.log("res.data************************", res.data)
     if(res && res.data && res.data.message == null) {
         fs.writeFileSync(FileFullPathLarge, Buffer.from(res.data))
         const cost_api = 0.005   
@@ -385,15 +409,17 @@ export async function generateImageUpscaleStabilityAi(checkUserTokenData: any, f
         catch(error: any) {
           console.log("generateImageUpscaleStabilityAi insertSetting Error", error.message)
         }
-        return orderId;
+        return {status: 'ok', msg: orderId};
     }
     else {
       console.log("res.data************************", res.data)
+      return {status: 'error', msg: res.data.toString()};
     }
 
   }
   else {
     console.log(`File Not Exist`, filename)
+    return {status: 'error', msg: `File Not Exist ` + filename};
   }
 
 }

@@ -138,6 +138,7 @@
   "Generate similar": "Generate similar",
   "Failed to generate the image, please modify your input parameters and try again": "Failed to generate the image, please modify your input parameters and try again",  
   "It has been submitted to the queue and the video will be generated in a few minutes.": "It has been submitted to the queue and the video will be generated in a few minutes.",  
-  "Submit failed": "Submit failed"
+  "Submit failed": "Submit failed",
+  "Upscale": "Upscale"
   
 }

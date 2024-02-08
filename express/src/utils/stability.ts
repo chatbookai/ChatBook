@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import axios from 'axios'
 import * as fs from 'fs'
 import { DataDir } from './const'
+import sharp from 'sharp';
 
 import path from 'path'
 import { db, getDbRecord, getDbRecordALL } from './db'
@@ -355,7 +356,7 @@ export async function outputVideoImage(res: Response, file: string) {
   }
 }
 
-export async function generateImageUpscaleStabilityAi(checkUserTokenData: any, filename: string) {
+export async function generateImageUpscaleStabilityAi(checkUserTokenData: any, filename: string, source: string) {
 
   const getUserBalanceGetImgStatus: boolean = await getUserBalanceStabilityAi();
   if(getUserBalanceGetImgStatus == false)   {
@@ -365,11 +366,14 @@ export async function generateImageUpscaleStabilityAi(checkUserTokenData: any, f
   const engineId = 'esrgan-v1-x2plus'
   const apiHost = 'https://api.stability.ai'
 
-  //const filename = "xsarchitectural-interior-design-1707362982978-756088276"
-
-  console.log("filename", filename)
-
   const FileFullPath = DataDir + "/image/" + filename + '.png';
+
+  const metadataNow = await sharp(FileFullPath).metadata();
+  const widthNow = metadataNow.width;
+  if(widthNow && widthNow > 1600)   {
+    return {status: 'error', msg: 'Image width must less than 1600 px'};
+  }
+
   if(isFile(FileFullPath))     {
     const filenameLarge = filename + "_Large_" + Date.now()
     const FileFullPathLarge = DataDir + "/image/" + filenameLarge + '.png';
@@ -401,8 +405,14 @@ export async function generateImageUpscaleStabilityAi(checkUserTokenData: any, f
           //需要重新更新一下width height
           const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT * from userimages where filename = ? ", [filename]);
           if(Records)  {
+            const metadata = await sharp(FileFullPathLarge).metadata();
+            const widthNew = metadata.width;
+            const heightNew = metadata.height;
+            const JsonData = JSON.parse(Records.data)
+            JsonData.width = widthNew
+            JsonData.height = heightNew
             const insertSetting = db.prepare('INSERT INTO userimages (userId, email, model, `prompt`, negative_prompt, steps, seed, style, filename, data, `date`, createtime, cost_usd, cost_xwe, cost_api, orderId, orderTX, source ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-            insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, Records.model, Records.prompt, Records.negative_prompt, Records.steps, Records.seed, Records.style, filenameLarge, Records.data, timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, Records.source)
+            insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, Records.model, Records.prompt, Records.negative_prompt, Records.steps, Records.seed, Records.style, filenameLarge, JSON.stringify(JsonData), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, source)
             insertSetting.finalize();
           }
         }

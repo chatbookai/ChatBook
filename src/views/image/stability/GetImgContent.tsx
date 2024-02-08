@@ -32,7 +32,8 @@ const ChatContent = (props: any) => {
   const {
     imageList,
     pendingImagesCount,
-    handleGenerateSimilarGetImg
+    handleGenerateSimilarGetImg,
+    handleUpscaleStabilityAi
   } = props
 
   const Transition = forwardRef(function Transition(
@@ -74,6 +75,12 @@ const ChatContent = (props: any) => {
 
   const handleGenerateSimilar = (showImg: any) => {
     handleGenerateSimilarGetImg(showImg)
+    setShow(false)
+    console.log('handleGenerateSimilar showImg:', showImg);
+  };
+
+  const handleUpscale = (showImg: any) => {
+    handleUpscaleStabilityAi(showImg)
     setShow(false)
     console.log('handleGenerateSimilar showImg:', showImg);
   };
@@ -128,6 +135,7 @@ const ChatContent = (props: any) => {
                         <CardMedia image={`${authConfig.backEndApiChatBook}/api/image/${showImg?.filename}`} sx={{ height: '500px', objectFit: 'cover', borderRadius: 1 }}/>
                         <Button variant='outlined' sx={{ mt: 3, mr: 3 }} size="small" onClick={()=>handleDownload(authConfig.backEndApiChatBook + '/api/imageorigin/' + showImg?.filename, showImg?.filename + '.png')} >{t('Download') as string}</Button>
                         <Button variant='outlined' sx={{ mt: 3, mr: 3 }} size="small" onClick={()=>handleGenerateSimilar(showImg)}>{t('Generate similar') as string}</Button>
+                        <Button variant='outlined' sx={{ mt: 3, mr: 3 }} size="small" onClick={()=>handleUpscale(showImg)}>{t('Upscale') as string}</Button>
                     </Grid>
                     <Grid item xs={6}>
                       <Grid sx={{ height: '100%', px: 4 }}>

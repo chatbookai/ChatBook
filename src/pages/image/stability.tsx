@@ -127,6 +127,27 @@ const AppChat = () => {
   const handleGenerateSimilarGetImg = (showImg: any) => {
     setGenerateSimilarData(showImg)
   }
+
+  const handleUpscaleStabilityAi = async (showImg: any) => {
+    const data = { filename: showImg.filename }
+    setPendingImagesCount(1)
+    const generateImageInfo = await axios.post(authConfig.backEndApiChatBook + '/api/generateImageUpscaleStabilityAi/', data, {
+      headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
+    }).then(res => res.data);
+    console.log("generateImageInfo", generateImageInfo);
+    if(generateImageInfo && generateImageInfo.status == 'error') {
+      toast.error(t(generateImageInfo.msg), {
+        duration: 4000
+      })
+    }
+    if(generateImageInfo && generateImageInfo.status == 'ok') {
+      toast.success(t(generateImageInfo.msg), {
+        duration: 4000
+      })
+    }
+    setPendingImagesCount(0)
+    setRefreshChatCounter(refreshChatCounter + 2)
+  }
   
 
   // ** Vars
@@ -159,6 +180,7 @@ const AppChat = () => {
         imageList={imageList}
         pendingImagesCount={pendingImagesCount}
         handleGenerateSimilarGetImg={handleGenerateSimilarGetImg}
+        handleUpscaleStabilityAi={handleUpscaleStabilityAi}
       />
       </Box>
       :

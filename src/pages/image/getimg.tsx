@@ -135,10 +135,20 @@ const AppChat = () => {
   const handleUpscaleStabilityAi = async (showImg: any) => {
     const data = { filename: showImg.filename }
     setPendingImagesCount(1)
-    const ImageName = await axios.post(authConfig.backEndApiChatBook + '/api/generateImageUpscaleStabilityAi/', data, {
+    const generateImageInfo = await axios.post(authConfig.backEndApiChatBook + '/api/generateImageUpscaleGetImg/', data, {
       headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
     }).then(res => res.data);
-    console.log("ImageName", ImageName);
+    console.log("generateImageInfo", generateImageInfo);
+    if(generateImageInfo && generateImageInfo.status == 'error') {
+      toast.error(t(generateImageInfo.msg), {
+        duration: 4000
+      })
+    }
+    if(generateImageInfo && generateImageInfo.status == 'ok') {
+      toast.success(t(generateImageInfo.msg), {
+        duration: 4000
+      })
+    }
     setPendingImagesCount(0)
     setRefreshChatCounter(refreshChatCounter + 2)
   }

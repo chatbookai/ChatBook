@@ -118,7 +118,21 @@
     const { filename } = req.body;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
-      const generateImageUpscaleStabilityAiData = await generateImageUpscaleStabilityAi(checkUserTokenData, filename);
+      const generateImageUpscaleStabilityAiData = await generateImageUpscaleStabilityAi(checkUserTokenData, filename, 'stability.ai');
+      //console.log("generateImageUpscaleStabilityAiData", generateImageUpscaleStabilityAiData);
+      res.status(200).json(generateImageUpscaleStabilityAiData).end();
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null}).end();
+    }
+  });
+
+  app.post('/api/generateImageUpscaleGetImg', async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const { filename } = req.body;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
+      const generateImageUpscaleStabilityAiData = await generateImageUpscaleStabilityAi(checkUserTokenData, filename, 'getimg.ai');
       //console.log("generateImageUpscaleStabilityAiData", generateImageUpscaleStabilityAiData);
       res.status(200).json(generateImageUpscaleStabilityAiData).end();
     }

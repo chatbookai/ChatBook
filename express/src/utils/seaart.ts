@@ -48,15 +48,16 @@ export async function generateImageSeaArt(checkUserTokenData: any, data: SeaArt)
   POSTDATA['height'] = 1024
   POSTDATA['num'] = 1
   POSTDATA['category'] = 2
-  POSTDATA['art_model_no'] = "3b2dd6548356f55d9c227ae035215f38"
+  POSTDATA['art_model_no'] = "9d2672fc7e8cdd0e83260b5ef189c232"
   POSTDATA['restore_faces'] = false
+  POSTDATA['loras'] = []
   POSTDATA['prompt'] = data.prompt
   POSTDATA['negative_prompt'] = data.negativePrompt
   POSTDATA['cfg_scale'] = 5
   POSTDATA['steps'] = 40
   POSTDATA['sample_name'] = ''
   POSTDATA['seed'] = -1
-  POSTDATA['loras'] = []
+  POSTDATA['num'] = 1
   
   console.log("POSTDATA", POSTDATA)
 

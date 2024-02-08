@@ -27,6 +27,7 @@ interface StabilityAi {
   style: string
   outpuFormat: string
   seed: number | string
+  sampler: string
 }
 
 export async function getUserBalanceStabilityAi() {
@@ -68,8 +69,9 @@ export async function generateImageStabilityAi(checkUserTokenData: any, data: St
   POSTDATA['height'] = Number(data.height)
   const seed = data.seed && data.seed !='' ? data.seed : Math.floor( Math.random() * 1000000)
   POSTDATA['seed'] = Math.floor(Number(seed))
-  POSTDATA['cfg_scale'] = data.CFGScale ?? 5
+  POSTDATA['cfg_scale'] = data.CFGScale ?? 7
   POSTDATA['samples'] = 1
+  POSTDATA['sampler'] = data.sampler
   POSTDATA['style_preset'] = data.style ?? "digital-art"
   POSTDATA['text_prompts'] = [{text: data.prompt, weight: 1},{text: data.negativePrompt, weight: -1}]
 

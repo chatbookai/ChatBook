@@ -145,7 +145,7 @@ const GetImgLeft = (props: any) => {
     setSeedValue(event.target.value);
   };
 
-  const [CFGScaleValue, setCFGScaleValue] = useState<number>(1)
+  const [CFGScaleValue, setCFGScaleValue] = useState<number>(7)
   const handleCFGScaleChange = (event: any) => {
     setCFGScaleValue(event.target.value);
   };
@@ -159,6 +159,23 @@ const GetImgLeft = (props: any) => {
   const handleNumberOfImagesChange = (event: any) => {
     setNumberOfImagesValue(event.target.value);
   }
+
+  const [samplerValue, setSamplerValue] = useState<string>('DDPM')
+  const SamplerList: any[] = []
+  SamplerList.push({name: "DDIM", value: "DDIM"})
+  SamplerList.push({name: "DDPM", value: "DDPM"})
+  SamplerList.push({name: "K_DPMPP_2M", value: "K_DPMPP_2M"})
+  SamplerList.push({name: "K_DPMPP_2S_ANCESTRAL", value: "K_DPMPP_2S_ANCESTRAL"})
+  SamplerList.push({name: "K_DPM_2", value: "K_DPM_2"})
+  SamplerList.push({name: "K_DPM_2_ANCESTRAL", value: "K_DPM_2_ANCESTRAL"})
+  SamplerList.push({name: "K_EULER", value: "K_EULER"})
+  SamplerList.push({name: "K_EULER_ANCESTRAL", value: "K_EULER_ANCESTRAL"})
+  SamplerList.push({name: "K_HEUN", value: "K_HEUN"})
+  SamplerList.push({name: "K_LMS", value: "K_LMS"})
+  const handleSamplerChange = (event: any) => {
+    setSamplerValue(event.target.value);
+  }
+
 
   useEffect(()=>{
     if(numberOfImagesValue > 1) {
@@ -177,6 +194,7 @@ const GetImgLeft = (props: any) => {
       setNegativePromptValue(generateSimilarData.negative_prompt)
       setStyleValue(generateSimilarData.style)
       setStepsValue(generateSimilarData.steps)
+      setSamplerValue(generateSimilarData.sampler)
 
       //setSeedValue('')
       //setCFGScaleValue(generateSimilarData.steps)
@@ -203,6 +221,7 @@ const GetImgLeft = (props: any) => {
     PostData['style'] = StyleValue
     PostData['steps'] = stepsValue
     PostData['seed'] = seedValue
+    PostData['sampler'] = samplerValue
     PostData['CFGScale'] = CFGScaleValue
     PostData['width'] = 512
     PostData['height'] = 512
@@ -352,6 +371,22 @@ const GetImgLeft = (props: any) => {
                       onChange={handleStyleChange}
                     >
                       {StyleList.map((Item: any, Index: number)=>{
+                        return (<MenuItem key={Index} value={Item.value}>{Item.name}</MenuItem>)                          
+                      })}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={12}>
+                  <FormControl fullWidth>
+                    <InputLabel >Sampler</InputLabel>
+                    <Select
+                      label='Sampler'
+                      defaultValue={samplerValue}
+                      value={samplerValue}
+                      size="small"
+                      onChange={handleSamplerChange}
+                    >
+                      {SamplerList.map((Item: any, Index: number)=>{
                         return (<MenuItem key={Index} value={Item.value}>{Item.name}</MenuItem>)                          
                       })}
                     </Select>

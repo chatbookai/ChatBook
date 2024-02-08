@@ -100,7 +100,7 @@ const GetImgLeft = (props: any) => {
   
   //const expandIcon = (value: string) => <Icon icon={expanded === value ? 'mdi:minus' : 'mdi:plus'} />
 
-  const [modelValue, setModelValue] = useState<string>('realistic-vision-v5-1')
+  const [modelValue, setModelValue] = useState<string>('xsarchitectural-interior-design')
   const ModelList: any[] = []
   ModelList.push({name: "dream-shaper-v8", value: "dream-shaper-v8"})
   ModelList.push({name: "stable-diffusion-v1-5", value: "stable-diffusion-v1-5"})

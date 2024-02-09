@@ -148,7 +148,6 @@ export async function generateImageFromImageStabilityAi(checkUserTokenData: any,
       },
       data: formData,
     });
-    console.log("res.data.artifacts", res.data.artifacts)
     if(res.status == 200 && res.data && res.data.artifacts) {
       let FileNamePath = ''
       res.data.artifacts.forEach((image: any, index: number) => {   
@@ -346,10 +345,10 @@ export async function getUserVideosStabilityAi(userId: string, pageid: number, p
   console.log("pageidFiler", pageidFiler)
   console.log("pagesizeFiler", pagesizeFiler)
 
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from uservideos where userId = ? and source='getimg.ai' ", [userId]);
+  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from uservideos where userId = ? and source='stability.ai' ", [userId]);
   const RecordsTotal: number = Records ? Records.NUM : 0;
 
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)("SELECT * FROM uservideos where userId = ? and source='getimg.ai' ORDER BY id DESC LIMIT ? OFFSET ? ", [userId, pagesizeFiler, From]) || [];
+  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)("SELECT * FROM uservideos where userId = ? and source='stability.ai' ORDER BY id DESC LIMIT ? OFFSET ? ", [userId, pagesizeFiler, From]) || [];
 
   const RS: any = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);

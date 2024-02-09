@@ -4,7 +4,7 @@
 
   import { MenuListAdmin, MenuListUser } from '../utils/const';
   import { checkUserToken } from '../utils/user';
-  import { getLogsPage, getTemplate, getLLMSSetting, getFilesPage, getFilesKnowledgeId, getChatLogByKnowledgeIdAndUserId, addKnowledge, setOpenAISetting, setTemplate, getKnowledgePage, wholeSiteStatics } from '../utils/utils';
+  import { getLogsPage, getTemplate, getLLMSSetting, getFilesPage, getFilesKnowledgeId, getChatLogByKnowledgeIdAndUserId, addKnowledge, setOpenAISetting, setTemplate, getKnowledgePage, wholeSiteStatics, getAllImages } from '../utils/utils';
 
   const app = express();
 
@@ -180,6 +180,20 @@
   app.get('/api/static/site', async (req: Request, res: Response) => {
     const checkUserTokenData: any = await wholeSiteStatics();
     res.status(200).json(checkUserTokenData).end();
+  });
+
+  app.post('/api/getAllImages', async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const { pageid, pagesize } = req.body;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
+      const generateimageData = await getAllImages(checkUserTokenData.data.id, pageid, pagesize);
+      //console.log("generateimageData", generateimageData);
+      res.status(200).json(generateimageData).end();
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null}).end();
+    }
   });
 
   export default app;

@@ -568,3 +568,26 @@ export async function wholeSiteStatics() {
   
   return {NewUserPerDay, NewImagesPerDay, NewFilesPerDay, NewActivitesPerDay, DateList, TotalImages, TotalActivites, TotalUsers, TotalFiles, TotalKnowledges}
 }
+
+export async function getAllImages(userId: string, pageid: number, pagesize: number) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+  const From = pageidFiler * pagesizeFiler;
+  console.log("pageidFiler", pageidFiler)
+  console.log("pagesizeFiler", pagesizeFiler)
+
+  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from userimages where 1=1 ");
+  const RecordsTotal: number = Records ? Records.NUM : 0;
+
+  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)("SELECT id, userId, email, model, `prompt`, negative_prompt, steps, style, filename, data, `date`, createtime FROM userimages where 1=1 ORDER BY id DESC LIMIT ? OFFSET ? ", [pagesizeFiler, From]) || [];
+
+  const RS: any = {};
+  RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
+  RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
+  RS['from'] = From;
+  RS['pageid'] = pageidFiler;
+  RS['pagesize'] = pagesizeFiler;
+  RS['total'] = RecordsTotal;
+
+  return RS;
+}

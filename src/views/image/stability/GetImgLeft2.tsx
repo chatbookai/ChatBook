@@ -424,8 +424,8 @@ const GetImgLeft = (props: any) => {
                   <FormControl sx={{ flexWrap: 'wrap', width: '98%' }}>
                     <FormLabel>{t('CFG Scale') as string}: {CFGScaleValue}</FormLabel>
                     <Slider
-                      min={0}
-                      max={20}
+                      min={5}
+                      max={15}
                       step={1}
                       defaultValue={CFGScaleValue}
                       value={CFGScaleValue}

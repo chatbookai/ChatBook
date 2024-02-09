@@ -239,9 +239,9 @@ export async function generateVideoStabilityAi(checkUserTokenData: any, PostData
   if(files==null || files[0]==null || files[0].filename==null) {
     return {status: 'error', msg: 'Please upload the file first' };
   }
+  console.log("files", files)
   const FileName = files[0].filename
   const FilePath = files[0].path
-  console.log("files", files)
   const data: any = new FormData();
   data.append("image", fs.readFileSync(FilePath), FileName);
   data.append("seed", Number(PostData.seed));

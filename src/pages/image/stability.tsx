@@ -84,12 +84,17 @@ const AppChat = () => {
       try {
         const ImageListData = await Promise.all(
           Array.from({ length: numberOfImages }, async () => {
-            const ImageName = await axios.post(authConfig.backEndApiChatBook + '/api/generateImageStabilityAi/', data, {
+            const generateImageInfo = await axios.post(authConfig.backEndApiChatBook + '/api/generateImageStabilityAi/', data, {
               headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
             }).then(res => res.data);
-            console.log("ImageName", ImageName);
+            if(generateImageInfo && generateImageInfo.status == 'error') {
+              toast.error(t(generateImageInfo.msg), {
+                duration: 4000
+              })
+            }
+            console.log("generateImageInfo", generateImageInfo);
 
-            return ImageName;
+            return generateImageInfo;
           })
         );
         console.log("ImageListData:", ImageListData);

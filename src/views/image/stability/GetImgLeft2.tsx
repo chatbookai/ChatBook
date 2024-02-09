@@ -112,7 +112,7 @@ const GetImgLeft = (props: any) => {
   const [promptValue, setPromptValue] = useState<string>("A captivating portrait of a Chinese girl radiating grace and elegance. The painting captures her intriguing beauty in intricate detail, showcasing a serene aura that captivates the viewer's gaze. The girl's delicate features are adorned with traditional Chinese attire, further emphasizing her cultural heritage")
   const [negativePromptValue, setNegativePromptValue] = useState<string>('blurry, bad')
 
-  const [StyleValue, setStyleValue] = useState<string>('enhance')
+  const [styleValue, setStyleValue] = useState<string>('enhance')
   const StyleList: any[] = []
   StyleList.push({name: "enhance", value: "enhance"})
   StyleList.push({name: "analog-film", value: "analog-film"})
@@ -189,7 +189,6 @@ const GetImgLeft = (props: any) => {
 
   useEffect(()=>{
     if(generateSimilarData) {
-      console.log("generateSimilarData 111111", generateSimilarData)
       setModelValue(generateSimilarData.model)
       setPromptValue(generateSimilarData.prompt)
       setNegativePromptValue(generateSimilarData.negative_prompt)
@@ -204,6 +203,11 @@ const GetImgLeft = (props: any) => {
 
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault()
+    if(imageValue == null) {      
+        toast.error(t('Please upload a image first') as string, { duration: 4000 })
+  
+        return
+      }
     if(promptValue == null || promptValue == '') {      
       toast.error(t('Prompt Must Not Null') as string, { duration: 4000 })
 
@@ -217,11 +221,10 @@ const GetImgLeft = (props: any) => {
 
     const data: any = new FormData();
     data.append("image", imageValue);
-    data.append("model", modelValue);
     data.append('model', modelValue);
     data.append('prompt', promptValue);
     data.append('negativePrompt', negativePromptValue);
-    data.append('style', StyleValue);
+    data.append('style', styleValue);
     data.append('steps', stepsValue);
     data.append('seed', seedValue);
     data.append('sampler', samplerValue);
@@ -230,9 +233,6 @@ const GetImgLeft = (props: any) => {
     data.append('height', 512);
     data.append('numberOfImages', numberOfImagesValue);
     data.append('outpuFormat', "png");
-    console.log("imageValue", imageValue)
-    console.log("promptValue", promptValue)
-    console.log("negativePromptValue", negativePromptValue)
     handleGenerateImage(data, numberOfImagesValue)
   }
 
@@ -441,15 +441,15 @@ const GetImgLeft = (props: any) => {
                   </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField type="number" fullWidth label={t('Seed') as string} name='Seed' placeholder='' size="small" defaultValue={seedValue} onChange={handleSeedChange}/>
+                  <TextField type="number" fullWidth label={t('Seed') as string} name='Seed' placeholder='' size="small" defaultValue={seedValue} value={seedValue} onChange={handleSeedChange}/>
                 </Grid>
                 <Grid item xs={12} sm={12}>
                   <FormControl fullWidth>
                     <InputLabel >{t('Style') as string}</InputLabel>
                     <Select
                       label={t('Style') as string}
-                      defaultValue={StyleValue}
-                      value={StyleValue}
+                      defaultValue={styleValue}
+                      value={styleValue}
                       size="small"
                       onChange={handleStyleChange}
                     >

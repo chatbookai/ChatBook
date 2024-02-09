@@ -119,7 +119,7 @@ export async function generateImageFromTextStabilityAi(checkUserTokenData: any, 
 
 export async function generateImageFromImageStabilityAi(checkUserTokenData: any, PostData:any, files: any) {
   if(files==null || files[0]==null || files[0].filename==null) {
-    return {status: 'error', statusText: 'Please upload the file first' };
+    return {status: 'error', msg: 'Please upload the file first' };
   }
   const FileName = files[0].filename
   const FilePath = files[0].path
@@ -142,14 +142,13 @@ export async function generateImageFromImageStabilityAi(checkUserTokenData: any,
       url: `https://api.stability.ai/v1/generation/stable-diffusion-v1-6/image-to-image`,
       method: "post",
       headers: {
-        Accept: 'image/png',
-        'authorization': `Bearer ${STABILITY_API_SECRET_KEY_IMAGE}`,
         ...formData.getHeaders(),
+        Accept: 'application/json',
+        Authorization: `Bearer ${STABILITY_API_SECRET_KEY_IMAGE}`,
       },
       data: formData,
     });
-    console.log("generateImageFromImageStabilityAi.png", res.data.artifacts);
-    fs.writeFileSync("generateImageFromImageStabilityAi.png", res.data);
+    console.log("res.data.artifacts", res.data.artifacts)
     if(res.status == 200 && res.data && res.data.artifacts) {
       let FileNamePath = ''
       res.data.artifacts.forEach((image: any, index: number) => {   
@@ -170,15 +169,15 @@ export async function generateImageFromImageStabilityAi(checkUserTokenData: any,
       catch(error: any) {
         console.log("generateImageFromImageStabilityAi insertSetting Error", error.message)
       }
-      return {status: 'ok', statusText: 'Submit Success', id: orderId };
+      return {status: 'ok', msg: 'Submit Success', id: orderId };
     }
     else {
-      return {status: 'error', statusText: 'Submit failed 1 '};
+      return {status: 'error', msg: 'Submit failed 1 '};
     }
   }
   catch(error: any) {
     console.log("generateImageFromImageStabilityAi Error", error.message)
-    return {status: 'error', statusText: 'Submit failed 2', errorText: error.message };
+    return {status: 'error', msg: error.message, errorText: 'Submit failed 2' };
   }
   
 }
@@ -239,7 +238,7 @@ export async function getUserImagesAll(pageid: number, pagesize: number) {
 
 export async function generateVideoStabilityAi(checkUserTokenData: any, PostData:any, files: any) {
   if(files==null || files[0]==null || files[0].filename==null) {
-    return {status: 'error', statusText: 'Please upload the file first' };
+    return {status: 'error', msg: 'Please upload the file first' };
   }
   const FileName = files[0].filename
   const FilePath = files[0].path
@@ -276,15 +275,15 @@ export async function generateVideoStabilityAi(checkUserTokenData: any, PostData
           console.log("generateVideoStabilityAi insertSetting Error", error)
         }
         
-        return {status: 'ok', statusText: 'It has been submitted to the queue and the video will be generated in a few minutes.', id: orderId};
+        return {status: 'ok', msg: 'It has been submitted to the queue and the video will be generated in a few minutes.', id: orderId};
     }
     else {
-      return {status: 'error', statusText: 'Submit failed', errorText: res.data.toString() };
+      return {status: 'error', msg: 'Submit failed', errorText: res.data.toString() };
     }
   }
   catch(error: any) {
     console.log("generateVideoStabilityAi Error", error.message)
-    return {status: 'error', statusText: 'Submit failed', errorText: error.message };
+    return {status: 'error', msg: 'Submit failed', errorText: error.message };
   }
   
 }

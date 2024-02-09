@@ -89,7 +89,7 @@ const AppChat = () => {
           setRefreshChatCounter(refreshChatCounter + 2)
           setSendButtonText(t("Generate video") as string)
           setPendingImagesCount(0)
-          toast.success(t(GenerateStatus.statusText), {
+          toast.success(t(GenerateStatus.msg), {
             duration: 4000
           })
         }
@@ -98,7 +98,7 @@ const AppChat = () => {
             setRefreshChatCounter(refreshChatCounter + 2)
             setSendButtonText(t("Generate video") as string)
             setPendingImagesCount(0)
-            toast.error(t(GenerateStatus.statusText), {
+            toast.error(t(GenerateStatus.msg), {
               duration: 4000
             })
           }

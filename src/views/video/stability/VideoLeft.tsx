@@ -213,7 +213,7 @@ const GetImgLeft = (props: any) => {
                     <FormLabel>{t('CFG Scale') as string}: {CFGScaleValue}</FormLabel>
                     <Slider
                       min={5}
-                      max={15}
+                      max={18}
                       step={1}
                       defaultValue={CFGScaleValue}
                       value={CFGScaleValue}

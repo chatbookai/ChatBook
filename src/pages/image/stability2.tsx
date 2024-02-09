@@ -9,7 +9,7 @@ import { useTheme } from '@mui/material/styles'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Chat App Components Imports
-import GetImgLeft from 'src/views/image/stability/GetImgLeft'
+import GetImgLeft2 from 'src/views/image/stability/GetImgLeft2'
 import GetImgContent from 'src/views/image/stability/GetImgContent'
 
 // ** Third Party Import
@@ -75,17 +75,17 @@ const AppChat = () => {
     }
   }
 
-  const handleGenerateImage = async (data: any) => {
+  const handleGenerateImage = async (data: any, numberOfImages: number) => {
     if(auth.user && auth.user.token)  {
-      setSendButtonDisable(true)
+      //setSendButtonDisable(true)
       setSendButtonText(t("Generating images...") as string)
-      setPendingImagesCount(data.numberOfImages)
-      const numberOfImages = data.numberOfImages
+      setPendingImagesCount(numberOfImages)
+      console.log("numberOfImages", numberOfImages)
       try {
         const ImageListData = await Promise.all(
           Array.from({ length: numberOfImages }, async () => {
-            const ImageName = await axios.post(authConfig.backEndApiChatBook + '/api/generateImageStabilityAi/', data, {
-              headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
+            const ImageName = await axios.post(authConfig.backEndApiChatBook + '/api/generateImageFromImageStabilityAi/', data, {
+              headers: { Authorization: auth?.user?.token, 'Content-Type': 'multipart/form-data' },
             }).then(res => res.data);
             console.log("ImageName", ImageName);
 
@@ -169,7 +169,7 @@ const AppChat = () => {
         ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
       }}
     >
-      <GetImgLeft
+      <GetImgLeft2
         handleGenerateImage={handleGenerateImage}
         handleSubmitText={handleSubmitText}
         sendButtonDisable={sendButtonDisable}

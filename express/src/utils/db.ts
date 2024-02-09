@@ -20,6 +20,7 @@ export async function initChatBookDb() {
     enableDir(DataDir + '/image/');
     enableDir(DataDir + '/video/');
     enableDir(DataDir + '/imageforvideo/');
+    enableDir(DataDir + '/imageforimage/');
     
     db.serialize(() => {
         db.run(`

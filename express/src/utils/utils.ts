@@ -171,7 +171,7 @@ export function uploadfiles() {
   return upload
 }
 
-export function uploadimageforvideo() {
+export function uploadImageForVideo() {
   const storage = multer.diskStorage({
     destination: (req: any, file: any, cb: any) => {
       cb(null, DataDir + '/imageforvideo/'); // 设置上传文件保存的目录
@@ -180,7 +180,24 @@ export function uploadimageforvideo() {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
       const FileNameNew = file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase();
       cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase());
-      log("uploadfiles FileNameNew", FileNameNew)
+      log("uploadImageForVideo FileNameNew", FileNameNew)
+    },
+  });
+  const upload = multer({ storage: storage });
+
+  return upload
+}
+
+export function uploadImageForImageGenerateImage() {
+  const storage = multer.diskStorage({
+    destination: (req: any, file: any, cb: any) => {
+      cb(null, DataDir + '/imageforimage/'); // 设置上传文件保存的目录
+    },
+    filename: (req: any, file: any, cb: any) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      const FileNameNew = file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase();
+      cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase());
+      log("uploadImageForImageGenerateImage FileNameNew", FileNameNew)
     },
   });
   const upload = multer({ storage: storage });

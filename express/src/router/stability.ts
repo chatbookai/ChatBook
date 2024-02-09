@@ -3,9 +3,9 @@
 
   import { checkUserToken, checkUserTokenXWE, checkUserTokenXWENotCostAmount } from '../utils/user';
 
-  import { getUserImages, getUserImagesAll, getUserVideosStabilityAi, getUserVideosStabilityAiAll, generateImageStabilityAi, generateVideoStabilityAi, getVideoStabilityAi, outputVideo, outputVideoImage, generateImageUpscaleStabilityAi } from '../utils/stability';
+  import { getUserImages, getUserImagesAll, getUserVideosStabilityAi, getUserVideosStabilityAiAll, generateImageFromTextStabilityAi, generateImageFromImageStabilityAi, generateVideoStabilityAi, getVideoStabilityAi, outputVideo, outputVideoImage, generateImageUpscaleStabilityAi } from '../utils/stability';
 
-  import { uploadimageforvideo } from '../utils/utils';
+  import { uploadImageForVideo, uploadImageForImageGenerateImage } from '../utils/utils';
 
   const app = express();
 
@@ -30,27 +30,40 @@
     res.status(200).json(getUserImagesAllData).end();
   });
 
-  app.post('/api/generateImageStabilityAi', async (req: Request, res: Response) => {
+  app.post('/api/generateImageFromTextStabilityAi', async (req: Request, res: Response) => {
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
-      const generateImageStabilityAiData = await generateImageStabilityAi(checkUserTokenData, req.body);
-      //console.log("generateImageStabilityAiData", generateImageStabilityAiData);
-      res.status(200).json(generateImageStabilityAiData).end();
+      const generateImageFromTextStabilityAiData = await generateImageFromTextStabilityAi(checkUserTokenData, req.body);
+      //console.log("generateImageFromTextStabilityAiData", generateImageFromTextStabilityAiData);
+      res.status(200).json(generateImageFromTextStabilityAiData).end();
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null}).end();
     }
   });
 
-  app.post('/api/generateImageStabilityAiXWE', async (req: Request, res: Response) => {
+  app.post('/api/generateImageFromTextStabilityAiXWE', async (req: Request, res: Response) => {
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserTokenXWE(authorization as string);
     //console.log("checkUserTokenData", checkUserTokenData)
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
-      const generateImageStabilityAiData = await generateImageStabilityAi(checkUserTokenData, req.body);
-      //console.log("generateImageStabilityAiData", generateImageStabilityAiData);
-      res.status(200).json(generateImageStabilityAiData).end();
+      const generateImageFromTextStabilityAiData = await generateImageFromTextStabilityAi(checkUserTokenData, req.body);
+      //console.log("generateImageFromTextStabilityAiData", generateImageFromTextStabilityAiData);
+      res.status(200).json(generateImageFromTextStabilityAiData).end();
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null}).end();
+    }
+  });
+
+  app.post('/api/generateImageFromImageStabilityAi', uploadImageForImageGenerateImage().array('image', 10), async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
+      const generateImageFromImageStabilityAiData = await generateImageFromImageStabilityAi(checkUserTokenData, req.body, req.files);
+      //console.log("generateImageFromImageStabilityAiData", generateImageFromImageStabilityAiData);
+      res.status(200).json(generateImageFromImageStabilityAiData).end();
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null}).end();
@@ -72,7 +85,7 @@
     }
   });
 
-  app.post('/api/generateVideoStabilityAi', uploadimageforvideo().array('image', 10), async (req: Request, res: Response) => {
+  app.post('/api/generateVideoStabilityAi', uploadImageForVideo().array('image', 10), async (req: Request, res: Response) => {
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {

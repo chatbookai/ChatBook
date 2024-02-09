@@ -77,7 +77,6 @@ const GetImgLeft = (props: any) => {
       textAlign: 'center'
     }
   }))
-  
   const ResetButtonStyled = styled(Button)<ButtonProps>(({ theme }) => ({
     marginLeft: theme.spacing(4),
     [theme.breakpoints.down('sm')]: {

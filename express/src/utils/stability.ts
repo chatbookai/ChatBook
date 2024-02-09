@@ -47,7 +47,7 @@ export async function getUserBalanceStabilityAi() {
   }
 }
 
-export async function generateImageStabilityAi(checkUserTokenData: any, data: StabilityAi) {
+export async function generateImageFromTextStabilityAi(checkUserTokenData: any, data: StabilityAi) {
   
   const getUserBalanceGetImgStatus: boolean = await getUserBalanceStabilityAi();
   if(getUserBalanceGetImgStatus == false)   {
@@ -102,7 +102,7 @@ export async function generateImageStabilityAi(checkUserTokenData: any, data: St
           insertSetting.finalize();
         }
         catch(error: any) {
-          console.log("generateImageStabilityAiV16 insertSetting Error", error.message)
+          console.log("generateImageFromTextStabilityAiV16 insertSetting Error", error.message)
         }
         return orderId;
     }
@@ -111,8 +111,74 @@ export async function generateImageStabilityAi(checkUserTokenData: any, data: St
     }
   }
   catch(error: any) {
-    console.log("generateImageStabilityAiV16 Error", error.message)
+    console.log("generateImageFromTextStabilityAiV16 Error", error.message)
     return null;
+  }
+  
+}
+
+export async function generateImageFromImageStabilityAi(checkUserTokenData: any, PostData:any, files: any) {
+  if(files==null || files[0]==null || files[0].filename==null) {
+    return {status: 'error', statusText: 'Please upload the file first' };
+  }
+  const FileName = files[0].filename
+  const FilePath = files[0].path
+  const formData: any = new FormData();
+  formData.append("init_image", fs.readFileSync(FilePath), FileName);
+  formData.append('init_image_mode', 'IMAGE_STRENGTH')
+  formData.append('image_strength', 0.35)
+  formData.append('text_prompts[0][text]', PostData.prompt)
+  formData.append('text_prompts[0][weight]', 1)
+  formData.append('text_prompts[1][text]', PostData.negativePrompt)
+  formData.append('text_prompts[1][weight]', -1)
+  formData.append("seed", Number(PostData.seed) ?? 0);
+  formData.append("cfg_scale", Number(PostData.CFGScale) ?? 0);
+  formData.append('samples', Number(PostData.numberOfImages) ?? 1)
+  formData.append('steps', Number(PostData.steps) ?? 25)
+  formData.append('sampler', String(PostData.sampler))
+  formData.append('style_preset', String(PostData.style))
+  try {
+    const res = await axios.request({
+      url: `https://api.stability.ai/v1/generation/stable-diffusion-v1-6/image-to-image`,
+      method: "post",
+      headers: {
+        Accept: 'image/png',
+        'authorization': `Bearer ${STABILITY_API_SECRET_KEY_IMAGE}`,
+        ...formData.getHeaders(),
+      },
+      data: formData,
+    });
+    console.log("generateImageFromImageStabilityAi.png", res.data.artifacts);
+    fs.writeFileSync("generateImageFromImageStabilityAi.png", res.data);
+    if(res.status == 200 && res.data && res.data.artifacts) {
+      let FileNamePath = ''
+      res.data.artifacts.forEach((image: any, index: number) => {   
+        console.log("image.seed", image.seed)       
+        FileNamePath = Base64ToImg(image.base64, 'v16_' + image.seed);
+      })     
+      console.log("generateImageFromImageStabilityAi FileNamePath", FileNamePath)
+      const cost_api = 0.005
+      const cost_usd = 0.01
+      const cost_xwe = 0
+      const orderTX = ''
+      const orderId = FileNamePath
+      try {
+        const insertSetting = db.prepare('INSERT INTO userimages (userId, email, model, `prompt`, negative_prompt, steps, seed, style, filename, data, `date`, createtime, cost_usd, cost_xwe, cost_api, orderId, orderTX, source ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, PostData.model, PostData.prompt, PostData.negativePrompt, PostData.steps, Number(PostData.seed), String(PostData.style), orderId, JSON.stringify(PostData), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, 'stability.ai');
+        insertSetting.finalize();
+      }
+      catch(error: any) {
+        console.log("generateImageFromImageStabilityAi insertSetting Error", error.message)
+      }
+      return {status: 'ok', statusText: 'Submit Success', id: orderId };
+    }
+    else {
+      return {status: 'error', statusText: 'Submit failed 1 '};
+    }
+  }
+  catch(error: any) {
+    console.log("generateImageFromImageStabilityAi Error", error.message)
+    return {status: 'error', statusText: 'Submit failed 2', errorText: error.message };
   }
   
 }

@@ -3,18 +3,18 @@
 
   import { checkUserToken, checkUserTokenXWE, checkUserTokenXWENotCostAmount } from '../utils/user';
 
-  import { getUserImages, getUserImagesAll, getUserVideosStabilityAi, getUserVideosStabilityAiAll, generateImageFromTextStabilityAi, generateImageFromImageStabilityAi, generateVideoStabilityAi, getVideoStabilityAi, outputVideo, outputVideoImage, generateImageUpscaleStabilityAi } from '../utils/stability';
+  import { getUserImagesStabilityAi, getUserImagesAll, getUserVideosStabilityAi, getUserVideosStabilityAiAll, generateImageFromTextStabilityAi, generateImageFromImageStabilityAi, generateVideoStabilityAi, getVideoStabilityAi, outputVideo, outputVideoImage, generateImageUpscaleStabilityAi } from '../utils/stability';
 
   import { uploadImageForVideo, uploadImageForImageGenerateImage } from '../utils/utils';
 
   const app = express();
 
-  app.post('/api/getUserImages', async (req: Request, res: Response) => {
+  app.post('/api/getUserImagesStabilityAi', async (req: Request, res: Response) => {
     const { authorization } = req.headers;
     const { pageid, pagesize } = req.body;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
-      const generateimageData = await getUserImages(checkUserTokenData.data.id, pageid, pagesize);
+      const generateimageData = await getUserImagesStabilityAi(checkUserTokenData.data.id, pageid, pagesize);
       //console.log("generateimageData", generateimageData);
       res.status(200).json(generateimageData).end();
     }
@@ -76,7 +76,7 @@
     const checkUserTokenData: any = await checkUserTokenXWENotCostAmount(authorization as string);
     //console.log("checkUserTokenData", checkUserTokenData)
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
-      const generateimageData = await getUserImages(checkUserTokenData.data.id, pageid, pagesize);
+      const generateimageData = await getUserImagesStabilityAi(checkUserTokenData.data.id, pageid, pagesize);
       //console.log("generateimageData", generateimageData);
       res.status(200).json(generateimageData).end();
     }

@@ -42,17 +42,22 @@ export const MenuListAdmin = [
     path: '/chat/chat'
   },
   {
-    title: 'Image',
+    title: 'Text to Image',
     icon: 'material-symbols:imagesmode',
     path: '/image/getimg'
   },
   {
-    title: 'Image',
+    title: 'Text to Image',
     icon: 'material-symbols:imagesmode',
     path: '/image/stability'
   },
   {
-    title: 'Video',
+    title: 'Image to Image',
+    icon: 'material-symbols:imagesmode',
+    path: '/image/stability2'
+  },
+  {
+    title: 'Image to Video',
     icon: 'mdi:video-box',
     path: '/video/stability'
   },
@@ -128,17 +133,22 @@ export const MenuListUser = [
     path: '/chat/chat'
   },
   {
-    title: 'Image',
+    title: 'Text to Image',
     icon: 'material-symbols:imagesmode',
     path: '/image/getimg'
   },
   {
-    title: 'Image',
+    title: 'Text to Image',
     icon: 'material-symbols:imagesmode',
     path: '/image/stability'
   },
   {
-    title: 'Video',
+    title: 'Image to Image',
+    icon: 'material-symbols:imagesmode',
+    path: '/image/stability2'
+  },
+  {
+    title: 'Image to Video',
     icon: 'mdi:video-box',
     path: '/video/stability'
   },

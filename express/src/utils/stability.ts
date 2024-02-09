@@ -190,17 +190,17 @@ export function Base64ToImg(Base64IMG: string, model: string) {
     return uniqueSuffix;
 }
 
-export async function getUserImages(userId: string, pageid: number, pagesize: number) {
+export async function getUserImagesStabilityAi(userId: string, pageid: number, pagesize: number) {
   const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
   const From = pageidFiler * pagesizeFiler;
   console.log("pageidFiler", pageidFiler)
   console.log("pagesizeFiler", pagesizeFiler)
 
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from userimages where userId = ? ", [userId]);
+  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from userimages where userId = ? and source='stability.ai' ", [userId]);
   const RecordsTotal: number = Records ? Records.NUM : 0;
 
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)('SELECT id, userId, email, model, `prompt`, negative_prompt, steps, style, filename, data, `date`, createtime FROM userimages where userId = ? ORDER BY id DESC LIMIT ? OFFSET ? ', [userId, pagesizeFiler, From]) || [];
+  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)("SELECT id, userId, email, model, `prompt`, negative_prompt, steps, style, filename, data, `date`, createtime FROM userimages where userId = ? and source='stability.ai' ORDER BY id DESC LIMIT ? OFFSET ? ", [userId, pagesizeFiler, From]) || [];
 
   const RS: any = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);

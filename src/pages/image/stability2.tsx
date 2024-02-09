@@ -62,7 +62,7 @@ const AppChat = () => {
 
   const getImagesList = async function () {
     if(auth.user && auth.user.token)  {
-      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getUserImages/', {pageid: 0, pagesize: 30}, {
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getUserImagesStabilityAi/', {pageid: 0, pagesize: 30}, {
         headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
       }).then(res => res.data);
       if(RS && RS.data) {

@@ -57,6 +57,20 @@
     }
   });
 
+  app.post('/api/generateImageStabilityAiXWE', async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const checkUserTokenData: any = await checkUserTokenXWE(authorization as string);
+    //console.log("checkUserTokenData", checkUserTokenData)
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
+      const generateImageFromTextStabilityAiData = await generateImageFromTextStabilityAi(checkUserTokenData, req.body);
+      //console.log("generateImageFromTextStabilityAiData", generateImageFromTextStabilityAiData);
+      res.status(200).json(generateImageFromTextStabilityAiData).end();
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null}).end();
+    }
+  });
+
   app.post('/api/generateImageFromImageStabilityAi', uploadImageForImageGenerateImage().array('image', 10), async (req: Request, res: Response) => {
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);

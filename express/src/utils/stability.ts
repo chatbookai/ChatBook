@@ -49,10 +49,10 @@ export async function getUserBalanceStabilityAi() {
 
 export async function generateImageFromTextStabilityAi(checkUserTokenData: any, data: StabilityAi) {
   
-  const getUserBalanceGetImgStatus: boolean = await getUserBalanceStabilityAi();
-  if(getUserBalanceGetImgStatus == false)   {
-    return {status: 'error', msg: 'Insufficient balance 2'};
-  }
+  //const getUserBalanceGetImgStatus: boolean = await getUserBalanceStabilityAi();
+  //if(getUserBalanceGetImgStatus == false)   {
+  //  return {status: 'error', msg: 'Insufficient balance 2'};
+  //}
 
   let url = "https://api.stability.ai/v1/generation/stable-diffusion-v1-6/text-to-image";
   data.width = 512
@@ -104,15 +104,15 @@ export async function generateImageFromTextStabilityAi(checkUserTokenData: any, 
         catch(error: any) {
           console.log("generateImageFromTextStabilityAiV16 insertSetting Error", error.message)
         }
-        return orderId;
+        return {status: 'ok', msg: 'Submit Success', id: orderId };
     }
     else {
-        return null;
+      return {status: 'error', msg: 'Submit failed 1 '};
     }
   }
   catch(error: any) {
     console.log("generateImageFromTextStabilityAiV16 Error", error.message)
-    return null;
+    return {status: 'error', msg: error.message, errorText: 'Submit failed 2' };
   }
   
 }
@@ -425,10 +425,10 @@ export async function outputVideoImage(res: Response, file: string) {
 
 export async function generateImageUpscaleStabilityAi(checkUserTokenData: any, filename: string, source: string) {
 
-  const getUserBalanceGetImgStatus: boolean = await getUserBalanceStabilityAi();
-  if(getUserBalanceGetImgStatus == false)   {
-    return {status: 'error', msg: 'Insufficient balance 2'};
-  }
+  //const getUserBalanceGetImgStatus: boolean = await getUserBalanceStabilityAi();
+  //if(getUserBalanceGetImgStatus == false)   {
+  //  return {status: 'error', msg: 'Insufficient balance 2'};
+  //}
 
   const engineId = 'esrgan-v1-x2plus'
   const apiHost = 'https://api.stability.ai'

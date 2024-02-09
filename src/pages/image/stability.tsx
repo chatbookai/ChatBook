@@ -84,7 +84,7 @@ const AppChat = () => {
       try {
         const ImageListData = await Promise.all(
           Array.from({ length: numberOfImages }, async () => {
-            const generateImageInfo = await axios.post(authConfig.backEndApiChatBook + '/api/generateImageStabilityAi/', data, {
+            const generateImageInfo = await axios.post(authConfig.backEndApiChatBook + '/api/generateImageFromTextStabilityAi/', data, {
               headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
             }).then(res => res.data);
             if(generateImageInfo && generateImageInfo.status == 'error') {

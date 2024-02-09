@@ -357,6 +357,7 @@ export async function getUserVideosStabilityAi(userId: string, pageid: number, p
   RS['pageid'] = pageidFiler;
   RS['pagesize'] = pagesizeFiler;
   RS['total'] = RecordsTotal;
+  RS['userId'] = userId;
 
   return RS;
 }

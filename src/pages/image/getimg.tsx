@@ -93,6 +93,7 @@ const AppChat = () => {
                 duration: 4000
               })
             }
+            
             return generateImageInfo;
           })
         );

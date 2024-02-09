@@ -238,8 +238,6 @@ const GetImgLeft = (props: any) => {
 
   const [imgSrc, setImgSrc] = useState<string>('/images/llms/girl.png')
   const [inputValue, setInputValue] = useState<string>('')
-  const [widthValue, setWidthValue] = useState<number>(0)
-  const [heightValue, setHeightValue] = useState<number>(0)
 
   const ImgStyled = styled('img')(({ theme }) => ({
     width: 200,
@@ -273,10 +271,6 @@ const GetImgLeft = (props: any) => {
         const img = new Image()
         img.src = event.target.result
         img.onload = () => {
-          const width = img.width
-          const height = img.height
-          setWidthValue(width)
-          setHeightValue(height)
           setSendButtonDisable(false)
         };
       }

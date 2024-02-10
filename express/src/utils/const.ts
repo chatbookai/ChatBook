@@ -67,14 +67,9 @@ export const MenuListAdmin = [
     path: '/chat/knowledge'
   },
   {
-    title: 'Image Community',
+    title: 'Community',
     icon: 'material-symbols:chat',
-    path: '/community/image'
-  },
-  {
-    title: 'Video Community',
-    icon: 'material-symbols:chat',
-    path: '/community/video'
+    path: '/community/'
   },
   {
     sectionTitle: 'Settings'
@@ -168,13 +163,8 @@ export const MenuListUser = [
     path: '/chat/knowledge'
   },
   {
-    title: 'Image Community',
+    title: 'Community',
     icon: 'material-symbols:chat',
-    path: '/Community/image'
-  },
-  {
-    title: 'Video Community',
-    icon: 'material-symbols:chat',
-    path: '/Community/video'
+    path: '/Community/'
   }
 ]

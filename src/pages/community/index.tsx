@@ -1,49 +1,29 @@
 // ** React Imports
 import { Fragment, useEffect, useState } from 'react'
 
-// ** MUI Imports
-import Box from '@mui/material/Box'
-import { useTheme } from '@mui/material/styles'
-
-// ** Hooks
-import { useSettings } from 'src/@core/hooks/useSettings'
-
 import ImagesList from 'src/views/community/ImagesList'
-
-// ** Third Party Import
-import { useTranslation } from 'react-i18next'
-
-import { ChatChatNameList, CheckPermission  } from 'src/functions/ChatBook'
 
 // ** Axios Imports
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
-import { useRouter } from 'next/router'
-import toast from 'react-hot-toast'
 
 const AppChat = () => {
 
   // ** Hook
-  const { t } = useTranslation()
   const auth = useAuth()
-  const router = useRouter()
   
-  const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
-
-  // ** Hooks
-  const theme = useTheme()
-  const { settings } = useSettings()
-
   const [pageid, setPageid] = useState<number>(0)
   const [loadingAllData, setLoadingAllData] = useState<boolean>(false)
   const [imageList, setImageList] = useState<any[]>([])
+  const [favoriteList, setFavoriteList] = useState<any[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [loadingText, setLoadingText] = useState<string>('Loading')
 
+  
   useEffect(() => {
     getImagesList()
-  }, [refreshChatCounter])
+  }, [])
 
   const getImagesList = async function () {
     if(auth.user && auth.user.token && loadingAllData == false)  {
@@ -61,10 +41,12 @@ const AppChat = () => {
           setLoadingAllData(true)
         }
         setImageList([...imageList, ...imageListInitial].filter((element) => element != null))
+        setFavoriteList(RS.favorite)
       }      
       const timer = setTimeout(() => {
         setLoading(false);
       }, 500);  
+
       return () => {
         clearTimeout(timer);
       };
@@ -74,7 +56,8 @@ const AppChat = () => {
       setLoadingText('Finished')
       const timer2 = setTimeout(() => {
         setLoading(false);
-      }, 500);  
+      }, 500);
+
       return () => {
         clearTimeout(timer2);
       };
@@ -95,13 +78,11 @@ const AppChat = () => {
     };
   }, [imageList]); 
 
-  const { skin } = settings
-
   return (
     <Fragment>
       <Fragment>
         {auth.user && auth.user.email ?
-          <ImagesList imageList={imageList} loading={loading} loadingText={loadingText} />
+          <ImagesList imageList={imageList} favoriteList={favoriteList} loading={loading} loadingText={loadingText} />
         :
         null
         }

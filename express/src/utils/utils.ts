@@ -581,9 +581,21 @@ export async function getAllImages(userId: string, pageid: number, pagesize: num
 
   const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)("SELECT * FROM userimages where 1=1 ORDER BY id DESC LIMIT ? OFFSET ? ", [pagesizeFiler, From]) || [];
 
+  const RecordsIdList: string[] = RecordsAll.map(element => element.id);
+
+  //Get Favorite Data
+  let Favorite: any = {}
+  if(userId)  {
+    const RecordsFavorite = await (getDbRecordALL as SqliteQueryFunction)("SELECT * FROM userimagefavorite WHERE imageId IN (" + RecordsIdList.map(() => "?").join(",") + ") and userId = ? and status = 1 order by id asc", [...RecordsIdList, userId]) || [];
+    RecordsFavorite.map((Item: any)=>{
+      Favorite[Item.imageId] = 1
+    })
+  }
+
   const RS: any = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
   RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
+  RS['favorite'] = Favorite
   RS['from'] = From;
   RS['pageid'] = pageidFiler;
   RS['pagesize'] = pagesizeFiler;

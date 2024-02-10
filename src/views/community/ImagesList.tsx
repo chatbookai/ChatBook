@@ -41,6 +41,7 @@ const ImagesList = (props: any) => {
   // ** Props
   const {
     imageList,
+    favoriteList,
     loading,
     loadingText
   } = props
@@ -56,20 +57,27 @@ const ImagesList = (props: any) => {
   const [showImg, setShowImg] = useState<any>(null)
   const [showImgData, setShowImgData] = useState<any>(null)
   const [myFavorite, setMyFavorite] = useState<any>({})
+  const [favoriteCounter, setFavoriteCounter] = useState<any>({})
 
   useEffect(()=>{
     if(imageList) {
       setShowImg(imageList[0])
     }
-  }, [])
+    setMyFavorite({...favoriteList})
+    console.log("favoriteList********", favoriteList) 
+    console.log("myFavorite********", myFavorite) 
+    const favoriteCounterInitial: any = {}
+    imageList.map((item: any)=>{
+      favoriteCounterInitial[item.id] = item.favorite
+    })
+    setFavoriteCounter(favoriteCounterInitial)
+  }, [imageList, favoriteList])
 
   const handleImgInfo = (Index: number) => {
     setShow(true)
     setShowImg(imageList[Index])
     const data = JSON.parse(imageList[Index].data)
     setShowImgData(data)
-    console.log("showImg", showImg)
-    console.log("showImgData", showImgData)
   }
 
   const handleDownload = (DownloadUrl: string, FileName: string) => {
@@ -86,8 +94,15 @@ const ImagesList = (props: any) => {
   const handleMyFavorite = async (id: number, status: boolean) => {
     setMyFavorite((myFavorite: any) => {
       const myFavoriteNew = { ...myFavorite };
-      myFavoriteNew[id] = status;
+      myFavoriteNew[id] = status==true?1:-1;
+      
       return myFavoriteNew;
+    });
+    setFavoriteCounter((favoriteCounter: any) => {
+      const favoriteCounterNew = { ...favoriteCounter };
+      favoriteCounterNew[id] += status==true?1:-1;
+
+      return favoriteCounterNew;
     });
     if(auth && auth.user)   {
       const PostParams = {id, status: status==true?1:-1}
@@ -117,14 +132,14 @@ const ImagesList = (props: any) => {
                             alignItems="center"
                           >
                             <IconButton sx={{ color: 'white' }}>
-                              {myFavorite && myFavorite[item.id] ?
+                              {myFavorite && myFavorite[Number(item.id)] == 1 ?
                               <FavoriteIcon onClick={ ()=>handleMyFavorite(item.id, false) } />
                               :
                               <FavoriteBorderIcon onClick={ ()=>handleMyFavorite(item.id, true) } />
                               }
                             </IconButton>
                             <Typography variant="body2" sx={{ color: 'white', ml: 1 }}>
-                              {item.favorite}
+                              {favoriteCounter[Number(item.id)]}
                             </Typography>
                             <IconButton sx={{ color: 'white', ml: 2 }}>
                               <VisibilityIcon />
@@ -158,7 +173,7 @@ const ImagesList = (props: any) => {
                                   lineHeight: 1.71,
                                   letterSpacing: '0.22px',
                                   fontSize: '0.875rem !important',
-                                  maxWidth: '240px',
+                                  maxWidth: '200px',
                                   overflow: 'hidden',
                                   textOverflow: 'ellipsis',
                                   whiteSpace: 'nowrap' 

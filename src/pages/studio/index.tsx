@@ -29,15 +29,8 @@ import { styled } from '@mui/material/styles'
 // ** Third Party Imports
 import { useDropzone } from 'react-dropzone'
 
-
-// ** Custom Components Imports
-import PageHeader from 'src/@core/components/page-header'
-
 // ** Styled Component
 import DropzoneWrapper from 'src/@core/styles/libs/react-dropzone'
-
-// ** Demo Components Imports
-import FileUploaderSingle from 'src/views/form/FileUploaderSingle'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
@@ -45,9 +38,6 @@ import { useTranslation } from 'react-i18next'
 
 // Styled component for the upload image inside the dropzone area
 const Img = styled('img')(({ theme }) => ({
-    [theme.breakpoints.up('md')]: {
-      marginRight: theme.spacing(15.75)
-    },
     [theme.breakpoints.down('md')]: {
       marginBottom: theme.spacing(4)
     },
@@ -78,20 +68,55 @@ const UploadFilesContent = (props: any) => {
 
     const [currentSection, setCurrentSection] = useState<string>("Real-time Design")
     const [currentSectionColor, setCurrentSectionColor] = useState<string>("primary")
+    const [defaultImage, setDefaultImage] = useState<string>("/images/misc/upload.png")
 
     const TopButtonList: any[] = [
-        {name: 'Real-time Design', color:'primary', icon: 'material-symbols:rocket-launch-outline', onclick: ()=>handleSwitchButtonSection('Real-time Design') },
-        {name: 'Hi-Fi Redesign', color:'secondary', icon: 'icon-park-solid:all-application', onclick: ()=>handleSwitchButtonSection('Hi-Fi Redesign') },
-        {name: 'Partial Remodel', color:'secondary', icon: 'streamline:application-add-solid', onclick: ()=>handleSwitchButtonSection('Partial Remodel') },
-        {name: 'Cabinet Design', color:'secondary', icon: 'bx:cabinet', onclick: ()=>handleSwitchButtonSection('Cabinet Design') },
-        {name: 'Wall & Flooring', color:'secondary', icon: 'mdi:wall', onclick: ()=>handleSwitchButtonSection('Wall & Flooring') },
-        {name: 'More', color:'secondary', icon: 'material-symbols:more-vert', onclick: ()=>handleSwitchButtonSection('More') }
+        {name: 'Real-time Design', image:'/images/room/Real-time Design.jpg', icon: 'material-symbols:rocket-launch-outline', onclick: ()=>handleSwitchButtonSection('Real-time Design') },
+        {name: 'Hi-Fi Redesign', image:'/images/room/Hi-Fi Redesign.jpg', icon: 'icon-park-solid:all-application', onclick: ()=>handleSwitchButtonSection('Hi-Fi Redesign') },
+        {name: 'Partial Remodel', image:'/images/room/Partial Remodel.jpg', icon: 'streamline:application-add-solid', onclick: ()=>handleSwitchButtonSection('Partial Remodel') },
+        {name: 'Cabinet Design', image:'/images/room/Cabinet Design.jpg', icon: 'bx:cabinet', onclick: ()=>handleSwitchButtonSection('Cabinet Design') },
+        {name: 'Wall & Flooring', image:'/images/room/Wall Flooring.jpg', icon: 'mdi:wall', onclick: ()=>handleSwitchButtonSection('Wall & Flooring') },
     ]
 
+    const RoomImageList: any = {
+        'Real-time Design': [
+            {name: 'Bedroom', url: '/images/room/Bedroom redesign.png', onclick: ()=>handleSwitchDefaultImage('/images/room/Bedroom redesign.png') },
+            {name: 'Living Room', url: '/images/room/Living Room redesign.png', onclick: ()=>handleSwitchDefaultImage('/images/room/Living Room redesign.png') }
+            ],
+        'Hi-Fi Redesign': [
+            {name: 'Bedroom', url: '/images/room/Bedroom redesign.png', onclick: ()=>handleSwitchDefaultImage('/images/room/Bedroom redesign.png') },
+            {name: 'Living Room', url: '/images/room/Living Room redesign.png', onclick: ()=>handleSwitchDefaultImage('/images/room/Living Room redesign.png') }
+            ],
+        'Partial Remodel': [
+            {name: 'Bedroom', url: '/images/room/Bedroom redesign.png', onclick: ()=>handleSwitchDefaultImage('/images/room/Bedroom redesign.png') },
+            {name: 'Living Room', url: '/images/room/Living Room redesign.png', onclick: ()=>handleSwitchDefaultImage('/images/room/Living Room redesign.png') }
+            ],
+        'Cabinet Design': [
+            {name: 'Kitchen redesign', url: '/images/room/Kitchen redesign 0.jpg', onclick: ()=>handleSwitchDefaultImage('/images/room/Kitchen redesign 0.jpg') },
+            {name: 'Kitchen redesign', url: '/images/room/Kitchen redesign 1.jpg', onclick: ()=>handleSwitchDefaultImage('/images/room/Kitchen redesign 1.jpg') },
+            {name: 'Kitchen redesign', url: '/images/room/Kitchen redesign 2.jpg', onclick: ()=>handleSwitchDefaultImage('/images/room/Kitchen redesign 2.jpg') },
+            {name: 'Kitchen redesign', url: '/images/room/Kitchen redesign 3.jpg', onclick: ()=>handleSwitchDefaultImage('/images/room/Kitchen redesign 3.jpg') }
+            ],
+        'Wall & Flooring': [
+            {name: 'Wall & Flooring', url: '/images/room/Wall Flooring inpainting 0.jpg', onclick: ()=>handleSwitchDefaultImage('/images/room/Wall Flooring inpainting 0.jpg') },
+            {name: 'Wall & Flooring', url: '/images/room/Wall Flooring inpainting 1.jpg', onclick: ()=>handleSwitchDefaultImage('/images/room/Wall Flooring inpainting 1.jpg') }
+            ],
+    }
+
+    useEffect(() => {
+        const chooseSection: any = TopButtonList.filter((Item)=>Item.name==currentSection)
+        console.log("chooseSection", chooseSection)
+        setDefaultImage(chooseSection[0].image)
+    }, [currentSection])
+
     const handleSwitchButtonSection = (buttonSection: string) => {
-        console.log("buttonSection", buttonSection)
         setCurrentSection(buttonSection)
         setCurrentSectionColor(buttonSection)
+    }
+
+    const handleSwitchDefaultImage = (ImageUrl: string) => {
+        setFiles([])
+        setDefaultImage(ImageUrl)
     }
 
     const [files, setFiles] = useState<File[]>([])
@@ -122,30 +147,44 @@ const UploadFilesContent = (props: any) => {
                             )
                         })}
                     </Grid>
-                    <PageHeader
-                    title={
-                        <Typography variant='h5'>
-                        {`${t('Upload Files')}`}
-                        </Typography>
-                    }
-                    subtitle={<Typography variant='body2' sx={{pt:2}}>{`${t('Up to 10 files can be uploaded at one time')}`}</Typography>}
-                    />
-                    <Grid item xs={8}>
-                        <div {...getRootProps({ className: 'dropzone' })}>
-                            <input {...getInputProps()} />
-                            <Box sx={{ display: 'flex', flexDirection: ['column', 'column', 'row'], alignItems: 'center' }}>
-                                {files.length ?
-                                <Img alt='Upload img' sx={{maxWidth: '98%', borderRadius: 0.5}} src={URL.createObjectURL(files[0] as any)} />
-                                :
-                                <Fragment>
-                                    <Img alt='Upload img' src='/images/misc/upload.png' sx={{borderRadius: 0.5}} />
+                    <Grid item xs={6}>
+                        {files.length ?
+                        <Img alt='Upload img' sx={{maxWidth: '98%', borderRadius: 0.5}} src={URL.createObjectURL(files[0] as any)} />
+                        :
+                        <Img alt='Upload img' src={defaultImage} sx={{maxWidth: '98%', borderRadius: 4}} />
+                        }
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Grid item xs={12}>
+                            <div {...getRootProps({ className: 'dropzone' })}>
+                                <input {...getInputProps()} />
+                                <Box sx={{ display: 'flex', flexDirection: ['column', 'column', 'row'], alignItems: 'center' }}>
+                                    {files.length ?
+                                    <Img alt='Upload img' sx={{maxWidth: '100px', borderRadius: 0.5, mr: 2}} src={URL.createObjectURL(files[0] as any)} />
+                                    :
+                                    <Img alt='Upload img' src={defaultImage} sx={{maxWidth: '100px', borderRadius: 0.5, mr: 2}} />
+                                    }
                                     <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: ['center', 'center', 'inherit'] }}>
                                         <HeadingTypography variant='h5'>{`${t('Drop files here or click to upload.')}`}</HeadingTypography>
                                     </Box>
-                                </Fragment>
-                                }
-                            </Box>
-                        </div>
+                                </Box>
+                            </div>
+                        </Grid>
+                        <Grid item xs={12} sx={{mt: 6}} container justifyContent="center">
+                            Or use example images
+                        </Grid>
+                        <Grid item xs={12} sx={{mt: 6}} container justifyContent="center">
+                            {RoomImageList && RoomImageList[currentSection] && RoomImageList[currentSection].map((Item: any, Index: number)=>{
+                                return (
+                                    <Box display="flex" flexDirection="column" alignItems="center" sx={{ border: 0, mx: 3 }}>
+                                        <Box display="flex" alignItems="center">
+                                            <Img alt='' src={Item.url} sx={{ width: '100px', borderRadius: 1, cursor: 'pointer' }} onClick={Item.onclick}/>
+                                        </Box>
+                                        <Typography textAlign="center">{Item.name}</Typography>
+                                    </Box>
+                                    )
+                            })}
+                        </Grid>
                     </Grid>
                 </Grid>
             </DropzoneWrapper>

@@ -1,9 +1,7 @@
-import { Fragment, Ref, useState, forwardRef, ReactElement, useEffect } from 'react'
+import { Fragment, Ref, useState, forwardRef, ReactElement, useEffect, SyntheticEvent, ChangeEvent, ElementType } from 'react'
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
-import Grid from '@mui/material/Grid'
-import Button from '@mui/material/Button'
 import CardMedia from '@mui/material/CardMedia'
 import Dialog from '@mui/material/Dialog'
 import IconButton from '@mui/material/IconButton'
@@ -12,6 +10,25 @@ import Fade, { FadeProps } from '@mui/material/Fade'
 import DialogContent from '@mui/material/DialogContent'
 import Divider from '@mui/material/Divider'
 import Container from '@mui/material/Container';
+
+// ** MUI Imports
+import Grid from '@mui/material/Grid'
+import Radio from '@mui/material/Radio'
+import Slider from '@mui/material/Slider'
+import Button, { ButtonProps } from '@mui/material/Button'
+import Select from '@mui/material/Select'
+import Drawer from '@mui/material/Drawer'
+import MenuItem from '@mui/material/MenuItem'
+import RadioGroup from '@mui/material/RadioGroup'
+import Box from '@mui/material/Box'
+import { styled } from '@mui/material/styles'
+import TextField from '@mui/material/TextField'
+import FormLabel from '@mui/material/FormLabel'
+import InputLabel from '@mui/material/InputLabel'
+import FormControl from '@mui/material/FormControl'
+import FormControlLabel from '@mui/material/FormControlLabel'
+
+import toast from 'react-hot-toast'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -22,9 +39,6 @@ import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
 import { CheckPermission } from 'src/functions/ChatBook'
 
-// ** MUI Imports
-import Box from '@mui/material/Box'
-import { styled } from '@mui/material/styles'
 
 // ** Third Party Imports
 import { useDropzone } from 'react-dropzone'
@@ -35,6 +49,58 @@ import DropzoneWrapper from 'src/@core/styles/libs/react-dropzone'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
+import MuiAccordion, { AccordionProps } from '@mui/material/Accordion'
+import MuiAccordionSummary, { AccordionSummaryProps } from '@mui/material/AccordionSummary'
+import MuiAccordionDetails, { AccordionDetailsProps } from '@mui/material/AccordionDetails'
+
+// Styled component for Accordion component
+const Accordion = styled(MuiAccordion)<AccordionProps>(({ theme }) => ({
+  boxShadow: 'none !important',
+  border:
+    theme.palette.mode === 'light' ? `1px solid ${theme.palette.grey[300]}` : `1px solid ${theme.palette.divider}`,
+  '&:not(:last-of-type)': {
+    borderBottom: 0
+  },
+  '&:before': {
+    display: 'none'
+  },
+  '&.Mui-expanded': {
+    margin: 'auto'
+  },
+  '&:first-of-type': {
+    '& .MuiButtonBase-root': {
+      borderTopLeftRadius: theme.shape.borderRadius,
+      borderTopRightRadius: theme.shape.borderRadius
+    }
+  },
+  '&:last-of-type': {
+    '& .MuiAccordionSummary-root:not(.Mui-expanded)': {
+      borderBottomLeftRadius: theme.shape.borderRadius,
+      borderBottomRightRadius: theme.shape.borderRadius
+    }
+  }
+}))
+
+// Styled component for AccordionSummary component
+const AccordionSummary = styled(MuiAccordionSummary)<AccordionSummaryProps>(({ theme }) => ({
+  marginBottom: -1,
+  padding: theme.spacing(0, 4),
+  minHeight: theme.spacing(12),
+  transition: 'min-height 0.15s ease-in-out',
+  borderBottom:
+    theme.palette.mode === 'light' ? `1px solid ${theme.palette.grey[300]}` : `1px solid ${theme.palette.divider}`,
+  '&.Mui-expanded': {
+    minHeight: theme.spacing(12)
+  },
+  '& .MuiAccordionSummary-content.Mui-expanded': {
+    margin: '10px 0'
+  }
+}))
+
+// Styled component for AccordionDetails component
+const AccordionDetails = styled(MuiAccordionDetails)<AccordionDetailsProps>(({ theme }) => ({
+  padding: `${theme.spacing(4)} !important`
+}))
 
 // Styled component for the upload image inside the dropzone area
 const Img = styled('img')(({ theme }) => ({
@@ -65,6 +131,11 @@ const UploadFilesContent = (props: any) => {
     useEffect(() => {
         CheckPermission(auth, router)
     }, [])
+
+    const [expanded, setExpanded] = useState<string | false>('panel1')
+    const handleChange = (panel: string) => (event: SyntheticEvent, isExpanded: boolean) => {
+        setExpanded(isExpanded ? panel : false)
+    }
 
     const [currentSection, setCurrentSection] = useState<string>("Real-time Design")
     const [currentSectionColor, setCurrentSectionColor] = useState<string>("primary")
@@ -107,6 +178,8 @@ const UploadFilesContent = (props: any) => {
         const chooseSection: any = TopButtonList.filter((Item)=>Item.name==currentSection)
         console.log("chooseSection", chooseSection)
         setDefaultImage(chooseSection[0].image)
+        setOriginFileShow(null)
+        setImageValue(null)
     }, [currentSection])
 
     const handleSwitchButtonSection = (buttonSection: string) => {
@@ -117,9 +190,13 @@ const UploadFilesContent = (props: any) => {
     const handleSwitchDefaultImage = (ImageUrl: string) => {
         setFiles([])
         setDefaultImage(ImageUrl)
+        setOriginFileShow(null)
+        setImageValue(null)
     }
 
+    const [originFileShow, setOriginFileShow] = useState<File | null>(null)
     const [files, setFiles] = useState<File[]>([])
+    const [imageValue, setImageValue] = useState<File | null>()
     const { getRootProps, getInputProps } = useDropzone({
         multiple: false,
         maxFiles: 1,
@@ -130,8 +207,220 @@ const UploadFilesContent = (props: any) => {
         },
         onDrop: (acceptedFiles: File[]) => {
           setFiles(acceptedFiles.map((file: File) => Object.assign(file)))
+          setImageValue(acceptedFiles[0] as File)
         }
     })
+
+    const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
+    const [sendButtonDisable, setSendButtonDisable] = useState<boolean>(false)
+    const [sendButtonText, setSendButtonText] = useState<string>('')
+
+    const [modelValue, setModelValue] = useState<string>('stable-diffusion-v1-6')
+    const ModelList: any[] = []
+    ModelList.push({name: "Stable Diffusion XL 1.0", value: "stable-diffusion-xl-1024-v1-0"})
+    ModelList.push({name: "Stable Diffusion 1.6", value: "stable-diffusion-v1-6"})
+    const handleModelChange = (event: any) => {
+        setModelValue(event.target.value);
+    }
+
+    const [promptValue, setPromptValue] = useState<string>("A captivating portrait of a Chinese girl radiating grace and elegance. The painting captures her intriguing beauty in intricate detail, showcasing a serene aura that captivates the viewer's gaze. The girl's delicate features are adorned with traditional Chinese attire, further emphasizing her cultural heritage")
+    const [negativePromptValue, setNegativePromptValue] = useState<string>('blurry, bad')
+
+    const [styleValue, setStyleValue] = useState<string>('enhance')
+    const StyleList: any[] = []
+    StyleList.push({name: "enhance", value: "enhance"})
+    StyleList.push({name: "analog-film", value: "analog-film"})
+    StyleList.push({name: "anime", value: "anime"})
+    StyleList.push({name: "cinematic", value: "cinematic"})
+    StyleList.push({name: "comic-book", value: "comic-book"})
+    StyleList.push({name: "digital-art", value: "digital-art"})
+    StyleList.push({name: "fantasy-art", value: "fantasy-art"})
+    StyleList.push({name: "isometric", value: "isometric"})
+    StyleList.push({name: "line-art", value: "line-art"})
+    StyleList.push({name: "low-poly", value: "low-poly"})
+    StyleList.push({name: "modeling-compound", value: "modeling-compound"})
+    StyleList.push({name: "neon-punk", value: "neon-punk"})
+    StyleList.push({name: "origami", value: "origami"})
+    StyleList.push({name: "photographic", value: "photographic"})
+    StyleList.push({name: "pixel-art", value: "pixel-art"})
+    StyleList.push({name: "tile-texture", value: "tile-texture"})
+    StyleList.push({name: "3d-model ", value: "3d-model "})
+
+    const handleStyleChange = (event: any) => {
+        setStyleValue(event.target.value);
+    }
+
+    const [stepsValue, setStepsValue] = useState<number>(40)
+    const handleStepsChange = (event: any) => {
+        setStepsValue(event.target.value);
+    };
+
+    const [seedValue, setSeedValue] = useState<string>('0')
+    const handleSeedChange = (event: any) => {
+        setSeedValue(event.target.value);
+    };
+
+    const [CFGScaleValue, setCFGScaleValue] = useState<number>(7)
+    const handleCFGScaleChange = (event: any) => {
+        setCFGScaleValue(event.target.value);
+    };
+
+    const [numberOfImagesValue, setNumberOfImagesValue] = useState<number>(1)
+    const NumberOfImagesList: any[] = []
+    NumberOfImagesList.push({name: "1", value: 1})
+    NumberOfImagesList.push({name: "2", value: 2})
+    NumberOfImagesList.push({name: "3", value: 3})
+    NumberOfImagesList.push({name: "4", value: 4})
+    const handleNumberOfImagesChange = (event: any) => {
+        setNumberOfImagesValue(event.target.value);
+    }
+
+    const [samplerValue, setSamplerValue] = useState<string>('DDPM')
+    const SamplerList: any[] = []
+    SamplerList.push({name: "DDIM", value: "DDIM"})
+    SamplerList.push({name: "DDPM", value: "DDPM"})
+    SamplerList.push({name: "K_DPMPP_2M", value: "K_DPMPP_2M"})
+    SamplerList.push({name: "K_DPMPP_2S_ANCESTRAL", value: "K_DPMPP_2S_ANCESTRAL"})
+    SamplerList.push({name: "K_DPM_2", value: "K_DPM_2"})
+    SamplerList.push({name: "K_DPM_2_ANCESTRAL", value: "K_DPM_2_ANCESTRAL"})
+    SamplerList.push({name: "K_EULER", value: "K_EULER"})
+    SamplerList.push({name: "K_EULER_ANCESTRAL", value: "K_EULER_ANCESTRAL"})
+    SamplerList.push({name: "K_HEUN", value: "K_HEUN"})
+    SamplerList.push({name: "K_LMS", value: "K_LMS"})
+    const handleSamplerChange = (event: any) => {
+        setSamplerValue(event.target.value);
+    }
+
+
+    useEffect(()=>{
+        if(numberOfImagesValue > 1) {
+            handleSubmitText(`${t('Generate') as string} ${numberOfImagesValue} ${t('images') as string}`)
+        }
+        else {
+            handleSubmitText(`${t('Generate') as string} ${numberOfImagesValue} ${t('image') as string}`)
+        }
+    }, [numberOfImagesValue])
+
+    const [generateSimilarData, setGenerateSimilarData] = useState<any>(null)
+
+    useEffect(()=>{
+        if(generateSimilarData) {
+            setModelValue(generateSimilarData.model)
+            setPromptValue(generateSimilarData.prompt)
+            setNegativePromptValue(generateSimilarData.negative_prompt)
+            setStyleValue(generateSimilarData.style)
+            setStepsValue(generateSimilarData.steps)
+            setSamplerValue(generateSimilarData.sampler)
+            setSeedValue(generateSimilarData.seed)
+        }
+    }, [generateSimilarData])
+
+
+    const handleSubmit = (e: SyntheticEvent) => {
+        e.preventDefault()
+        if(imageValue == null) {      
+            toast.error(t('Please upload a image first') as string, { duration: 4000 })
+    
+            return
+        }
+        if(promptValue == null || promptValue == '') {      
+        toast.error(t('Prompt Must Not Null') as string, { duration: 4000 })
+
+        return
+        }
+        if(negativePromptValue == null || negativePromptValue == '') {      
+        toast.error(t('Negative Prompt Must Not Null') as string, { duration: 4000 })
+
+        return
+        }
+
+        const data: any = new FormData();
+        data.append("image", imageValue);
+        data.append('model', modelValue);
+        data.append('prompt', promptValue);
+        data.append('negativePrompt', negativePromptValue);
+        data.append('style', styleValue);
+        data.append('steps', stepsValue);
+        data.append('seed', seedValue);
+        data.append('sampler', samplerValue);
+        data.append('CFGScale', CFGScaleValue);
+        data.append('width', 512);
+        data.append('height', 512);
+        data.append('numberOfImages', numberOfImagesValue);
+        data.append('outpuFormat', "png");
+        handleGenerateImage(data, numberOfImagesValue)
+    }
+
+    const handleGenerateImage = async (data: any, numberOfImages: number) => {
+        if(auth.user && auth.user.token)  {
+          //setSendButtonDisable(true)
+          setSendButtonText(t("Generating images...") as string)
+          console.log("numberOfImages", numberOfImages)
+          try {
+            const ImageListData = await Promise.all(
+              Array.from({ length: numberOfImages }, async () => {
+                const generateImageInfo = await axios.post(authConfig.backEndApiChatBook + '/api/generateImageFromImageStabilityAi/', data, {
+                  headers: { Authorization: auth?.user?.token, 'Content-Type': 'multipart/form-data' },
+                }).then(res => res.data);
+                if(generateImageInfo && generateImageInfo.status == 'error') {
+                    toast.error(t(generateImageInfo.msg), {
+                        duration: 4000
+                    })
+                }
+                console.log("generateImageInfo", generateImageInfo);
+    
+                return generateImageInfo;
+              })
+            );
+            console.log("ImageListData:", ImageListData[0].id);
+            if(ImageListData && ImageListData.length > 0 && ImageListData[0]!=null) {
+              setSendButtonDisable(false)
+              setRefreshChatCounter(refreshChatCounter + 2)
+              setSendButtonText(t("Generate images") as string)
+              handleSwitchDefaultImage(authConfig.backEndApiChatBook + '/api/image/' + ImageListData[0].id)
+              toast.success(t('Generate the image success'), {
+                duration: 4000
+              })
+              setOriginFileShow(imageValue as File)
+            }
+            if(ImageListData && ImageListData.length > 0 && ImageListData[0]==null) {
+              setSendButtonDisable(false)
+              setSendButtonText(t("Generate images") as string)
+              toast.error(t('Failed to generate the image, please modify your input parameters and try again'), {
+                duration: 4000
+              })
+            }
+          } 
+          catch (error) {
+            setSendButtonDisable(false)
+            setSendButtonText(t("Generate images") as string)
+            console.log("handleGenerateImage Error fetching images:", error);
+          }
+        }
+      }
+    
+      const handleSubmitText = (Text: string) => {
+        setSendButtonText(t(Text) as string)
+      }
+    
+      const handleUpscaleStabilityAi = async (showImg: any) => {
+        const data = { filename: showImg.filename }
+        const generateImageInfo = await axios.post(authConfig.backEndApiChatBook + '/api/generateImageUpscaleStabilityAi/', data, {
+          headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
+        }).then(res => res.data);
+        console.log("generateImageInfo", generateImageInfo);
+        if(generateImageInfo && generateImageInfo.status == 'error') {
+          toast.error(t(generateImageInfo.msg), {
+            duration: 4000
+          })
+        }
+        if(generateImageInfo && generateImageInfo.status == 'ok') {
+          toast.success(t(generateImageInfo.msg), {
+            duration: 4000
+          })
+        }
+        setRefreshChatCounter(refreshChatCounter + 2)
+      }
   
     return (
         <Grid container spacing={2}>
@@ -151,7 +440,12 @@ const UploadFilesContent = (props: any) => {
                         {files.length ?
                         <Img alt='Upload img' sx={{maxWidth: '98%', borderRadius: 0.5}} src={URL.createObjectURL(files[0] as any)} />
                         :
-                        <Img alt='Upload img' src={defaultImage} sx={{maxWidth: '98%', borderRadius: 4}} />
+                        <Img alt='Upload img' src={defaultImage} sx={{maxWidth: '98%', borderRadius: 0.5}} />
+                        }
+                        {originFileShow ? 
+                        <Img alt='Upload img' sx={{maxWidth: '98%', borderRadius: 0.5}} src={URL.createObjectURL(originFileShow as any)} />
+                        :
+                        null
                         }
                     </Grid>
                     <Grid item xs={6}>
@@ -170,13 +464,13 @@ const UploadFilesContent = (props: any) => {
                                 </Box>
                             </div>
                         </Grid>
-                        <Grid item xs={12} sx={{mt: 6}} container justifyContent="center">
+                        <Grid item xs={12} sx={{mt: 3}} container justifyContent="center">
                             Or use example images
                         </Grid>
-                        <Grid item xs={12} sx={{mt: 6}} container justifyContent="center">
+                        <Grid item xs={12} sx={{mt: 3}} container justifyContent="center">
                             {RoomImageList && RoomImageList[currentSection] && RoomImageList[currentSection].map((Item: any, Index: number)=>{
                                 return (
-                                    <Box display="flex" flexDirection="column" alignItems="center" sx={{ border: 0, mx: 3 }}>
+                                    <Box key={Index} display="flex" flexDirection="column" alignItems="center" sx={{ border: 0, mx: 3 }}>
                                         <Box display="flex" alignItems="center">
                                             <Img alt='' src={Item.url} sx={{ width: '100px', borderRadius: 1, cursor: 'pointer' }} onClick={Item.onclick}/>
                                         </Box>
@@ -184,6 +478,121 @@ const UploadFilesContent = (props: any) => {
                                     </Box>
                                     )
                             })}
+                        </Grid>
+                        <Grid item xs={12} sx={{mt: 3}} container justifyContent="center">
+                            <Grid container spacing={5} sx={{mb: 4}}>
+                                <Grid item xs={12}>
+                                <TextField multiline rows={6} fullWidth label={t('Prompt') as string} placeholder='' value={promptValue} onChange={(event: any)=>setPromptValue(event.target.value)}/>
+                                </Grid>
+                                <Grid item xs={12}>
+                                <TextField multiline rows={2} fullWidth label={t('Negative Prompt') as string} placeholder='' defaultValue={negativePromptValue} onChange={(event: any)=>setNegativePromptValue(event.target.value)}/>
+                                </Grid>
+                            </Grid>
+
+                            <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
+                                <AccordionSummary
+                                    expandIcon={<Icon icon='mdi:chevron-down' />}
+                                    id='form-layouts-collapsible-header-3'
+                                    aria-controls='form-layouts-collapsible-content-3'
+                                    >
+                                <Typography variant='subtitle1' sx={{ fontWeight: 500 }}>
+                                {t('Advanced') as string}
+                                </Typography>
+                                </AccordionSummary>
+                                <Divider sx={{ m: '0 !important' }} />
+                                <AccordionDetails sx={{ pt: 6, pb: 6 }}>
+                                <Grid container spacing={5}>
+                                    <Grid item xs={6} sm={6}>
+                                    <FormControl fullWidth>
+                                        <InputLabel >{t('Model') as string}</InputLabel>
+                                        <Select
+                                        label={t('Model') as string}
+                                        defaultValue={modelValue}
+                                        value={modelValue}
+                                        size="small"
+                                        onChange={handleModelChange}
+                                        >
+                                        {ModelList.map((Item: any, Index: number)=>{
+                                            return (<MenuItem key={Index} value={Item.value}>{Item.name}</MenuItem>)                          
+                                        })}
+                                        </Select>
+                                    </FormControl>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                    <TextField type="number" fullWidth label={t('Seed') as string} name='Seed' placeholder='' size="small" defaultValue={seedValue} value={seedValue} onChange={handleSeedChange}/>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                    <FormControl sx={{ flexWrap: 'wrap', width: '98%' }}>
+                                        <FormLabel>{t('Steps') as string}: {stepsValue}</FormLabel>
+                                        <Slider
+                                        min={1}
+                                        max={50}
+                                        step={1}
+                                        defaultValue={stepsValue}
+                                        value={stepsValue}
+                                        onChange={handleStepsChange}
+                                        aria-labelledby='continuous-slider'
+                                        />
+                                    </FormControl>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                    <FormControl sx={{ flexWrap: 'wrap', width: '98%' }}>
+                                        <FormLabel>{t('CFG Scale') as string}: {CFGScaleValue}</FormLabel>
+                                        <Slider
+                                        min={5}
+                                        max={18}
+                                        step={1}
+                                        defaultValue={CFGScaleValue}
+                                        value={CFGScaleValue}
+                                        onChange={handleCFGScaleChange}
+                                        aria-labelledby='continuous-slider'
+                                        />
+                                    </FormControl>
+                                    </Grid>
+                                    <Grid item xs={6} sm={6}>
+                                    <FormControl fullWidth>
+                                        <InputLabel >{t('Style') as string}</InputLabel>
+                                        <Select
+                                        label={t('Style') as string}
+                                        defaultValue={styleValue}
+                                        value={styleValue}
+                                        size="small"
+                                        onChange={handleStyleChange}
+                                        >
+                                        {StyleList.map((Item: any, Index: number)=>{
+                                            return (<MenuItem key={Index} value={Item.value}>{Item.name}</MenuItem>)                          
+                                        })}
+                                        </Select>
+                                    </FormControl>
+                                    </Grid>
+                                    <Grid item xs={6} sm={6}>
+                                    <FormControl fullWidth>
+                                        <InputLabel >Sampler</InputLabel>
+                                        <Select
+                                        label='Sampler'
+                                        defaultValue={samplerValue}
+                                        value={samplerValue}
+                                        size="small"
+                                        onChange={handleSamplerChange}
+                                        >
+                                        {SamplerList.map((Item: any, Index: number)=>{
+                                            return (<MenuItem key={Index} value={Item.value}>{Item.name}</MenuItem>)                          
+                                        })}
+                                        </Select>
+                                    </FormControl>
+                                    </Grid>
+                                </Grid>
+                                </AccordionDetails>
+                            </Accordion>
+                        
+                            <Grid container spacing={5} sx={{ alignItems: 'center', mt: 2, justifyContent: 'center'}}>
+                                <Grid item xs={12} sm={12}>                                    
+                                    <Button size='medium' type='button' onClick={handleSubmit} variant='contained' sx={{ mr: 4 }} disabled={sendButtonDisable} >
+                                    {sendButtonText}
+                                    </Button>
+                                </Grid>
+                            </Grid>
+
                         </Grid>
                     </Grid>
                 </Grid>

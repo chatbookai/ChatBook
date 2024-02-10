@@ -95,7 +95,7 @@ const ImagesList = (props: any) => {
     setMyFavorite((myFavorite: any) => {
       const myFavoriteNew = { ...myFavorite };
       myFavoriteNew[id] = status==true?1:-1;
-      
+
       return myFavoriteNew;
     });
     setFavoriteCounter((favoriteCounter: any) => {
@@ -123,6 +123,9 @@ const ImagesList = (props: any) => {
                       <Grid item key={index} xs={12} sm={6} md={3} lg={3} sx={{mt: 2}}>
                         <Box position="relative">
                           <CardMedia image={`${authConfig.backEndApiChatBook}/api/image/${item.filename}`} sx={{ height: '13.25rem', objectFit: 'contain', borderRadius: 1, cursor: 'pointer' }} onClick={()=>handleImgInfo(index)}/>
+                          <Box position="absolute" top={0} left={0} m={1} px={0.8} bgcolor="rgba(0, 0, 0, 0.4)" borderRadius={1} color="white">
+                            <Typography variant="body2">Tool</Typography>
+                          </Box>
                           <Box
                             position="absolute"
                             bottom={0}

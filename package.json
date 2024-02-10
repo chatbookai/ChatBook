@@ -31,6 +31,7 @@
     "@langchain/community": "^0.0.20",
     "@langchain/google-genai": "^0.0.7",
     "@langchain/openai": "^0.0.12",
+    "@mui/icons-material": "^5.15.9",
     "@mui/lab": "5.0.0-alpha.128",
     "@mui/material": "5.12.2",
     "@mui/system": "5.12.1",

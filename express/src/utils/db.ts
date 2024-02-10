@@ -158,7 +158,7 @@ export async function initChatBookDb() {
                 favorite INTEGER not null default 0,
                 referee INTEGER not null default 0
             );
-        `);   
+        `);
         db.run(`
             CREATE TABLE IF NOT EXISTS uservideos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -184,7 +184,43 @@ export async function initChatBookDb() {
                 referee INTEGER not null default 0,
                 status INTEGER not null default 0
             );
-        `);   
+        `);
+        db.run(`
+            CREATE TABLE IF NOT EXISTS userimagefavorite (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                userId INTEGER not null default 0,
+                imageId INTEGER not null default 0,
+                status INTEGER not null default 0,
+                createtime INTEGER not null default 0
+            );
+        `);
+        db.run(`
+            CREATE TABLE IF NOT EXISTS userimagelike (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                userId INTEGER not null default 0,
+                imageId INTEGER not null default 0,
+                status INTEGER not null default 0,
+                createtime INTEGER not null default 0
+            );
+        `); 
+        db.run(`
+            CREATE TABLE IF NOT EXISTS uservideofavorite (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                userId INTEGER not null default 0,
+                videoId INTEGER not null default 0,
+                status INTEGER not null default 0,
+                createtime INTEGER not null default 0
+            );
+        `);
+        db.run(`
+            CREATE TABLE IF NOT EXISTS uservideolike (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                userId INTEGER not null default 0,
+                videoId INTEGER not null default 0,
+                status INTEGER not null default 0,
+                createtime INTEGER not null default 0
+            );
+        `); 
     });
 }
 

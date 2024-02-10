@@ -15,8 +15,14 @@ import Typography from '@mui/material/Typography'
 import Fade, { FadeProps } from '@mui/material/Fade'
 import DialogContent from '@mui/material/DialogContent'
 import Divider from '@mui/material/Divider'
-import Container from '@mui/material/Container';
+import Container from '@mui/material/Container'
+import CardContent from '@mui/material/CardContent'
 import CircularProgress from '@mui/material/CircularProgress'
+import FavoriteIcon from '@mui/icons-material/Favorite'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
+import VisibilityIcon from '@mui/icons-material/Visibility'
+
+import Avatar from '@mui/material/Avatar'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -46,6 +52,7 @@ const ImagesList = (props: any) => {
   const [show, setShow] = useState<boolean>(true)
   const [showImg, setShowImg] = useState<any>(null)
   const [showImgData, setShowImgData] = useState<any>(null)
+  const [myFavorite, setMyFavorite] = useState<any>({})
 
   useEffect(()=>{
     if(imageList) {
@@ -73,6 +80,14 @@ const ImagesList = (props: any) => {
       });
   };
 
+  const handleMyFavorite = (id: number, status: boolean) => {
+    setMyFavorite((myFavorite: any) => {
+      const myFavoriteNew = { ...myFavorite };
+      myFavoriteNew[id] = status;
+      return myFavoriteNew;
+    });
+  };
+  
   const renderContent = () => {
       return (
         <Grid container spacing={2}>
@@ -83,7 +98,79 @@ const ImagesList = (props: any) => {
                   <Grid container spacing={2}>
                     {imageList && imageList.map((item: any, index: number) => (
                       <Grid item key={index} xs={12} sm={6} md={3} lg={3} sx={{mt: 2}}>
-                        <CardMedia image={`${authConfig.backEndApiChatBook}/api/image/${item.filename}`} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1, cursor: 'pointer' }} onClick={()=>handleImgInfo(index)}/>
+                        <Box position="relative">
+                          <CardMedia image={`${authConfig.backEndApiChatBook}/api/image/${item.filename}`} sx={{ height: '13.25rem', objectFit: 'contain', borderRadius: 1, cursor: 'pointer' }} onClick={()=>handleImgInfo(index)}/>
+                          <Box
+                            position="absolute"
+                            bottom={0}
+                            left={0}
+                            p={1}
+                            display="flex"
+                            alignItems="center"
+                          >
+                            <IconButton sx={{ color: 'white' }}>
+                              {myFavorite && myFavorite[item.id] ?
+                              <FavoriteIcon onClick={ ()=>handleMyFavorite(item.id, false) } />
+                              :
+                              <FavoriteBorderIcon onClick={ ()=>handleMyFavorite(item.id, true) } />
+                              }
+                            </IconButton>
+                            <Typography variant="body2" sx={{ color: 'white', ml: 1 }}>
+                              {item.favorite}
+                            </Typography>
+                            <IconButton sx={{ color: 'white', ml: 2 }}>
+                              <VisibilityIcon />
+                            </IconButton>
+                            <Typography variant="body2" sx={{ color: 'white', ml: 1 }}>
+                              {item.view}
+                            </Typography>
+                          </Box>
+                        </Box>
+                        <CardContent>
+                          <Box
+                            key={index}
+                            sx={{
+                              display: 'flex',
+                              alignItems: 'center',
+                            }}
+                          >
+                            <Avatar src={"/images/avatars/1.png"} sx={{ mr: 3, width: 42, height: 42 }} />
+                            <Box
+                              sx={{
+                                width: '100%',
+                                display: 'flex',
+                                flexWrap: 'wrap',
+                                alignItems: 'center',
+                                justifyContent: 'space-between'
+                              }}
+                            >
+                              <Box sx={{ mr: 2, display: 'flex', mb: 0.4, flexDirection: 'column' }}>
+                                <Typography sx={{ 
+                                  fontWeight: 500,
+                                  lineHeight: 1.71,
+                                  letterSpacing: '0.22px',
+                                  fontSize: '0.875rem !important',
+                                  maxWidth: '240px',
+                                  overflow: 'hidden',
+                                  textOverflow: 'ellipsis',
+                                  whiteSpace: 'nowrap' 
+                                  }} >
+                                  {item.prompt}
+                                </Typography>
+                                <Box
+                                  sx={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    '& svg': { mr: 1, color: 'text.secondary', verticalAlign: 'middle' }
+                                  }}
+                                >
+                                  <Icon fontSize='0.875rem' icon='mdi:calendar-blank-outline' />
+                                  <Typography variant='caption'>{'@ChatbookAI'}</Typography>
+                                </Box>
+                              </Box>
+                            </Box>
+                          </Box>
+                        </CardContent>
                       </Grid>
                     ))}
                   </Grid>

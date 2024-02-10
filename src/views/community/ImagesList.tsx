@@ -23,6 +23,8 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import VisibilityIcon from '@mui/icons-material/Visibility'
 
 import Avatar from '@mui/material/Avatar'
+import axios from 'axios'
+import { useAuth } from 'src/hooks/useAuth'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -34,6 +36,7 @@ import { useTranslation } from 'react-i18next'
 const ImagesList = (props: any) => {
   // ** Hook
   const { t } = useTranslation()
+  const auth = useAuth()
 
   // ** Props
   const {
@@ -80,12 +83,17 @@ const ImagesList = (props: any) => {
       });
   };
 
-  const handleMyFavorite = (id: number, status: boolean) => {
+  const handleMyFavorite = async (id: number, status: boolean) => {
     setMyFavorite((myFavorite: any) => {
       const myFavoriteNew = { ...myFavorite };
       myFavoriteNew[id] = status;
       return myFavoriteNew;
     });
+    if(auth && auth.user)   {
+      const PostParams = {id, status: status==true?1:-1}
+      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/user/image/favorite', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+      console.log("FormSubmit:", FormSubmit)
+    }
   };
   
   const renderContent = () => {

@@ -1,7 +1,7 @@
   // app.ts
   import express, { Request, Response, NextFunction } from 'express';
 
-  import { checkUserPassword, registerUser, changeUserPasswordByToken, changeUserDetail, changeUserStatus, checkUserToken, getUsers, getUserLogsAll, getUserLogs, getOneUserByToken } from '../utils/user';
+  import { checkUserPassword, registerUser, changeUserPasswordByToken, changeUserDetail, changeUserStatus, checkUserToken, getUsers, getUserLogsAll, getUserLogs, getOneUserByToken, updateUserImageFavorite, updateUserVideoFavorite } from '../utils/user';
 
   const app = express();
 
@@ -93,6 +93,20 @@
     const { email, password } = req.body;
     const checkUserPasswordData = await checkUserPassword(req, email, password);
     res.status(200).json(checkUserPasswordData);
+    res.end();
+  });
+
+  app.post('/api/user/image/favorite', async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const updateUserImageFavoriteData = await updateUserImageFavorite(authorization as string, req.body);
+    res.status(200).json(updateUserImageFavoriteData);
+    res.end();
+  });
+
+  app.post('/api/user/video/favorite', async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const updateUserVideoFavoriteData = await updateUserVideoFavorite(authorization as string, req.body);
+    res.status(200).json(updateUserVideoFavoriteData);
     res.end();
   });
   

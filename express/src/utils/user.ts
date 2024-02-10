@@ -385,3 +385,53 @@
     
     return { protocol, host, port }
   }
+
+  export async function updateUserImageFavorite(token: string, data: any) {
+    console.log("data", data)
+    const checkUserTokenData: any = await checkUserToken(token);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user' && data && data.id && data.status != null)) {
+      console.log("checkUserTokenData", checkUserTokenData)
+      if(data.status == '1') {
+        const updateSetting = db.prepare('update userimages set favorite = favorite + 1 where id = ?');
+        updateSetting.run(data.id);
+        updateSetting.finalize();
+      }
+      else {
+        const updateSetting = db.prepare('update userimages set favorite = favorite - 1 where id = ?');
+        updateSetting.run(data.id);
+        updateSetting.finalize();
+      }
+      const insertUser = db.prepare('INSERT OR IGNORE INTO userimagefavorite (userId, imageId, status, createtime) VALUES (?, ?, ?, ?)');
+      insertUser.run(checkUserTokenData.data.id, data.id, data.status, Date.now());
+      insertUser.finalize();
+      return {"status":"ok", "msg":"Favorite successful"}
+    }
+    else {
+      return {"status":"error", "msg":"Token is invalid in changeUserDetail"}
+    }
+  }
+
+  export async function updateUserVideoFavorite(token: string, data: any) {
+    console.log("data", data)
+    const checkUserTokenData: any = await checkUserToken(token);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user' && data && data.id && data.status != null)) {
+      console.log("checkUserTokenData", checkUserTokenData)
+      if(data.status == '1') {
+        const updateSetting = db.prepare('update uservideos set favorite = favorite + 1 where id = ?');
+        updateSetting.run(data.id);
+        updateSetting.finalize();
+      }
+      else {
+        const updateSetting = db.prepare('update uservideos set favorite = favorite - 1 where id = ?');
+        updateSetting.run(data.id);
+        updateSetting.finalize();
+      }
+      const insertUser = db.prepare('INSERT OR IGNORE INTO uservideofavorite (userId, videoId, status, createtime) VALUES (?, ?, ?, ?)');
+      insertUser.run(checkUserTokenData.data.id, data.id, data.status, Date.now());
+      insertUser.finalize();
+      return {"status":"ok", "msg":"Favorite successful"}
+    }
+    else {
+      return {"status":"error", "msg":"Token is invalid in changeUserDetail"}
+    }
+  }

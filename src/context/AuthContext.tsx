@@ -73,12 +73,12 @@ const AuthProvider = ({ children }: Props) => {
           if(response.data.status == 'ok' && response.data.token) {
             window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.token)
             setUser({ ...user, token: response.data.token})
-            console.log("setUser", user)
-            console.log("setUser", { ...user, token: response.data.token})
-            toast.success(t(response.data.msg) as string, { duration: 4000 })
+            
+            //toast.success(t(response.data.msg) as string, { duration: 4000 })
           }
           else {
-            toast.error(t(response.data.msg) as string, { duration: 4000 })
+            
+            //toast.error(t(response.data.msg) as string, { duration: 4000 })
           }
         })
     }

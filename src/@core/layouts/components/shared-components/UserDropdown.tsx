@@ -17,8 +17,6 @@ import MenuItem from '@mui/material/MenuItem'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
-import axios from 'axios'
-import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
 import { useTranslation } from 'react-i18next'
 
@@ -62,7 +60,9 @@ const UserDropdown = (props: Props) => {
         console.error('Error fetching data:', error);
       }
     };
-    const intervalId = setInterval(refreshUserToken, 10000);
+    
+    const intervalId = setInterval(refreshUserToken, 120000);
+
     return () => clearInterval(intervalId);
   }, []); 
   

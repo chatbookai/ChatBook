@@ -67,8 +67,13 @@ export const MenuListAdmin = [
     path: '/chat/knowledge'
   },
   {
+    title: 'Studio',
+    icon: 'mdi:building',
+    path: '/studio/'
+  },
+  {
     title: 'Community',
-    icon: 'material-symbols:chat',
+    icon: 'fluent:people-community-32-filled',
     path: '/community/'
   },
   {
@@ -163,8 +168,13 @@ export const MenuListUser = [
     path: '/chat/knowledge'
   },
   {
+    title: 'Studio',
+    icon: 'mdi:building',
+    path: '/studio/'
+  },
+  {
     title: 'Community',
-    icon: 'material-symbols:chat',
+    icon: 'fluent:people-community-32-filled',
     path: '/Community/'
   }
 ]

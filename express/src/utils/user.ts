@@ -153,6 +153,17 @@
     }
   }
 
+  export async function refreshUserToken(token: string) {
+    const userTokenData: any = verifyJwtToken(token);
+    if(userTokenData) {
+      const createJwtTokenData = createJwtToken(userTokenData.id, userTokenData.email, userTokenData.role)
+        return {"status":"ok", "msg":"User token is valid", "token": createJwtTokenData}
+    }
+    else {
+        return {"status":"error", "msg":"Token is invalid"}
+    }
+  }
+
   export async function checkUserPassword(req: Request, email: string, password: string) {
     const getOneUserData: any = await getOneUser(email);
     if(getOneUserData && getOneUserData.user_status == '1') {

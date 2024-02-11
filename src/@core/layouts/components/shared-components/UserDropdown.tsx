@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, SyntheticEvent, Fragment } from 'react'
+import { useState, SyntheticEvent, Fragment, useEffect } from 'react'
 
 // ** Next Import
 import { useRouter } from 'next/router'
@@ -17,6 +17,8 @@ import MenuItem from '@mui/material/MenuItem'
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
+import axios from 'axios'
+import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
 import { useTranslation } from 'react-i18next'
 
@@ -40,7 +42,7 @@ const UserDropdown = (props: Props) => {
   // ** Props
   const { settings } = props
 
-  const { user, logout } = useAuth()
+  const { user, logout, refresh } = useAuth()
 
   // ** States
   const [anchorEl, setAnchorEl] = useState<Element | null>(null)
@@ -48,6 +50,21 @@ const UserDropdown = (props: Props) => {
   // ** Hooks
   const router = useRouter()
   const { t } = useTranslation()
+
+  useEffect(() => {
+    const refreshUserToken = async () => {
+      try {
+        if (user) {
+          refresh(user)
+        }
+      } 
+      catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    };
+    const intervalId = setInterval(refreshUserToken, 10000);
+    return () => clearInterval(intervalId);
+  }, []); 
   
   // ** Vars
   const { direction } = settings

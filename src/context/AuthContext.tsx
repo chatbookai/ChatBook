@@ -23,7 +23,8 @@ const defaultProvider: AuthValuesType = {
   setLoading: () => Boolean,
   login: () => Promise.resolve(),
   logout: () => Promise.resolve(),
-  register: () => Promise.resolve()
+  register: () => Promise.resolve(),
+  refresh: () => Promise.resolve()
 }
 
 const AuthContext = createContext(defaultProvider)
@@ -62,6 +63,27 @@ const AuthProvider = ({ children }: Props) => {
         if (errorCallback) errorCallback(err)
       })
   }
+
+  const handleRefreshToken = (user: UserDataType) => {
+    const token = window.localStorage.getItem(authConfig.storageTokenKeyName)
+    if(user && window && token)  {
+      axios
+        .post(authConfig.backEndApiChatBook + '/api/user/refreshtoken', {}, { headers: { Authorization: token, 'Content-Type': 'application/json'} })
+        .then(async (response: any) => {
+          if(response.data.status == 'ok' && response.data.token) {
+            window.localStorage.setItem(authConfig.storageTokenKeyName, response.data.token)
+            setUser({ ...user, token: response.data.token})
+            console.log("setUser", user)
+            console.log("setUser", { ...user, token: response.data.token})
+            toast.success(t(response.data.msg) as string, { duration: 4000 })
+          }
+          else {
+            toast.error(t(response.data.msg) as string, { duration: 4000 })
+          }
+        })
+    }
+  }
+
 
   useEffect(() => {
     const userData = window.localStorage.getItem(authConfig.userInfoTokenKeyName)
@@ -104,7 +126,8 @@ const AuthProvider = ({ children }: Props) => {
     setLoading,
     login: handleLogin,
     logout: handleLogout,
-    register: handleRegister
+    register: handleRegister,
+    refresh: handleRefreshToken
   }
 
   return <AuthContext.Provider value={values}>{children}</AuthContext.Provider>

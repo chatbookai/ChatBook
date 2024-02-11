@@ -72,6 +72,9 @@ const AppChat = () => {
         })
         setImageList(imageListInitial.filter((element) => element != null))
       }
+      if(RS && RS.status && RS.status=='error') {
+        CheckPermission(auth, router, true)
+      }
     }
   }
 

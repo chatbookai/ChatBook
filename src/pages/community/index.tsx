@@ -51,7 +51,6 @@ const AppChat = () => {
         setFavoriteList(RS.favorite)
       }
       if(RS && RS.status && RS.status=='error') {
-        console.log("RSRSRSRSRS", RS)
         CheckPermission(auth, router, true)
       }
       const timer = setTimeout(() => {

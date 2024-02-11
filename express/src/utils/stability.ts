@@ -119,6 +119,24 @@ export async function generateImageFromTextStabilityAi(checkUserTokenData: any, 
 
 export async function generateImageFromImageStabilityAi(checkUserTokenData: any, PostData:any, files: any) {
   if(files==null || files[0]==null || files[0].filename==null) {
+    if(PostData.image && typeof PostData.image === 'string') {
+      const ImageName = PostData.image.split('/').pop()
+      const ImageNameNew = "../public/images/room/" + ImageName
+      if(isFile(ImageNameNew)) {
+        files.push({filename: ImageName, path: ImageNameNew})
+      }
+    }
+  }
+  if(files==null || files[0]==null || files[0].filename==null) {
+    if(PostData.image && typeof PostData.image === 'string') {
+      const ImageName = PostData.image.split('/').pop()
+      const ImageNameNew = "../public/images/room/" + ImageName
+      if(isFile(ImageNameNew)) {
+        files.push({filename: ImageName, path: ImageNameNew})
+      }
+    }
+    console.log("files", files)
+    console.log("PostData", PostData)
     return {status: 'error', msg: 'Please upload the file first' };
   }
   const FileName = files[0].filename

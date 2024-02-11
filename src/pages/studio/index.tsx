@@ -191,12 +191,12 @@ const UploadFilesContent = (props: any) => {
         setFiles([])
         setDefaultImage(ImageUrl)
         setOriginFileShow(null)
-        setImageValue(null)
+        setImageValue(ImageUrl)
     }
 
     const [originFileShow, setOriginFileShow] = useState<File | null>(null)
     const [files, setFiles] = useState<File[]>([])
-    const [imageValue, setImageValue] = useState<File | null>()
+    const [imageValue, setImageValue] = useState<File | string | null>()
     const { getRootProps, getInputProps } = useDropzone({
         multiple: false,
         maxFiles: 1,
@@ -373,7 +373,7 @@ const UploadFilesContent = (props: any) => {
               })
             );
             console.log("ImageListData:", ImageListData[0].id);
-            if(ImageListData && ImageListData.length > 0 && ImageListData[0]!=null) {
+            if(ImageListData && ImageListData.length > 0 && ImageListData[0] && ImageListData[0].id) {
               setSendButtonDisable(false)
               setRefreshChatCounter(refreshChatCounter + 2)
               setSendButtonText(t("Generate images") as string)
@@ -442,8 +442,13 @@ const UploadFilesContent = (props: any) => {
                         :
                         <Img alt='Upload img' src={defaultImage} sx={{maxWidth: '98%', borderRadius: 0.5}} />
                         }
-                        {originFileShow ? 
+                        {originFileShow && typeof originFileShow === 'object' ? 
                         <Img alt='Upload img' sx={{maxWidth: '98%', borderRadius: 0.5}} src={URL.createObjectURL(originFileShow as any)} />
+                        :
+                        null
+                        }
+                        {originFileShow && typeof originFileShow === 'string' ? 
+                        <Img alt='Upload img' sx={{maxWidth: '98%', borderRadius: 0.5}} src={originFileShow} />
                         :
                         null
                         }

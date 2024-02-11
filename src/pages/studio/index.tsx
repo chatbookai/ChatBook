@@ -1,33 +1,22 @@
-import { Fragment, Ref, useState, forwardRef, ReactElement, useEffect, SyntheticEvent, ChangeEvent, ElementType } from 'react'
+import { useState, useEffect, SyntheticEvent } from 'react'
 import { saveAs } from 'file-saver';
 
 // ** MUI Imports
-import Card from '@mui/material/Card'
-import CardMedia from '@mui/material/CardMedia'
-import Dialog from '@mui/material/Dialog'
-import IconButton from '@mui/material/IconButton'
 import Typography, { TypographyProps } from '@mui/material/Typography'
-import Fade, { FadeProps } from '@mui/material/Fade'
-import DialogContent from '@mui/material/DialogContent'
 import Divider from '@mui/material/Divider'
-import Container from '@mui/material/Container';
 
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
-import Radio from '@mui/material/Radio'
 import Slider from '@mui/material/Slider'
-import Button, { ButtonProps } from '@mui/material/Button'
+import Button from '@mui/material/Button'
 import Select from '@mui/material/Select'
-import Drawer from '@mui/material/Drawer'
 import MenuItem from '@mui/material/MenuItem'
-import RadioGroup from '@mui/material/RadioGroup'
 import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
 import TextField from '@mui/material/TextField'
 import FormLabel from '@mui/material/FormLabel'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
-import FormControlLabel from '@mui/material/FormControlLabel'
 
 import toast from 'react-hot-toast'
 
@@ -123,7 +112,7 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
 
 const UploadFilesContent = (props: any) => {
     // ** Props
-    const { userId } = props
+    const {  } = props
 
     // ** Hook
     const { t } = useTranslation()
@@ -139,7 +128,6 @@ const UploadFilesContent = (props: any) => {
     }
 
     const [currentSection, setCurrentSection] = useState<string>("Real-time Design")
-    const [currentSectionColor, setCurrentSectionColor] = useState<string>("primary")
     const [defaultImage, setDefaultImage] = useState<string>("/images/misc/upload.png")
 
     const TopButtonList: any[] = [
@@ -185,7 +173,6 @@ const UploadFilesContent = (props: any) => {
 
     const handleSwitchButtonSection = (buttonSection: string) => {
         setCurrentSection(buttonSection)
-        setCurrentSectionColor(buttonSection)
     }
 
     const handleSwitchDefaultImage = (ImageUrl: string) => {
@@ -266,6 +253,7 @@ const UploadFilesContent = (props: any) => {
         setCFGScaleValue(event.target.value);
     };
 
+    /*
     const [numberOfImagesValue, setNumberOfImagesValue] = useState<number>(1)
     const NumberOfImagesList: any[] = []
     NumberOfImagesList.push({name: "1", value: 1})
@@ -275,6 +263,7 @@ const UploadFilesContent = (props: any) => {
     const handleNumberOfImagesChange = (event: any) => {
         setNumberOfImagesValue(event.target.value);
     }
+    */
 
     const [samplerValue, setSamplerValue] = useState<string>('DDPM')
     const SamplerList: any[] = []
@@ -294,16 +283,11 @@ const UploadFilesContent = (props: any) => {
 
 
     useEffect(()=>{
-        if(numberOfImagesValue > 1) {
-            handleSubmitText(`${t('Generate') as string} ${numberOfImagesValue} ${t('images') as string}`)
-        }
-        else {
-            handleSubmitText(`${t('Generate') as string} ${numberOfImagesValue} ${t('image') as string}`)
-        }
-    }, [numberOfImagesValue])
+        handleSubmitText(`${t('Generate') as string} 1 ${t('image') as string}`)
+    }, [])
 
+    /*
     const [generateSimilarData, setGenerateSimilarData] = useState<any>(null)
-
     useEffect(()=>{
         if(generateSimilarData) {
             setModelValue(generateSimilarData.model)
@@ -315,6 +299,7 @@ const UploadFilesContent = (props: any) => {
             setSeedValue(generateSimilarData.seed)
         }
     }, [generateSimilarData])
+    */
 
 
     const handleSubmit = (e: SyntheticEvent) => {
@@ -347,9 +332,9 @@ const UploadFilesContent = (props: any) => {
         data.append('CFGScale', CFGScaleValue);
         data.append('width', 512);
         data.append('height', 512);
-        data.append('numberOfImages', numberOfImagesValue);
+        data.append('numberOfImages', 1);
         data.append('outpuFormat', "png");
-        handleGenerateImage(data, numberOfImagesValue)
+        handleGenerateImage(data, 1)
     }
 
     const handleDownload = (DownloadUrl: string, FileName: string) => {
@@ -414,7 +399,8 @@ const UploadFilesContent = (props: any) => {
       const handleSubmitText = (Text: string) => {
         setSendButtonText(t(Text) as string)
       }
-    
+      
+      /*
       const handleUpscaleStabilityAi = async (showImg: any) => {
         const data = { filename: showImg.filename }
         const generateImageInfo = await axios.post(authConfig.backEndApiChatBook + '/api/generateImageUpscaleStabilityAi/', data, {
@@ -433,6 +419,7 @@ const UploadFilesContent = (props: any) => {
         }
         setRefreshChatCounter(refreshChatCounter + 2)
       }
+      */
   
     return (
         <Grid container spacing={2}>

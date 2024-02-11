@@ -36,7 +36,7 @@ const TabSecurity = () => {
   const auth = useAuth()
   const router = useRouter()
   useEffect(() => {
-    CheckPermission(auth, router)
+    CheckPermission(auth, router, false)
   }, [])
 
   // ** Hook

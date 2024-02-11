@@ -119,7 +119,7 @@ const UploadFilesContent = (props: any) => {
     const auth = useAuth()
     const router = useRouter()
     useEffect(() => {
-        CheckPermission(auth, router)
+        CheckPermission(auth, router, false)
     }, [])
 
     const [expanded, setExpanded] = useState<string | false>('panel1')
@@ -365,6 +365,7 @@ const UploadFilesContent = (props: any) => {
                     toast.error(t(generateImageInfo.msg), {
                         duration: 4000
                     })
+                    CheckPermission(auth, router, true)
                 }
                 console.log("generateImageInfo", generateImageInfo);
     

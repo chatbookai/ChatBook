@@ -31,7 +31,7 @@ const AppChat = () => {
   const auth = useAuth()
   const router = useRouter()
   useEffect(() => {
-    CheckPermission(auth, router)
+    CheckPermission(auth, router, false)
   }, [])
   
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)

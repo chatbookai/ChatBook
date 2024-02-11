@@ -37,7 +37,7 @@ const UploadFilesApp = () => {
   const auth = useAuth()
   const router = useRouter()
   useEffect(() => {
-    CheckPermission(auth, router)
+    CheckPermission(auth, router, false)
   }, [])
 
   const fetchData = async function () {

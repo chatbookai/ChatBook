@@ -7,11 +7,18 @@ import ImagesList from 'src/views/community/ImagesList'
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
+import { useRouter } from 'next/router'
+import { CheckPermission } from 'src/functions/ChatBook'
+
 
 const AppChat = () => {
 
   // ** Hook
   const auth = useAuth()
+  const router = useRouter()
+  useEffect(() => {
+      CheckPermission(auth, router, false)
+  }, [])
   
   const [pageid, setPageid] = useState<number>(0)
   const [loadingAllData, setLoadingAllData] = useState<boolean>(false)
@@ -42,7 +49,11 @@ const AppChat = () => {
         }
         setImageList([...imageList, ...imageListInitial].filter((element) => element != null))
         setFavoriteList(RS.favorite)
-      }      
+      }
+      if(RS && RS.status && RS.status=='error') {
+        console.log("RSRSRSRSRS", RS)
+        CheckPermission(auth, router, true)
+      }
       const timer = setTimeout(() => {
         setLoading(false);
       }, 500);  

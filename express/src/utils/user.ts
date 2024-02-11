@@ -19,7 +19,7 @@
   const secretKey: string = process.env.JWT_TOKEN_SECRET_KEY || "ChatBookAI"; 
 
   export const createJwtToken = (userId: string, email: string, role: string) => {
-    const token = jwt.sign({ id: userId, email, role }, secretKey, { expiresIn: '7d' });
+    const token = jwt.sign({ id: userId, email, role }, secretKey, { expiresIn: '1m' });
 
     return token;
   };

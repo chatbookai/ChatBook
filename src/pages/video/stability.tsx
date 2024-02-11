@@ -31,7 +31,7 @@ const AppChat = () => {
   const auth = useAuth()
   const router = useRouter()
   useEffect(() => {
-    CheckPermission(auth, router)
+    CheckPermission(auth, router, false)
   }, [])
   
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
@@ -101,7 +101,8 @@ const AppChat = () => {
             toast.error(t(GenerateStatus.msg), {
               duration: 4000
             })
-          }
+            CheckPermission(auth, router, true)
+        }
       } 
       catch (error) {
         setSendButtonDisable(false)

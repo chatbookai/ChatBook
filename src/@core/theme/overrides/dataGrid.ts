@@ -42,7 +42,7 @@ const DataGrid = () => {
           fontWeight: 600,
           fontSize: '0.75rem',
           letterSpacing: '0.17px',
-          textTransform: 'uppercase'
+          textTransform: 'capitalize'
         },
         columnSeparator: ({ theme }: OwnerStateThemeType) => ({
           color: theme.palette.divider

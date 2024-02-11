@@ -125,14 +125,14 @@ const UserProfileRight = (props: UserProfileRightType) => {
             <ScrollWrapper>
               <Box sx={{ p: 5 }}>
                 <FormGroup sx={{ mb: 10.5 }}>
-                  <Typography variant='body2' sx={{ mb: 3.5, textTransform: 'uppercase' }}>
+                  <Typography variant='body2' sx={{ mb: 3.5, textTransform: 'capitalize' }}>
                     About
                   </Typography>
                   <Typography sx={{ fontSize: '0.875rem' }}>{store.selectedChat.contact.about}</Typography>
                 </FormGroup>
 
                 <Box sx={{ mb: 8.5 }}>
-                  <Typography variant='body2' sx={{ mb: 3.5, textTransform: 'uppercase' }}>
+                  <Typography variant='body2' sx={{ mb: 3.5, textTransform: 'capitalize' }}>
                     Personal Information
                   </Typography>
                   <List dense sx={{ p: 0 }}>
@@ -161,7 +161,7 @@ const UserProfileRight = (props: UserProfileRightType) => {
                 </Box>
 
                 <div>
-                  <Typography variant='body2' sx={{ mb: 3.5, textTransform: 'uppercase' }}>
+                  <Typography variant='body2' sx={{ mb: 3.5, textTransform: 'capitalize' }}>
                     Options
                   </Typography>
                   <List dense sx={{ p: 0 }}>

@@ -118,11 +118,11 @@ const UserProfileLeft = (props: UserProfileLeftType) => {
           <Box sx={{ height: 'calc(100% - 11.8125rem)' }}>
             <ScrollWrapper>
               <Box sx={{ p: 5 }}>
-                <Typography variant='body2' sx={{ mb: 4, textTransform: 'uppercase' }}>
+                <Typography variant='body2' sx={{ mb: 4, textTransform: 'capitalize' }}>
                   About
                 </Typography>
                 <TextField minRows={3} multiline fullWidth sx={{ mb: 4 }} defaultValue={store.userProfile.about} />
-                <Typography variant='body2' sx={{ mb: 4, textTransform: 'uppercase' }}>
+                <Typography variant='body2' sx={{ mb: 4, textTransform: 'capitalize' }}>
                   Status
                 </Typography>
                 <RadioGroup value={userStatus} sx={{ mb: 4, ml: 0.8 }} onChange={handleUserStatus}>
@@ -151,7 +151,7 @@ const UserProfileLeft = (props: UserProfileLeftType) => {
                     />
                   </div>
                 </RadioGroup>
-                <Typography variant='body2' sx={{ mb: 4, textTransform: 'uppercase' }}>
+                <Typography variant='body2' sx={{ mb: 4, textTransform: 'capitalize' }}>
                   Settings
                 </Typography>
                 <List dense sx={{ p: 0, mb: 4 }}>

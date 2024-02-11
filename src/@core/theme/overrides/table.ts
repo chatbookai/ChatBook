@@ -14,7 +14,7 @@ const Table = () => {
     MuiTableHead: {
       styleOverrides: {
         root: {
-          textTransform: 'uppercase',
+          textTransform: 'capitalize',
           '& .MuiTableCell-head': {
             fontSize: '0.75rem',
             fontWeight: 600,

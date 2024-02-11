@@ -42,7 +42,7 @@ const MenuHeaderWrapper = styled(Box)<BoxProps>(({ theme }) => ({
 const HeaderTitle = styled(Typography)<TypographyProps>(({ theme }) => ({
   fontWeight: 600,
   lineHeight: 'normal',
-  textTransform: 'uppercase',
+  textTransform: 'capitalize',
   color: theme.palette.text.primary,
   transition: 'opacity .25s ease-in-out, margin .25s ease-in-out'
 }))

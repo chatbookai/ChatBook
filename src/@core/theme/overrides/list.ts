@@ -33,7 +33,7 @@ const List = () => {
       styleOverrides: {
         root: ({ theme }: OwnerStateThemeType) => ({
           fontWeight: 600,
-          textTransform: 'uppercase',
+          textTransform: 'capitalize',
           color: theme.palette.text.primary
         })
       }

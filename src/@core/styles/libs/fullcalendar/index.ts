@@ -336,7 +336,7 @@ const CalendarWrapper = styled(Box)<BoxProps>(({ theme }) => {
               textAlign: 'center',
               '& .fc-timegrid-slot-label-cushion': {
                 fontSize: '.75rem',
-                textTransform: 'uppercase'
+                textTransform: 'capitalize'
               }
             }
           }

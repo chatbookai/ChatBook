@@ -109,7 +109,7 @@ const BlankLayoutAppBar = () => {
               ml: 3,
               fontWeight: 600,
               lineHeight: 'normal',
-              textTransform: 'uppercase'
+              textTransform: 'capitalize'
             }}
           >
             {themeConfig.templateName}

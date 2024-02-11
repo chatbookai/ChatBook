@@ -442,7 +442,7 @@ const UploadFilesContent = (props: any) => {
                     <Grid item xs={12} >
                         {TopButtonList.map((Item: any, Index: number)=>{
                             return (
-                            <Button key={Index} variant='contained' sx={{mr: 5, mt: 2}} color={currentSection==Item.name?"primary":"secondary"} startIcon={<Icon icon={Item.icon} />} onClick={Item.onclick}>
+                            <Button key={Index} variant='contained' sx={{mr: 5, mt: 2, textTransform: 'capitalize'}} color={currentSection==Item.name?"primary":"secondary"} startIcon={<Icon icon={Item.icon} />} onClick={Item.onclick}>
                             {Item.name}
                             </Button>
                             )

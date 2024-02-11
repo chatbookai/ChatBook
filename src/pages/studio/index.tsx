@@ -1,4 +1,5 @@
 import { Fragment, Ref, useState, forwardRef, ReactElement, useEffect, SyntheticEvent, ChangeEvent, ElementType } from 'react'
+import { saveAs } from 'file-saver';
 
 // ** MUI Imports
 import Card from '@mui/material/Card'
@@ -351,6 +352,17 @@ const UploadFilesContent = (props: any) => {
         handleGenerateImage(data, numberOfImagesValue)
     }
 
+    const handleDownload = (DownloadUrl: string, FileName: string) => {
+        fetch(DownloadUrl)
+          .then(response => response.blob())
+          .then(blob => {
+            saveAs(blob, FileName);
+          })
+          .catch(error => {
+            console.log('Error downloading file:', error);
+          });
+    };
+
     const handleGenerateImage = async (data: any, numberOfImages: number) => {
         if(auth.user && auth.user.token)  {
           //setSendButtonDisable(true)
@@ -442,6 +454,12 @@ const UploadFilesContent = (props: any) => {
                         :
                         <Img alt='Upload img' src={defaultImage} sx={{maxWidth: '98%', borderRadius: 0.5}} />
                         }
+                        {originFileShow ?
+                        <Button variant='outlined' sx={{ mt: 1, mb: 2.5, mr: 3 }} size="small" onClick={()=>handleDownload(imageValue as string, '0000.png')} >{t('Download') as string}</Button>
+                        :
+                        null
+                        }
+
                         {originFileShow && typeof originFileShow === 'object' ? 
                         <Img alt='Upload img' sx={{maxWidth: '98%', borderRadius: 0.5}} src={URL.createObjectURL(originFileShow as any)} />
                         :

@@ -44,11 +44,6 @@ export const MenuListAdmin = [
   {
     title: 'Text to Image',
     icon: 'material-symbols:imagesmode',
-    path: '/image/getimg'
-  },
-  {
-    title: 'Text to Image',
-    icon: 'material-symbols:imagesmode',
     path: '/image/stability'
   },
   {
@@ -145,11 +140,6 @@ export const MenuListUser = [
   {
     title: 'Text to Image',
     icon: 'material-symbols:imagesmode',
-    path: '/image/getimg'
-  },
-  {
-    title: 'Text to Image',
-    icon: 'material-symbols:imagesmode',
     path: '/image/stability'
   },
   {
@@ -175,6 +165,6 @@ export const MenuListUser = [
   {
     title: 'Community',
     icon: 'fluent:people-community-32-filled',
-    path: '/Community/'
+    path: '/community/'
   }
 ]

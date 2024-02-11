@@ -136,5 +136,27 @@
   "New activites per day": "每天新增活动",
   "Download": "下载",
   "Generate similar": "生成类似",
-  "Upscale": "放大图片"
+  "Failed to generate the image, please modify your input parameters and try again": "生成图像失败，请修改您的输入参数并重试。",
+  "It has been submitted to the queue and the video will be generated in a few minutes.": "已提交到队列中，视频将在几分钟内生成。",
+  "Upscale": "提升",
+  "Text to Image": "文本转图像",
+  "Image to Image": "图像转图像",
+  "Image to Video": "图像转视频",
+  "Studio": "工作室",
+  "Community": "社区",
+  "Generate image": "生成图像",
+  "Generate images": "生成图像",
+  "Submit Success": "提交成功",
+  "Submit failed": "提交失败",
+  "Please upload the file first": "请先上传文件",
+  "Image width must less than 1600 px": "图像宽度必须小于 1600 像素",
+  "Generating images...": "正在生成图像...",
+  "Real-time Design": "实时设计",
+  "Hi-Fi Redesign": "高保真重新设计",
+  "Partial Remodel": "部分改造",
+  "Cabinet Design": "橱柜设计",
+  "Wall & Flooring": "墙壁和地板",
+  "Or use example images": "或使用我们的示例图片",
+  "Please upload a image first": "请先上传一个图片"
+  
 }

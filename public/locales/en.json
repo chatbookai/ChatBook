@@ -138,7 +138,25 @@
   "Generate similar": "Generate similar",
   "Failed to generate the image, please modify your input parameters and try again": "Failed to generate the image, please modify your input parameters and try again",  
   "It has been submitted to the queue and the video will be generated in a few minutes.": "It has been submitted to the queue and the video will be generated in a few minutes.",  
+  "Upscale": "Upscale",
+  "Text to Image": "Text to Image",
+  "Image to Image": "Image to Image",
+  "Image to Video": "Image to Image",
+  "Studio": "Studio",
+  "Community": "Community",
+  "Generate image": "Generate image",
+  "Generate images": "Generate images",
+  "Submit Success": "Submit Success",
   "Submit failed": "Submit failed",
-  "Upscale": "Upscale"
+  "Please upload the file first": "Please upload the file first",
+  "Image width must less than 1600 px": "Image width must less than 1600 px",
+  "Generating images...": "Generating images...",
+  "Real-time Design": "Real-time Design",
+  "Hi-Fi Redesign": "Hi-Fi Redesign",
+  "Partial Remodel": "Partial Remodel",
+  "Cabinet Design": "Cabinet Design",
+  "Wall & Flooring": "Wall & Flooring",
+  "Or use example images": "Or use example images",
+  "Please upload a image first": "Please upload a image first"
   
 }

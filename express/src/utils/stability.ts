@@ -189,12 +189,12 @@ export async function generateImageFromImageStabilityAi(checkUserTokenData: any,
       return {status: 'ok', msg: 'Submit Success', id: orderId };
     }
     else {
-      return {status: 'error', msg: 'Submit failed 1 '};
+      return {status: 'error', msg: 'Submit failed'};
     }
   }
   catch(error: any) {
     console.log("generateImageFromImageStabilityAi Error", error.message)
-    return {status: 'error', msg: error.message, errorText: 'Submit failed 2' };
+    return {status: 'error', msg: error.message, errorText: 'Submit failed' };
   }
   
 }

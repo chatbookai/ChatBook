@@ -64,12 +64,12 @@ export const MenuListAdmin = [
   {
     title: 'Studio',
     icon: 'mdi:building',
-    path: '/studio/'
+    path: '/studio'
   },
   {
     title: 'Community',
     icon: 'fluent:people-community-32-filled',
-    path: '/community/'
+    path: '/community'
   },
   {
     sectionTitle: 'Settings'
@@ -160,11 +160,11 @@ export const MenuListUser = [
   {
     title: 'Studio',
     icon: 'mdi:building',
-    path: '/studio/'
+    path: '/studio'
   },
   {
     title: 'Community',
     icon: 'fluent:people-community-32-filled',
-    path: '/community/'
+    path: '/community'
   }
 ]

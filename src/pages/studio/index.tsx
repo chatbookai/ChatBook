@@ -265,7 +265,7 @@ const UploadFilesContent = (props: any) => {
     }
     */
 
-    const [samplerValue, setSamplerValue] = useState<string>('DDPM')
+    const [samplerValue, setSamplerValue] = useState<string>('K_DPMPP_2M')
     const SamplerList: any[] = []
     SamplerList.push({name: "DDIM", value: "DDIM"})
     SamplerList.push({name: "DDPM", value: "DDPM"})
@@ -283,8 +283,10 @@ const UploadFilesContent = (props: any) => {
 
 
     useEffect(()=>{
-        handleSubmitText(`${t('Generate') as string} 1 ${t('image') as string}`)
-    }, [])
+        if(t) {
+            handleSubmitText(`${t('Generate image') as string}`)
+        }
+    }, [t])
 
     /*
     const [generateSimilarData, setGenerateSimilarData] = useState<any>(null)
@@ -430,7 +432,7 @@ const UploadFilesContent = (props: any) => {
                         {TopButtonList.map((Item: any, Index: number)=>{
                             return (
                             <Button key={Index} variant='contained' sx={{mr: 5, mt: 2, textTransform: 'capitalize'}} color={currentSection==Item.name?"primary":"secondary"} startIcon={<Icon icon={Item.icon} />} onClick={Item.onclick}>
-                            {Item.name}
+                            {t(Item.name) as string}
                             </Button>
                             )
                         })}
@@ -475,7 +477,7 @@ const UploadFilesContent = (props: any) => {
                             </div>
                         </Grid>
                         <Grid item xs={12} sx={{mt: 3}} container justifyContent="center">
-                            Or use example images
+                            {t('Or use example images') as string}
                         </Grid>
                         <Grid item xs={12} sx={{mt: 3}} container justifyContent="center">
                             {RoomImageList && RoomImageList[currentSection] && RoomImageList[currentSection].map((Item: any, Index: number)=>{

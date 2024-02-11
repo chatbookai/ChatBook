@@ -192,6 +192,7 @@ const ImagesList = (props: any) => {
                                 >
                                   <Icon fontSize='0.875rem' icon='mdi:calendar-blank-outline' />
                                   <Typography variant='caption'>{'@ChatbookAI'}</Typography>
+                                  <Typography variant='caption' sx={{ml: 2}}>{JSON.parse(item.data)['width']}*{JSON.parse(item.data)['height']}</Typography>
                                 </Box>
                               </Box>
                             </Box>

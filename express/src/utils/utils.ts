@@ -603,3 +603,7 @@ export async function getAllImages(userId: string, pageid: number, pagesize: num
 
   return RS;
 }
+
+export function filterNegativePrompt(Prompt: string) {
+  return Prompt + ",low quality, disfigured hands, poorly drawn face, out of frame, bad anatomy, signature, low contrast, overexposed, nsfw, weapon, blood, guro, without cloth, disturbing imagery, sexual violence, inappropriate attire, blurry, unfocused, unpleasant, unintelligible, offensive, distorted, unoriginal, uninspired, poor composition, boring, inconsistent style, low resolution, irrelevant"
+}

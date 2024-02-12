@@ -6,7 +6,7 @@ import sharp from 'sharp';
 
 import path from 'path'
 import { db, getDbRecord, getDbRecordALL } from './db'
-import { timestampToDate, isFile } from './utils'
+import { timestampToDate, isFile, filterNegativePrompt } from './utils'
 import FormData from "form-data"
 
 const STABILITY_API_SECRET_KEY_IMAGE = process.env.STABILITY_API_KEY_IMAGE
@@ -73,7 +73,7 @@ export async function generateImageFromTextStabilityAi(checkUserTokenData: any, 
   POSTDATA['samples'] = 1
   POSTDATA['sampler'] = data.sampler
   POSTDATA['style_preset'] = data.style ?? "digital-art"
-  POSTDATA['text_prompts'] = [{text: data.prompt, weight: 1},{text: data.negativePrompt, weight: -1}]
+  POSTDATA['text_prompts'] = [{text: data.prompt, weight: 1},{text: filterNegativePrompt(data.negativePrompt), weight: -1}]
 
   console.log("POSTDATA", POSTDATA)
 
@@ -98,7 +98,7 @@ export async function generateImageFromTextStabilityAi(checkUserTokenData: any, 
         const orderId = FileNamePath
         try {
           const insertSetting = db.prepare('INSERT INTO userimages (userId, email, model, `prompt`, negative_prompt, steps, seed, style, filename, data, `date`, createtime, cost_usd, cost_xwe, cost_api, orderId, orderTX, source ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-          insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, data.model, data.prompt, data.negativePrompt, data.steps, POSTDATA['seed'], POSTDATA['style_preset'], orderId, JSON.stringify(POSTDATA), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, 'stability.ai');
+          insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, data.model, data.prompt, filterNegativePrompt(data.negativePrompt), data.steps, POSTDATA['seed'], POSTDATA['style_preset'], orderId, JSON.stringify(POSTDATA), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, 'stability.ai');
           insertSetting.finalize();
         }
         catch(error: any) {
@@ -147,7 +147,7 @@ export async function generateImageFromImageStabilityAi(checkUserTokenData: any,
   formData.append('image_strength', 0.35)
   formData.append('text_prompts[0][text]', PostData.prompt)
   formData.append('text_prompts[0][weight]', 1)
-  formData.append('text_prompts[1][text]', PostData.negativePrompt)
+  formData.append('text_prompts[1][text]', filterNegativePrompt(PostData.negativePrompt))
   formData.append('text_prompts[1][weight]', -1)
   formData.append("seed", Number(PostData.seed) ?? 0);
   formData.append("cfg_scale", Number(PostData.CFGScale) ?? 0);
@@ -180,7 +180,7 @@ export async function generateImageFromImageStabilityAi(checkUserTokenData: any,
       const orderId = FileNamePath
       try {
         const insertSetting = db.prepare('INSERT INTO userimages (userId, email, model, `prompt`, negative_prompt, steps, seed, style, filename, data, `date`, createtime, cost_usd, cost_xwe, cost_api, orderId, orderTX, source ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, PostData.model, PostData.prompt, PostData.negativePrompt, PostData.steps, Number(PostData.seed), String(PostData.style), orderId, JSON.stringify(PostData), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, 'stability.ai');
+        insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, PostData.model, PostData.prompt, filterNegativePrompt(PostData.negativePrompt), PostData.steps, Number(PostData.seed), String(PostData.style), orderId, JSON.stringify(PostData), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, 'stability.ai');
         insertSetting.finalize();
       }
       catch(error: any) {

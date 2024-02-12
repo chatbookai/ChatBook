@@ -3,7 +3,7 @@ import * as fs from 'fs'
 import { DataDir } from './const'
 
 import { db, getDbRecord, getDbRecordALL } from './db'
-import { timestampToDate } from './utils'
+import { timestampToDate, filterNegativePrompt } from './utils'
 
 const GETIMG_AI_SECRET_KEY = process.env.GETIMG_AI_SECRET_KEY
 
@@ -89,7 +89,7 @@ export async function generateImageGetImg(checkUserTokenData: any, data: StableD
     const POSTDATA: any = {}
     POSTDATA['model'] = data.model
     POSTDATA['prompt'] = data.prompt
-    POSTDATA['negative_prompt'] = data.negativePrompt
+    POSTDATA['negative_prompt'] = filterNegativePrompt(data.negativePrompt)
     POSTDATA['width'] = data.width
     POSTDATA['height'] = data.height
     POSTDATA['steps'] = data.steps
@@ -117,7 +117,7 @@ export async function generateImageGetImg(checkUserTokenData: any, data: StableD
           const orderId = Base64ToImgData
           try {            
             const insertSetting = db.prepare('INSERT INTO userimages (userId, email, model, `prompt`, negative_prompt, steps, seed, style, filename, data, `date`, createtime, cost_usd, cost_xwe, cost_api, orderId, orderTX, source ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-            insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, data.model, data.prompt, data.negativePrompt, data.steps, POSTDATA['seed'], POSTDATA['scheduler'], orderId, JSON.stringify(POSTDATA), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, 'getimg.ai');
+            insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, data.model, data.prompt, filterNegativePrompt(data.negativePrompt), data.steps, POSTDATA['seed'], POSTDATA['scheduler'], orderId, JSON.stringify(POSTDATA), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, 'getimg.ai');
             insertSetting.finalize();
           }
           catch(error: any) {

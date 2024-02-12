@@ -202,7 +202,7 @@ const FileUploaderMultiple = (props: any) => {
         setUploadingButton(`${t(`Upload Files`)}`)
         handleRemoveAllFiles()
       }
-      else {
+      else if(FormSubmit && FormSubmit.msg=='Token is invalid') {
         CheckPermission(auth, router, true)
       }
     }

@@ -198,7 +198,9 @@ const Knowledge = () => {
       }
       else {
           toast.error(t(FormSubmit.msg) as string, { duration: 4000 })
-          CheckPermission(auth, router, true)
+          if(FormSubmit && FormSubmit.msg=='Token is invalid') {
+            CheckPermission(auth, router, true)
+          }
       }
       setCounter(counter + 1)
     }

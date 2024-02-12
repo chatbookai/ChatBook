@@ -72,7 +72,7 @@ const AppChat = () => {
         })
         setImageList(imageListInitial.filter((element) => element != null))
       }
-      if(RS && RS.status && RS.status=='error') {
+      if(RS && RS.status && RS.status=='error' && RS.msg=='Token is invalid') {
         CheckPermission(auth, router, true)
       }
     }
@@ -95,7 +95,9 @@ const AppChat = () => {
               toast.error(t(generateImageInfo.msg), {
                 duration: 4000
               })
-              CheckPermission(auth, router, true)
+              if(generateImageInfo && generateImageInfo.msg=='Token is invalid') {
+                CheckPermission(auth, router, true)
+              }
             }
             
             return generateImageInfo;

@@ -58,7 +58,7 @@ const Logs = () => {
         })
         setUserStatus(userStatusNew)
       }
-      if(RS && RS.status && RS.status=='error') {
+      if(RS && RS.status && RS.status=='error' && RS.msg=='Token is invalid') {
         CheckPermission(auth, router, true)
       }
       setStore(RS)  

@@ -50,7 +50,7 @@ const AppChat = () => {
         setImageList([...imageList, ...imageListInitial].filter((element) => element != null))
         setFavoriteList(RS.favorite)
       }
-      if(RS && RS.status && RS.status=='error') {
+      if(RS && RS.status && RS.status=='error' && RS.msg=='Token is invalid') {
         CheckPermission(auth, router, true)
       }
       const timer = setTimeout(() => {

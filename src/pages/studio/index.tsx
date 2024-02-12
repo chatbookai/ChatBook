@@ -110,7 +110,7 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
     }
 }))
 
-const UploadFilesContent = (props: any) => {
+const RoomDesign = (props: any) => {
     // ** Props
     const {  } = props
 
@@ -211,7 +211,7 @@ const UploadFilesContent = (props: any) => {
         setModelValue(event.target.value);
     }
 
-    const [promptValue, setPromptValue] = useState<string>("A captivating portrait of a Chinese girl radiating grace and elegance. The painting captures her intriguing beauty in intricate detail, showcasing a serene aura that captivates the viewer's gaze. The girl's delicate features are adorned with traditional Chinese attire, further emphasizing her cultural heritage")
+    const [promptValue, setPromptValue] = useState<string>("")
     const [negativePromptValue, setNegativePromptValue] = useState<string>('low quality, Disfigured hands, poorly drawn face, out of frame, bad anatomy, signature, low contrast, overexposed, nsfw, weapon, blood, guro, without cloth')
 
     const [styleValue, setStyleValue] = useState<string>('enhance')
@@ -365,7 +365,9 @@ const UploadFilesContent = (props: any) => {
                     toast.error(t(generateImageInfo.msg), {
                         duration: 4000
                     })
-                    CheckPermission(auth, router, true)
+                    if(generateImageInfo && generateImageInfo.msg=='Token is invalid') {
+                      CheckPermission(auth, router, true)
+                    }
                 }
                 console.log("generateImageInfo", generateImageInfo);
     
@@ -383,12 +385,16 @@ const UploadFilesContent = (props: any) => {
               })
               setOriginFileShow(imageValue as File)
             }
-            if(ImageListData && ImageListData.length > 0 && ImageListData[0]==null) {
+            else if(ImageListData && ImageListData.length > 0 && ImageListData[0]==null) {
               setSendButtonDisable(false)
               setSendButtonText(t("Generate images") as string)
               toast.error(t('Failed to generate the image, please modify your input parameters and try again'), {
                 duration: 4000
               })
+            }
+            else {
+              setSendButtonDisable(false)
+              setSendButtonText(t("Generate images") as string)
             }
           } 
           catch (error) {
@@ -615,4 +621,4 @@ const UploadFilesContent = (props: any) => {
     )
 }
 
-export default UploadFilesContent
+export default RoomDesign

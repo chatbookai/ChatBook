@@ -157,6 +157,8 @@
   "Cabinet Design": "橱柜设计",
   "Wall & Flooring": "墙壁和地板",
   "Or use example images": "或使用我们的示例图片",
-  "Please upload a image first": "请先上传一个图片"
+  "Please upload a image first": "请先上传一个图片",
+  "Prompt Must Not Null": "提示不能为空",
+  "Negative Prompt Must Not Null": "负向提示不能为空"
   
 }

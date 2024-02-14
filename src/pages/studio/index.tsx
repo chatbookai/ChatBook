@@ -112,7 +112,6 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
 }))
 
 const NewImageWrapper = styled(Box)<BoxProps>(({ theme }) => ({
-  border: '1px dashed #ffffff',
         padding: '2rem',
         borderRadius: theme.shape.borderRadius,
         border: `2px dashed ${theme.palette.mode === 'light' ? 'rgba(93, 89, 98, 0.22)' : 'rgba(247, 244, 254, 0.14)'}`
@@ -177,7 +176,6 @@ const RoomDesign = (props: any) => {
         console.log("chooseSection", chooseSection)
         setDefaultImage(chooseSection[0].image)
         setGenerateFileShow(null)
-        //setImageValue(null)
     }, [currentSection])
 
     const handleSwitchButtonSection = (buttonSection: string) => {

@@ -124,7 +124,7 @@ const ChatContent = (props: any) => {
               <ChatLog hidden={hidden} data={{ ...selectedChat, userContact: store.userProfile }} knowledgeId={knowledgeId} knowledgeName={knowledgeName} rowInMsg={rowInMsg} maxRows={maxRows} />
             ) : null}
 
-            <SendMsgForm store={store} sendMsg={sendMsg} sendButtonDisable={sendButtonDisable} sendButtonText={sendButtonText} sendInputText={sendInputText} rowInMsg={rowInMsg} handleSetRowInMsg={handleSetRowInMsg} maxRows={maxRows}/>
+            <SendMsgForm store={store} sendMsg={sendMsg} sendButtonDisable={sendButtonDisable} sendButtonLoading={true} sendButtonText={sendButtonText} sendInputText={sendInputText} rowInMsg={rowInMsg} handleSetRowInMsg={handleSetRowInMsg} maxRows={maxRows}/>
 
           </Box>
         )

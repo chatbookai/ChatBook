@@ -30,9 +30,6 @@ const AppChat = () => {
   const { t } = useTranslation()
   const auth = useAuth()
   const router = useRouter()
-  useEffect(() => {
-    CheckPermission(auth, router, false)
-  }, [])
   
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
 
@@ -116,6 +113,12 @@ const AppChat = () => {
         console.log("handleGenerateVideo Error fetching video:", error);
       }
     }
+    else {
+      toast.error(t("Please login first"), {
+        duration: 4000
+      })
+      router.push('/login')
+    }
   }
 
   const handleSubmitText = (Text: string) => {
@@ -127,7 +130,6 @@ const AppChat = () => {
 
   return (
     <Fragment>
-      {auth.user && auth.user.email ?
       <Box
       className='app-chat'
       sx={{
@@ -153,9 +155,6 @@ const AppChat = () => {
         pendingImagesCount={pendingImagesCount}
       />
       </Box>
-      :
-      null
-      }
     </Fragment>
   )
 }

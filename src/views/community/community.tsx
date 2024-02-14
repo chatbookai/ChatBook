@@ -7,14 +7,12 @@ import ImagesList from 'src/views/community/ImagesList'
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
-import { useRouter } from 'next/router'
 
 
 const AppChat = () => {
 
   // ** Hook
   const auth = useAuth()
-  const router = useRouter()
   
   const [pageid, setPageid] = useState<number>(0)
   const [loadingAllData, setLoadingAllData] = useState<boolean>(false)

@@ -30,9 +30,6 @@ const AppChat = () => {
   const { t } = useTranslation()
   const auth = useAuth()
   const router = useRouter()
-  useEffect(() => {
-    CheckPermission(auth, router, false)
-  }, [])
   
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
 
@@ -75,6 +72,12 @@ const AppChat = () => {
       if(RS && RS.status && RS.status=='error' && RS.msg=='Token is invalid') {
         CheckPermission(auth, router, true)
       }
+    }
+    else {
+      toast.error(t("Please login first"), {
+        duration: 4000
+      })
+      router.push('/login')
     }
   }
 

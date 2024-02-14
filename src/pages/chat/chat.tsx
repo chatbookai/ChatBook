@@ -19,20 +19,18 @@ import ChatContent from 'src/views/chat/Chat/ChatContent'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
-import { GetAllLLMS, ChatChatInit, ChatChatNameList, ChatChatInput, ChatChatOutput, CheckPermission  } from 'src/functions/ChatBook'
+import { GetAllLLMS, ChatChatInit, ChatChatNameList, ChatChatInput, ChatChatOutput  } from 'src/functions/ChatBook'
 
 // ** Axios Imports
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
-import { useRouter } from 'next/router'
 
 const AppChat = () => {
 
   // ** Hook
   const { t } = useTranslation()
   const auth = useAuth()
-  const router = useRouter()
   
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
   const [llms, setLlms] = useState<any>([])

@@ -30,9 +30,6 @@ const AppChat = () => {
   const { t } = useTranslation()
   const auth = useAuth()
   const router = useRouter()
-  useEffect(() => {
-    CheckPermission(auth, router, false)
-  }, [])
   
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
 
@@ -127,6 +124,12 @@ const AppChat = () => {
         setPendingImagesCount(0)
         console.log("handleGenerateImage Error fetching images:", error);
       }
+    }
+    else {
+      toast.error(t("Please login first"), {
+        duration: 4000
+      })
+      router.push('/login')
     }
   }
 

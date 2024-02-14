@@ -410,6 +410,12 @@ const RoomDesign = (props: any) => {
             console.log("handleGenerateImage Error fetching images:", error);
           }
         }
+        else {
+          toast.error(t("Please login first"), {
+            duration: 4000
+          })
+          router.push('/login')
+        }
       }
     
       const handleSubmitText = (Text: string) => {

@@ -8,7 +8,6 @@ import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
 import { useRouter } from 'next/router'
-import { CheckPermission } from 'src/functions/ChatBook'
 
 
 const AppChat = () => {
@@ -16,9 +15,6 @@ const AppChat = () => {
   // ** Hook
   const auth = useAuth()
   const router = useRouter()
-  useEffect(() => {
-      CheckPermission(auth, router, false)
-  }, [])
   
   const [pageid, setPageid] = useState<number>(0)
   const [loadingAllData, setLoadingAllData] = useState<boolean>(false)
@@ -33,12 +29,13 @@ const AppChat = () => {
   }, [])
 
   const getImagesList = async function () {
-    if(auth.user && auth.user.token && loadingAllData == false)  {
+    if(loadingAllData == false)  {
       const pagesize = 20
       setLoading(true)
       const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getAllImages/', {pageid: pageid, pagesize: pagesize}, {
         headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
       }).then(res => res.data);
+      console.log("RS.data", RS.data)
       if(RS && RS.data) {
         const imageListInitial: string[] = []
         RS.data.map((Item: any)=>{
@@ -49,9 +46,6 @@ const AppChat = () => {
         }
         setImageList([...imageList, ...imageListInitial].filter((element) => element != null))
         setFavoriteList(RS.favorite)
-      }
-      if(RS && RS.status && RS.status=='error' && RS.msg=='Token is invalid') {
-        CheckPermission(auth, router, true)
       }
       const timer = setTimeout(() => {
         setLoading(false);
@@ -90,14 +84,7 @@ const AppChat = () => {
 
   return (
     <Fragment>
-      <Fragment>
-        {auth.user && auth.user.email ?
-          <ImagesList imageList={imageList} favoriteList={favoriteList} loading={loading} loadingText={loadingText} />
-        :
-        null
-        }
-      </Fragment>
-      
+      <ImagesList imageList={imageList} favoriteList={favoriteList} loading={loading} loadingText={loadingText} />
     </Fragment>
   )
 }

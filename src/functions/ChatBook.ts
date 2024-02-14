@@ -365,7 +365,8 @@ export function CheckPermission(auth: any, router: any, forcelogout: boolean) {
         if(auth && auth.user && auth.user.role && roleList.includes(auth.user.role) ) {
             //Permission Valid
         }
-        else if(router) {
+        else if(router && auth && auth.user && auth.user.role) {
+            console.log("auth.user", auth.user)
             router.replace('/login')
         }
     }

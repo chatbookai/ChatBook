@@ -28,7 +28,7 @@ const Form = styled('form')(({ theme }) => ({
 
 const SendMsgForm = (props: SendMsgComponentType) => {
   // ** Props
-  const { store, sendMsg, sendButtonDisable, sendButtonText, sendInputText, rowInMsg, handleSetRowInMsg, maxRows} = props
+  const { store, sendMsg, sendButtonDisable, sendButtonLoading, sendButtonText, sendInputText, rowInMsg, handleSetRowInMsg, maxRows} = props
 
   // ** State
   const [msg, setMsg] = useState<string>('')
@@ -105,7 +105,7 @@ const SendMsgForm = (props: SendMsgComponentType) => {
             }}
           />
           <Button type='submit' variant='contained' disabled={sendButtonDisable}  sx={{ bottom: 0, right: 0, position: 'absolute', mt: 0.6, whiteSpace: 'nowrap' }} 
-                  endIcon={sendButtonDisable ? <CircularProgress size={20} color="inherit" /> : null}
+                  endIcon={sendButtonLoading ? <CircularProgress size={20} color="inherit" /> : null}
                   >
             {sendButtonText}
           </Button>

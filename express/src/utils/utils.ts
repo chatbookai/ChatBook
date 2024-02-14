@@ -569,7 +569,7 @@ export async function wholeSiteStatics() {
   return {NewUserPerDay, NewImagesPerDay, NewFilesPerDay, NewActivitesPerDay, DateList, TotalImages, TotalActivites, TotalUsers, TotalFiles, TotalKnowledges}
 }
 
-export async function getAllImages(userId: string, pageid: number, pagesize: number) {
+export async function getAllImages(userId: string | undefined, pageid: number, pagesize: number) {
   const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
   const From = pageidFiler * pagesizeFiler;

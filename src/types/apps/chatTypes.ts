@@ -143,6 +143,7 @@ export type SendMsgComponentType = {
   store: ChatStoreType
   sendMsg: (params: SendMsgParamsType) => void
   sendButtonDisable: boolean
+  sendButtonLoading: boolean
   sendButtonText: string
   sendInputText: string
   rowInMsg: number

@@ -535,6 +535,27 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
+  export async function compressImageForImage(file: string, width: number | undefined, height: number | undefined) {
+    const FileName = path.join(DataDir, "/imageforimage/"+ file);
+    const FileNameNew = path.join(DataDir, "/imageforimage/Resize_" + (width ? width+'_'+file : height+'_'+file) );
+    if(!isFile(FileNameNew) && isFile(FileName))   {
+      const quality = 80;
+      try { 
+        if(width) {
+          await sharp(FileName).resize({ fit: 'inside', width: width, withoutEnlargement: true }).png({ quality }).toFile(FileNameNew);
+        }
+        else if(height) {
+          await sharp(FileName).resize({ fit: 'inside', height: height, withoutEnlargement: true }).png({ quality }).toFile(FileNameNew);
+        }
+      }
+      catch(error: any) {
+        console.log("compressPng", file, error.message)
+      }
+      console.log("compressPng", file)
+    }
+    return FileNameNew
+  }
+
   export async function outputImage(res: Response, file: string) {
     try {
       await compressPng(file);

@@ -1,9 +1,10 @@
-import { useState, useEffect, SyntheticEvent } from 'react'
+import { useState, useEffect, SyntheticEvent, Fragment } from 'react'
 import { saveAs } from 'file-saver';
 
 // ** MUI Imports
 import Typography, { TypographyProps } from '@mui/material/Typography'
 import Divider from '@mui/material/Divider'
+import CircularProgress from '@mui/material/CircularProgress'
 
 // ** MUI Imports
 import Grid from '@mui/material/Grid'
@@ -11,12 +12,12 @@ import Slider from '@mui/material/Slider'
 import Button from '@mui/material/Button'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
-import Box from '@mui/material/Box'
 import { styled } from '@mui/material/styles'
 import TextField from '@mui/material/TextField'
 import FormLabel from '@mui/material/FormLabel'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
+import Box, { BoxProps } from '@mui/material/Box'
 
 import toast from 'react-hot-toast'
 
@@ -110,6 +111,14 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
     }
 }))
 
+const NewImageWrapper = styled(Box)<BoxProps>(({ theme }) => ({
+  border: '1px dashed #ffffff',
+        padding: '2rem',
+        borderRadius: theme.shape.borderRadius,
+        border: `2px dashed ${theme.palette.mode === 'light' ? 'rgba(93, 89, 98, 0.22)' : 'rgba(247, 244, 254, 0.14)'}`
+}))
+
+
 const RoomDesign = (props: any) => {
     // ** Props
     const {  } = props
@@ -167,8 +176,8 @@ const RoomDesign = (props: any) => {
         const chooseSection: any = TopButtonList.filter((Item)=>Item.name==currentSection)
         console.log("chooseSection", chooseSection)
         setDefaultImage(chooseSection[0].image)
-        setOriginFileShow(null)
-        setImageValue(null)
+        setGenerateFileShow(null)
+        //setImageValue(null)
     }, [currentSection])
 
     const handleSwitchButtonSection = (buttonSection: string) => {
@@ -176,13 +185,13 @@ const RoomDesign = (props: any) => {
     }
 
     const handleSwitchDefaultImage = (ImageUrl: string) => {
-        setFiles([])
+        //setFiles([])
         setDefaultImage(ImageUrl)
-        setOriginFileShow(null)
+        setGenerateFileShow(null)
         setImageValue(ImageUrl)
     }
 
-    const [originFileShow, setOriginFileShow] = useState<File | null>(null)
+    const [generateFileShow, setGenerateFileShow] = useState<string | null>(null)
     const [files, setFiles] = useState<File[]>([])
     const [imageValue, setImageValue] = useState<File | string | null>()
     const { getRootProps, getInputProps } = useDropzone({
@@ -196,6 +205,7 @@ const RoomDesign = (props: any) => {
         onDrop: (acceptedFiles: File[]) => {
           setFiles(acceptedFiles.map((file: File) => Object.assign(file)))
           setImageValue(acceptedFiles[0] as File)
+          setGenerateFileShow(null)
         }
     })
 
@@ -379,11 +389,10 @@ const RoomDesign = (props: any) => {
               setSendButtonDisable(false)
               setRefreshChatCounter(refreshChatCounter + 2)
               setSendButtonText(t("Generate images") as string)
-              handleSwitchDefaultImage(authConfig.backEndApiChatBook + '/api/image/' + ImageListData[0].id)
               toast.success(t('Generate the image success'), {
                 duration: 4000
               })
-              setOriginFileShow(imageValue as File)
+              setGenerateFileShow(authConfig.backEndApiChatBook + '/api/image/' + ImageListData[0].id)
             }
             else if(ImageListData && ImageListData.length > 0 && ImageListData[0]==null) {
               setSendButtonDisable(false)
@@ -450,21 +459,26 @@ const RoomDesign = (props: any) => {
                         :
                         <Img alt='Upload img' src={defaultImage} sx={{maxWidth: '98%', borderRadius: 0.5}} />
                         }
-                        {originFileShow ?
-                        <Button variant='outlined' sx={{ mt: 1, mb: 2.5, mr: 3 }} size="small" onClick={()=>handleDownload(imageValue as string, '0000.png')} >{t('Download') as string}</Button>
+                    </Grid>
+                    <Grid item xs={6}>
+                        {generateFileShow ? 
+                        <Fragment>
+                          <Img alt='Upload img' sx={{maxWidth: '98%', borderRadius: 0.5}} src={generateFileShow} />
+                        </Fragment>
                         :
-                        null
-                        }
-
-                        {originFileShow && typeof originFileShow === 'object' ? 
-                        <Img alt='Upload img' sx={{maxWidth: '98%', borderRadius: 0.5}} src={URL.createObjectURL(originFileShow as any)} />
-                        :
-                        null
-                        }
-                        {originFileShow && typeof originFileShow === 'string' ? 
-                        <Img alt='Upload img' sx={{maxWidth: '98%', borderRadius: 0.5}} src={originFileShow} />
-                        :
-                        null
+                        <Fragment>
+                          <NewImageWrapper>
+                            {sendButtonDisable ?
+                            <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '20vh' }}>
+                              <CircularProgress size={50} />
+                            </div>
+                            :
+                            <Fragment>
+                              Generated image
+                            </Fragment>
+                            }
+                          </NewImageWrapper>
+                        </Fragment>
                         }
                     </Grid>
                     <Grid item xs={6}>
@@ -498,16 +512,14 @@ const RoomDesign = (props: any) => {
                                     )
                             })}
                         </Grid>
-                        <Grid item xs={12} sx={{mt: 3}} container justifyContent="center">
+                    </Grid>
+                    <Grid item xs={6}>
+                        <Grid item xs={12} sx={{}} container justifyContent="center">
                             <Grid container spacing={5} sx={{mb: 4}}>
                                 <Grid item xs={12}>
-                                <TextField multiline rows={6} fullWidth label={t('Prompt') as string} placeholder='' value={promptValue} onChange={(event: any)=>setPromptValue(event.target.value)}/>
-                                </Grid>
-                                <Grid item xs={12}>
-                                <TextField multiline rows={2} fullWidth label={t('Negative Prompt') as string} placeholder='' defaultValue={negativePromptValue} onChange={(event: any)=>setNegativePromptValue(event.target.value)}/>
+                                <TextField multiline rows={5} fullWidth label={t('Prompt') as string} placeholder='' value={promptValue} onChange={(event: any)=>setPromptValue(event.target.value)}/>
                                 </Grid>
                             </Grid>
-
                             <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
                                 <AccordionSummary
                                     expandIcon={<Icon icon='mdi:chevron-down' />}
@@ -521,6 +533,9 @@ const RoomDesign = (props: any) => {
                                 <Divider sx={{ m: '0 !important' }} />
                                 <AccordionDetails sx={{ pt: 6, pb: 6 }}>
                                 <Grid container spacing={5}>
+                                    <Grid item xs={12}>
+                                    <TextField multiline rows={2} fullWidth label={t('Negative Prompt') as string} placeholder='' defaultValue={negativePromptValue} onChange={(event: any)=>setNegativePromptValue(event.target.value)}/>
+                                    </Grid>
                                     <Grid item xs={6} sm={6}>
                                     <FormControl fullWidth>
                                         <InputLabel >{t('Model') as string}</InputLabel>
@@ -609,6 +624,11 @@ const RoomDesign = (props: any) => {
                                     <Button size='medium' type='button' onClick={handleSubmit} variant='contained' sx={{ mr: 4 }} disabled={sendButtonDisable} >
                                     {sendButtonText}
                                     </Button>
+                                    {generateFileShow ? 
+                                      <Button variant='outlined' sx={{ mt: 1, mb: 2.5, mr: 3 }} size="small" onClick={()=>handleDownload(generateFileShow as string, 'Studio Image.png')} >{t('Download') as string}</Button>
+                                    :
+                                    null
+                                    }
                                 </Grid>
                             </Grid>
 

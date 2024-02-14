@@ -7,6 +7,7 @@ import sharp from 'sharp';
 import path from 'path'
 import { db, getDbRecord, getDbRecordALL } from './db'
 import { timestampToDate, isFile, filterNegativePrompt } from './utils'
+import { compressImageForImage } from './llms'
 import FormData from "form-data"
 
 const STABILITY_API_SECRET_KEY_IMAGE = process.env.STABILITY_API_KEY_IMAGE
@@ -140,7 +141,29 @@ export async function generateImageFromImageStabilityAi(checkUserTokenData: any,
     return {status: 'error', msg: 'Please upload the file first' };
   }
   const FileName = files[0].filename
-  const FilePath = files[0].path
+  let FilePath = files[0].path
+
+  //Check Width & Height
+  const metadataNow = await sharp(FilePath).metadata()
+  const widthNow = metadataNow.width
+  const heightNow = metadataNow.height
+  console.log("FileName", FileName)
+  console.log("FilePath", FilePath)
+  console.log("widthNow", widthNow)
+  if(widthNow && widthNow < 320)   {
+    return {status: 'error', msg: 'Image width must greater than 320 px'}
+  }
+  if(widthNow && widthNow > 1536)   {
+    FilePath = await compressImageForImage(FileName, 1536, undefined)
+  }
+  if(heightNow && heightNow < 320)   {
+    return {status: 'error', msg: 'Image height must greater than 320 px'}
+  }
+  if(heightNow && heightNow > 1536)   {
+    FilePath = await compressImageForImage(FileName, undefined, 1536)
+  }
+
+  //Submit
   const formData: any = new FormData();
   formData.append("init_image", fs.readFileSync(FilePath), FileName);
   formData.append('init_image_mode', 'IMAGE_STRENGTH')
@@ -193,8 +216,12 @@ export async function generateImageFromImageStabilityAi(checkUserTokenData: any,
     }
   }
   catch(error: any) {
-    console.log("generateImageFromImageStabilityAi Error", error.message)
-    return {status: 'error', msg: error.message, errorText: 'Submit failed' };
+    if(error && error.response && error.response.data && error.response.data.message) {
+      return {status: 'error', msg: error.response.data.message, errorText: 'Submit failed' };
+    }
+    else {
+      return {status: 'error', msg: error.message, errorText: 'Submit failed' };
+    }
   }
   
 }

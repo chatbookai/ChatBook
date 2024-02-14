@@ -34,6 +34,14 @@ export const MenuListAdmin = [
     path: '/overview'
   },
   {
+    sectionTitle: 'Index'
+  },
+  {
+    title: 'Index',
+    icon: 'mdi:message-outline',
+    path: '/indexpage'
+  },
+  {
     sectionTitle: 'Chat'
   },
   {
@@ -73,6 +81,14 @@ export const MenuListAdmin = [
   },
   {
     sectionTitle: 'Settings'
+  },
+  {
+    sectionTitle: 'index'
+  },
+  {
+    title: 'Index',
+    icon: 'mdi:message-outline',
+    path: '/indexpage/index'
   },
   {
     title: 'Knowledge Base',

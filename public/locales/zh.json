@@ -139,6 +139,7 @@
   "Failed to generate the image, please modify your input parameters and try again": "生成图像失败，请修改您的输入参数并重试。",
   "It has been submitted to the queue and the video will be generated in a few minutes.": "已提交到队列中，视频将在几分钟内生成。",
   "Upscale": "提升",
+  "Index": "首页",
   "Text to Image": "文本转图像",
   "Image to Image": "图像转图像",
   "Image to Video": "图像转视频",

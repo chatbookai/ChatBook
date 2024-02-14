@@ -32,7 +32,7 @@ const SettingApiModelAPP = () => {
   const auth = useAuth()
   const router = useRouter()
   useEffect(() => {
-    CheckPermission(auth, router)
+    CheckPermission(auth, router, false)
   }, [])
 
   const { settings } = useSettings()

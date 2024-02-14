@@ -48,7 +48,7 @@ const Knowledge = () => {
   const auth = useAuth()
   const router = useRouter()
   useEffect(() => {
-    CheckPermission(auth, router)
+    CheckPermission(auth, router, false)
   }, [])
 
   const [uploadingButton, setUploadingButton] = useState<string>(`${t('Submit')}`)
@@ -198,6 +198,9 @@ const Knowledge = () => {
       }
       else {
           toast.error(t(FormSubmit.msg) as string, { duration: 4000 })
+          if(FormSubmit && FormSubmit.msg=='Token is invalid') {
+            CheckPermission(auth, router, true)
+          }
       }
       setCounter(counter + 1)
     }

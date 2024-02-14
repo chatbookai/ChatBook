@@ -190,8 +190,8 @@ const ImagesList = (props: any) => {
                                     '& svg': { mr: 1, color: 'text.secondary', verticalAlign: 'middle' }
                                   }}
                                 >
-                                  <Icon fontSize='0.875rem' icon='mdi:calendar-blank-outline' />
-                                  <Typography variant='caption'>{'@ChatbookAI'}</Typography>
+                                  <Icon fontSize='0.875rem' icon='mdi:user-outline' />
+                                  <Typography variant='caption'>{item.email.split('@')[0].slice(0, 18)}</Typography>
                                   <Typography variant='caption' sx={{ml: 2}}>{JSON.parse(item.data)['width']}*{JSON.parse(item.data)['height']}</Typography>
                                 </Box>
                               </Box>

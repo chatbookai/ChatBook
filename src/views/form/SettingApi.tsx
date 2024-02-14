@@ -36,7 +36,7 @@ const SettingForm = (props: any) => {
   const auth = useAuth()
   const router = useRouter()
   useEffect(() => {
-    CheckPermission(auth, router)
+    CheckPermission(auth, router, false)
   }, [])
 
   const openApiBaseText = "Example: https://api.openai.com/v1";
@@ -138,6 +138,10 @@ const SettingForm = (props: any) => {
         }
         else {
             toast.error(t(FormSubmit.msg) as string, { duration: 4000 })
+            
+            if(FormSubmit && FormSubmit.msg=='Token is invalid') {
+                CheckPermission(auth, router, true)
+            }
         }
     }
 

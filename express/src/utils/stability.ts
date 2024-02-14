@@ -6,7 +6,8 @@ import sharp from 'sharp';
 
 import path from 'path'
 import { db, getDbRecord, getDbRecordALL } from './db'
-import { timestampToDate, isFile } from './utils'
+import { timestampToDate, isFile, filterNegativePrompt } from './utils'
+import { compressImageForImage } from './llms'
 import FormData from "form-data"
 
 const STABILITY_API_SECRET_KEY_IMAGE = process.env.STABILITY_API_KEY_IMAGE
@@ -73,7 +74,7 @@ export async function generateImageFromTextStabilityAi(checkUserTokenData: any, 
   POSTDATA['samples'] = 1
   POSTDATA['sampler'] = data.sampler
   POSTDATA['style_preset'] = data.style ?? "digital-art"
-  POSTDATA['text_prompts'] = [{text: data.prompt, weight: 1},{text: data.negativePrompt, weight: -1}]
+  POSTDATA['text_prompts'] = [{text: data.prompt, weight: 1},{text: filterNegativePrompt(data.negativePrompt), weight: -1}]
 
   console.log("POSTDATA", POSTDATA)
 
@@ -98,7 +99,7 @@ export async function generateImageFromTextStabilityAi(checkUserTokenData: any, 
         const orderId = FileNamePath
         try {
           const insertSetting = db.prepare('INSERT INTO userimages (userId, email, model, `prompt`, negative_prompt, steps, seed, style, filename, data, `date`, createtime, cost_usd, cost_xwe, cost_api, orderId, orderTX, source ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-          insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, data.model, data.prompt, data.negativePrompt, data.steps, POSTDATA['seed'], POSTDATA['style_preset'], orderId, JSON.stringify(POSTDATA), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, 'stability.ai');
+          insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, data.model, data.prompt, filterNegativePrompt(data.negativePrompt), data.steps, POSTDATA['seed'], POSTDATA['style_preset'], orderId, JSON.stringify(POSTDATA), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, 'stability.ai');
           insertSetting.finalize();
         }
         catch(error: any) {
@@ -140,14 +141,36 @@ export async function generateImageFromImageStabilityAi(checkUserTokenData: any,
     return {status: 'error', msg: 'Please upload the file first' };
   }
   const FileName = files[0].filename
-  const FilePath = files[0].path
+  let FilePath = files[0].path
+
+  //Check Width & Height
+  const metadataNow = await sharp(FilePath).metadata()
+  const widthNow = metadataNow.width
+  const heightNow = metadataNow.height
+  console.log("FileName", FileName)
+  console.log("FilePath", FilePath)
+  console.log("widthNow", widthNow)
+  if(widthNow && widthNow < 320)   {
+    return {status: 'error', msg: 'Image width must greater than 320 px'}
+  }
+  if(widthNow && widthNow > 1536)   {
+    FilePath = await compressImageForImage(FileName, 1536, undefined)
+  }
+  if(heightNow && heightNow < 320)   {
+    return {status: 'error', msg: 'Image height must greater than 320 px'}
+  }
+  if(heightNow && heightNow > 1536)   {
+    FilePath = await compressImageForImage(FileName, undefined, 1536)
+  }
+
+  //Submit
   const formData: any = new FormData();
   formData.append("init_image", fs.readFileSync(FilePath), FileName);
   formData.append('init_image_mode', 'IMAGE_STRENGTH')
   formData.append('image_strength', 0.35)
   formData.append('text_prompts[0][text]', PostData.prompt)
   formData.append('text_prompts[0][weight]', 1)
-  formData.append('text_prompts[1][text]', PostData.negativePrompt)
+  formData.append('text_prompts[1][text]', filterNegativePrompt(PostData.negativePrompt))
   formData.append('text_prompts[1][weight]', -1)
   formData.append("seed", Number(PostData.seed) ?? 0);
   formData.append("cfg_scale", Number(PostData.CFGScale) ?? 0);
@@ -180,7 +203,7 @@ export async function generateImageFromImageStabilityAi(checkUserTokenData: any,
       const orderId = FileNamePath
       try {
         const insertSetting = db.prepare('INSERT INTO userimages (userId, email, model, `prompt`, negative_prompt, steps, seed, style, filename, data, `date`, createtime, cost_usd, cost_xwe, cost_api, orderId, orderTX, source ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, PostData.model, PostData.prompt, PostData.negativePrompt, PostData.steps, Number(PostData.seed), String(PostData.style), orderId, JSON.stringify(PostData), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, 'stability.ai');
+        insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, PostData.model, PostData.prompt, filterNegativePrompt(PostData.negativePrompt), PostData.steps, Number(PostData.seed), String(PostData.style), orderId, JSON.stringify(PostData), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, 'stability.ai');
         insertSetting.finalize();
       }
       catch(error: any) {
@@ -193,8 +216,12 @@ export async function generateImageFromImageStabilityAi(checkUserTokenData: any,
     }
   }
   catch(error: any) {
-    console.log("generateImageFromImageStabilityAi Error", error.message)
-    return {status: 'error', msg: error.message, errorText: 'Submit failed' };
+    if(error && error.response && error.response.data && error.response.data.message) {
+      return {status: 'error', msg: error.response.data.message, errorText: 'Submit failed' };
+    }
+    else {
+      return {status: 'error', msg: error.message, errorText: 'Submit failed' };
+    }
   }
   
 }

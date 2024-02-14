@@ -30,7 +30,7 @@ const Logs = () => {
   const auth = useAuth()
   const router = useRouter()
   useEffect(() => {
-    CheckPermission(auth, router)
+    CheckPermission(auth, router, false)
   }, [])
   
   const { id } = router.query
@@ -51,12 +51,15 @@ const Logs = () => {
     if (auth && auth.user) {
       const data: any = {pageid: paginationModel.page, pagesize: paginationModel.pageSize}
       const RS = await axios.post(authConfig.backEndApiChatBook + '/api/user/getusers', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
-      if(RS) {
+      if(RS && RS.data) {
         const userStatusNew = userStatus
         RS.data.map((Item: any)=>{
           userStatusNew[Item.id] = Item.user_status
         })
         setUserStatus(userStatusNew)
+      }
+      if(RS && RS.status && RS.status=='error' && RS.msg=='Token is invalid') {
+        CheckPermission(auth, router, true)
       }
       setStore(RS)  
     }

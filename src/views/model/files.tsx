@@ -35,7 +35,7 @@ const Files = (props: any) => {
   const auth = useAuth()
   const router = useRouter()
   useEffect(() => {
-    CheckPermission(auth, router)
+    CheckPermission(auth, router, false)
   }, [])
   
   const { id } = router.query

@@ -67,7 +67,7 @@ const FileUploaderMultiple = (props: any) => {
   const auth = useAuth()
   const router = useRouter()
   useEffect(() => {
-    CheckPermission(auth, router)
+    CheckPermission(auth, router, false)
   }, [])
 
   // ** State
@@ -201,6 +201,9 @@ const FileUploaderMultiple = (props: any) => {
         setIsDisabledRemove(false)
         setUploadingButton(`${t(`Upload Files`)}`)
         handleRemoveAllFiles()
+      }
+      else if(FormSubmit && FormSubmit.msg=='Token is invalid') {
+        CheckPermission(auth, router, true)
       }
     }
   };

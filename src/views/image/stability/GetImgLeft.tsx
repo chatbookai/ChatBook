@@ -108,7 +108,7 @@ const GetImgLeft = (props: any) => {
     setModelValue(event.target.value);
   }
 
-  const [promptValue, setPromptValue] = useState<string>("A captivating portrait of a Chinese girl radiating grace and elegance. The painting captures her intriguing beauty in intricate detail, showcasing a serene aura that captivates the viewer's gaze. The girl's delicate features are adorned with traditional Chinese attire, further emphasizing her cultural heritage")
+  const [promptValue, setPromptValue] = useState<string>("")
   const [negativePromptValue, setNegativePromptValue] = useState<string>('low quality, Disfigured hands, poorly drawn face, out of frame, bad anatomy, signature, low contrast, overexposed, nsfw, weapon, blood, guro, without cloth')
 
   const [StyleValue, setStyleValue] = useState<string>('enhance')

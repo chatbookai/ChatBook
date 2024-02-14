@@ -41,7 +41,7 @@ const UserAccount = () => {
   const auth = useAuth()
   const router = useRouter()
   useEffect(() => {
-    CheckPermission(auth, router)
+    CheckPermission(auth, router, false)
   }, [])
 
   // defaultValues 必须保存每个字段有一个确实的值

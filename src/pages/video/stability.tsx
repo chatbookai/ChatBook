@@ -30,9 +30,6 @@ const AppChat = () => {
   const { t } = useTranslation()
   const auth = useAuth()
   const router = useRouter()
-  useEffect(() => {
-    CheckPermission(auth, router)
-  }, [])
   
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
 
@@ -72,6 +69,9 @@ const AppChat = () => {
         })
         setImageList(imageListInitial.filter((element) => element != null))
       }
+      if(RS && RS.status && RS.status=='error' && RS.msg=='Token is invalid') {
+        CheckPermission(auth, router, true)
+      }
     }
   }
 
@@ -101,7 +101,10 @@ const AppChat = () => {
             toast.error(t(GenerateStatus.msg), {
               duration: 4000
             })
-          }
+            if(GenerateStatus && GenerateStatus.msg=='Token is invalid') {
+              CheckPermission(auth, router, true)
+            }
+        }
       } 
       catch (error) {
         setSendButtonDisable(false)
@@ -109,6 +112,12 @@ const AppChat = () => {
         setPendingImagesCount(0)
         console.log("handleGenerateVideo Error fetching video:", error);
       }
+    }
+    else {
+      toast.error(t("Please login first"), {
+        duration: 4000
+      })
+      router.push('/login')
     }
   }
 
@@ -121,7 +130,6 @@ const AppChat = () => {
 
   return (
     <Fragment>
-      {auth.user && auth.user.email ?
       <Box
       className='app-chat'
       sx={{
@@ -147,9 +155,6 @@ const AppChat = () => {
         pendingImagesCount={pendingImagesCount}
       />
       </Box>
-      :
-      null
-      }
     </Fragment>
   )
 }

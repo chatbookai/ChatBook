@@ -569,7 +569,7 @@ export async function wholeSiteStatics() {
   return {NewUserPerDay, NewImagesPerDay, NewFilesPerDay, NewActivitesPerDay, DateList, TotalImages, TotalActivites, TotalUsers, TotalFiles, TotalKnowledges}
 }
 
-export async function getAllImages(userId: string, pageid: number, pagesize: number) {
+export async function getAllImages(userId: string | undefined, pageid: number, pagesize: number) {
   const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
   const From = pageidFiler * pagesizeFiler;
@@ -602,4 +602,8 @@ export async function getAllImages(userId: string, pageid: number, pagesize: num
   RS['total'] = RecordsTotal;
 
   return RS;
+}
+
+export function filterNegativePrompt(Prompt: string) {
+  return Prompt + ",low quality, disfigured hands, poorly drawn face, out of frame, bad anatomy, signature, low contrast, overexposed, nsfw, weapon, blood, guro, without cloth, disturbing imagery, sexual violence, inappropriate attire, blurry, unfocused, unpleasant, unintelligible, offensive, distorted, unoriginal, uninspired, poor composition, boring, inconsistent style, low resolution, irrelevant"
 }

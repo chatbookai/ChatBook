@@ -19,7 +19,7 @@
   const secretKey: string = process.env.JWT_TOKEN_SECRET_KEY || "ChatBookAI"; 
 
   export const createJwtToken = (userId: string, email: string, role: string) => {
-    const token = jwt.sign({ id: userId, email, role }, secretKey, { expiresIn: '7d' });
+    const token = jwt.sign({ id: userId, email, role }, secretKey, { expiresIn: '10m' });
 
     return token;
   };
@@ -150,6 +150,17 @@
       }
       catch(error: any) {
       }
+    }
+  }
+
+  export async function refreshUserToken(token: string) {
+    const userTokenData: any = verifyJwtToken(token);
+    if(userTokenData) {
+      const createJwtTokenData = createJwtToken(userTokenData.id, userTokenData.email, userTokenData.role)
+        return {"status":"ok", "msg":"User token is valid", "token": createJwtTokenData}
+    }
+    else {
+        return {"status":"error", "msg":"Token is invalid"}
     }
   }
 

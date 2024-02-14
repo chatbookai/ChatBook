@@ -19,24 +19,18 @@ import ChatContent from 'src/views/chat/Chat/ChatContent'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
-import { GetAllLLMS, ChatChatInit, ChatChatNameList, ChatChatInput, ChatChatOutput, CheckPermission  } from 'src/functions/ChatBook'
+import { GetAllLLMS, ChatChatInit, ChatChatNameList, ChatChatInput, ChatChatOutput  } from 'src/functions/ChatBook'
 
 // ** Axios Imports
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
-import { useRouter } from 'next/router'
 
 const AppChat = () => {
 
   // ** Hook
   const { t } = useTranslation()
   const auth = useAuth()
-  const router = useRouter()
-  useEffect(() => {
-    CheckPermission(auth, router)
-  }, [])
-  
   
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
   const [llms, setLlms] = useState<any>([])
@@ -91,6 +85,7 @@ const AppChat = () => {
   // ** States
   const [store, setStore] = useState<any>(null)
   const [sendButtonDisable, setSendButtonDisable] = useState<boolean>(false)
+  const [sendButtonLoading, setSendButtonLoading] = useState<boolean>(false)
   const [sendButtonText, setSendButtonText] = useState<string>('')
   const [sendInputText, setSendInputText] = useState<string>('')
   const [lastMessage, setLastMessage] = useState("")
@@ -112,7 +107,7 @@ const AppChat = () => {
   const hidden = useMediaQuery(theme.breakpoints.down('lg'))
 
   useEffect(() => {
-    if(auth.user)   {
+    if(auth.user && auth.user.id)   {
       const ChatChatText = window.localStorage.getItem("ChatChat")      
       const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
       if(lastMessage && lastMessage!="") {
@@ -137,6 +132,11 @@ const AppChat = () => {
       }
       setStore(storeInit)
     }
+    else {
+      setSendButtonDisable(true)
+      setSendButtonLoading(false)
+      setSendButtonText(t('Login first') as string)
+    }
   }, [refreshChatCounter, lastMessage, auth])
 
   useEffect(() => {
@@ -152,6 +152,7 @@ const AppChat = () => {
   const sendMsg = async (Obj: any) => {
     if(auth.user && auth.user.token)  {
       setSendButtonDisable(true)
+      setSendButtonLoading(true)
       setSendButtonText(t("Sending") as string)
       setSendInputText(t("Generating the answer...") as string)
       ChatChatInput(Obj.message, auth.user.id)
@@ -159,6 +160,7 @@ const AppChat = () => {
       const ChatChatOutputStatus = await ChatChatOutput(Obj.message, auth.user.token, auth.user.id, chatId, setLastMessage)
       if(ChatChatOutputStatus) {
         setSendButtonDisable(false)
+        setSendButtonLoading(false)
         setRefreshChatCounter(refreshChatCounter + 2)
         setSendButtonText(t("Send") as string)
         setSendInputText(t("Type your message here...") as string)  
@@ -178,7 +180,6 @@ const AppChat = () => {
 
   return (
     <Fragment>
-      {auth.user && auth.user.email ?
       <Box
       className='app-chat'
       sx={{
@@ -206,15 +207,14 @@ const AppChat = () => {
         mdAbove={mdAbove}
         statusObj={statusObj}
         sendButtonDisable={sendButtonDisable}
+        sendButtonLoading={sendButtonLoading}
         sendButtonText={sendButtonText}
         sendInputText={sendInputText}
         chatId={chatId}
         chatName={chatName}
+        email={auth?.user?.email}
       />
       </Box>
-      :
-      null
-      }
     </Fragment>
   )
 }

@@ -34,9 +34,6 @@ export const MenuListAdmin = [
     path: '/overview'
   },
   {
-    sectionTitle: 'Index'
-  },
-  {
     title: 'Index',
     icon: 'mdi:message-outline',
     path: '/indexpage'
@@ -80,15 +77,12 @@ export const MenuListAdmin = [
     path: '/community'
   },
   {
+    title: 'PPTX',
+    icon: 'ri:file-ppt-2-fill',
+    path: '/pptx'
+  },
+  {
     sectionTitle: 'Settings'
-  },
-  {
-    sectionTitle: 'index'
-  },
-  {
-    title: 'Index',
-    icon: 'mdi:message-outline',
-    path: '/indexpage/index'
   },
   {
     title: 'Knowledge Base',
@@ -146,6 +140,11 @@ export const MenuListUser = [
     path: '/overview'
   },
   {
+    title: 'Index',
+    icon: 'mdi:message-outline',
+    path: '/indexpage'
+  },
+  {
     sectionTitle: 'Chat'
   },
   {
@@ -182,5 +181,10 @@ export const MenuListUser = [
     title: 'Community',
     icon: 'fluent:people-community-32-filled',
     path: '/community'
+  },
+  {
+    title: 'PPTX',
+    icon: 'ri:file-ppt-2-fill',
+    path: '/pptx'
   }
 ]

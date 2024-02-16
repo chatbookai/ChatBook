@@ -34,11 +34,6 @@ export const MenuListAdmin = [
     path: '/overview'
   },
   {
-    title: 'Index',
-    icon: 'mdi:message-outline',
-    path: '/indexpage'
-  },
-  {
     sectionTitle: 'Chat'
   },
   {
@@ -75,11 +70,6 @@ export const MenuListAdmin = [
     title: 'Community',
     icon: 'fluent:people-community-32-filled',
     path: '/community'
-  },
-  {
-    title: 'PPTX',
-    icon: 'ri:file-ppt-2-fill',
-    path: '/pptx'
   },
   {
     sectionTitle: 'Settings'
@@ -140,11 +130,6 @@ export const MenuListUser = [
     path: '/overview'
   },
   {
-    title: 'Index',
-    icon: 'mdi:message-outline',
-    path: '/indexpage'
-  },
-  {
     sectionTitle: 'Chat'
   },
   {
@@ -181,10 +166,5 @@ export const MenuListUser = [
     title: 'Community',
     icon: 'fluent:people-community-32-filled',
     path: '/community'
-  },
-  {
-    title: 'PPTX',
-    icon: 'ri:file-ppt-2-fill',
-    path: '/pptx'
   }
 ]

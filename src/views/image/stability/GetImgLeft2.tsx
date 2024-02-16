@@ -110,7 +110,7 @@ const GetImgLeft = (props: any) => {
   }
 
   const [promptValue, setPromptValue] = useState<string>("")
-  const [negativePromptValue, setNegativePromptValue] = useState<string>('low quality, Disfigured hands, poorly drawn face, out of frame, bad anatomy, signature, low contrast, overexposed, nsfw, weapon, blood, guro, without cloth')
+  const [negativePromptValue, setNegativePromptValue] = useState<string>('ugly, poorly designed, amateur, bad proportions, direct sunlight, low quality')
 
   const [styleValue, setStyleValue] = useState<string>('enhance')
   const StyleList: any[] = []

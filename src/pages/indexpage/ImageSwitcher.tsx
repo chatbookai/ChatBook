@@ -14,7 +14,7 @@ export default function ImageSwitcher() {
     <Box
       sx={{
         position: 'relative',
-        width: 500, // 容器宽度
+        width: 700, // 容器宽度
         height: 333, // 容器高度
         overflow: 'hidden',
         '&:hover > img:last-child': {
@@ -25,12 +25,12 @@ export default function ImageSwitcher() {
       onMouseLeave={e => e.currentTarget.style.setProperty('--clip-size', '0%')} // 当鼠标离开时，设置clipSize为0%
     >
       <img
-        src='/images/cards/paper-boat.png'
+        src='/images/cards/roomafter.jpg'
         alt='First'
         style={{ position: 'absolute', width: '100%', height: '100%' }}
       />
       <img
-        src='/images/cards/workstation.png'
+        src='/images/cards/roombefore.jpg'
         alt='Second'
         style={{ position: 'absolute', width: '100%', height: '100%' }}
       />

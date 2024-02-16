@@ -160,7 +160,7 @@ const GetImgLeft = (props: any) => {
     setNumberOfImagesValue(event.target.value);
   }
 
-  const [samplerValue, setSamplerValue] = useState<string>('DDPM')
+  const [samplerValue, setSamplerValue] = useState<string>('K_DPMPP_2M')
   const SamplerList: any[] = []
   SamplerList.push({name: "DDIM", value: "DDIM"})
   SamplerList.push({name: "DDPM", value: "DDPM"})

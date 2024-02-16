@@ -68,7 +68,7 @@ export async function generateImageFromTextStabilityAi(checkUserTokenData: any, 
   POSTDATA['steps'] = Number(data.steps)
   POSTDATA['width'] = Number(data.width)
   POSTDATA['height'] = Number(data.height)
-  const seed = data.seed && data.seed !='' ? data.seed : Math.floor( Math.random() * 1000000)
+  const seed = data.seed && data.seed !='' ? data.seed : 0
   POSTDATA['seed'] = Math.floor(Number(seed))
   POSTDATA['cfg_scale'] = data.CFGScale ?? 7
   POSTDATA['samples'] = 1

@@ -1,6 +1,7 @@
 const typography = {
   fontFamily: [
     'Inter',
+    'Cormorant Garamond',
     'sans-serif',
     '-apple-system',
     'BlinkMacSystemFont',

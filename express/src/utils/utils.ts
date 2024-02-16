@@ -605,5 +605,17 @@ export async function getAllImages(userId: string | undefined, pageid: number, p
 }
 
 export function filterNegativePrompt(Prompt: string) {
-  return Prompt + ",low quality, disfigured hands, poorly drawn face, out of frame, bad anatomy, signature, low contrast, overexposed, nsfw, weapon, blood, guro, without cloth, disturbing imagery, sexual violence, inappropriate attire, blurry, unfocused, unpleasant, unintelligible, offensive, distorted, unoriginal, uninspired, poor composition, boring, inconsistent style, low resolution, irrelevant"
+  const PromptNew = Prompt + ",low quality, disfigured hands, poorly drawn face, out of frame, bad anatomy, signature, low contrast, overexposed, nsfw, weapon, blood, guro, without cloth, disturbing imagery, sexual violence, inappropriate attire, blurry, unfocused, unpleasant, unintelligible, offensive, distorted, unoriginal, uninspired, poor composition, boring, inconsistent style, low resolution, irrelevant"
+  return removeDuplicates(PromptNew)
+}
+
+export function removeDuplicates(words: string): string {
+  const wordList = words.split(',');
+  const uniqueWords: string[] = [];
+  for (const word of wordList) {
+    if (!uniqueWords.includes(word.trim())) {
+      uniqueWords.push(word.trim());
+    }
+  }
+  return uniqueWords.join(',');
 }

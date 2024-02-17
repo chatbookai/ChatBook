@@ -368,7 +368,7 @@ const GetImgLeft = (props: any) => {
                     <FormLabel>Steps: {stepsValue}</FormLabel>
                     <Slider
                       min={1}
-                      max={50}
+                      max={40}
                       step={1}
                       defaultValue={stepsValue}
                       value={stepsValue}

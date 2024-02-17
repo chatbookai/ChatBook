@@ -563,8 +563,8 @@ const RoomDesign = (props: any) => {
                                     <FormControl sx={{ flexWrap: 'wrap', width: '98%' }}>
                                         <FormLabel>{t('Steps') as string}: {stepsValue}</FormLabel>
                                         <Slider
-                                        min={1}
-                                        max={50}
+                                        min={25}
+                                        max={40}
                                         step={1}
                                         defaultValue={stepsValue}
                                         value={stepsValue}

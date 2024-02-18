@@ -5,6 +5,8 @@ import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 
+import Icon from 'src/@core/components/icon'
+
 import Box, { BoxProps } from '@mui/material/Box'
 import CardContent from '@mui/material/CardContent'
 ;<link href='https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;700&display=swap' rel='stylesheet' />
@@ -37,7 +39,13 @@ const WhyWithUsCard = () => {
             <Typography variant='subtitle1' sx={{ textAlign: 'center' }}>
               click to know more
             </Typography>
-            <Box sx={{ mt: 9.5, display: 'flex', justifyContent: 'center', alignItems: 'center' }}></Box>
+            <Box sx={{ mt: 9.5, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <Icon icon='mdi:cog-outline' fontSize={20} />
+
+              <Icon icon='mdi:language-javascript' fontSize={20} />
+              <Icon icon='uis:airplay' />
+              <Icon icon='gala:secure' color='#336c34' fontSize={80} />
+            </Box>
           </CardContent>
         </Grid>
       </Grid>

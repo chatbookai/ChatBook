@@ -1,13 +1,13 @@
 import React from 'react'
 import CardIntro from './CardIntro'
-import ImageSwitcher from './ImageSwitcher'
 import ImageIntro from './ImageIntro'
+import WhyWithUsCard from './WhyWithUsCard'
 
 const indexPage: React.FC = () => {
   return (
     <div>
       <CardIntro />
-      <ImageSwitcher />
+      <WhyWithUsCard />
       <ImageIntro />
     </div>
   )

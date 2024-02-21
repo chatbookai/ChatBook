@@ -26,17 +26,24 @@ const ImageIntro = () => {
     <Card>
       <Grid container spacing={6}>
         <Grid item xs={12} sm={5}>
-          <CardContent sx={{ p: theme => `${theme.spacing(8.25, 6.75, 6.25)} !important` }}>
+          <CardContent sx={{ 
+              p: theme => `${theme.spacing(8.25, 6.75, 6.25)} !important`,
+              height: '100%', // Ensure the content area fills the card.
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center', // Center vertically.
+              alignItems: 'left', // Center horizontally.
+         }}>
             <Typography variant='h4' sx={{ mb: 3.5, fontFamily: 'Cormorant Garamond', fontWeight: '700' }}>
               Use the power of AI Imaging to demonstrate your home
             </Typography>
-            <Typography variant='subtitle1'>
+            <Typography variant='subtitle2'>
               Unleash the Power of AI Imaging: Transform, Tidy, and Redesign Your Home with Ease! Discover how our
               cutting-edge AI can help you beautify, clean, and completely reimagine your living spaces, making your
               dream home a reality.
             </Typography>
             <Box sx={{ mt: 9.5, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-              <Button variant='outlined' sx={{ width: '80%' }}>
+              <Button variant='outlined' sx={{ width: '50%' }}>
                 Try it out
               </Button>
             </Box>

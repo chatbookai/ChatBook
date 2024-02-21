@@ -22,7 +22,7 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 
 const WhyWithUsCard = () => {
   return (
-    <Card >
+    <Card sx = {{background: 'transparent'}} >
       <Typography
               variant='h3'
               sx={{pt: ['0 !important', '2.5rem !important'], pl: ['1.5rem !important', '0 !important'], mb: 8.5, fontFamily: 'Cormorant Garamond', fontWeight: '700', textAlign: 'center' }}
@@ -54,7 +54,7 @@ const WhyWithUsCard = () => {
                 }} />
 
                 <Box sx={{ p: theme => `${theme.spacing(10.25, 10.75, 8.25)} !important` }}>
-                  <Typography variant='subtitle1' style={{ fontWeight: 500 ,fontSize: '18px'}}>  
+                  <Typography variant='subtitle1' style={{ fontWeight: 400 ,fontSize: '18px'}}>  
                   "Experience the unbiased future of home searching with Chatbook AI. Our platform guarantees neutral suggestions, ensuring an objective and balanced perspective in your property hunt. Unlike traditional methods, Chatbook AI is designed to deliver impartial advice, free from any hidden agendas or biases. This commitment to neutrality empowers you to make choices that are truly in your best interest. "
                   </Typography>
                 </Box>
@@ -85,7 +85,7 @@ const WhyWithUsCard = () => {
                      }} 
                   />
                 <Box sx={{ p: theme => `${theme.spacing(10.25, 10.75, 8.25)} !important` }}>
-                  <Typography variant='subtitle1' style={{ fontWeight: 500  ,fontSize: '18px' }}>  
+                  <Typography variant='subtitle1' style={{ fontWeight: 400  ,fontSize: '18px' }}>  
                     "Privacy is our top priority. With Chatbook, you maintain your privacy while exploring or searching for your new home. By using Chatbook, your conversations remain confidential, ensuring that no personal information is divulged to real estate agents or third party leads pool. This autonomy not only safeguards your privacy but also empowers you to make well-informed decisions. Trust in Chatbook to keep your data secure and your home-buying experience transparent and self-directed."
                   </Typography>
                 </Box>
@@ -115,7 +115,7 @@ const WhyWithUsCard = () => {
                   borderBottomWidth: 'thick'
                 }} />
                 <Box sx={{ p: theme => `${theme.spacing(10.25, 10.75, 8.25)} !important` }}>
-                  <Typography variant='subtitle1' style={{ fontWeight: 500  ,fontSize: '18px' }}>  
+                  <Typography variant='subtitle1' style={{ fontWeight: 400  ,fontSize: '18px' }}>  
                   "Unlock the precision of real-time intelligence with Chatbook AI. Our platform is powered by a constantly updated, verifiable knowledge base, ensuring your search results are not only accurate but also backed by credible sources. Chatbook AI provides exact references for its responses, allowing you to verify the information firsthand and make informed decisions with confidence. Trust Chatbook for up-to-date, and transparent guidance in your home-buying journey."
                   </Typography>
                 </Box>

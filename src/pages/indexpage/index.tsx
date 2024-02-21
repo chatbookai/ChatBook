@@ -1,16 +1,23 @@
-import React from 'react'
-import CardIntro from './CardIntro'
-import ImageIntro from './ImageIntro'
-import WhyWithUsCard from './WhyWithUsCard'
+import React from 'react';
+import Grid from '@mui/material/Grid';
+import CardIntro from './CardIntro';
+import ImageIntro from './ImageIntro';
+import WhyWithUsCard from './WhyWithUsCard';
 
-const indexPage: React.FC = () => {
+const IndexPage: React.FC = () => {
   return (
-    <div>
-      <CardIntro />
-      <WhyWithUsCard />
-      <ImageIntro />
-    </div>
-  )
-}
+    <Grid container spacing={8}> 
+      <Grid item xs={12}>
+        <CardIntro />
+      </Grid>
+      <Grid item xs={12}>
+        <WhyWithUsCard />
+      </Grid>
+      <Grid item xs={12}>
+        <ImageIntro />
+      </Grid>
+    </Grid>
+  );
+};
 
-export default indexPage
+export default IndexPage;

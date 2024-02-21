@@ -22,21 +22,22 @@ const StyledBox = styled(Box)<BoxProps>(({ theme }) => ({
 
 const WhyWithUsCard = () => {
   return (
-    <Card>
+    <Card >
       <Typography
               variant='h3'
               sx={{pt: ['0 !important', '2.5rem !important'], pl: ['1.5rem !important', '0 !important'], mb: 8.5, fontFamily: 'Cormorant Garamond', fontWeight: '700', textAlign: 'center' }}
             >
               Why Chatbook AI?
       </Typography>
-      <Grid container spacing={8}>
+      <Grid container spacing={5} >
         <Grid
             item
             sm={4}
             xs={12}
+            
           >
-            <Card>
-              <CardContent>
+            <Card sx={{ minHeight: '500px' }}>
+              <CardContent >
                 <Box sx={{ mt: 9.5, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                   <Icon icon="pajamas:nature" color='#336c34' fontSize={80} />
                 </Box>
@@ -66,7 +67,7 @@ const WhyWithUsCard = () => {
               sm={4}
               xs={12}
             >
-              <Card>
+              <Card sx={{ minHeight: '500px' }}>
                 <CardContent >
                   <Box sx={{ mt: 9.5, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <Icon icon='gala:secure' color='#336c34' fontSize={80} />
@@ -75,13 +76,14 @@ const WhyWithUsCard = () => {
                     Secure
                   </Typography>
                   <Divider sx={{
-                  pt: ['0 !important', '1.5rem !important'],
-                  pl: ['1.5rem !important', '0 !important'],
-                  width: '30%',
-                  marginLeft: 'auto',
-                  marginRight: 'auto',
-                  borderBottomWidth: 'thick'
-                }} />
+                    pt: ['0 !important', '1.5rem !important'],
+                    pl: ['1.5rem !important', '0 !important'],
+                    width: '30%',
+                    marginLeft: 'auto',
+                    marginRight: 'auto',
+                    borderBottomWidth: 'thick'
+                     }} 
+                  />
                 <Box sx={{ p: theme => `${theme.spacing(10.25, 10.75, 8.25)} !important` }}>
                   <Typography variant='subtitle1' style={{ fontWeight: 500  ,fontSize: '18px' }}>  
                     "Privacy is our top priority. With Chatbook, you maintain your privacy while exploring or searching for your new home. By using Chatbook, your conversations remain confidential, ensuring that no personal information is divulged to real estate agents or third party leads pool. This autonomy not only safeguards your privacy but also empowers you to make well-informed decisions. Trust in Chatbook to keep your data secure and your home-buying experience transparent and self-directed."
@@ -96,7 +98,7 @@ const WhyWithUsCard = () => {
               sm={4}
               xs={12}
             >
-              <Card>
+              <Card sx={{ minHeight: '500px'}}>
                 <CardContent >
                   <Box sx={{ mt: 9.5, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <Icon icon="ph:target-duotone" color='#336c34' fontSize={80}/>
@@ -114,7 +116,7 @@ const WhyWithUsCard = () => {
                 }} />
                 <Box sx={{ p: theme => `${theme.spacing(10.25, 10.75, 8.25)} !important` }}>
                   <Typography variant='subtitle1' style={{ fontWeight: 500  ,fontSize: '18px' }}>  
-                  "Unlock the precision of real-time intelligence with Chatbook AI. Our platform is powered by a constantly updated, verifiable knowledge base, ensuring your search results are not only accurate but also backed by credible sources. Chatbook AI provides exact references for its responses, allowing you to verify the information firsthand. Step into a world where clarity meets reliability, and make informed decisions with confidence. Trust Chatbook for up-to-date, factual, and transparent guidance in your home-buying journey."
+                  "Unlock the precision of real-time intelligence with Chatbook AI. Our platform is powered by a constantly updated, verifiable knowledge base, ensuring your search results are not only accurate but also backed by credible sources. Chatbook AI provides exact references for its responses, allowing you to verify the information firsthand and make informed decisions with confidence. Trust Chatbook for up-to-date, and transparent guidance in your home-buying journey."
                   </Typography>
                 </Box>
                 </CardContent>

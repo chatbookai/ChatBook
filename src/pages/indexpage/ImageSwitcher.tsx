@@ -24,7 +24,7 @@ export default function ImageSwitcher({ value }) {
       sx={{
         position: 'relative',
         width: { xs: '100%', sm: '90%', md: '80%', lg: '35vw' }, // 响应式宽度
-        height: { xs: '30vw', sm: '15vw', md: '40vw', lg:'15vw' }, // 响应式高度，或者使用固定高度
+        height: { xs: '30vw', sm: '15vw', md: '40vw', lg:'20vw' }, // 响应式高度，或者使用固定高度
         overflow: 'hidden',
         '&:hover > img:last-child': {
           clipPath: `inset(0 0 0 var(--clip-size, 0%))`

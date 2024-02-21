@@ -26,7 +26,7 @@ const ImageIntro = () => {
     <Card>
       <Grid container spacing={6}>
         <Grid item xs={12} sm={7} sx={{ display: 'flex' }}>
-            <Grid item sm={9} xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Grid item sm={9} xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', pt: ['3.5 !important', '4rem !important'], pb: ['2.5rem !important', '5.5 !important'], pr: ['2.5rem !important', '2.5 !important'] }}>
               <ImageSwitcher value={value} />
             </Grid>
             <Grid item sm={3} xs={12} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>

@@ -25,7 +25,20 @@ const ImageIntro = () => {
   return (
     <Card>
       <Grid container spacing={6}>
-        <Grid item xs={12} sm={5}>
+        <Grid item xs={12} sm={7} sx={{ display: 'flex' }}>
+            <Grid item sm={9} xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+              <ImageSwitcher value={value} />
+            </Grid>
+            <Grid item sm={3} xs={12} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              <TabsVertical value={value} setValue={setValue} />
+            </Grid>
+          </Grid>
+        <Grid
+          item
+          sm={5}
+          xs={12}
+          sx={{ display: 'flex', pt: ['0 !important', '1.5rem !important'], pl: ['1.5rem !important', '0 !important'] }}
+        >
           <CardContent sx={{ 
               p: theme => `${theme.spacing(8.25, 6.75, 6.25)} !important`,
               height: '100%', // Ensure the content area fills the card.
@@ -33,7 +46,7 @@ const ImageIntro = () => {
               flexDirection: 'column',
               justifyContent: 'center', // Center vertically.
               alignItems: 'left', // Center horizontally.
-         }}>
+           }}>
             <Typography variant='h4' sx={{ mb: 3.5, fontFamily: 'Cormorant Garamond', fontWeight: '700' }}>
               Use the power of AI Imaging to demonstrate your home
             </Typography>
@@ -48,19 +61,6 @@ const ImageIntro = () => {
               </Button>
             </Box>
           </CardContent>
-        </Grid>
-        <Grid
-          item
-          sm={7}
-          xs={12}
-          sx={{ display: 'flex', pt: ['0 !important', '1.5rem !important'], pl: ['1.5rem !important', '0 !important'] }}
-        >
-          <Grid item sm={3} xs={12} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-            <TabsVertical value={value} setValue={setValue} />
-          </Grid>
-          <Grid item sm={9} xs={12} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-            <ImageSwitcher value={value} />
-          </Grid>
         </Grid>
       </Grid>
     </Card>

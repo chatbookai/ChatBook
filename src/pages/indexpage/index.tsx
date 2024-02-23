@@ -4,6 +4,7 @@ import CardIntro from './CardIntro';
 import ImageIntro from './ImageIntro';
 import WhyWithUsCard from './WhyWithUsCard';
 import KnowledgeChatIntro from './KnowledgeChatIntro';
+import ContactUs from './ContactUs';
 
 const IndexPage: React.FC = () => {
   return (
@@ -19,6 +20,9 @@ const IndexPage: React.FC = () => {
       </Grid>
       <Grid item xs={12}>
         <ImageIntro />
+      </Grid>
+      <Grid item xs={12}>
+        <ContactUs />
       </Grid>
     </Grid>
   );

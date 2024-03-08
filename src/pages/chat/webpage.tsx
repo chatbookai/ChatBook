@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next'
 
 import { GetAllLLMS, ChatChatInit, ChatChatNameList, ChatChatInput, ChatChatOutput } from 'src/functions/ChatBook'
 
+
 // ** Axios Imports
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
@@ -200,7 +201,7 @@ const AppChat = () => {
           ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
         }}
       >
-        <LLMSLeft llms={llms} setActiveId={setActiveId} hidden={false} chatId={chatId} chatName={chatName} />
+        
         <ChatContent
           store={store}
           hidden={hidden}

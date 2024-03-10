@@ -13,8 +13,8 @@ import { StatusObjType } from 'src/types/apps/chatTypes'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Chat App Components Imports
-import LLMSLeft from 'src/views/form/LLMSLeft'
-import ChatContent from 'src/views/chat/Chat/ChatContent'
+import FlowContent from 'src/views/chat/Flow/FlowContent'
+import FlowRight from 'src/views/chat/Flow/FlowRight'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
@@ -193,27 +193,27 @@ const AppChat = () => {
         ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
       }}
     >
-      <LLMSLeft
-        llms={llms}
-        setActiveId={setActiveId}
-        hidden={false}
-        chatId={chatId}
-        chatName={chatName}
-      />
-      <ChatContent
-        store={store}
-        hidden={hidden}
-        sendMsg={sendMsg}
-        mdAbove={mdAbove}
-        statusObj={statusObj}
-        sendButtonDisable={sendButtonDisable}
-        sendButtonLoading={sendButtonLoading}
-        sendButtonText={sendButtonText}
-        sendInputText={sendInputText}
-        chatId={chatId}
-        chatName={chatName}
-        email={auth?.user?.email}
-      />
+        <FlowContent
+            llms={llms}
+            setActiveId={setActiveId}
+            hidden={false}
+            chatId={chatId}
+            chatName={chatName}
+        />
+        <FlowRight
+            store={store}
+            hidden={hidden}
+            sendMsg={sendMsg}
+            mdAbove={mdAbove}
+            statusObj={statusObj}
+            sendButtonDisable={sendButtonDisable}
+            sendButtonLoading={sendButtonLoading}
+            sendButtonText={sendButtonText}
+            sendInputText={sendInputText}
+            chatId={chatId}
+            chatName={chatName}
+            email={auth?.user?.email}
+            />
       </Box>
     </Fragment>
   )

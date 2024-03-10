@@ -33,14 +33,6 @@ export const MenuListAdmin = [
     path: '/overview'
   },
   {
-    sectionTitle: 'Index'
-  },
-  {
-    title: 'Index',
-    icon: 'mdi:message-outline',
-    path: '/indexpage'
-  },
-  {
     sectionTitle: 'Chat'
   },
   {
@@ -49,9 +41,9 @@ export const MenuListAdmin = [
     path: '/chat/chat'
   },
   {
-    title: 'Chat with Webpage',
-    icon: 'mdi:web',
-    path: '/chat/webpage'
+    title: 'Mind Map',
+    icon: 'mdi:account-box-multiple-outline',
+    path: '/chat/flow'
   },
   {
     title: 'Text to Image',
@@ -64,19 +56,9 @@ export const MenuListAdmin = [
     path: '/image/stability2'
   },
   {
-    title: 'Image to Video',
-    icon: 'mdi:video-box',
-    path: '/video/stability'
-  },
-  {
     title: 'Knowledge Chat',
     icon: 'material-symbols:chat',
     path: '/chat/knowledge'
-  },
-  {
-    title: 'Studio',
-    icon: 'mdi:building',
-    path: '/studio'
   },
   {
     title: 'Community',
@@ -85,14 +67,6 @@ export const MenuListAdmin = [
   },
   {
     sectionTitle: 'Settings'
-  },
-  {
-    sectionTitle: 'index'
-  },
-  {
-    title: 'Index',
-    icon: 'mdi:message-outline',
-    path: '/indexpage/index'
   },
   {
     title: 'Knowledge Base',

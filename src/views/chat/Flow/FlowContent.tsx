@@ -11,19 +11,19 @@ const initialNodes: Node<TurboNodeData>[] = [
   {
     id: '1',
     position: { x: 0, y: 0 },
-    data: { icon: <FunctionIcon />, title: 'readFile', subline: 'api.ts' },
+    data: { title: 'BTC发展历史', subline: 'BTC发展历史' },
     type: 'turbo',
   },
   {
     id: '2',
     position: { x: 250, y: 0 },
-    data: { icon: <FunctionIcon />, title: 'bundle', subline: 'apiContents' },
+    data: { title: 'BTC发展历史BTC发展历史BTC发展历史', subline: '' },
     type: 'turbo',
   },
   {
     id: '3',
     position: { x: 0, y: 250 },
-    data: { icon: <FunctionIcon />, title: 'readFile', subline: 'sdk.ts' },
+    data: { title: 'readFile', subline: 'sdk.ts' },
     type: 'turbo',
   },
   {
@@ -91,6 +91,7 @@ const Flow = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
+  console.log("nodes", nodes)
   const onConnect = useCallback((params: any) => setEdges((els) => addEdge(params, els)), []);
 
   return (

@@ -34,8 +34,8 @@ const AppChat = () => {
   
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
   const [llms, setLlms] = useState<any>([])
-  const [chatId, setChatId] = useState<number | string>(-1)
-  const [chatName, setChatName] = useState<string>("")
+  const [chatId, setChatId] = useState<number | string>(0)
+  const [chatName, setChatName] = useState<string>("Gemini")
 
   const AllLLMS: any[] = GetAllLLMS()
 

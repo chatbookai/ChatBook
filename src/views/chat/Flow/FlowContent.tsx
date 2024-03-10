@@ -1,78 +1,14 @@
 import React, { useCallback } from 'react';
 import ReactFlow, { Controls, useNodesState, useEdgesState, addEdge, Node, Edge } from 'reactflow';
 import { FiFile } from 'react-icons/fi';
+import { useState, ReactNode, useEffect } from 'react';
 
 import 'reactflow/dist/base.css';
 import TurboNode, { TurboNodeData } from './TurboNode';
 import TurboEdge from './TurboEdge';
 import FunctionIcon from './FunctionIcon';
 
-const initialNodes: Node<TurboNodeData>[] = [
-  {
-    id: '1',
-    position: { x: 0, y: 0 },
-    data: { title: 'BTC发展历史', subline: 'BTC发展历史' },
-    type: 'turbo',
-  },
-  {
-    id: '2',
-    position: { x: 250, y: 0 },
-    data: { title: 'BTC发展历史BTC发展历史BTC发展历史', subline: '' },
-    type: 'turbo',
-  },
-  {
-    id: '3',
-    position: { x: 0, y: 250 },
-    data: { title: 'readFile', subline: 'sdk.ts' },
-    type: 'turbo',
-  },
-  {
-    id: '4',
-    position: { x: 250, y: 250 },
-    data: { icon: <FunctionIcon />, title: 'bundle', subline: 'sdkContents' },
-    type: 'turbo',
-  },
-  {
-    id: '5',
-    position: { x: 500, y: 125 },
-    data: { icon: <FunctionIcon />, title: 'concat', subline: 'api, sdk' },
-    type: 'turbo',
-  },
-  {
-    id: '6',
-    position: { x: 750, y: 125 },
-    data: { icon: <FiFile />, title: 'fullBundle' },
-    type: 'turbo',
-  },
-];
-
-const initialEdges: Edge[] = [
-  {
-    id: 'e1-2',
-    source: '1',
-    target: '2',
-  },
-  {
-    id: 'e3-4',
-    source: '3',
-    target: '4',
-  },
-  {
-    id: 'e2-5',
-    source: '2',
-    target: '5',
-  },
-  {
-    id: 'e4-5',
-    source: '4',
-    target: '5',
-  },
-  {
-    id: 'e5-6',
-    source: '5',
-    target: '6',
-  },
-];
+import { useTranslation } from 'react-i18next';
 
 const nodeTypes = {
   turbo: TurboNode,
@@ -87,12 +23,22 @@ const defaultEdgeOptions = {
   markerEnd: 'edge-circle',
 };
 
-const Flow = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+const Flow = (props: any) => {
+  // ** Hook
+  const { t } = useTranslation()
+
+  // ** Props
+  const {
+    nodes,
+    setNodes,
+    onNodesChange,
+    edges,
+    setEdges,
+    onEdgesChange
+  } = props
 
   console.log("nodes", nodes)
-  const onConnect = useCallback((params: any) => setEdges((els) => addEdge(params, els)), []);
+  const onConnect = useCallback((params: any) => setEdges((els: any) => addEdge(params, els)), []);
 
   return (
     <ReactFlow

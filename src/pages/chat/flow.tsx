@@ -26,6 +26,14 @@ import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
 
+import ReactFlow, { Controls, useNodesState, useEdgesState, addEdge, Node, Edge } from 'reactflow';
+import 'reactflow/dist/base.css';
+import TurboNode, { TurboNodeData } from 'src/views/chat/Flow/TurboNode';
+import TurboEdge from 'src/views/chat/Flow/TurboEdge';
+import FunctionIcon from 'src/views/chat/Flow/FunctionIcon';
+import { FiFile } from 'react-icons/fi';
+import ReactMarkdown from 'react-markdown'
+
 const AppChat = () => {
 
   // ** Hook
@@ -148,6 +156,75 @@ const AppChat = () => {
     setSendInputText(t("Type your message here...") as string)    
   }, [])
 
+  const initialNodes: Node<TurboNodeData>[] = [
+    {
+      id: '1',
+      position: { x: 0, y: 0 },
+      data: { title: 'BTC发展历史', subline: 'BTC发展历史' },
+      type: 'turbo',
+    },
+    {
+      id: '2',
+      position: { x: 250, y: 0 },
+      data: { title: 'BTC发展历史BTC发展历史BTC发展历史', subline: '' },
+      type: 'turbo',
+    },
+    {
+      id: '3',
+      position: { x: 0, y: 250 },
+      data: { title: 'readFile', subline: 'sdk.ts' },
+      type: 'turbo',
+    },
+    {
+      id: '4',
+      position: { x: 250, y: 250 },
+      data: { icon: <FunctionIcon />, title: 'bundle', subline: 'sdkContents' },
+      type: 'turbo',
+    },
+    {
+      id: '5',
+      position: { x: 500, y: 125 },
+      data: { icon: <FunctionIcon />, title: 'concat', subline: 'api, sdk' },
+      type: 'turbo',
+    },
+    {
+      id: '6',
+      position: { x: 750, y: 125 },
+      data: { icon: <FiFile />, title: 'fullBundle' },
+      type: 'turbo',
+    },
+  ];
+
+  const initialEdges: Edge[] = [
+    {
+      id: 'e1-2',
+      source: '1',
+      target: '2',
+    },
+    {
+      id: 'e3-4',
+      source: '3',
+      target: '4',
+    },
+    {
+      id: 'e2-5',
+      source: '2',
+      target: '5',
+    },
+    {
+      id: 'e4-5',
+      source: '4',
+      target: '5',
+    },
+    {
+      id: 'e5-6',
+      source: '5',
+      target: '6',
+    },
+  ];
+
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
   const sendMsg = async (Obj: any) => {
     if(auth.user && auth.user.token)  {
@@ -165,6 +242,11 @@ const AppChat = () => {
         setSendButtonText(t("Send") as string)
         setSendInputText(t("Type your message here...") as string)  
       }
+      console.log("lastMessage", lastMessage);
+
+      //Change Node Infor
+      initialNodes[0]['data']['title'] = lastMessage
+      setNodes(initialNodes)
     }
   }
 
@@ -178,6 +260,7 @@ const AppChat = () => {
     offline: 'secondary'
   }
 
+  
   return (
     <Fragment>
       <Box
@@ -194,11 +277,12 @@ const AppChat = () => {
       }}
     >
         <FlowContent
-            llms={llms}
-            setActiveId={setActiveId}
-            hidden={false}
-            chatId={chatId}
-            chatName={chatName}
+            nodes={nodes}
+            setNodes={setNodes}
+            onNodesChange={onNodesChange}
+            edges={edges}
+            setEdges={setEdges}
+            onEdgesChange={onEdgesChange}
         />
         <FlowRight
             store={store}
@@ -212,7 +296,12 @@ const AppChat = () => {
             sendInputText={sendInputText}
             chatId={chatId}
             chatName={chatName}
-            email={auth?.user?.email}
+            nodes={nodes}
+            setNodes={setNodes}
+            onNodesChange={onNodesChange}
+            edges={edges}
+            setEdges={setEdges}
+            onEdgesChange={onEdgesChange}
             />
       </Box>
     </Fragment>

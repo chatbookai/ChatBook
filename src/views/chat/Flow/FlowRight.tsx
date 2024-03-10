@@ -47,7 +47,7 @@ const FlowRight = (props: any) => {
             <Box
               sx={{
                 flexGrow: 1,
-                width: '270px',
+                width: '550px',
                 height: '100%',
                 backgroundColor: 'action.hover'
               }}
@@ -74,7 +74,7 @@ const FlowRight = (props: any) => {
                         {chatName}
                       </Typography>
                       <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                        {LLMS[0].summary}
+                        {chatName}
                       </Typography>
                     </Box>
                   </Box>

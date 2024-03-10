@@ -14,7 +14,6 @@ import Icon from 'src/@core/components/icon'
 // ** Custom Components Import
 import ChatLog from './ChatLog'
 import SendMsgForm from 'src/views/chat/Knowledge/SendMsgForm'
-import OptionsMenu from 'src/@core/components/option-menu'
 
 import { GetAllLLMById } from 'src/functions/ChatBook'
 

@@ -1,62 +1,135 @@
-// ** React Imports
-import { useState, ReactNode, useEffect, Fragment } from 'react'
+import React, { useCallback } from 'react';
+import ReactFlow, { Controls, useNodesState, useEdgesState, addEdge, Node, Edge } from 'reactflow';
+import { FiFile } from 'react-icons/fi';
 
-// ** MUI Imports
-import Box from '@mui/material/Box'
-import List from '@mui/material/List'
-import Badge from '@mui/material/Badge'
-import Drawer from '@mui/material/Drawer'
-import MuiAvatar from '@mui/material/Avatar'
-import ListItem from '@mui/material/ListItem'
-import Typography from '@mui/material/Typography'
-import ListItemText from '@mui/material/ListItemText'
-import ListItemAvatar from '@mui/material/ListItemAvatar'
-import ListItemButton from '@mui/material/ListItemButton'
+import 'reactflow/dist/base.css';
+import './index.css';
+import TurboNode, { TurboNodeData } from './TurboNode';
+import TurboEdge from './TurboEdge';
+import FunctionIcon from './FunctionIcon';
 
-// ** Third Party Import
-import { useTranslation } from 'react-i18next'
+const initialNodes: Node<TurboNodeData>[] = [
+  {
+    id: '1',
+    position: { x: 0, y: 0 },
+    data: { icon: <FunctionIcon />, title: 'readFile', subline: 'api.ts' },
+    type: 'turbo',
+  },
+  {
+    id: '2',
+    position: { x: 250, y: 0 },
+    data: { icon: <FunctionIcon />, title: 'bundle', subline: 'apiContents' },
+    type: 'turbo',
+  },
+  {
+    id: '3',
+    position: { x: 0, y: 250 },
+    data: { icon: <FunctionIcon />, title: 'readFile', subline: 'sdk.ts' },
+    type: 'turbo',
+  },
+  {
+    id: '4',
+    position: { x: 250, y: 250 },
+    data: { icon: <FunctionIcon />, title: 'bundle', subline: 'sdkContents' },
+    type: 'turbo',
+  },
+  {
+    id: '5',
+    position: { x: 500, y: 125 },
+    data: { icon: <FunctionIcon />, title: 'concat', subline: 'api, sdk' },
+    type: 'turbo',
+  },
+  {
+    id: '6',
+    position: { x: 750, y: 125 },
+    data: { icon: <FiFile />, title: 'fullBundle' },
+    type: 'turbo',
+  },
+];
 
-// ** Third Party Components
-import PerfectScrollbar from 'react-perfect-scrollbar'
+const initialEdges: Edge[] = [
+  {
+    id: 'e1-2',
+    source: '1',
+    target: '2',
+  },
+  {
+    id: 'e3-4',
+    source: '3',
+    target: '4',
+  },
+  {
+    id: 'e2-5',
+    source: '2',
+    target: '5',
+  },
+  {
+    id: 'e4-5',
+    source: '4',
+    target: '5',
+  },
+  {
+    id: 'e5-6',
+    source: '5',
+    target: '6',
+  },
+];
 
-const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: boolean }) => {
-  if (hidden) {
-    return <Box sx={{ height: '100%', overflow: 'auto' }}>{children}</Box>
-  } else {
-    return <PerfectScrollbar options={{ wheelPropagation: false }}>{children}</PerfectScrollbar>
-  }
-}
+const nodeTypes = {
+  turbo: TurboNode,
+};
 
+const edgeTypes = {
+  turbo: TurboEdge,
+};
 
-const FlowContent = (props: any) => {
-  // ** Hook
-  const { t } = useTranslation()
+const defaultEdgeOptions = {
+  type: 'turbo',
+  markerEnd: 'edge-circle',
+};
 
-  // ** Props
-  const {
-    llms,
-    hidden,
-    setActiveId,
-    chatId
-  } = props
+const Flow = () => {
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const [active, setActive] = useState<string>('')
-
-  const handleChatClick = (id: string, name: string) => {
-    setActiveId(id, name)
-    setActive(id)
-  }
-
-  useEffect(() => {
-    setActive(chatId)
-  }, [chatId])
+  const onConnect = useCallback((params) => setEdges((els) => addEdge(params, els)), []);
 
   return (
-    <Fragment>
-      <Box sx={{ height: `calc(100% - 4.125rem)`, width: '900px' }}>
-      </Box>
-    </Fragment>
-  )
-}
+    <ReactFlow
+      nodes={nodes}
+      edges={edges}
+      onNodesChange={onNodesChange}
+      onEdgesChange={onEdgesChange}
+      onConnect={onConnect}
+      fitView
+      nodeTypes={nodeTypes}
+      edgeTypes={edgeTypes}
+      defaultEdgeOptions={defaultEdgeOptions}
+    >
+      <Controls showInteractive={false} />
+      <svg>
+        <defs>
+          <linearGradient id="edge-gradient">
+            <stop offset="0%" stopColor="#ae53ba" />
+            <stop offset="100%" stopColor="#2a8af6" />
+          </linearGradient>
 
-export default FlowContent
+          <marker
+            id="edge-circle"
+            viewBox="-5 -5 10 10"
+            refX="0"
+            refY="0"
+            markerUnits="strokeWidth"
+            markerWidth="10"
+            markerHeight="10"
+            orient="auto"
+          >
+            <circle stroke="#2a8af6" strokeOpacity="0.75" r="2" cx="0" cy="0" />
+          </marker>
+        </defs>
+      </svg>
+    </ReactFlow>
+  );
+};
+
+export default Flow;

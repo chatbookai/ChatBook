@@ -13,3 +13,4 @@ declare module 'mp3-duration';
 declare module 'bcrypt';
 declare module 'validator';
 declare module 'useragent';
+declare module 'react-icons/fi';

@@ -1,5 +1,4 @@
-
-export const DataDir = "./data"
+export const DataDir = './data'
 
 export const CONDENSE_TEMPLATE_INIT = `Given the following conversation and a follow up question, rephrase the follow up question to be a standalone question.
 
@@ -8,7 +7,7 @@ export const CONDENSE_TEMPLATE_INIT = `Given the following conversation and a fo
 </chat_history>
 
 Follow Up Input: {question}
-Standalone question:`;
+Standalone question:`
 
 export const QA_TEMPLATE_INIT = `You are an expert researcher. Use the following pieces of context to answer the question at the end.
 If you don't know the answer, just say you don't know. DO NOT try to make up an answer.
@@ -23,7 +22,7 @@ If the question is not related to the context or chat history, politely respond 
 </chat_history>
 
 Question: {question}
-Helpful answer in markdown:`;
+Helpful answer in markdown:`
 
 export const MenuListAdmin = [
   {
@@ -42,6 +41,11 @@ export const MenuListAdmin = [
     path: '/chat/chat'
   },
   {
+    title: 'Mind Map',
+    icon: 'mdi:account-box-multiple-outline',
+    path: '/chat/flow'
+  },
+  {
     title: 'Text to Image',
     icon: 'material-symbols:imagesmode',
     path: '/image/stability'
@@ -52,19 +56,9 @@ export const MenuListAdmin = [
     path: '/image/stability2'
   },
   {
-    title: 'Image to Video',
-    icon: 'mdi:video-box',
-    path: '/video/stability'
-  },
-  {
     title: 'Knowledge Chat',
     icon: 'material-symbols:chat',
     path: '/chat/knowledge'
-  },
-  {
-    title: 'Studio',
-    icon: 'mdi:building',
-    path: '/studio'
   },
   {
     title: 'Community',

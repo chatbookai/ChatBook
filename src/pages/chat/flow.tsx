@@ -26,7 +26,7 @@ import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
 
-import ReactFlow, { Controls, useNodesState, useEdgesState, addEdge, Node, Edge } from 'reactflow';
+import { useNodesState, useEdgesState, Node, Edge } from 'reactflow';
 import 'reactflow/dist/base.css';
 import { TurboNodeData } from 'src/views/chat/Flow/TurboNode';
 
@@ -37,14 +37,12 @@ const AppChat = () => {
   const auth = useAuth()
   
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
-  const [llms, setLlms] = useState<any>([])
   const [chatId, setChatId] = useState<number | string>(0)
   const [chatName, setChatName] = useState<string>("GeminiMindMap")
 
   const AllLLMS: any[] = GetAllLLMS()
 
   useEffect(() => {
-    setLlms(AllLLMS)
     setChatId(AllLLMS[4].id)
     setChatName(AllLLMS[4].name)
     getChatLogList(AllLLMS[4].id)
@@ -78,13 +76,6 @@ const AppChat = () => {
     }
   }
 
-  const setActiveId = function (Id: string, Name: string) {
-    setChatId(Id)
-    setChatName(Name)
-    getChatLogList(Id)
-    setRefreshChatCounter(refreshChatCounter + 1)
-  }
-
   // ** States
   const [store, setStore] = useState<any>(null)
   const [sendButtonDisable, setSendButtonDisable] = useState<boolean>(false)
@@ -93,7 +84,6 @@ const AppChat = () => {
   const [sendInputText, setSendInputText] = useState<string>('')
   const [lastMessage, setLastMessage] = useState("")
   const [lastQuestion, setLastQuestion] = useState("")
-  const [mindMapText, setMindMapText] = useState("")
   const lastChat = {
     "message": lastMessage,
     "time": String(Date.now()),
@@ -117,7 +107,6 @@ const AppChat = () => {
       const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
       if(lastMessage && lastMessage!="") {
         ChatChatList.push(lastChat)
-        setMindMapText(lastMessage)
         
         const lastMessageArray = parseMarkdown(lastMessage);
         console.log("lastMessageArray", lastMessageArray);

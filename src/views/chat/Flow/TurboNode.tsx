@@ -1,6 +1,5 @@
 import React, { memo, ReactNode } from 'react';
 import { Handle, NodeProps, Position } from 'reactflow';
-import { FiCloud } from 'react-icons/fi';
 
 export type TurboNodeData = {
   title: string;
@@ -14,10 +13,8 @@ export default memo(({ data }: NodeProps<TurboNodeData>) => {
       <div className="wrapper gradient">
         <div className="inner">
           <div className="body">
-            {data.icon && <div className="icon">{data.icon}</div>}
             <div>
               <div className="title">{data.title}</div>
-              {data.subline && <div className="subline">{data.subline}</div>}
             </div>
           </div>
           <Handle type="target" position={Position.Left} />

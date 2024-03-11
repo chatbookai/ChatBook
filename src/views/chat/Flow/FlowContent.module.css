@@ -10,7 +10,7 @@
   .react-flow__node-turbo {
     border-radius: var(--node-border-radius);
     display: flex;
-    height: 45px;
+    height: 70px;
     min-width: 150px;
     font-family: 'Fira Mono', Monospace;
     font-weight: 500;

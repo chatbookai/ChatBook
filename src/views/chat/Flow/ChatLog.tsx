@@ -17,9 +17,6 @@ import Icon from 'src/@core/components/icon'
 // ** Third Party Components
 import PerfectScrollbarComponent, { ScrollBarProps } from 'react-perfect-scrollbar'
 
-// ** Custom Components Imports
-import CustomAvatar from 'src/@core/components/mui/avatar'
-
 // ** Types Imports
 import {
   MessageType,
@@ -40,7 +37,7 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 
 const ChatLog = (props: any) => {
   // ** Props
-  const { data, hidden, chatName, LLMS, rowInMsg, maxRows } = props
+  const { data, hidden, rowInMsg, maxRows } = props
 
   // ** Ref
   const chatArea = useRef(null)

@@ -132,9 +132,16 @@ const AppChat = () => {
         generateNodes.push({
           id: '0',
           position: { x: 0, y: 0 },
-          data: { title: lastQuestion, subline: lastQuestion },
+          data: { title: lastQuestion },
           type: 'turbo',
         })
+
+        let TotalCount = 0;
+        let CurrentCount = 0;
+        lastMessageArray.map((Item: any)=>{
+          TotalCount += Item.content.length;
+        })
+        const subContentCounter = Math.ceil(TotalCount/2)-1;
 
         const subItemsCounter = Math.ceil(lastMessageArray.length/2)-1;
         lastMessageArray.map((Item: any, Index: number)=>{
@@ -156,19 +163,22 @@ const AppChat = () => {
           })
 
           //Make Node Content
-          const YValue = (Index-subItemsCounter) * 100
-          const XValue = X + 250
-          const NodeIdValue = String(Index+1)+"_Content"
-          generateNodes.push({
-            id: NodeIdValue,
-            position: { x: XValue, y: YValue },
-            data: { title: Item.content },
-            type: 'turbo',
-          })
-          generateEdges.push({
-            id: 'edges-' + NodeIdValue,
-            source: NodeId,
-            target: NodeIdValue,
+          Item.content && Item.content.length>0 && Item.content.map((ItemContent: string, ItemIndex: number)=>{
+            const YValue = (CurrentCount-subContentCounter) * 90
+            const XValue = X + 300
+            const NodeIdValue = String(CurrentCount+1)+"_Content"
+            generateNodes.push({
+              id: NodeIdValue,
+              position: { x: XValue, y: YValue },
+              data: { title: ItemContent },
+              type: 'turbo',
+            })
+            generateEdges.push({
+              id: 'edges-' + NodeIdValue,
+              source: NodeId,
+              target: NodeIdValue,
+            })
+            CurrentCount += 1
           })
 
         })
@@ -214,54 +224,9 @@ const AppChat = () => {
 
   }, [])
 
-  const initialNodes: Node<TurboNodeData>[] = [
-    {
-      id: '1',
-      position: { x: 0, y: 0 },
-      data: { title: 'BTC发展历史', subline: 'BTC发展历史' },
-      type: 'turbo',
-    },
-    {
-      id: '5',
-      position: { x: 500, y: 125 },
-      data: { icon: <FunctionIcon />, title: 'concat', subline: 'api, sdk' },
-      type: 'turbo',
-    },
-    {
-      id: '6',
-      position: { x: 750, y: 125 },
-      data: { icon: <FiFile />, title: 'fullBundle' },
-      type: 'turbo',
-    },
-  ];
+  const initialNodes: Node<TurboNodeData>[] = [];
 
-  const initialEdges: Edge[] = [
-    {
-      id: 'e1-2',
-      source: '1',
-      target: '2',
-    },
-    {
-      id: 'e3-4',
-      source: '3',
-      target: '4',
-    },
-    {
-      id: 'e2-5',
-      source: '2',
-      target: '5',
-    },
-    {
-      id: 'e4-5',
-      source: '4',
-      target: '5',
-    },
-    {
-      id: 'e5-6',
-      source: '5',
-      target: '6',
-    },
-  ];
+  const initialEdges: Edge[] = [];
 
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);

@@ -4,7 +4,7 @@
   import { checkUserToken } from '../utils/user';
 
   import { getLLMSSetting, uploadfiles, uploadfilesInsertIntoDb } from '../utils/utils';
-  import { outputImage, outputImageOrigin, outputAudio, chatChatBaiduWenxin, chatChatGemini, chatChatOpenAI, chatKnowledgeOpenAI, GenereateImageUsingDallE2, GenereateAudioUsingTTS, parseFiles } from '../utils/llms';
+  import { outputImage, outputImageOrigin, outputAudio, chatChatBaiduWenxin, chatChatGemini, chatChatGeminiMindMap, chatChatOpenAI, chatKnowledgeOpenAI, GenereateImageUsingDallE2, GenereateAudioUsingTTS, parseFiles } from '../utils/llms';
 
   const app = express();
 
@@ -87,6 +87,26 @@
         const getLLMSSettingData = await getLLMSSetting(knowledgeId);   
         if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
           await chatChatGemini(res, knowledgeId, checkUserTokenData.data.id, question, history);
+          res.end();
+        }
+        else {        
+          res.status(200).json({"status":"error", "msg":"Not set API_KEY", "data": null});
+        }
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+    }
+    res.end();
+  });
+
+  app.post('/api/ChatGeminiMindMap', async (req: Request, res: Response) => {
+    const { knowledgeId, question, history } = req.body;
+    const { authorization } = req.headers;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
+        const getLLMSSettingData = await getLLMSSetting(knowledgeId);   
+        if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
+          await chatChatGeminiMindMap(res, knowledgeId, checkUserTokenData.data.id, question, history);
           res.end();
         }
         else {        

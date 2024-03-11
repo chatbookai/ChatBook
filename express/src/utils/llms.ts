@@ -717,6 +717,38 @@ let ChatBaiduWenxinModel: any = null
     res.end();
   }
 
+  export async function chatChatGeminiMindMap(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[]) {
+    await initChatBookGeminiStream(res, knowledgeId)
+    const TextPrompts = "\n 要求生成一份PPT的大纲,以行业总结性报告的形式显现,生成25页左右,每一页3-6个要点,每一个要点字数在10-30之间,返回格式为Markdown."
+    const input2 = [
+        new HumanMessage({
+          content: [
+            {
+              type: "text",
+              text: question + TextPrompts,
+            },
+          ],
+        }),
+      ];
+    try {
+      const res3 = await ChatGeminiModel.stream(input2);
+      let response = '';
+      for await (const chunk of res3) {
+          //console.log(chunk.content);
+          res.write(chunk.content);
+          response = response + chunk.content
+      }
+      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
+      insertChatLog.run(knowledgeId, question, response, userId, Date.now(), JSON.stringify([]), JSON.stringify(history));
+      insertChatLog.finalize();
+    }
+    catch(error: any) {
+      console.log("chatChatGemini error", error.message)
+      res.write(error.message)
+    }
+    res.end();
+  }
+
   export async function initChatBookBaiduWenxinStream(res: Response, knowledgeId: number | string) {
     getLLMSSettingData = await getLLMSSetting(knowledgeId);
     const BAIDU_API_KEY = getLLMSSettingData.OPENAI_API_KEY ?? "1AWXpm1Cd8lbxmAaFoPR0dNx";

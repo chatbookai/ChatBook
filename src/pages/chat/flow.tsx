@@ -39,15 +39,15 @@ const AppChat = () => {
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
   const [llms, setLlms] = useState<any>([])
   const [chatId, setChatId] = useState<number | string>(0)
-  const [chatName, setChatName] = useState<string>("Gemini")
+  const [chatName, setChatName] = useState<string>("GeminiMindMap")
 
   const AllLLMS: any[] = GetAllLLMS()
 
   useEffect(() => {
     setLlms(AllLLMS)
-    setChatId(AllLLMS[0].id)
-    setChatName(AllLLMS[0].name)
-    getChatLogList(AllLLMS[0].id)
+    setChatId(AllLLMS[4].id)
+    setChatName(AllLLMS[4].name)
+    getChatLogList(AllLLMS[4].id)
     console.log("AllLLMS", AllLLMS)
   }, [])
 
@@ -144,7 +144,7 @@ const AppChat = () => {
 
           //Make Node Title
           const Y = (Index-subItemsCounter) * 100
-          const X = 250
+          const X = 350
           const NodeId = String(Index+1)
           generateNodes.push({
             id: NodeId,
@@ -160,8 +160,8 @@ const AppChat = () => {
 
           //Make Node Content
           Item.content && Item.content.length>0 && Item.content.map((ItemContent: string)=>{
-            const YValue = (CurrentCount-subContentCounter) * 90
-            const XValue = X + 300
+            const YValue = (CurrentCount-subContentCounter) * 55
+            const XValue = X + 350
             const NodeIdValue = String(CurrentCount+1)+"_Content"
             generateNodes.push({
               id: NodeIdValue,

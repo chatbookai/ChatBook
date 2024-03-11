@@ -56,7 +56,6 @@ const AppChat = () => {
         .then(res => res.data)
       if (RS['data']) {
         const ChatChatInitList = ChatChatInit(RS['data'].reverse())
-        console.log('ChatChatInitList**************', ChatChatInitList)
         const selectedChat = {
           chat: {
             id: 1,

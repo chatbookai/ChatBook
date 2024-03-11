@@ -82,13 +82,13 @@ export async function ChatKnowledgeOutput(Message: string, Token: string, UserId
         let responseText = "";
         while (true) {
           const { done, value } = await reader.read();
+          const text = new TextDecoder('utf-8').decode(value);
+          setLastMessage((prevText: string) => prevText + text);
+          responseText = responseText + text;
           if (done) {
             setLastMessage('')
             break;
           }
-          const text = new TextDecoder('utf-8').decode(value);
-          setLastMessage((prevText: string) => prevText + text);
-          responseText = responseText + text;
         }
         if(responseText) {
             console.log("OpenAI Response:", responseText)
@@ -265,14 +265,14 @@ export async function ChatChatOutput(Message: string, Token: string, UserId: num
             const reader = response.body.getReader();
             let responseText = "";
             while (true) {
-            const { done, value } = await reader.read();
-            if (done) {
-                setLastMessage('')
-                break;
-            }
-            const text = new TextDecoder('utf-8').decode(value);
-            setLastMessage((prevText: string) => prevText + text);
-            responseText = responseText + text;
+                const { done, value } = await reader.read();
+                const text = new TextDecoder('utf-8').decode(value);
+                setLastMessage((prevText: string) => prevText + text);
+                responseText = responseText + text;
+                if (done) {
+                    //setLastMessage('')
+                    break;
+                }
             }
             if(responseText) {
                 console.log("OpenAI Response:", responseText)

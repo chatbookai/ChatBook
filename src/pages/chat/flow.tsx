@@ -60,7 +60,6 @@ const AppChat = () => {
       const RS = await axios.get(authConfig.backEndApiChatBook + '/api/chatlog/' + knowledgeId + '/' + auth.user.id + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       if(RS['data'])  {
         const ChatChatInitList = ChatChatInit(RS['data'].reverse())
-        console.log("ChatChatInitList**************", ChatChatInitList)
         const selectedChat = {
           "chat": {
               "id": 1,
@@ -97,6 +96,7 @@ const AppChat = () => {
   const [sendButtonText, setSendButtonText] = useState<string>('')
   const [sendInputText, setSendInputText] = useState<string>('')
   const [lastMessage, setLastMessage] = useState("")
+  const [mindMapText, setMindMapText] = useState("")
   const lastChat = {
     "message": lastMessage,
     "time": String(Date.now()),
@@ -120,6 +120,8 @@ const AppChat = () => {
       const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
       if(lastMessage && lastMessage!="") {
         ChatChatList.push(lastChat)
+        setMindMapText(lastMessage)
+        console.log("lastMessage************************", lastMessage);
       }
       const selectedChat = {
         "chat": {
@@ -144,6 +146,7 @@ const AppChat = () => {
       setSendButtonDisable(true)
       setSendButtonLoading(false)
       setSendButtonText(t('Login first') as string)
+      console.log("lastChat************************ Not Login");
     }
   }, [refreshChatCounter, lastMessage, auth])
 
@@ -241,8 +244,8 @@ const AppChat = () => {
         setRefreshChatCounter(refreshChatCounter + 2)
         setSendButtonText(t("Send") as string)
         setSendInputText(t("Type your message here...") as string)  
+        console.log("lastMessage......................", lastMessage);
       }
-      console.log("lastMessage", lastMessage);
 
       //Change Node Infor
       initialNodes[0]['data']['title'] = lastMessage

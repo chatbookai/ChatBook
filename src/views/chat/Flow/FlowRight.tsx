@@ -1,9 +1,7 @@
 // ** React Imports
-import { Fragment, useState } from 'react'
+import { useState } from 'react'
 
 // ** MUI Imports
-import Badge from '@mui/material/Badge'
-import MuiAvatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Box from '@mui/material/Box'

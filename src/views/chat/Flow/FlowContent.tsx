@@ -1,14 +1,9 @@
 import React, { useCallback } from 'react';
-import ReactFlow, { Controls, useNodesState, useEdgesState, addEdge, Node, Edge } from 'reactflow';
-import { FiFile } from 'react-icons/fi';
-import { useState, ReactNode, useEffect } from 'react';
+import ReactFlow, { Controls, addEdge} from 'reactflow';
 
 import 'reactflow/dist/base.css';
-import TurboNode, { TurboNodeData } from './TurboNode';
+import TurboNode from './TurboNode';
 import TurboEdge from './TurboEdge';
-import FunctionIcon from './FunctionIcon';
-
-import { useTranslation } from 'react-i18next';
 
 const nodeTypes = {
   turbo: TurboNode,
@@ -24,13 +19,9 @@ const defaultEdgeOptions = {
 };
 
 const Flow = (props: any) => {
-  // ** Hook
-  const { t } = useTranslation()
-
   // ** Props
   const {
     nodes,
-    setNodes,
     onNodesChange,
     edges,
     setEdges,

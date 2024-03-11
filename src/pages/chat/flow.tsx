@@ -163,7 +163,7 @@ const AppChat = () => {
           })
 
           //Make Node Content
-          Item.content && Item.content.length>0 && Item.content.map((ItemContent: string, ItemIndex: number)=>{
+          Item.content && Item.content.length>0 && Item.content.map((ItemContent: string)=>{
             const YValue = (CurrentCount-subContentCounter) * 90
             const XValue = X + 300
             const NodeIdValue = String(CurrentCount+1)+"_Content"

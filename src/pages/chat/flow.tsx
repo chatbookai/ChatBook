@@ -28,11 +28,7 @@ import { useAuth } from 'src/hooks/useAuth'
 
 import ReactFlow, { Controls, useNodesState, useEdgesState, addEdge, Node, Edge } from 'reactflow';
 import 'reactflow/dist/base.css';
-import TurboNode, { TurboNodeData } from 'src/views/chat/Flow/TurboNode';
-import TurboEdge from 'src/views/chat/Flow/TurboEdge';
-import FunctionIcon from 'src/views/chat/Flow/FunctionIcon';
-import { FiFile } from 'react-icons/fi';
-import ReactMarkdown from 'react-markdown'
+import { TurboNodeData } from 'src/views/chat/Flow/TurboNode';
 
 const AppChat = () => {
 
@@ -220,7 +216,7 @@ const AppChat = () => {
       setRefreshChatCounter(refreshChatCounter + 1)
     }
     setSendButtonText(t("Send") as string)
-    setSendInputText(t("Type your message here...") as string)    
+    setSendInputText(t("Your message...") as string)    
 
   }, [])
 
@@ -236,7 +232,8 @@ const AppChat = () => {
       setSendButtonDisable(true)
       setSendButtonLoading(true)
       setSendButtonText(t("Sending") as string)
-      setSendInputText(t("Generating the answer...") as string)
+      setSendInputText(t("Answering...") as string)
+      setLastQuestion(Obj.message)
       ChatChatInput(Obj.message, auth.user.id)
       setRefreshChatCounter(refreshChatCounter + 1)
       const ChatChatOutputStatus = await ChatChatOutput(Obj.message, auth.user.token, auth.user.id, chatId, setLastMessage)
@@ -245,9 +242,8 @@ const AppChat = () => {
         setSendButtonLoading(false)
         setRefreshChatCounter(refreshChatCounter + 2)
         setSendButtonText(t("Send") as string)
-        setSendInputText(t("Type your message here...") as string)  
+        setSendInputText(t("Your message...") as string)  
       }
-      setLastQuestion(Obj.message)
     }
   }
 

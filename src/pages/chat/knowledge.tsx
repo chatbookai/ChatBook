@@ -141,14 +141,14 @@ const AppChat = () => {
   useEffect(() => {
     getAllKnowledgeList()  
     setSendButtonText(t("Send") as string)
-    setSendInputText(t("Type your message here...") as string)    
+    setSendInputText(t("Your message...") as string)    
   }, [])
 
   const sendMsg = async (Obj: any) => {
     if(auth.user && auth.user.token)  {
       setSendButtonDisable(true)
       setSendButtonText(t("Sending") as string)
-      setSendInputText(t("Generating the answer...") as string)
+      setSendInputText(t("Answering...") as string)
       ChatKnowledgeInput(Obj.message, auth.user.id, knowledgeId)
       setRefreshChatCounter(refreshChatCounter + 1)
       const ChatKnowledgeOutputStatus = await ChatKnowledgeOutput(Obj.message, auth.user.token, auth.user.id, knowledgeId, setLastMessage)
@@ -156,7 +156,7 @@ const AppChat = () => {
         setSendButtonDisable(false)
         setRefreshChatCounter(refreshChatCounter + 2)
         setSendButtonText(t("Send") as string)
-        setSendInputText(t("Type your message here...") as string)  
+        setSendInputText(t("Your message...") as string)  
       }
     }
   }

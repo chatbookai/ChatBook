@@ -132,6 +132,11 @@ export const MenuListUser = [
     path: '/chat/chat'
   },
   {
+    title: 'Mind Map',
+    icon: 'mdi:account-box-multiple-outline',
+    path: '/chat/flow'
+  },
+  {
     title: 'Text to Image',
     icon: 'material-symbols:imagesmode',
     path: '/image/stability'

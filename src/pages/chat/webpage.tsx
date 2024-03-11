@@ -147,7 +147,7 @@ const AppChat = () => {
       setRefreshChatCounter(refreshChatCounter + 1)
     }
     setSendButtonText(t('Send') as string)
-    setSendInputText(t('Type your message here...') as string)
+    setSendInputText(t('Your message...') as string)
   }, [])
 
   const sendMsg = async (Obj: any) => {
@@ -155,7 +155,7 @@ const AppChat = () => {
       setSendButtonDisable(true)
       setSendButtonLoading(true)
       setSendButtonText(t('Sending') as string)
-      setSendInputText(t('Generating the answer...') as string)
+      setSendInputText(t('Answering...') as string)
       ChatChatInput(Obj.message, auth.user.id)
       setRefreshChatCounter(refreshChatCounter + 1)
       const ChatChatOutputStatus = await ChatChatOutput(
@@ -170,7 +170,7 @@ const AppChat = () => {
         setSendButtonLoading(false)
         setRefreshChatCounter(refreshChatCounter + 2)
         setSendButtonText(t('Send') as string)
-        setSendInputText(t('Type your message here...') as string)
+        setSendInputText(t('Your message...') as string)
       }
     }
   }

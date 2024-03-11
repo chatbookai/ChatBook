@@ -11,11 +11,6 @@ export type TurboNodeData = {
 export default memo(({ data }: NodeProps<TurboNodeData>) => {
   return (
     <>
-      <div className="cloud gradient">
-        <div>
-          <FiCloud />
-        </div>
-      </div>
       <div className="wrapper gradient">
         <div className="inner">
           <div className="body">

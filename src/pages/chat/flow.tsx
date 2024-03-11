@@ -126,6 +126,56 @@ const AppChat = () => {
         const lastMessageArray = parseMarkdown(lastMessage);
         console.log("lastMessageArray", lastMessageArray);
         console.log("lastQuestion************************", lastQuestion);
+
+        const generateNodes: Node<TurboNodeData>[] = []
+        const generateEdges: Edge[] = []
+        generateNodes.push({
+          id: '0',
+          position: { x: 0, y: 0 },
+          data: { title: lastQuestion, subline: lastQuestion },
+          type: 'turbo',
+        })
+
+        const subItemsCounter = Math.ceil(lastMessageArray.length/2)-1;
+        lastMessageArray.map((Item: any, Index: number)=>{
+
+          //Make Node Title
+          const Y = (Index-subItemsCounter) * 100
+          const X = 250
+          const NodeId = String(Index+1)
+          generateNodes.push({
+            id: NodeId,
+            position: { x: X, y: Y },
+            data: { title: Item.title },
+            type: 'turbo',
+          })
+          generateEdges.push({
+            id: 'edges-' + NodeId,
+            source: '0',
+            target: NodeId,
+          })
+
+          //Make Node Content
+          const YValue = (Index-subItemsCounter) * 100
+          const XValue = X + 250
+          const NodeIdValue = String(Index+1)+"_Content"
+          generateNodes.push({
+            id: NodeIdValue,
+            position: { x: XValue, y: YValue },
+            data: { title: Item.content },
+            type: 'turbo',
+          })
+          generateEdges.push({
+            id: 'edges-' + NodeIdValue,
+            source: NodeId,
+            target: NodeIdValue,
+          })
+
+        })
+        console.log("Mind Map Nodes:", generateNodes)
+        setNodes(generateNodes)
+        setEdges(generateEdges)
+
       }
       const selectedChat = {
         "chat": {
@@ -169,24 +219,6 @@ const AppChat = () => {
       id: '1',
       position: { x: 0, y: 0 },
       data: { title: 'BTC发展历史', subline: 'BTC发展历史' },
-      type: 'turbo',
-    },
-    {
-      id: '2',
-      position: { x: 250, y: 0 },
-      data: { title: 'BTC发展历史BTC发展历史BTC发展历史', subline: '' },
-      type: 'turbo',
-    },
-    {
-      id: '3',
-      position: { x: 0, y: 250 },
-      data: { title: 'readFile', subline: 'sdk.ts' },
-      type: 'turbo',
-    },
-    {
-      id: '4',
-      position: { x: 250, y: 250 },
-      data: { icon: <FunctionIcon />, title: 'bundle', subline: 'sdkContents' },
       type: 'turbo',
     },
     {
@@ -249,13 +281,8 @@ const AppChat = () => {
         setRefreshChatCounter(refreshChatCounter + 2)
         setSendButtonText(t("Send") as string)
         setSendInputText(t("Type your message here...") as string)  
-        console.log("lastMessage......................", lastMessage);
       }
       setLastQuestion(Obj.message)
-
-      //Change Node Infor
-      initialNodes[0]['data']['title'] = lastMessage
-      setNodes(initialNodes)
     }
   }
 

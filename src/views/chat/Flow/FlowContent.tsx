@@ -4,6 +4,7 @@ import ReactFlow, { Controls, addEdge} from 'reactflow';
 import 'reactflow/dist/base.css';
 import TurboNode from './TurboNode';
 import TurboEdge from './TurboEdge';
+import DownloadButton from './DownloadButton';
 
 const nodeTypes = {
   turbo: TurboNode,
@@ -64,6 +65,7 @@ const Flow = (props: any) => {
           </marker>
         </defs>
       </svg>
+      <DownloadButton />
     </ReactFlow>
   );
 };

@@ -37,7 +37,6 @@ const Flow = (props: any) => {
     onEdgesChange
   } = props
 
-  console.log("nodes", nodes)
   const onConnect = useCallback((params: any) => setEdges((els: any) => addEdge(params, els)), []);
 
   return (

@@ -374,4 +374,43 @@ export function CheckPermission(auth: any, router: any, forcelogout: boolean) {
         router.replace('/login')
     }
 }
+
+interface ReportSection {
+    title: string;
+    content: string[];
+}
+
+export function parseMarkdown(markdownText: string): ReportSection[] {
+    const lines = markdownText.trim().split('\n');
+    const sections: ReportSection[] = [];
+    let currentTitle = '';
+    let currentContent = [];
+    const linesNew = [];
+
+    for (const line of lines) {
+        if(line && line.trim() && line.trim()!='') {
+            linesNew.push(line.trim())
+        }
+    }
+
+    for (const line of linesNew) {
+        if (line.startsWith("**")) {
+            if (currentTitle != line.replaceAll("**", "").trim()) {
+                sections.push({ title: currentTitle, content: currentContent });
+                currentTitle = line.replaceAll("**", "").trim();
+            }
+            currentContent = [];
+        } 
+        else {
+            currentContent.push(line.replaceAll("* ", "").trim());
+        }
+    }
+
+    // Push the last section into the array
+    if (currentTitle && currentContent.length>0) {
+        sections.push({ title: currentTitle, content: currentContent });
+    }
+
+    return sections.filter((Item: any) => Item.title != '');
+}
   

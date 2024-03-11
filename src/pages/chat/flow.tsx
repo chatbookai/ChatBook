@@ -19,7 +19,7 @@ import FlowRight from 'src/views/chat/Flow/FlowRight'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
-import { GetAllLLMS, ChatChatInit, ChatChatNameList, ChatChatInput, ChatChatOutput  } from 'src/functions/ChatBook'
+import { GetAllLLMS, ChatChatInit, ChatChatNameList, ChatChatInput, ChatChatOutput, parseMarkdown  } from 'src/functions/ChatBook'
 
 // ** Axios Imports
 import axios from 'axios'
@@ -96,6 +96,7 @@ const AppChat = () => {
   const [sendButtonText, setSendButtonText] = useState<string>('')
   const [sendInputText, setSendInputText] = useState<string>('')
   const [lastMessage, setLastMessage] = useState("")
+  const [lastQuestion, setLastQuestion] = useState("")
   const [mindMapText, setMindMapText] = useState("")
   const lastChat = {
     "message": lastMessage,
@@ -121,7 +122,10 @@ const AppChat = () => {
       if(lastMessage && lastMessage!="") {
         ChatChatList.push(lastChat)
         setMindMapText(lastMessage)
-        console.log("lastMessage************************", lastMessage);
+        
+        const lastMessageArray = parseMarkdown(lastMessage);
+        console.log("lastMessageArray", lastMessageArray);
+        console.log("lastQuestion************************", lastQuestion);
       }
       const selectedChat = {
         "chat": {
@@ -157,6 +161,7 @@ const AppChat = () => {
     }
     setSendButtonText(t("Send") as string)
     setSendInputText(t("Type your message here...") as string)    
+
   }, [])
 
   const initialNodes: Node<TurboNodeData>[] = [
@@ -246,6 +251,7 @@ const AppChat = () => {
         setSendInputText(t("Type your message here...") as string)  
         console.log("lastMessage......................", lastMessage);
       }
+      setLastQuestion(Obj.message)
 
       //Change Node Infor
       initialNodes[0]['data']['title'] = lastMessage

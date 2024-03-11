@@ -719,7 +719,7 @@ let ChatBaiduWenxinModel: any = null
 
   export async function chatChatGeminiMindMap(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[]) {
     await initChatBookGeminiStream(res, knowledgeId)
-    const TextPrompts = "\n 要求生成一份PPT的大纲,以行业总结性报告的形式显现,生成25页左右,每一页3-6个要点,每一个要点字数在10-30之间,返回格式为Markdown."
+    const TextPrompts = "\n 要求生成一份PPT的大纲,以行业总结性报告的形式显现,生成15-20页左右,每一页3-6个要点,每一个要点字数在10-30之间,返回格式为Markdown,标题格式使用: **标题名称** 的形式表达."
     const input2 = [
         new HumanMessage({
           content: [

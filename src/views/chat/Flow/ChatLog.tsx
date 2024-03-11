@@ -160,39 +160,7 @@ const ChatLog = (props: any) => {
             mb: index !== formattedChatData().length - 1 ? 4 : undefined
           }}
         >
-          <div>
-            {LLMS && LLMS[0] && LLMS[0].avatar ?
-            <CustomAvatar
-              skin='light'
-              color={'primary'}
-              sx={{
-                width: '2rem',
-                height: '2rem',
-                fontSize: '0.875rem',
-                ml: isSender ? 3.5 : undefined,
-                mr: !isSender ? 3.5 : undefined
-              }}
-              {...(!isSender
-                ? {
-                    src: LLMS[0].avatar,
-                    alt: chatName
-                  }
-                : {})}
-              {...(isSender
-                ? {
-                    src: data.userContact.avatar,
-                    alt: data.userContact.fullName
-                  }
-                : {})}
-            >
-              {chatName}
-            </CustomAvatar>
-            :
-            null
-            }
-          </div>
-
-          <Box className='chat-body' sx={{ maxWidth: ['calc(100% - 5.75rem)', '75%', '65%'] }}>
+          <Box className='chat-body' sx={{ maxWidth: '95%' }}>
             {item.messages.map((chat: ChatLogChatType, index: number, { length }: { length: number }) => {
               let ChatMsgType = 'Chat'
               let ChatMsgContent: any

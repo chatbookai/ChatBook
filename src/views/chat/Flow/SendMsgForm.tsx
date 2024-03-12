@@ -36,7 +36,7 @@ const SendMsgForm = (props: SendMsgComponentType) => {
   const handleSendMsg = (e: SyntheticEvent) => {
     e.preventDefault()
     if (store && store.selectedChat && msg.trim().length) {
-      sendMsg({ ...store.selectedChat, message: msg })
+      sendMsg({ ...store.selectedChat, message: msg, template: '' })
     }
     setMsg('')
     handleSetRowInMsg(1)
@@ -48,7 +48,7 @@ const SendMsgForm = (props: SendMsgComponentType) => {
       if (!e.shiftKey) {
         e.preventDefault(); // 阻止默认的换行行为
         if (msg.trim().length) {
-          sendMsg({ ...store.selectedChat, message: msg }); // 发送消息
+          sendMsg({ ...store.selectedChat, message: msg, template: '' }); // 发送消息
           setMsg(''); // 清空文本框
           handleSetRowInMsg(1)
         }
@@ -104,7 +104,8 @@ const SendMsgForm = (props: SendMsgComponentType) => {
                 boxShadow: 'none', // 默认状态下无阴影
             }}
           />
-          <Button type='submit' variant='contained' disabled={sendButtonDisable}  sx={{ bottom: 0, right: 0, position: 'absolute', mt: 0.6, whiteSpace: 'nowrap' }} 
+          <Button type='submit' variant='contained' disabled={sendButtonDisable}  
+                  sx={{ bottom: 0, right: 0, position: 'absolute', mt: 0.6, whiteSpace: 'nowrap' }} 
                   endIcon={sendButtonLoading ? <CircularProgress size={20} color="inherit" /> : null}
                   >
             {sendButtonText}

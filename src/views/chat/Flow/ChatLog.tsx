@@ -1,5 +1,5 @@
 // ** React Imports
-import { useRef, useEffect, Ref, ReactNode } from 'react'
+import { useRef, useEffect, Ref, ReactNode, Fragment } from 'react'
 import { saveAs } from 'file-saver';
 
 // ** MUI Imports
@@ -10,6 +10,7 @@ import ReactMarkdown from 'react-markdown'
 import CardMedia from '@mui/material/CardMedia'
 import Link from 'next/link'
 import authConfig from 'src/configs/auth'
+import Button from '@mui/material/Button'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -37,7 +38,7 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 
 const ChatLog = (props: any) => {
   // ** Props
-  const { data, hidden, rowInMsg, maxRows } = props
+  const { data, hidden, rowInMsg, maxRows, sendMsg, lastQuestion } = props
 
   // ** Ref
   const chatArea = useRef(null)
@@ -190,6 +191,17 @@ const ChatLog = (props: any) => {
                         >
                           <ReactMarkdown>{chat.msg.replace('\n', '  \n')}</ReactMarkdown>
                         </Typography>
+                        {item.senderId == 999999 && lastQuestion && lastQuestion!='' ? 
+                        <Fragment>
+                          <Typography sx={{ fontWeight: 500, pt:2 }}>其它选项:</Typography>
+                          <div style={{ display: 'grid', paddingTop:2, gap: '5px', justifyContent: 'start' }}>
+                            <Button variant='outlined' sx={{ mt: 0 }} onClick={()=>{sendMsg({message: lastQuestion, template: '要求生成一份PPT的大纲,以行业总结性报告的形式显现,生成10个页面,每一页3-5个要点,每一个要点字数在10-30之间,返回格式为Markdown,标题格式使用: **标题名称** 的形式表达.'})}}>列出10个大类</Button>
+                            <Button variant='outlined' sx={{ mt: 0 }} onClick={()=>{sendMsg({message: lastQuestion, template: '要求生成一份PPT的大纲,以行业总结性报告的形式显现,生成15个页面,每一页3-5个要点,每一个要点字数在10-30之间,返回格式为Markdown,标题格式使用: **标题名称** 的形式表达.'})}}>列出15个大类</Button>
+                            <Button variant='outlined' sx={{ mt: 0 }} onClick={()=>{sendMsg({message: lastQuestion, template: '要求生成一份PPT的大纲,以行业总结性报告的形式显现,生成20个页面,每一页3-5个要点,每一个要点字数在10-30之间,返回格式为Markdown,标题格式使用: **标题名称** 的形式表达.'})}}>列出20个大类</Button>
+                          </div>
+                        </Fragment>
+                        :
+                        null}
                         {index + 1 === length ? (
                           <Box
                             sx={{

@@ -156,7 +156,7 @@ const AppChat = () => {
       setSendInputText(t("Answering...") as string)
       ChatChatInput(Obj.message, auth.user.id)
       setRefreshChatCounter(refreshChatCounter + 1)
-      const ChatChatOutputStatus = await ChatChatOutput(Obj.message, auth.user.token, auth.user.id, chatId, setLastMessage)
+      const ChatChatOutputStatus = await ChatChatOutput(Obj.message, auth.user.token, auth.user.id, chatId, setLastMessage, Obj.template)
       if(ChatChatOutputStatus) {
         setSendButtonDisable(false)
         setSendButtonLoading(false)

@@ -100,13 +100,13 @@
   });
 
   app.post('/api/ChatGeminiMindMap', async (req: Request, res: Response) => {
-    const { knowledgeId, question, history } = req.body;
+    const { knowledgeId, question, history, template } = req.body;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         const getLLMSSettingData = await getLLMSSetting(knowledgeId);   
         if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
-          await chatChatGeminiMindMap(res, knowledgeId, checkUserTokenData.data.id, question, history);
+          await chatChatGeminiMindMap(res, knowledgeId, checkUserTokenData.data.id, question, history, template);
           res.end();
         }
         else {        

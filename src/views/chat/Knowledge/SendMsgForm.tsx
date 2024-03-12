@@ -36,7 +36,7 @@ const SendMsgForm = (props: SendMsgComponentType) => {
   const handleSendMsg = (e: SyntheticEvent) => {
     e.preventDefault()
     if (store && store.selectedChat && msg.trim().length) {
-      sendMsg({ ...store.selectedChat, message: msg })
+      sendMsg({ ...store.selectedChat, message: msg, template: '' })
     }
     setMsg('')
     handleSetRowInMsg(1)
@@ -48,7 +48,7 @@ const SendMsgForm = (props: SendMsgComponentType) => {
       if (!e.shiftKey) {
         e.preventDefault(); // 阻止默认的换行行为
         if (msg.trim().length) {
-          sendMsg({ ...store.selectedChat, message: msg }); // 发送消息
+          sendMsg({ ...store.selectedChat, message: msg, template: '' }); // 发送消息
           setMsg(''); // 清空文本框
           handleSetRowInMsg(1)
         }

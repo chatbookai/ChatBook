@@ -81,6 +81,7 @@ export type SendMsgParamsType = {
   chat?: ChatsObj
   message: string
   contact?: ChatsArrType
+  template?: string
 }
 
 export type ChatContentType = {

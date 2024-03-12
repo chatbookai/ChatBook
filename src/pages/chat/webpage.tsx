@@ -163,7 +163,8 @@ const AppChat = () => {
         auth.user.token,
         auth.user.id,
         chatId,
-        setLastMessage
+        setLastMessage, 
+        Obj.template
       )
       if (ChatChatOutputStatus) {
         setSendButtonDisable(false)

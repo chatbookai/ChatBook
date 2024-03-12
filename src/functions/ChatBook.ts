@@ -214,7 +214,7 @@ export function ChatChatInput(Message: string, UserId: number) {
     window.localStorage.setItem(ChatChat, JSON.stringify(ChatChatList))
 }
 
-export async function ChatChatOutput(Message: string, Token: string, UserId: number, chatId: number | string, setLastMessage:any) {
+export async function ChatChatOutput(Message: string, Token: string, UserId: number, chatId: number | string, setLastMessage:any, template: string) {
     const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []
     const History: any = []
@@ -260,7 +260,7 @@ export async function ChatChatOutput(Message: string, Token: string, UserId: num
                 Authorization: Token,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ question: Message, history: History, knowledgeId: chatId }),
+            body: JSON.stringify({ question: Message, history: History, knowledgeId: chatId, template: template }),
             });
             if (!response.body) {
             throw new Error('Response body is not readable as a stream');

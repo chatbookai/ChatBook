@@ -225,7 +225,7 @@ const AppChat = () => {
       setLastQuestion(Obj.message)
       ChatChatInput(Obj.message, auth.user.id)
       setRefreshChatCounter(refreshChatCounter + 1)
-      const ChatChatOutputStatus = await ChatChatOutput(Obj.message, auth.user.token, auth.user.id, chatId, setLastMessage)
+      const ChatChatOutputStatus = await ChatChatOutput(Obj.message, auth.user.token, auth.user.id, chatId, setLastMessage, Obj.template)
       if(ChatChatOutputStatus) {
         setSendButtonDisable(false)
         setSendButtonLoading(false)
@@ -282,12 +282,7 @@ const AppChat = () => {
             sendInputText={sendInputText}
             chatId={chatId}
             chatName={chatName}
-            nodes={nodes}
-            setNodes={setNodes}
-            onNodesChange={onNodesChange}
-            edges={edges}
-            setEdges={setEdges}
-            onEdgesChange={onEdgesChange}
+            lastQuestion={lastQuestion}
             />
       </Box>
     </Fragment>

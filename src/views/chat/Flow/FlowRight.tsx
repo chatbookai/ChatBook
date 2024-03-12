@@ -27,7 +27,8 @@ const FlowRight = (props: any) => {
     sendButtonText,
     sendInputText,
     chatId,
-    chatName
+    chatName,
+    lastQuestion
   } = props
 
   const LLMS = GetAllLLMById(chatId)
@@ -80,9 +81,9 @@ const FlowRight = (props: any) => {
               </Box>
 
               {store && store.selectedChat && store.userProfile ? 
-                <ChatLog hidden={hidden} data={{ ...store.selectedChat, userContact: store.userProfile }} chatId={chatId} chatName={chatName} LLMS={LLMS} rowInMsg={rowInMsg} maxRows={maxRows} />
+                <ChatLog hidden={hidden} data={{ ...store.selectedChat, userContact: store.userProfile }} chatId={chatId} chatName={chatName} LLMS={LLMS} rowInMsg={rowInMsg} maxRows={maxRows} sendMsg={sendMsg} lastQuestion={lastQuestion}/>
               : 
-                <ChatLog hidden={hidden} data={{}} chatId={chatId} chatName={chatName} LLMS={LLMS} rowInMsg={rowInMsg} maxRows={maxRows} />
+                <ChatLog hidden={hidden} data={{}} chatId={chatId} chatName={chatName} LLMS={LLMS} rowInMsg={rowInMsg} maxRows={maxRows} sendMsg={sendMsg} lastQuestion={lastQuestion}/>
                 }
 
               <SendMsgForm store={store} sendMsg={sendMsg} sendButtonDisable={sendButtonDisable} sendButtonLoading={sendButtonLoading} sendButtonText={sendButtonText} sendInputText={sendInputText} rowInMsg={rowInMsg} handleSetRowInMsg={handleSetRowInMsg} maxRows={maxRows} />

@@ -112,19 +112,6 @@ const App = (props: ExtendedAppProps) => {
 
   const aclAbilities = Component.acl ?? defaultACLObj
 
-  useEffect(() => {
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-
-  }, [])
-
-  const handleBeforeUnload = () => {
-    localStorage.clear();
-  };
-
   return (
     <Provider store={store}>
       <CacheProvider value={emotionCache}>

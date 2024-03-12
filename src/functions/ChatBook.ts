@@ -273,7 +273,7 @@ export async function ChatChatOutput(Message: string, Token: string, UserId: num
                 setLastMessage((prevText: string) => prevText + text);
                 responseText = responseText + text;
                 if (done) {
-                    //setLastMessage('')
+                    setLastMessage('')
                     break;
                 }
             }

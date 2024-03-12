@@ -147,19 +147,9 @@ export const MenuListUser = [
     path: '/image/stability2'
   },
   {
-    title: 'Image to Video',
-    icon: 'mdi:video-box',
-    path: '/video/stability'
-  },
-  {
     title: 'Knowledge Chat',
     icon: 'material-symbols:chat',
     path: '/chat/knowledge'
-  },
-  {
-    title: 'Studio',
-    icon: 'mdi:building',
-    path: '/studio'
   },
   {
     title: 'Community',

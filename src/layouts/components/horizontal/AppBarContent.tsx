@@ -121,7 +121,7 @@ const shortcuts: ShortcutsType[] = [
 
 const AppBarContent = (props: Props) => {
   // ** Props
-  const { hidden, settings, saveSettings } = props
+  const { settings, saveSettings } = props
 
   // ** Hook
   const auth = useAuth()

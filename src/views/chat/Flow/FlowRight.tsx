@@ -28,7 +28,9 @@ const FlowRight = (props: any) => {
     sendInputText,
     chatId,
     chatName,
-    lastQuestion
+    lastQuestion,
+    disabledButton,
+    setDisabledButton
   } = props
 
   const LLMS = GetAllLLMById(chatId)
@@ -81,9 +83,9 @@ const FlowRight = (props: any) => {
               </Box>
 
               {store && store.selectedChat && store.userProfile ? 
-                <ChatLog hidden={hidden} data={{ ...store.selectedChat, userContact: store.userProfile }} chatId={chatId} chatName={chatName} LLMS={LLMS} rowInMsg={rowInMsg} maxRows={maxRows} sendMsg={sendMsg} lastQuestion={lastQuestion}/>
+                <ChatLog hidden={hidden} data={{ ...store.selectedChat, userContact: store.userProfile }} chatId={chatId} chatName={chatName} LLMS={LLMS} rowInMsg={rowInMsg} maxRows={maxRows} sendMsg={sendMsg} lastQuestion={lastQuestion} disabledButton={disabledButton} setDisabledButton={setDisabledButton}/>
               : 
-                <ChatLog hidden={hidden} data={{}} chatId={chatId} chatName={chatName} LLMS={LLMS} rowInMsg={rowInMsg} maxRows={maxRows} sendMsg={sendMsg} lastQuestion={lastQuestion}/>
+                <ChatLog hidden={hidden} data={{}} chatId={chatId} chatName={chatName} LLMS={LLMS} rowInMsg={rowInMsg} maxRows={maxRows} sendMsg={sendMsg} lastQuestion={lastQuestion} disabledButton={disabledButton} setDisabledButton={setDisabledButton}/>
                 }
 
               <SendMsgForm store={store} sendMsg={sendMsg} sendButtonDisable={sendButtonDisable} sendButtonLoading={sendButtonLoading} sendButtonText={sendButtonText} sendInputText={sendInputText} rowInMsg={rowInMsg} handleSetRowInMsg={handleSetRowInMsg} maxRows={maxRows} />

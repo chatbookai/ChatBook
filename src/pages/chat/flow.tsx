@@ -39,6 +39,7 @@ const AppChat = () => {
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
   const [chatId, setChatId] = useState<number | string>(0)
   const [chatName, setChatName] = useState<string>("GeminiMindMap")
+  const [disabledButton, setDisabledButton] = useState<boolean>(false)
 
   const AllLLMS: any[] = GetAllLLMS()
 
@@ -84,6 +85,7 @@ const AppChat = () => {
   const [sendInputText, setSendInputText] = useState<string>('')
   const [lastMessage, setLastMessage] = useState("")
   const [lastQuestion, setLastQuestion] = useState("")
+
   const lastChat = {
     "message": lastMessage,
     "time": String(Date.now()),
@@ -109,8 +111,7 @@ const AppChat = () => {
         ChatChatList.push(lastChat)
         
         const lastMessageArray = parseMarkdown(lastMessage);
-        console.log("lastMessageArray", lastMessageArray);
-        console.log("lastQuestion************************", lastQuestion);
+        setDisabledButton(false)
 
         const generateNodes: Node<TurboNodeData>[] = []
         const generateEdges: Edge[] = []
@@ -167,10 +168,13 @@ const AppChat = () => {
           })
 
         })
-        console.log("Mind Map Nodes:", generateNodes)
+        
+        console.log("Mind Map Nodes lastMessageArray", lastMessageArray);
+        console.log("Mind Map Nodes lastMessage************************", lastMessage);
+        console.log("Mind Map Nodes lastQuestion************************", lastQuestion);
+        console.log("Mind Map Nodes generateNodes:", generateNodes)
         setNodes(generateNodes)
         setEdges(generateEdges)
-
       }
       const selectedChat = {
         "chat": {
@@ -283,6 +287,8 @@ const AppChat = () => {
             chatId={chatId}
             chatName={chatName}
             lastQuestion={lastQuestion}
+            disabledButton={disabledButton}
+            setDisabledButton={setDisabledButton}
             />
       </Box>
     </Fragment>

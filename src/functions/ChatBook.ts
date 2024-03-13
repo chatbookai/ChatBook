@@ -273,9 +273,7 @@ export async function ChatChatOutput(Message: string, Token: string, UserId: num
                 setLastMessage((prevText: string) => prevText + text);
                 responseText = responseText + text;
                 if (done) {
-                    if(chatId!="GeminiMindMap")  {
-                        setLastMessage('')
-                    }
+                    setLastMessage('')
                     break;
                 }
             }
@@ -283,6 +281,7 @@ export async function ChatChatOutput(Message: string, Token: string, UserId: num
                 console.log("OpenAI Response:", responseText)
                 ChatChatInput(responseText, 999999)
                 ChatChatHistoryInput(Message, responseText, UserId, chatId)
+                setLastMessage(responseText);
         
                 return true
             }
@@ -322,7 +321,6 @@ export function ChatChatHistoryInput(question: string, answer: string, UserId: n
             "answer": answer,
         }]
     }
-    console.log("ChatChatHistoryList", ChatChatHistoryList)
     window.localStorage.setItem(ChatChatHistory, JSON.stringify(ChatChatHistoryList))
 }
 

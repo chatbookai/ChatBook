@@ -1,5 +1,5 @@
 // ** React Imports
-import { useRef, useEffect, Ref, ReactNode, Fragment } from 'react'
+import { useRef, useEffect, Ref, ReactNode, Fragment, useState } from 'react'
 import { saveAs } from 'file-saver';
 
 // ** MUI Imports
@@ -38,7 +38,7 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 
 const ChatLog = (props: any) => {
   // ** Props
-  const { data, hidden, rowInMsg, maxRows, sendMsg, lastQuestion } = props
+  const { data, hidden, rowInMsg, maxRows, sendMsg, lastQuestion, disabledButton, setDisabledButton} = props
 
   // ** Ref
   const chatArea = useRef(null)
@@ -144,6 +144,8 @@ const ChatLog = (props: any) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
 
+  const formattedChatDataLength = formattedChatData().length
+
   // ** Renders user chat
   const renderChats = () => {
     return formattedChatData().map((item: FormattedChatsType, index: number) => {
@@ -155,11 +157,11 @@ const ChatLog = (props: any) => {
           sx={{
             display: 'flex',
             flexDirection: !isSender ? 'row' : 'row-reverse',
-            mb: index !== formattedChatData().length - 1 ? 4 : undefined
+            mb: index !== formattedChatDataLength - 1 ? 4 : undefined
           }}
         >
           <Box className='chat-body' sx={{ maxWidth: '95%' }}>
-            {item.messages.map((chat: ChatLogChatType, index: number, { length }: { length: number }) => {
+            {item.messages.map((chat: ChatLogChatType, ChatIndex: number, { length }: { length: number }) => {
               let ChatMsgType = 'Chat'
               let ChatMsgContent: any
               if(chat.msg.includes('"type":"image"')) {
@@ -172,7 +174,7 @@ const ChatLog = (props: any) => {
               }
 
               return (
-                <Box key={index} sx={{ '&:not(:last-of-type)': { mb: 3.5 } }}>
+                <Box key={ChatIndex} sx={{ '&:not(:last-of-type)': { mb: 3.5 } }}>
                     {ChatMsgType == "Chat" ?
                       <div>
                         <Typography
@@ -191,18 +193,18 @@ const ChatLog = (props: any) => {
                         >
                           <ReactMarkdown>{chat.msg.replace('\n', '  \n')}</ReactMarkdown>
                         </Typography>
-                        {item.senderId == 999999 && lastQuestion && lastQuestion!='' ? 
+                        {item.senderId == 999999 && lastQuestion && lastQuestion!='' && index + 1 == formattedChatDataLength ? 
                         <Fragment>
                           <Typography sx={{ fontWeight: 500, pt:2 }}>其它选项:</Typography>
                           <div style={{ display: 'grid', paddingTop:2, gap: '5px', justifyContent: 'start' }}>
-                            <Button variant='outlined' sx={{ mt: 0 }} onClick={()=>{sendMsg({message: lastQuestion, template: '要求生成一份PPT的大纲,以行业总结性报告的形式显现,生成10个页面,每一页3-5个要点,每一个要点字数在10-30之间,返回格式为Markdown,标题格式使用: **标题名称** 的形式表达.'})}}>列出10个大类</Button>
-                            <Button variant='outlined' sx={{ mt: 0 }} onClick={()=>{sendMsg({message: lastQuestion, template: '要求生成一份PPT的大纲,以行业总结性报告的形式显现,生成15个页面,每一页3-5个要点,每一个要点字数在10-30之间,返回格式为Markdown,标题格式使用: **标题名称** 的形式表达.'})}}>列出15个大类</Button>
-                            <Button variant='outlined' sx={{ mt: 0 }} onClick={()=>{sendMsg({message: lastQuestion, template: '要求生成一份PPT的大纲,以行业总结性报告的形式显现,生成20个页面,每一页3-5个要点,每一个要点字数在10-30之间,返回格式为Markdown,标题格式使用: **标题名称** 的形式表达.'})}}>列出20个大类</Button>
+                            <Button variant='outlined' disabled={disabledButton} sx={{ mt: 0 }} onClick={()=>{setDisabledButton(true); sendMsg({message: lastQuestion, template: '要求生成一份PPT的大纲,以行业总结性报告的形式显现,生成10个页面,每一页3-5个要点,每一个要点字数在10-30之间,返回格式为Markdown,标题格式使用: **标题名称** 的形式表达.'})}}>列出10个大类</Button>
+                            <Button variant='outlined' disabled={disabledButton} sx={{ mt: 0 }} onClick={()=>{setDisabledButton(true); sendMsg({message: lastQuestion, template: '要求生成一份PPT的大纲,以行业总结性报告的形式显现,生成15个页面,每一页3-5个要点,每一个要点字数在10-30之间,返回格式为Markdown,标题格式使用: **标题名称** 的形式表达.'})}}>列出15个大类</Button>
+                            <Button variant='outlined' disabled={disabledButton} sx={{ mt: 0 }} onClick={()=>{setDisabledButton(true); sendMsg({message: lastQuestion, template: '要求生成一份PPT的大纲,以行业总结性报告的形式显现,生成20个页面,每一页3-5个要点,每一个要点字数在10-30之间,返回格式为Markdown,标题格式使用: **标题名称** 的形式表达.'})}}>列出20个大类</Button>
                           </div>
                         </Fragment>
                         :
                         null}
-                        {index + 1 === length ? (
+                        {ChatIndex + 1 === length ? (
                           <Box
                             sx={{
                               mt: 1,

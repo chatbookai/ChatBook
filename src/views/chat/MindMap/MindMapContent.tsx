@@ -7,8 +7,7 @@ import React, { useRef, useState, useEffect, Fragment } from 'react'
 const Flow = (props: any) => {
   // ** Props
   const {
-    data,
-    setData
+    data
   } = props
 
     const [isLoaded, setIsLoaded] = useState<boolean>(false)

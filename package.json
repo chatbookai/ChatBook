@@ -71,7 +71,6 @@
     "keen-slider": "6.8.5",
     "langchain": "^0.1.7",
     "markdown-to-json": "^0.5.4",
-    "mind-elixir": "^4.0.1",
     "mind-elixir-react": "^1.0.1",
     "mp3-duration": "^1.1.0",
     "multer": "^1.4.5-lts.1",

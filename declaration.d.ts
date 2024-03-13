@@ -14,3 +14,5 @@ declare module 'bcrypt';
 declare module 'validator';
 declare module 'useragent';
 declare module 'react-icons/fi';
+declare module '@mind-elixir/export-xmind';
+declare module 'mind-elixir-react';

@@ -46,6 +46,11 @@ export const MenuListAdmin = [
     path: '/chat/flow'
   },
   {
+    title: 'Mind Map',
+    icon: 'mdi:account-box-multiple-outline',
+    path: '/chat/mindmap'
+  },
+  {
     title: 'Text to Image',
     icon: 'material-symbols:imagesmode',
     path: '/image/stability'
@@ -135,6 +140,11 @@ export const MenuListUser = [
     title: 'Mind Map',
     icon: 'mdi:account-box-multiple-outline',
     path: '/chat/flow'
+  },
+  {
+    title: 'Mind Map',
+    icon: 'mdi:account-box-multiple-outline',
+    path: '/chat/mindmap'
   },
   {
     title: 'Text to Image',

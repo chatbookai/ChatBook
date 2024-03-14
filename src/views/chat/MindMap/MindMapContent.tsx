@@ -1,4 +1,6 @@
-import MindElixirReact from 'mind-elixir-react'
+import MindElixirReact from './MindElixirReact'
+
+//import MindElixirReact from 'mind-elixir-react'
 import exportXmind from '@mind-elixir/export-xmind'
 import Grid from '@mui/material/Grid'
 import React, { useRef, useState, useEffect, Fragment } from 'react'

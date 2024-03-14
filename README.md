@@ -79,5 +79,5 @@ Baidu Wenxin
 
 
 <!-- LINK GROUP -->
-[vercel-deploy-link]: https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Flobehub%2Flobe-chat-agents&project-name=lobe-chat-agents&repository-name=lobe-chat-agents
+[vercel-deploy-link]: https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fchatbookai%2FChatBook&project-name=ChatBook&repository-name=ChatBook
 [vercel-deploy-shield]: https://vercel.com/button

@@ -30,6 +30,7 @@ const Flow = (props: any) => {
     useEffect(() => {
       if(isLoaded) {
         setOptions({})
+        setPlugins([])
       }
     }, [isLoaded])
 

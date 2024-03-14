@@ -53,7 +53,7 @@ export function ChatKnowledgeInput(Message: string, UserId: number, knowledgeId:
     window.localStorage.setItem(ChatKnowledge, JSON.stringify(ChatKnowledgeList))
 }
 
-export async function ChatKnowledgeOutput(Message: string, Token: string, UserId: number, knowledgeId: number, setLastMessage:any) {
+export async function ChatKnowledgeOutput(Message: string, Token: string, UserId: number, knowledgeId: number, setProcessingMessage:any) {
     const ChatKnowledgeHistoryText = window.localStorage.getItem(ChatKnowledgeHistory)      
     const ChatKnowledgeList = ChatKnowledgeHistoryText ? JSON.parse(ChatKnowledgeHistoryText) : []
     const History: any = []
@@ -66,7 +66,7 @@ export async function ChatKnowledgeOutput(Message: string, Token: string, UserId
         })
     }
     try {
-        setLastMessage('')
+        setProcessingMessage('')
         const response = await fetch(authConfig.backEndApiChatBook + `/api/ChatOpenaiKnowledge`, {
           method: 'POST',
           headers: {
@@ -83,10 +83,10 @@ export async function ChatKnowledgeOutput(Message: string, Token: string, UserId
         while (true) {
           const { done, value } = await reader.read();
           const text = new TextDecoder('utf-8').decode(value);
-          setLastMessage((prevText: string) => prevText + text);
+          setProcessingMessage((prevText: string) => prevText + text);
           responseText = responseText + text;
           if (done) {
-            setLastMessage('')
+            setProcessingMessage('')
             break;
           }
         }
@@ -94,7 +94,8 @@ export async function ChatKnowledgeOutput(Message: string, Token: string, UserId
             console.log("OpenAI Response:", responseText)
             ChatKnowledgeInput(responseText, 999999, knowledgeId)
             ChatKnowledgeHistoryInput(Message, responseText, UserId, knowledgeId)
-    
+            setProcessingMessage(responseText);
+
             return true
         }
         else {
@@ -214,7 +215,7 @@ export function ChatChatInput(Message: string, UserId: number) {
     window.localStorage.setItem(ChatChat, JSON.stringify(ChatChatList))
 }
 
-export async function ChatChatOutput(Message: string, Token: string, UserId: number, chatId: number | string, setLastMessage:any, template: string) {
+export async function ChatChatOutput(Message: string, Token: string, UserId: number, chatId: number | string, setProcessingMessage:any, template: string, setFinishedMessage:any) {
     const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []
     const History: any = []
@@ -227,7 +228,7 @@ export async function ChatChatOutput(Message: string, Token: string, UserId: num
         })
     }
     try {
-        setLastMessage('')
+        setProcessingMessage('')
         let modelName = ''
         switch(chatId) {
             case 'ChatGPT3.5':
@@ -270,10 +271,10 @@ export async function ChatChatOutput(Message: string, Token: string, UserId: num
             while (true) {
                 const { done, value } = await reader.read();
                 const text = new TextDecoder('utf-8').decode(value);
-                setLastMessage((prevText: string) => prevText + text);
+                setProcessingMessage((prevText: string) => prevText + text);
                 responseText = responseText + text;
                 if (done) {
-                    setLastMessage('')
+                    setProcessingMessage('')
                     break;
                 }
             }
@@ -281,7 +282,7 @@ export async function ChatChatOutput(Message: string, Token: string, UserId: num
                 console.log("OpenAI Response:", responseText)
                 ChatChatInput(responseText, 999999)
                 ChatChatHistoryInput(Message, responseText, UserId, chatId)
-                setLastMessage(responseText);
+                setFinishedMessage(responseText);
         
                 return true
             }

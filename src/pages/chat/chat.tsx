@@ -80,17 +80,18 @@ const AppChat = () => {
     getChatLogList(Id)
     setRefreshChatCounter(refreshChatCounter + 1)
   }
-
+  
   // ** States
   const [store, setStore] = useState<any>(null)
   const [sendButtonDisable, setSendButtonDisable] = useState<boolean>(false)
   const [sendButtonLoading, setSendButtonLoading] = useState<boolean>(false)
   const [sendButtonText, setSendButtonText] = useState<string>('')
   const [sendInputText, setSendInputText] = useState<string>('')
-  const [lastMessage, setLastMessage] = useState("")
+  const [processingMessage, setProcessingMessage] = useState("")
+  const [finishedMessage, setFinishedMessage] = useState("")
   const lastChat = {
-    "message": lastMessage,
-    "time": String(Date.now()),
+    "message": processingMessage,
+    "time": Date.now(),
     "senderId": 999999,
     "knowledgeId": 0,
     "feedback": {
@@ -109,9 +110,15 @@ const AppChat = () => {
     if(auth.user && auth.user.id)   {
       const ChatChatText = window.localStorage.getItem("ChatChat")      
       const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
-      if(lastMessage && lastMessage!="") {
+      console.log("ChatChatList", ChatChatList)
+      console.log("processingMessage", processingMessage)
+      const ShowData = processingMessage && processingMessage!="" ? processingMessage : finishedMessage
+      if(processingMessage && processingMessage!="") {
+        
+        //流式输出的时候,进来显示
         ChatChatList.push(lastChat)
       }
+      console.log("ShowData", ShowData)
       const selectedChat = {
         "chat": {
             "id": auth.user.id,
@@ -136,7 +143,7 @@ const AppChat = () => {
       setSendButtonLoading(false)
       setSendButtonText(t('Login first') as string)
     }
-  }, [refreshChatCounter, lastMessage, auth])
+  }, [refreshChatCounter, processingMessage, auth])
 
   useEffect(() => {
     const ChatChatNameListData: string[] = ChatChatNameList()
@@ -156,7 +163,7 @@ const AppChat = () => {
       setSendInputText(t("Answering...") as string)
       ChatChatInput(Obj.message, auth.user.id)
       setRefreshChatCounter(refreshChatCounter + 1)
-      const ChatChatOutputStatus = await ChatChatOutput(Obj.message, auth.user.token, auth.user.id, chatId, setLastMessage, Obj.template)
+      const ChatChatOutputStatus = await ChatChatOutput(Obj.message, auth.user.token, auth.user.id, chatId, setProcessingMessage, Obj.template, setFinishedMessage)
       if(ChatChatOutputStatus) {
         setSendButtonDisable(false)
         setSendButtonLoading(false)

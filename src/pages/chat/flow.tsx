@@ -83,11 +83,12 @@ const AppChat = () => {
   const [sendButtonLoading, setSendButtonLoading] = useState<boolean>(false)
   const [sendButtonText, setSendButtonText] = useState<string>('')
   const [sendInputText, setSendInputText] = useState<string>('')
-  const [lastMessage, setLastMessage] = useState("")
+  const [processingMessage, setProcessingMessage] = useState("")
+  const [finishedMessage, setFinishedMessage] = useState("")
   const [lastQuestion, setLastQuestion] = useState("")
 
   const lastChat = {
-    "message": lastMessage,
+    "message": processingMessage,
     "time": String(Date.now()),
     "senderId": 999999,
     "knowledgeId": 0,
@@ -107,10 +108,14 @@ const AppChat = () => {
     if(auth.user && auth.user.id)   {
       const ChatChatText = window.localStorage.getItem("ChatChat")      
       const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
-      if(lastMessage && lastMessage!="") {
-        ChatChatList.push(lastChat)
+      const ShowData = processingMessage && processingMessage!="" ? processingMessage : finishedMessage
+      if(processingMessage && processingMessage!="") {
         
-        const lastMessageArray = parseMarkdown(lastMessage);
+        //流式输出的时候,进来显示
+        ChatChatList.push(lastChat)
+      }
+      if(ShowData) {
+        const processingMessageArray = parseMarkdown(processingMessage);
         setDisabledButton(false)
 
         const generateNodes: Node<TurboNodeData>[] = []
@@ -124,13 +129,13 @@ const AppChat = () => {
 
         let TotalCount = 0;
         let CurrentCount = 0;
-        lastMessageArray.map((Item: any)=>{
+        processingMessageArray.map((Item: any)=>{
           TotalCount += Item.content.length;
         })
         const subContentCounter = Math.ceil(TotalCount/2)-1;
 
-        const subItemsCounter = Math.ceil(lastMessageArray.length/2)-1;
-        lastMessageArray.map((Item: any, Index: number)=>{
+        const subItemsCounter = Math.ceil(processingMessageArray.length/2)-1;
+        processingMessageArray.map((Item: any, Index: number)=>{
 
           //Make Node Title
           const Y = (Index-subItemsCounter) * 100
@@ -169,8 +174,8 @@ const AppChat = () => {
 
         })
         
-        console.log("Mind Map Nodes lastMessageArray", lastMessageArray);
-        console.log("Mind Map Nodes lastMessage************************", lastMessage);
+        console.log("Mind Map Nodes processingMessageArray", processingMessageArray);
+        console.log("Mind Map Nodes processingMessage************************", processingMessage);
         console.log("Mind Map Nodes lastQuestion************************", lastQuestion);
         console.log("Mind Map Nodes generateNodes:", generateNodes)
         setNodes(generateNodes)
@@ -201,7 +206,7 @@ const AppChat = () => {
       setSendButtonText(t('Login first') as string)
       console.log("lastChat************************ Not Login");
     }
-  }, [refreshChatCounter, lastMessage, auth])
+  }, [refreshChatCounter, processingMessage, auth])
 
   useEffect(() => {
     const ChatChatNameListData: string[] = ChatChatNameList()
@@ -229,7 +234,7 @@ const AppChat = () => {
       setLastQuestion(Obj.message)
       ChatChatInput(Obj.message, auth.user.id)
       setRefreshChatCounter(refreshChatCounter + 1)
-      const ChatChatOutputStatus = await ChatChatOutput(Obj.message, auth.user.token, auth.user.id, chatId, setLastMessage, Obj.template)
+      const ChatChatOutputStatus = await ChatChatOutput(Obj.message, auth.user.token, auth.user.id, chatId, setProcessingMessage, Obj.template, setFinishedMessage)
       if(ChatChatOutputStatus) {
         setSendButtonDisable(false)
         setSendButtonLoading(false)

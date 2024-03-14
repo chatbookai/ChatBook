@@ -41,7 +41,7 @@ export type ChatsObj = {
   userId: number
   chat: ChatType[]
   unseenMsgs: number
-  lastMessage?: ChatType
+  processingMessage?: ChatType
 }
 
 export type ContactType = {

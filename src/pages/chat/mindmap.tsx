@@ -79,11 +79,12 @@ const AppChat = () => {
   const [sendButtonLoading, setSendButtonLoading] = useState<boolean>(false)
   const [sendButtonText, setSendButtonText] = useState<string>('')
   const [sendInputText, setSendInputText] = useState<string>('')
-  const [lastMessage, setLastMessage] = useState("")
+  const [processingMessage, setProcessingMessage] = useState("")
+  const [finishedMessage, setFinishedMessage] = useState("")
   const [lastQuestion, setLastQuestion] = useState("")
 
   const lastChat = {
-    "message": lastMessage,
+    "message": processingMessage,
     "time": String(Date.now()),
     "senderId": 999999,
     "knowledgeId": 0,
@@ -103,14 +104,19 @@ const AppChat = () => {
     if(auth.user && auth.user.id)   {
       const ChatChatText = window.localStorage.getItem("ChatChat")      
       const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
-      if(lastMessage && lastMessage!="") {
-        ChatChatList.push(lastChat)
+      const ShowData = processingMessage && processingMessage!="" ? processingMessage : finishedMessage
+      if(processingMessage && processingMessage!="") {
         
-        const lastMessageArray = parseMarkdown(lastMessage);
+        //流式输出的时候,进来显示
+        ChatChatList.push(lastChat)
+      }
+      if(ShowData) {
+        
+        const processingMessageArray = parseMarkdown(ShowData);
         setDisabledButton(false)
 
         const childrenOne: any[] = [];
-        lastMessageArray.map((Item: any)=>{
+        processingMessageArray.map((Item: any)=>{
           const childrenTwo: any[] = [];
           Item.content && Item.content.length>0 && Item.content.map((ItemContent: string)=>{
             childrenTwo.push({"topic": ItemContent,"id": Math.random().toString(16)})
@@ -134,8 +140,8 @@ const AppChat = () => {
           "linkData": {}
         }
         
-        console.log("Mind Map Nodes lastMessageArray", lastMessageArray);
-        console.log("Mind Map Nodes lastMessage************************", lastMessage);
+        console.log("Mind Map Nodes processingMessageArray", processingMessageArray);
+        console.log("Mind Map Nodes ShowData************************", ShowData);
         console.log("Mind Map Nodes lastQuestion************************", lastQuestion);
         console.log("Mind Map Nodes generateNodes:", generateNodes)
         setData(generateNodes)
@@ -165,7 +171,7 @@ const AppChat = () => {
       setSendButtonText(t('Login first') as string)
       console.log("lastChat************************ Not Login");
     }
-  }, [refreshChatCounter, lastMessage, auth])
+  }, [refreshChatCounter, processingMessage, auth])
 
   useEffect(() => {
     const ChatChatNameListData: string[] = ChatChatNameList()
@@ -188,7 +194,7 @@ const AppChat = () => {
       setLastQuestion(Obj.message)
       ChatChatInput(Obj.message, auth.user.id)
       setRefreshChatCounter(refreshChatCounter + 1)
-      const ChatChatOutputStatus = await ChatChatOutput(Obj.message, auth.user.token, auth.user.id, chatId, setLastMessage, Obj.template)
+      const ChatChatOutputStatus = await ChatChatOutput(Obj.message, auth.user.token, auth.user.id, chatId, setProcessingMessage, Obj.template, setFinishedMessage)
       if(ChatChatOutputStatus) {
         setSendButtonDisable(false)
         setSendButtonLoading(false)

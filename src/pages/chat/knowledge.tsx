@@ -92,9 +92,9 @@ const AppChat = () => {
   const [sendButtonDisable, setSendButtonDisable] = useState<boolean>(false)
   const [sendButtonText, setSendButtonText] = useState<string>('')
   const [sendInputText, setSendInputText] = useState<string>('')
-  const [lastMessage, setLastMessage] = useState("")
+  const [processingMessage, setProcessingMessage] = useState("")
   const lastChat = {
-    "message": lastMessage,
+    "message": processingMessage,
     "time": String(Date.now()),
     "senderId": 999999,
     "knowledgeId": 0,
@@ -114,7 +114,7 @@ const AppChat = () => {
     if(auth.user)   {
       const ChatKnowledgeText = window.localStorage.getItem("ChatKnowledge")      
       const ChatKnowledgeList = ChatKnowledgeText ? JSON.parse(ChatKnowledgeText) : []
-      if(lastMessage && lastMessage!="") {
+      if(processingMessage && processingMessage!="") {
         ChatKnowledgeList.push(lastChat)
       }
       const selectedChat = {
@@ -136,7 +136,7 @@ const AppChat = () => {
       }
       setStore(storeInit)
     }
-  }, [refreshChatCounter, lastMessage, auth])
+  }, [refreshChatCounter, processingMessage, auth])
 
   useEffect(() => {
     getAllKnowledgeList()  
@@ -151,7 +151,7 @@ const AppChat = () => {
       setSendInputText(t("Answering...") as string)
       ChatKnowledgeInput(Obj.message, auth.user.id, knowledgeId)
       setRefreshChatCounter(refreshChatCounter + 1)
-      const ChatKnowledgeOutputStatus = await ChatKnowledgeOutput(Obj.message, auth.user.token, auth.user.id, knowledgeId, setLastMessage)
+      const ChatKnowledgeOutputStatus = await ChatKnowledgeOutput(Obj.message, auth.user.token, auth.user.id, knowledgeId, setProcessingMessage)
       if(ChatKnowledgeOutputStatus) {
         setSendButtonDisable(false)
         setRefreshChatCounter(refreshChatCounter + 2)

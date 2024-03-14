@@ -72,6 +72,3 @@ Baidu Wenxin
     1 LLM:  Langchain, Pinecone, OPENAI, 后续会持续集成其它模型
     2 后端: NextJS, Severless
     3 前端: React, NextJS, MUI
-
-## 微信交流群组
-![微信交流群组](./public/wechatqrcode.png)

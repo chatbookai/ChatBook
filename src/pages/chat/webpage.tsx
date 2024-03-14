@@ -13,14 +13,20 @@ import { StatusObjType } from 'src/types/apps/chatTypes'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Chat App Components Imports
-import LLMSLeft from 'src/views/form/LLMSLeft'
+import WebChatLeft from 'src/views/form/WebChatLeft'
 import ChatContent from 'src/views/chat/Chat/ChatContent'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
-import { GetAllLLMS, ChatChatInit, ChatChatNameList, ChatChatInput, ChatChatOutput } from 'src/functions/ChatBook'
-
+import {
+  GetAllLLMS,
+  ChatChatInit,
+  ChatChatNameList,
+  ChatChatInput,
+  ChatChatOutput,
+  GetWebChatList
+} from 'src/functions/ChatBook'
 
 // ** Axios Imports
 import axios from 'axios'
@@ -37,6 +43,10 @@ const AppChat = () => {
   const [chatId, setChatId] = useState<number | string>(-1)
   const [chatName, setChatName] = useState<string>('')
 
+  const [webChat, setWebChat] = useState<any>([])
+  const [webChatId, setWebChatId] = useState<number | string>(-1)
+  const [webChatName, setWebChatName] = useState<string>('')
+
   const AllLLMS: any[] = GetAllLLMS()
 
   useEffect(() => {
@@ -45,6 +55,15 @@ const AppChat = () => {
     setChatName(AllLLMS[0].name)
     getChatLogList(AllLLMS[0].id)
     console.log('AllLLMS', AllLLMS)
+  }, [])
+
+  const WebChatList: any[] = GetWebChatList()
+
+  useEffect(() => {
+    setWebChat(WebChatList)
+    setWebChatId(WebChatList[0].id)
+    setWebChatName(WebChatList[0].name)
+    console.log('WebChat', WebChatList)
   }, [])
 
   const getChatLogList = async function (knowledgeId: number | string) {
@@ -201,7 +220,17 @@ const AppChat = () => {
           ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
         }}
       >
-        
+        <WebChatLeft
+          llms={llms}
+          webChat={webChat}
+          setActiveId={setActiveId}
+          hidden={false}
+          chatId={chatId}
+          chatName={chatName}
+          webChatId={webChatId}
+          webChatName={webChatName}
+        />
+
         <ChatContent
           store={store}
           hidden={hidden}

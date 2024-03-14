@@ -1,5 +1,4 @@
 import MindElixirReact from './MindElixirReact'
-import exportXmind from '@mind-elixir/export-xmind'
 import Grid from '@mui/material/Grid'
 import React, { useRef, useState, useEffect, Fragment } from 'react'
 
@@ -30,7 +29,6 @@ const Flow = (props: any) => {
 
     useEffect(() => {
       if(isLoaded) {
-        setPlugins([exportXmind])
         setOptions({})
       }
     }, [isLoaded])

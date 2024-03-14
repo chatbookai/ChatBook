@@ -7,6 +7,10 @@
     3 数据分析: 企业内部数据分析.
     4 基础AI对话: 无需每个用户去开通各通AI模型的会员,由单位开通一次,即可给单位内用户使用.
 
+## Vercel部署前端,后端在chatbookai.net,适用于简单体验
+
+[![][vercel-deploy-shield]][vercel-deploy-link]
+
 ## 编译安装,适用于需要做二次开发
 ```
 git clone https://github.com/chatbookai/ChatBook.git
@@ -72,3 +76,8 @@ Baidu Wenxin
     1 LLM:  Langchain, Pinecone, OPENAI, 后续会持续集成其它模型
     2 后端: NextJS, Severless
     3 前端: React, NextJS, MUI
+
+
+<!-- LINK GROUP -->
+[vercel-deploy-link]: https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Flobehub%2Flobe-chat-agents&project-name=lobe-chat-agents&repository-name=lobe-chat-agents
+[vercel-deploy-shield]: https://vercel.com/button

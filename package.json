@@ -32,6 +32,7 @@
     "@langchain/google-genai": "^0.0.7",
     "@langchain/openai": "^0.0.12",
     "@mind-elixir/export-xmind": "^2.0.1",
+    "@mind-elixir/node-menu": "^1.0.3",
     "@mui/icons-material": "^5.15.10",
     "@mui/lab": "5.0.0-alpha.128",
     "@mui/material": "5.12.2",

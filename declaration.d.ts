@@ -16,3 +16,4 @@ declare module 'useragent';
 declare module 'react-icons/fi';
 declare module '@mind-elixir/export-xmind';
 declare module 'mind-elixir-react';
+declare module '@mind-elixir/node-menu';

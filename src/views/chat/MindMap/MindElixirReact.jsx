@@ -3,36 +3,40 @@ import React, { useEffect, useRef, forwardRef } from 'react'
 let MindElixir;
 import('mind-elixir').then((module) => { MindElixir = module.default; }).catch((error) => { console.error('Failed to import MindElixir:', error.message); MindElixir = null; });
 
+let NodeMenu;
+import('@mind-elixir/node-menu').then((module) => { NodeMenu = module.default; }).catch((error) => { console.error('Failed to import MindElixir node-menu:', error.message); NodeMenu = null; });
+
 function MindElixirReact(
   { style, data, options, plugins, onOperate, onSelectNode, onExpandNode },
   ref
 ) {
   const isFirstRun = useRef(true)
-  
+ 
   useEffect(() => {
-    if(MindElixir != null)     {
+    if(MindElixir != null && NodeMenu != null)     {
       isFirstRun.current = true
-      const me = new MindElixir({
+      const instance = new MindElixir({
         el: ref.current,
         ...options,
       })
       for (let i = 0; i < plugins.length; i++) {
         const plugin = plugins[i]
-        me.install(plugin)
+        instance.install(plugin)
       }
-      me.bus.addListener('operation', (operation) => {
+      instance.bus.addListener('operation', (operation) => {
         onOperate(operation)
       })
-      me.bus.addListener('selectNode', (operation) => {
+      instance.bus.addListener('selectNode', (operation) => {
         onSelectNode(operation)
       })
-      me.bus.addListener('expandNode', (operation) => {
+      instance.bus.addListener('expandNode', (operation) => {
         onExpandNode(operation)
       })
-      ref.current.instance = me
-      console.log('created', ref.current.instance)
+      instance.install(NodeMenu);
+      ref.current.instance = instance
+      console.log('NodeMenu NodeMenu', NodeMenu)
     }
-  }, [ref, options, plugins, onOperate, onSelectNode, onExpandNode, MindElixir])
+  }, [ref, options, plugins, onOperate, onSelectNode, onExpandNode, MindElixir, NodeMenu])
 
   useEffect(() => {
     if(data != null)  {

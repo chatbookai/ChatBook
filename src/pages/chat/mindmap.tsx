@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useEffect, useState } from 'react'
+import { Fragment, useEffect, useState, useRef } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -186,6 +186,7 @@ const AppChat = () => {
   }, [])
 
   const [data, setData] = useState<any>(null);
+  const ME: any = useRef(null)
 
   const sendMsg = async (Obj: any) => {
     if(auth.user && auth.user.token)  {
@@ -205,6 +206,17 @@ const AppChat = () => {
         setSendInputText(t("Your message...") as string)  
       }
     }
+  }
+
+  const downloadPng = async (lastQuestion: string) => {
+    const blob = await ME.current.instance.exportPng() // Get a Blob!
+    if (!blob) return
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = lastQuestion + '.png'
+    a.click()
+    URL.revokeObjectURL(url)
   }
 
   // ** Vars
@@ -234,6 +246,7 @@ const AppChat = () => {
     >
         <MindMapContent
             data={data}
+            ME={ME}
         />
         <MindMapRight
             store={store}
@@ -250,6 +263,7 @@ const AppChat = () => {
             lastQuestion={lastQuestion}
             disabledButton={disabledButton}
             setDisabledButton={setDisabledButton}
+            downloadPng={downloadPng}
             />
       </Box>
     </Fragment>

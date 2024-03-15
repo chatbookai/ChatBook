@@ -5,6 +5,7 @@ import { useState } from 'react'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -30,7 +31,8 @@ const FlowRight = (props: any) => {
     chatName,
     lastQuestion,
     disabledButton,
-    setDisabledButton
+    setDisabledButton,
+    downloadPng
   } = props
 
   const LLMS = GetAllLLMById(chatId)
@@ -73,9 +75,7 @@ const FlowRight = (props: any) => {
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                       <Typography sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
                         {chatName}
-                      </Typography>
-                      <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                        {chatName}
+                        <Button onClick={()=>{downloadPng(lastQuestion)}} size="small" disabled={sendButtonDisable}>PNG</Button>
                       </Typography>
                     </Box>
                   </Box>

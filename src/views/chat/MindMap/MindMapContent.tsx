@@ -3,16 +3,13 @@ import Grid from '@mui/material/Grid'
 import React, { useRef, useState, useEffect, Fragment } from 'react'
 
 const Flow = (props: any) => {
-  // ** Props
-  const {
-    data
-  } = props
+    // ** Props
+    const { data, ME } = props
 
     const [isLoaded, setIsLoaded] = useState<boolean>(false)
     const [plugins, setPlugins] = useState<any[]>([])
     const [options, setOptions] = useState<any>(null)
     
-    const ME: any = useRef(null)
     const handleOperate = (operation: any) => {
       console.log('handleOperate', operation)
     }
@@ -29,8 +26,31 @@ const Flow = (props: any) => {
 
     useEffect(() => {
       if(isLoaded) {
-        const direction = 2
-        setOptions({direction: direction})
+        const options = {
+          direction: 2,
+          draggable: true, // default true
+          contextMenu: true, // default true
+          toolBar: true, // default true
+          nodeMenu: true, // default true
+          keypress: true, // default true
+          locale: 'zh_CN', // [zh_CN,zh_TW,en,ja,pt,ru] waiting for PRs
+          overflowHidden: false, // default false
+          mainLinkStyle: 2, // [1,2] default 1
+          mouseSelectionButton: 0, // 0 for left button, 2 for right button, default 0
+          contextMenuOption: {
+            focus: true,
+            link: true,
+            extend: [
+              {
+                name: 'Node edit',
+                onclick: () => {
+                  alert('extend menu')
+                },
+              },
+            ],
+          },
+        }
+        setOptions(options)
         setPlugins([])
       }
     }, [isLoaded])

@@ -29,7 +29,8 @@ const Flow = (props: any) => {
 
     useEffect(() => {
       if(isLoaded) {
-        setOptions({})
+        const direction = 2
+        setOptions({direction: direction})
         setPlugins([])
       }
     }, [isLoaded])

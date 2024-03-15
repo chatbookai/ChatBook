@@ -35,14 +35,16 @@ function MindElixirReact(
   }, [ref, options, plugins, onOperate, onSelectNode, onExpandNode, MindElixir])
 
   useEffect(() => {
-    if (isFirstRun.current) {
-      if (!ref.current.instance) return
-      ref.current.instance.init(data)
-      isFirstRun.current = false
-      console.log('init', ref.current.instance)
-    } else {
-      ref.current.instance.refresh(data)
-      console.log('refresh', ref.current.instance)
+    if(data != null)  {
+      if (isFirstRun.current) {
+        if (!ref.current.instance) return
+        ref.current.instance.init(data)
+        isFirstRun.current = false
+        console.log('init', ref.current.instance)
+      } else {
+        ref.current.instance.refresh(data)
+        console.log('refresh', ref.current.instance)
+      }
     }
   }, [ref, options, data])
   console.log('render')

@@ -111,12 +111,14 @@ const AppChat = () => {
         ChatChatList.push(lastChat)
       }
       if(ShowData) {
-        
+
         const processingMessageArray = parseMarkdown(ShowData);
         setDisabledButton(false)
 
         const childrenOne: any[] = [];
-        processingMessageArray.map((Item: any)=>{
+        const processingMessageArrayLength = processingMessageArray.length;
+        processingMessageArray.map((Item: any, Index: number)=>{
+          const direction = processingMessageArrayLength/2 > Index ? 0 : 1
           const childrenTwo: any[] = [];
           Item.content && Item.content.length>0 && Item.content.map((ItemContent: string)=>{
             childrenTwo.push({"topic": ItemContent,"id": Math.random().toString(16)})
@@ -124,7 +126,7 @@ const AppChat = () => {
           childrenOne.push({
             "topic": Item.title,
             "id": Math.random().toString(16),
-            "direction": 0,
+            "direction": direction,
             "expanded": true,
             "children": childrenTwo
           })
@@ -143,7 +145,7 @@ const AppChat = () => {
         console.log("Mind Map Nodes processingMessageArray", processingMessageArray);
         console.log("Mind Map Nodes ShowData************************", ShowData);
         console.log("Mind Map Nodes lastQuestion************************", lastQuestion);
-        console.log("Mind Map Nodes generateNodes:", generateNodes)
+        console.log("Mind Map Nodes generateNodes:", JSON.stringify(generateNodes))
         setData(generateNodes)
       }
       const selectedChat = {

@@ -1,6 +1,6 @@
 import MindElixirReact from './MindElixirReact'
 import Grid from '@mui/material/Grid'
-import React, { useRef, useState, useEffect, Fragment } from 'react'
+import React, { useState, useEffect, Fragment } from 'react'
 
 const Flow = (props: any) => {
     // ** Props

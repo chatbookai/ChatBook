@@ -32,7 +32,9 @@ const FlowRight = (props: any) => {
     lastQuestion,
     disabledButton,
     setDisabledButton,
-    downloadPng
+    downloadPng,
+    downloadMarkdown,
+    downloadXMind
   } = props
 
   const LLMS = GetAllLLMById(chatId)
@@ -76,6 +78,8 @@ const FlowRight = (props: any) => {
                       <Typography sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
                         {chatName}
                         <Button onClick={()=>{downloadPng(lastQuestion)}} size="small" disabled={sendButtonDisable}>PNG</Button>
+                        <Button onClick={()=>{downloadMarkdown(lastQuestion)}} size="small" disabled={sendButtonDisable}>MD</Button>
+                        <Button onClick={()=>{downloadXMind(lastQuestion)}} size="small" disabled={sendButtonDisable}>XMIND</Button>
                       </Typography>
                     </Box>
                   </Box>

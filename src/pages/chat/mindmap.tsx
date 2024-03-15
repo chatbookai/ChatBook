@@ -146,7 +146,9 @@ const AppChat = () => {
         console.log("Mind Map Nodes ShowData************************", ShowData);
         console.log("Mind Map Nodes lastQuestion************************", lastQuestion);
         console.log("Mind Map Nodes generateNodes:", JSON.stringify(generateNodes))
-        setData(generateNodes)
+        if(childrenOne.length>0) {
+          setData(generateNodes)
+        }
       }
       const selectedChat = {
         "chat": {
@@ -219,6 +221,32 @@ const AppChat = () => {
     URL.revokeObjectURL(url)
   }
 
+  const downloadMarkdown = async (lastQuestion: string) => {
+    const text = await ME.current.instance.getDataMd(); // Assuming this function retrieves the markdown text
+    console.log("text", text);
+    if (!text) return;
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = lastQuestion + '.md'; // Set the filename with .md extension for markdown files
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  const downloadXMind = async (lastQuestion: string) => {
+    const text = await ME.current.instance.getDataMd(); // Assuming this function retrieves the markdown text
+    console.log("text", text);
+    if (!text) return;
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = lastQuestion + '.md'; // Set the filename with .md extension for markdown files
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+  
   // ** Vars
   const { skin } = settings
   const mdAbove = useMediaQuery(theme.breakpoints.up('md'))
@@ -264,6 +292,8 @@ const AppChat = () => {
             disabledButton={disabledButton}
             setDisabledButton={setDisabledButton}
             downloadPng={downloadPng}
+            downloadMarkdown={downloadMarkdown}
+            downloadXMind={downloadXMind}
             />
       </Box>
     </Fragment>

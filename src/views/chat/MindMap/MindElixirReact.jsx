@@ -6,6 +6,10 @@ import('mind-elixir').then((module) => { MindElixir = module.default; }).catch((
 let NodeMenu;
 import('@mind-elixir/node-menu').then((module) => { NodeMenu = module.default; }).catch((error) => { console.error('Failed to import MindElixir node-menu:', error.message); NodeMenu = null; });
 
+let exportXmind;
+import('@mind-elixir/export-xmind').then((module) => { exportXmind = module.default; }).catch((error) => { console.error('Failed to import MindElixir node-menu:', error.message); exportXmind = null; });
+
+
 function MindElixirReact(
   { style, data, options, plugins, onOperate, onSelectNode, onExpandNode },
   ref
@@ -13,7 +17,7 @@ function MindElixirReact(
   const isFirstRun = useRef(true)
  
   useEffect(() => {
-    if(MindElixir != null && NodeMenu != null)     {
+    if(MindElixir != null && NodeMenu != null && exportXmind != null)     {
       isFirstRun.current = true
       const instance = new MindElixir({
         el: ref.current,
@@ -23,6 +27,7 @@ function MindElixirReact(
         const plugin = plugins[i]
         instance.install(plugin)
       }
+      instance.install(exportXmind)
       instance.bus.addListener('operation', (operation) => {
         onOperate(operation)
       })
@@ -36,7 +41,7 @@ function MindElixirReact(
       ref.current.instance = instance
       console.log('NodeMenu NodeMenu', NodeMenu)
     }
-  }, [ref, options, plugins, onOperate, onSelectNode, onExpandNode, MindElixir, NodeMenu])
+  }, [ref, options, plugins, onOperate, onSelectNode, onExpandNode, MindElixir, NodeMenu, exportXmind])
 
   useEffect(() => {
     if(data != null)  {

@@ -33,8 +33,7 @@ const FlowRight = (props: any) => {
     disabledButton,
     setDisabledButton,
     downloadPng,
-    downloadMarkdown,
-    downloadXMind
+    downloadMarkdown
   } = props
 
   const LLMS = GetAllLLMById(chatId)
@@ -46,6 +45,8 @@ const FlowRight = (props: any) => {
   const handleSetRowInMsg = (row: number) => {
     setRowInMsg(row)
   }
+  
+  //<Button onClick={()=>{downloadXMind(lastQuestion)}} size="small" disabled={sendButtonDisable}>XMIND</Button>
 
   const renderContent = () => {
           return (
@@ -76,10 +77,8 @@ const FlowRight = (props: any) => {
                   <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} >
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                       <Typography sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
-                        {chatName}
                         <Button onClick={()=>{downloadPng(lastQuestion)}} size="small" disabled={sendButtonDisable}>PNG</Button>
                         <Button onClick={()=>{downloadMarkdown(lastQuestion)}} size="small" disabled={sendButtonDisable}>MD</Button>
-                        <Button onClick={()=>{downloadXMind(lastQuestion)}} size="small" disabled={sendButtonDisable}>XMIND</Button>
                       </Typography>
                     </Box>
                   </Box>

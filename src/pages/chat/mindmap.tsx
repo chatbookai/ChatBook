@@ -145,7 +145,7 @@ const AppChat = () => {
         console.log("Mind Map Nodes processingMessageArray", processingMessageArray);
         console.log("Mind Map Nodes ShowData************************", ShowData);
         console.log("Mind Map Nodes lastQuestion************************", lastQuestion);
-        console.log("Mind Map Nodes generateNodes:", JSON.stringify(generateNodes))
+        console.log("Mind Map Nodes generateNodes:", generateNodes)
         if(childrenOne.length>0) {
           setData(generateNodes)
         }
@@ -187,7 +187,16 @@ const AppChat = () => {
 
   }, [])
 
-  const [data, setData] = useState<any>(null);
+  const [data, setData] = useState<any>({
+    "nodeData": {
+      "id": "root",
+      "topic": "New Topic",
+      "root": true,
+      "children": [],
+      "expanded": true
+    },
+    "linkData": {}
+  });
   const ME: any = useRef(null)
 
   const sendMsg = async (Obj: any) => {
@@ -211,40 +220,46 @@ const AppChat = () => {
   }
 
   const downloadPng = async (lastQuestion: string) => {
-    const blob = await ME.current.instance.exportPng() // Get a Blob!
-    if (!blob) return
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = lastQuestion + '.png'
-    a.click()
-    URL.revokeObjectURL(url)
+    if(ME && ME.current && ME.current.instance)   {
+      const blob = await ME.current.instance.exportPng() // Get a Blob!
+      if (!blob) return
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = lastQuestion + '.png'
+      a.click()
+      URL.revokeObjectURL(url)
+    }
   }
 
   const downloadMarkdown = async (lastQuestion: string) => {
-    const text = await ME.current.instance.getDataMd(); // Assuming this function retrieves the markdown text
-    console.log("text", text);
-    if (!text) return;
-    const blob = new Blob([text], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = lastQuestion + '.md'; // Set the filename with .md extension for markdown files
-    a.click();
-    URL.revokeObjectURL(url);
+    if(ME && ME.current && ME.current.instance)   {
+      const text = await ME.current.instance.getDataMd(); // Assuming this function retrieves the markdown text
+      console.log("text", text);
+      if (!text) return;
+      const blob = new Blob([text], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = lastQuestion + '.md';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
   }
 
   const downloadXMind = async (lastQuestion: string) => {
-    const text = await ME.current.instance.getDataMd(); // Assuming this function retrieves the markdown text
-    console.log("text", text);
-    if (!text) return;
-    const blob = new Blob([text], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = lastQuestion + '.md'; // Set the filename with .md extension for markdown files
-    a.click();
-    URL.revokeObjectURL(url);
+    if(ME && ME.current && ME.current.instance)   {
+      const text = await ME.current.instance.exportXmindFile();
+      console.log("text", text);
+      if (!text) return;
+      const blob = new Blob([text], { type: 'blob' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = lastQuestion + '.md';
+      a.click();
+      URL.revokeObjectURL(url);
+    }
   }
   
   // ** Vars

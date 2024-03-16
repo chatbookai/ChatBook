@@ -32,7 +32,7 @@ const WebChatLeft = (props: any) => {
   const { t } = useTranslation()
 
   // ** Props
-  const { llms, hidden, setActiveId, chatId, webChat, webChatId } = props
+  const { hidden, setActiveId, webChat, webChatId } = props
 
   const [active, setActive] = useState<string>('')
 

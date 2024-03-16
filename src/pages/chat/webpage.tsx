@@ -14,62 +14,62 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Chat App Components Imports
 import WebChatLeft from 'src/views/form/WebChatLeft'
-import ChatContent from 'src/views/chat/Chat/ChatContent'
+
+import WebChatContent from 'src/views/chat/Chat/ChatContent'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
 import {
-  GetAllLLMS,
   ChatChatInit,
   ChatChatNameList,
   ChatChatInput,
   ChatChatOutput,
-  GetWebChatList
+  GetWebChatList,
+  CheckPermission
 } from 'src/functions/ChatBook'
 
 // ** Axios Imports
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
+import { useRouter } from 'next/router'
 
 const AppChat = () => {
   // ** Hook
   const { t } = useTranslation()
   const auth = useAuth()
+  const router = useRouter()
+  useEffect(() => {
+    CheckPermission(auth, router, false)
+  }, [])
 
-  const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
-  const [llms, setLlms] = useState<any>([])
-  const [chatId, setChatId] = useState<number | string>(-1)
-  const [chatName, setChatName] = useState<string>('')
+  const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
 
   const [webChat, setWebChat] = useState<any>([])
-  const [webChatId, setWebChatId] = useState<number | string>(-1)
+  const [webChatId, setWebChatId] = useState<number | string>(0)
   const [webChatName, setWebChatName] = useState<string>('')
-
-  const AllLLMS: any[] = GetAllLLMS()
-
-  useEffect(() => {
-    setLlms(AllLLMS)
-    setChatId(AllLLMS[0].id)
-    setChatName(AllLLMS[0].name)
-    getChatLogList(AllLLMS[0].id)
-    console.log('AllLLMS', AllLLMS)
-  }, [])
 
   const WebChatList: any[] = GetWebChatList()
 
   useEffect(() => {
+    // 当组件加载时获取聊天列表
     setWebChat(WebChatList)
     setWebChatId(WebChatList[0].id)
     setWebChatName(WebChatList[0].name)
-    console.log('WebChat', WebChatList)
+
+    // 清理函数：组件卸载时执行
+    return () => {
+      // 清空聊天内容和相关状态
+      setStore(null)
+      setWebChat([])
+    }
   }, [])
 
-  const getChatLogList = async function (knowledgeId: number | string) {
+  const getChatLogList = async function (webChatId: number | string) {
     if (auth && auth.user) {
       const RS = await axios
-        .get(authConfig.backEndApiChatBook + '/api/chatlog/' + knowledgeId + '/' + auth.user.id + '/0/90', {
+        .get(authConfig.backEndApiChatBook + '/api/chatlog/' + webChatId + '/' + auth.user.id + '/0/90', {
           headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' }
         })
         .then(res => res.data)
@@ -99,8 +99,8 @@ const AppChat = () => {
   }
 
   const setActiveId = function (Id: string, Name: string) {
-    setChatId(Id)
-    setChatName(Name)
+    setWebChatId(Id)
+    setWebChatName(Name)
     getChatLogList(Id)
     setRefreshChatCounter(refreshChatCounter + 1)
   }
@@ -116,7 +116,7 @@ const AppChat = () => {
     message: lastMessage,
     time: String(Date.now()),
     senderId: 999999,
-    knowledgeId: 0,
+    webChatId: 0,
     feedback: {
       isSent: true,
       isDelivered: false,
@@ -182,7 +182,7 @@ const AppChat = () => {
         Obj.message,
         auth.user.token,
         auth.user.id,
-        chatId,
+        webChatId,
         setLastMessage
       )
       if (ChatChatOutputStatus) {
@@ -221,17 +221,14 @@ const AppChat = () => {
         }}
       >
         <WebChatLeft
-          llms={llms}
           webChat={webChat}
           setActiveId={setActiveId}
           hidden={false}
-          chatId={chatId}
-          chatName={chatName}
           webChatId={webChatId}
           webChatName={webChatName}
         />
 
-        <ChatContent
+        <WebChatContent
           store={store}
           hidden={hidden}
           sendMsg={sendMsg}
@@ -241,8 +238,8 @@ const AppChat = () => {
           sendButtonLoading={sendButtonLoading}
           sendButtonText={sendButtonText}
           sendInputText={sendInputText}
-          chatId={chatId}
-          chatName={chatName}
+          chatId={webChatId}
+          chatName={webChatName}
           email={auth?.user?.email}
         />
       </Box>

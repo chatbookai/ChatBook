@@ -397,6 +397,12 @@ export function GetAllLLMById(id: string): any[] {
   return GetAllLLMSData.filter((Item: any) => Item.id == id)
 }
 
+export function GetWebChatById(id: string): any[] {
+  const GetWebChatListData = GetWebChatList()
+
+  return GetWebChatListData.filter((Item: any) => Item.id == id)
+}
+
 export function CheckPermission(auth: any, router: any, forcelogout: boolean) {
   const roleList = ['admin', 'user']
   console.log('auth.user.role', auth)

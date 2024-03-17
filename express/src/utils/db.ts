@@ -232,7 +232,10 @@ export async function initChatBookDb() {
                 avator TEXT not null,
                 author TEXT not null,
                 createDate TEXT not null,
-                status INTEGER not null default 1
+                status INTEGER not null default 1,
+                model TEXT not null default 'Gemini',
+                type INTEGER not null default 1,
+                userId TEXT not null
             );
         `);
     });

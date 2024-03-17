@@ -22,6 +22,10 @@ import TableBody from '@mui/material/TableBody'
 import TableContainer from '@mui/material/TableContainer'
 
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import InputLabel from '@mui/material/InputLabel'
+import FormControl from '@mui/material/FormControl'
 
 import { formatTimestamp } from 'src/configs/functions';
 import InputAdornment from '@mui/material/InputAdornment'
@@ -40,7 +44,7 @@ import toast from 'react-hot-toast'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 import { isMobile } from 'src/configs/functions'
-import { CheckPermission } from 'src/functions/ChatBook'
+import { CheckPermission, GetAllLLMS } from 'src/functions/ChatBook'
 
 const Agents = () => {
   // ** Hook
@@ -81,8 +85,8 @@ const Agents = () => {
 
   const columns: GridColDef[] = [
     {
-      flex: 0.1,
-      minWidth: 100,
+      flex: 0.05,
+      minWidth: 50,
       field: 'id',
       headerName: `${t(`id`)}`,
       sortable: false,
@@ -97,7 +101,7 @@ const Agents = () => {
       }
     },
     {
-      flex: 0.1,
+      flex: 0.2,
       minWidth: 100,
       field: 'title',
       headerName: `${t(`title`)}`,
@@ -113,7 +117,7 @@ const Agents = () => {
       }
     },
     {
-      flex: 0.3,
+      flex: 0.2,
       minWidth: 300,
       field: 'description',
       headerName: `${t(`description`)}`,
@@ -128,7 +132,7 @@ const Agents = () => {
       }
     },
     {
-      flex: 0.2,
+      flex: 0.1,
       minWidth: 200,
       field: 'tags',
       headerName: `${t(`tags`)}`,
@@ -143,8 +147,8 @@ const Agents = () => {
       }
     },
     {
-      flex: 0.2,
-      minWidth: 200,
+      flex: 0.15,
+      minWidth: 100,
       field: 'createDate',
       headerName: `${t(`createDate`)}`,
       sortable: false,
@@ -153,6 +157,36 @@ const Agents = () => {
         return (
           <Typography noWrap variant='body2' onClick={() => handleCellClick(row)}>
             {row.createDate}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.1,
+      minWidth: 100,
+      field: 'model',
+      headerName: `${t(`Model`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: any) => {
+        return (
+          <Typography noWrap variant='body2' onClick={() => handleCellClick(row)}>
+            {row.model}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.1,
+      minWidth: 100,
+      field: 'status',
+      headerName: `${t(`Status`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: any) => {
+        return (
+          <Typography noWrap variant='body2' onClick={() => handleCellClick(row)}>
+            {row.status}
           </Typography>
         )
       }
@@ -219,21 +253,33 @@ const Agents = () => {
     }
   }
 
-  const [author, setAuthor] = useState<string>("")
-  const [authorError, setAuthorError] = useState<string | null>(null)
-  const handleAuthorChange = (event: any) => {
-    setAuthor(event.target.value);
-    if(event.target.value == "") {
-        setAuthorError(`${t('This field cannot be empty')}`)
-    }
-    else {
-        setAuthorError("")
-    }
+  const [status, setStatus] = useState<string>("")
+  const handleStatusChange = (event: any) => {
+    setStatus(event.target.value);
+  }
+  const StatusList: any[] = []
+  StatusList.push({name: "Disable", id: 0})
+  StatusList.push({name: "Enable", id: 1})
+
+  const [modelValue, setModelValue] = useState<string>('Gemini')
+  const ModelList: any[] = []
+  const GetAllLLMSData = GetAllLLMS()
+  GetAllLLMSData.map((Item: any)=>{
+    ModelList.push({name: Item.name, id: Item.id})
+  })
+  const handleModelChange = (event: any) => {
+    setModelValue(event.target.value);
   }
 
   const handleCellClick = (value: any) => {
     setTitle(value.title)
     setDescription(value.description)
+    setStatus(value.status)
+    setAvator(value.avator)
+    setConfig(value.config)
+    setTags(value.tags)
+    setStatus(value.status)
+    setModelValue(value.model)
   }
 
   const handleSubmit = async () => {
@@ -253,11 +299,17 @@ const Agents = () => {
     }
 
     if (auth && auth.user) {
-      const PostParams = {title, description, tags, config, avator, author, createDate:''}
+      const PostParams = {title, description, tags, config, avator, status, model: modelValue, type: 1, author: ''}
       const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/addagent', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit:", FormSubmit)
       if(FormSubmit?.status == "ok") {
           toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
+          setTitle('')
+          setDescription('')
+          setStatus('')
+          setAvator('')
+          setConfig('')
+          setTags('')
       }
       else {
           toast.error(t(FormSubmit.msg) as string, { duration: 4000 })
@@ -296,7 +348,7 @@ const Agents = () => {
                         }}
                       >
                         <TableRow>
-                          <TableCell>
+                          <TableCell colSpan={2}>
                             <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
                               <TextField
                                   fullWidth
@@ -341,7 +393,7 @@ const Agents = () => {
                         </TableRow>
 
                         <TableRow>
-                          <TableCell colSpan={3}>
+                          <TableCell colSpan={4}>
                             <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
                               <TextField
                                   fullWidth
@@ -360,7 +412,7 @@ const Agents = () => {
                         </TableRow>
 
                         <TableRow>
-                          <TableCell colSpan={3}>
+                          <TableCell colSpan={4}>
                             <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
                               <TextField
                                   fullWidth
@@ -401,25 +453,37 @@ const Agents = () => {
                             </Typography>
                           </TableCell>
                           <TableCell>
-                            <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
-                              <TextField
-                                  fullWidth
-                                  label={`${t('Author')}`}
-                                  placeholder={`${t('Author')}`}
-                                  value={author}
-                                  onChange={handleAuthorChange}
-                                  InputProps={{
-                                      startAdornment: (
-                                          <InputAdornment position='start'>
-                                          <Icon icon='mdi:account-outline' />
-                                          </InputAdornment>
-                                      )
-                                  }}
-                                  size="small"
-                                  error={!!authorError}
-                                  helperText={authorError}
-                              />
-                            </Typography>
+                            
+                          <FormControl fullWidth>
+                            <InputLabel >{t('Status') as string}</InputLabel>
+                            <Select
+                              label={t('Status') as string}
+                              defaultValue={status}
+                              value={status}
+                              size="small"
+                              onChange={handleStatusChange}
+                            >
+                              {StatusList.map((Item: any, Index: number)=>{
+                                return (<MenuItem key={Index} value={Item.id}>{Item.name}</MenuItem>)                          
+                              })}
+                            </Select>
+                          </FormControl>
+                          </TableCell>
+                          <TableCell>
+                          <FormControl fullWidth>
+                            <InputLabel >{t('Model') as string}</InputLabel>
+                            <Select
+                              label={t('Model') as string}
+                              defaultValue={modelValue}
+                              value={modelValue}
+                              size="small"
+                              onChange={handleModelChange}
+                            >
+                              {ModelList.map((Item: any, Index: number)=>{
+                                return (<MenuItem key={Index} value={Item.id}>{Item.name}</MenuItem>)                          
+                              })}
+                            </Select>
+                          </FormControl>
                           </TableCell>
                           <TableCell>
                             <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
@@ -437,7 +501,6 @@ const Agents = () => {
               </Grid>
 
             </CardContent>
-
             <Divider />
             <DataGrid
               autoHeight

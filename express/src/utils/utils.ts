@@ -538,6 +538,18 @@ export function formatDateFromTimestamp(timestamp: number | string) {
   return formattedDate;
 }
 
+export function formatDate(timestamp: number | string) {
+  const date = new Date(timestamp);
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  const formattedDate = `${year}-${month}-${day}`;
+
+  return formattedDate;
+}
+
 export const isEmailValid = (email: string): boolean => {
   return validator.isEmail(email);
 };
@@ -659,7 +671,7 @@ export async function addAgent(Params: any) {
     Params.config = filterString(Params.config)
     Params.avator = filterString(Params.avator)
     Params.author = filterString(Params.author)
-    Params.createDate = filterString(Params.createDate)
+    Params.model = filterString(Params.model)
 
     const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT id from agents where title = ?", [Params.title]);
     const RecordId: number = Records ? Records.id : 0;
@@ -667,12 +679,13 @@ export async function addAgent(Params: any) {
     console.log("RecordId", RecordId, Params.userId)
     if(RecordId > 0) {
       Params.id = RecordId
-      setKnowledge(Params)
+      editAgent(Params)
       return {"status":"ok", "msg":"Updated Success"}
     }
     else {
-      const insertSetting = db.prepare('INSERT OR IGNORE INTO agents (title, description, tags, config, avator, author, createDate, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
-      insertSetting.run(Params.title, Params.description, Params.tags, Params.config, Params.avator, Params.author, Params.createDate, 1);
+      const formatDateValue = formatDate(Date.now())
+      const insertSetting = db.prepare('INSERT OR IGNORE INTO agents (title, description, tags, config, avator, author, createDate, status, model, type, userId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');formatDate
+      insertSetting.run(Params.title, Params.description, Params.tags, Params.config, Params.avator, Params.author, formatDateValue, 1, Params.model, 1, Params.userId);
       insertSetting.finalize();
       return {"status":"ok", "msg":"Add Success"}
     }
@@ -688,8 +701,9 @@ export async function editAgent(Params: any) {
     Params.id = Number(Params.id)
     Params.name = filterString(Params.name)
     Params.summary = filterString(Params.summary)
-    const updateSetting = db.prepare('update agents set title = ?, description = ?, tags = ?, config = ?, avator = ?, author = ? , createDate = ? where id = ?');
-    updateSetting.run(Params.title, Params.description, Params.tags, Params.config, Params.avator, Params.author, Params.createDate, Params.id);
+    const formatDateValue = formatDate(Date.now())
+    const updateSetting = db.prepare('update agents set title = ?, description = ?, tags = ?, config = ?, avator = ?, author = ?, createDate = ?, status = ?, model = ?, type = ? where id = ?');
+    updateSetting.run(Params.title, Params.description, Params.tags, Params.config, Params.avator, Params.author, formatDateValue, Params.status, Params.model, Params.type, Params.id);
     updateSetting.finalize();
   }
   catch (error: any) {

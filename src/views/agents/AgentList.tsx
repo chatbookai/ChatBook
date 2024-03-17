@@ -21,6 +21,8 @@ import CircularProgress from '@mui/material/CircularProgress'
 import FavoriteIcon from '@mui/icons-material/Favorite'
 import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
 import VisibilityIcon from '@mui/icons-material/Visibility'
+import TextField from '@mui/material/TextField'
+import InputAdornment from '@mui/material/InputAdornment'
 
 import Avatar from '@mui/material/Avatar'
 import axios from 'axios'
@@ -33,7 +35,7 @@ import { formatTimestamp } from 'src/configs/functions'
 
 import { useTranslation } from 'react-i18next'
 
-const ImagesList = (props: any) => {
+const AgentList = (props: any) => {
   // ** Hook
   const { t } = useTranslation()
   const auth = useAuth()
@@ -58,20 +60,8 @@ const ImagesList = (props: any) => {
   const [showImgData, setShowImgData] = useState<any>(null)
   const [myFavorite, setMyFavorite] = useState<any>({})
   const [favoriteCounter, setFavoriteCounter] = useState<any>({})
+  const [typeName, setTypeName] = useState<string>("")
 
-  useEffect(()=>{
-    if(imageList) {
-      setShowImg(imageList[0])
-    }
-    setMyFavorite({...favoriteList})
-    console.log("favoriteList********", favoriteList) 
-    console.log("myFavorite********", myFavorite) 
-    const favoriteCounterInitial: any = {}
-    imageList.map((item: any)=>{
-      favoriteCounterInitial[item.id] = item.favorite
-    })
-    setFavoriteCounter(favoriteCounterInitial)
-  }, [imageList, favoriteList])
 
   const handleImgInfo = (Index: number) => {
     setShow(true)
@@ -89,27 +79,14 @@ const ImagesList = (props: any) => {
       .catch(error => {
         console.log('Error downloading file:', error);
       });
-  };
+  }
 
-  const handleMyFavorite = async (id: number, status: boolean) => {
-    setMyFavorite((myFavorite: any) => {
-      const myFavoriteNew = { ...myFavorite };
-      myFavoriteNew[id] = status==true?1:-1;
+  const handleClickTypeFilter = (Item: string) => {
+    setTypeName(Item)
+  }
 
-      return myFavoriteNew;
-    });
-    setFavoriteCounter((favoriteCounter: any) => {
-      const favoriteCounterNew = { ...favoriteCounter };
-      favoriteCounterNew[id] += status==true?1:-1;
-
-      return favoriteCounterNew;
-    });
-    if(auth && auth.user)   {
-      const PostParams = {id, status: status==true?1:-1}
-      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/user/image/favorite', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
-      console.log("FormSubmit:", FormSubmit)
-    }
-  };
+  const TypeList = "写作,代码,软件开发,技术,英语,企业,研究,沟通,联网,前端,电子商务,人工智能,设计师,Typescript"
+  const TypeListArray = TypeList.split(',')
   
   const renderContent = () => {
       return (
@@ -118,86 +95,49 @@ const ImagesList = (props: any) => {
             <Card sx={{ px: 3, pt: 1}}>
               {true ? (
                 <Fragment>
-                  <Grid container spacing={2}>
+                  <Grid container spacing={2} sx={{ pt: 5, pl: 2}}>
+                    <TextField id='color-outlined' label={t('Search Agent') as string} size="small" fullWidth 
+                    InputProps={{
+                      startAdornment: (
+                        <InputAdornment position='start'>
+                          <Icon icon='mdi:search' />
+                        </InputAdornment>
+                      )
+                    }}/>
+                  </Grid>
+                  <Grid container spacing={2} sx={{ pt: 5, pl: 2}}>
+                    {TypeListArray.map((Item: string) => {
+
+                      return (<Button variant={typeName==Item?'contained':'outlined'} size="small" sx={{mr: 2}} onClick={()=>{handleClickTypeFilter(Item)}}>{Item}</Button>)                      
+                    })}
+                  </Grid>
+                  <Grid container spacing={2} sx={{ pt: 2}}>
                     {imageList && imageList.map((item: any, index: number) => (
                       <Grid item key={index} xs={12} sm={6} md={3} lg={3} sx={{mt: 2}}>
-                        <Box position="relative">
-                          <CardMedia image={`${authConfig.backEndApiChatBook}/api/image/${item.filename}`} sx={{ height: '13.25rem', objectFit: 'contain', borderRadius: 1, cursor: 'pointer' }} onClick={()=>handleImgInfo(index)}/>
-                          <Box position="absolute" top={0} left={0} m={1} px={0.8} bgcolor="rgba(0, 0, 0, 0.4)" borderRadius={1} color="white">
-                            <Typography variant="body2">Tool</Typography>
+                        <Box position="relative" sx={{mb: 1, mr: 1}}>
+                          <CardMedia image={`${authConfig.backEndApiChatBook}/images/pages/tree-cone-cube-bg-light.png`} sx={{ height: '13.25rem', objectFit: 'contain', borderRadius: 1, cursor: 'pointer' }} onClick={()=>handleImgInfo(index)}/>
+                          <Box position="absolute" top={10} left={5} m={1} px={0.8} borderRadius={1}>
+                            <Avatar src={"/images/avatars/1.png"} sx={{ mr: 3, width: 50, height: 50 }} />
                           </Box>
-                          <Box
-                            position="absolute"
-                            bottom={0}
-                            left={0}
-                            p={1}
-                            display="flex"
-                            alignItems="center"
-                          >
-                            <IconButton sx={{ color: 'white' }}>
-                              {myFavorite && myFavorite[Number(item.id)] == 1 ?
-                              <FavoriteIcon onClick={ ()=>handleMyFavorite(item.id, false) } />
-                              :
-                              <FavoriteBorderIcon onClick={ ()=>handleMyFavorite(item.id, true) } />
-                              }
-                            </IconButton>
-                            <Typography variant="body2" sx={{ color: 'white', ml: 1 }}>
-                              {favoriteCounter[Number(item.id)]}
-                            </Typography>
-                            <IconButton sx={{ color: 'white', ml: 2 }}>
-                              <VisibilityIcon />
-                            </IconButton>
-                            <Typography variant="body2" sx={{ color: 'white', ml: 1 }}>
-                              {item.view}
-                            </Typography>
-                          </Box>
-                        </Box>
-                        <CardContent>
-                          <Box
-                            key={index}
-                            sx={{
-                              display: 'flex',
-                              alignItems: 'center',
-                            }}
-                          >
-                            <Avatar src={"/images/avatars/1.png"} sx={{ mr: 3, width: 42, height: 42 }} />
-                            <Box
-                              sx={{
-                                width: '100%',
-                                display: 'flex',
-                                flexWrap: 'wrap',
-                                alignItems: 'center',
-                                justifyContent: 'space-between'
-                              }}
-                            >
-                              <Box sx={{ mr: 2, display: 'flex', mb: 0.4, flexDirection: 'column' }}>
-                                <Typography sx={{ 
+                          <Box position="absolute" top={70} left={5} m={1} px={0.8} borderRadius={1}>
+                            <Typography sx={{ 
                                   fontWeight: 500,
                                   lineHeight: 1.71,
                                   letterSpacing: '0.22px',
-                                  fontSize: '0.875rem !important',
+                                  fontSize: '1rem !important',
                                   maxWidth: '200px',
                                   overflow: 'hidden',
                                   textOverflow: 'ellipsis',
-                                  whiteSpace: 'nowrap' 
-                                  }} >
-                                  {item.prompt}
-                                </Typography>
-                                <Box
-                                  sx={{
-                                    display: 'flex',
-                                    alignItems: 'center',
-                                    '& svg': { mr: 1, color: 'text.secondary', verticalAlign: 'middle' }
-                                  }}
-                                >
-                                  <Icon fontSize='0.875rem' icon='mdi:user-outline' />
-                                  <Typography variant='caption'>{item.email.split('@')[0].slice(0, 18)}</Typography>
-                                  <Typography variant='caption' sx={{ml: 2}}>{JSON.parse(item.data)['width']}*{JSON.parse(item.data)['height']}</Typography>
-                                </Box>
-                              </Box>
-                            </Box>
+                                  whiteSpace: 'nowrap',
+                                  }} >{item.title}</Typography>
                           </Box>
-                        </CardContent>
+                          <Box position="absolute" top={100} left={5} m={1} px={0.8} borderRadius={1}>
+                            <Typography variant='caption'>{item.description}</Typography>
+                          </Box>
+                          <Box position="absolute" bottom={0} left={0} m={1} px={0.8} bgcolor="rgba(0, 0, 0, 0.35)" borderRadius={0.7} color="white" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '200px' }}>
+                            <Typography variant="body2" color="white">{item.tags}</Typography>
+                          </Box>
+                        </Box>
                       </Grid>
                     ))}
                   </Grid>
@@ -347,4 +287,4 @@ const ImagesList = (props: any) => {
   return renderContent()
 }
 
-export default ImagesList
+export default AgentList

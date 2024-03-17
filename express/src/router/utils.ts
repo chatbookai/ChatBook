@@ -4,7 +4,7 @@
 
   import { MenuListAdmin, MenuListUser } from '../utils/const';
   import { checkUserToken } from '../utils/user';
-  import { getLogsPage, getTemplate, getLLMSSetting, getFilesPage, getFilesKnowledgeId, getChatLogByKnowledgeIdAndUserId, addKnowledge, setOpenAISetting, setTemplate, getKnowledgePage, wholeSiteStatics, getAllImages, deleteUserLogByKnowledgeId, getAgentsPage, addAgent, editAgent } from '../utils/utils';
+  import { getLogsPage, getTemplate, getLLMSSetting, getFilesPage, getFilesKnowledgeId, getChatLogByKnowledgeIdAndUserId, addKnowledge, setOpenAISetting, setTemplate, getKnowledgePage, wholeSiteStatics, getAllImages, deleteUserLogByKnowledgeId, getAgentsPage, getAgentsEnabledList, addAgent, editAgent } from '../utils/utils';
 
   const app = express();
 
@@ -205,12 +205,26 @@
     res.status(200).json(generateimageData).end();
   });
 
+  app.get('/api/agentsall/:pageid/:pagesize', async (req: Request, res: Response) => {
+    const { pageid, pagesize } = req.params;
+    const { authorization } = req.headers;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin')) {
+        const getAgentsPageData: any = await getAgentsPage(Number(pageid), Number(pagesize));
+        res.status(200).json(getAgentsPageData);
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+    }
+    res.end();
+  });
+
   app.get('/api/agents/:pageid/:pagesize', async (req: Request, res: Response) => {
     const { pageid, pagesize } = req.params;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        const getAgentsPageData: any = await getAgentsPage(Number(pageid), Number(pagesize));
+        const getAgentsPageData: any = await getAgentsEnabledList(Number(pageid), Number(pagesize));
         res.status(200).json(getAgentsPageData);
     }
     else {

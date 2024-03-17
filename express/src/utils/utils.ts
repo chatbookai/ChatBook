@@ -662,6 +662,30 @@ export async function getAgentsPage(pageid: number, pagesize: number) {
   return RS;
 }
 
+
+export async function getAgentsEnabledList(pageid: number, pagesize: number) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+  const From = pageidFiler * pagesizeFiler;
+  console.log("pageidFiler", pageidFiler)
+  console.log("pagesizeFiler", pagesizeFiler)
+
+  
+  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from agents where status = 1");
+  const RecordsTotal: number = Records ? Records.NUM : 0;  
+  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from agents where status = 1 order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]) as any[];
+  
+  const RS: any = {};
+  RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
+  RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
+  RS['from'] = From;
+  RS['pageid'] = pageidFiler;
+  RS['pagesize'] = pagesizeFiler;
+  RS['total'] = RecordsTotal;
+
+  return RS;
+}
+
 export async function addAgent(Params: any) {
   try{
     console.log("ParamsParamsParamsParamsParams", Params)

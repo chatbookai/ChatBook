@@ -50,6 +50,7 @@ export async function setOpenAISetting(Params: any) {
     insertSetting.run('OPENAI_API_KEY', Params.OPENAI_API_KEY, 'openaisetting', knowledgeIdFilter, userIdFilter);
     insertSetting.run('Temperature', Params.Temperature, 'openaisetting', knowledgeIdFilter, userIdFilter);
     insertSetting.run('ModelName', Params.ModelName, 'openaisetting', knowledgeIdFilter, userIdFilter);
+    insertSetting.run('Prompt', Params.Prompt, 'openaisetting', knowledgeIdFilter, userIdFilter);
     insertSetting.finalize();
   }
   catch (error: any) {

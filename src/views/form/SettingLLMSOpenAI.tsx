@@ -92,6 +92,18 @@ const SettingForm = (props: any) => {
     }
   };
 
+  const [inputPrompt, setInputPrompt] = useState<string>("")
+  const [inputPromptError, setInputPromptError] = useState<string | null>(null)
+  const handleInputPromptChange = (event: any) => {
+    setInputPrompt(event.target.value);
+    if(event.target.value == "") {
+        setInputPromptError("")
+    }
+    else {
+        setInputPromptError("")
+    }
+  };
+
   const handleGetData = async () => {
     if(auth.user)   {
         const GetData: any = await axios.get(authConfig.backEndApiChatBook + '/api/getopenai/' + llmsId, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
@@ -100,6 +112,7 @@ const SettingForm = (props: any) => {
         setOpenApiKey(GetData?.OPENAI_API_KEY ?? '')
         setInputTemperature(GetData.Temperature ?? '0')
         setInputModelName(GetData.ModelName || 'gpt-3.5-turbo')
+        setInputPrompt(GetData.Prompt ?? '')
     }
   }
 
@@ -130,7 +143,7 @@ const SettingForm = (props: any) => {
         return
     }
     if(auth.user)   {
-        const PostParams = {OPENAI_API_BASE: openApiBase, OPENAI_API_KEY: openApiKey, ModelName: inputModelName, Temperature: inputTemperature, userId: userId, knowledgeId: llmsId }
+        const PostParams = {OPENAI_API_BASE: openApiBase, OPENAI_API_KEY: openApiKey, ModelName: inputModelName, Temperature: inputTemperature, userId: userId, knowledgeId: llmsId, Prompt: inputPrompt }
         const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/setopenai', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
         console.log("FormSubmit:", FormSubmit)
         if(FormSubmit?.status == "ok") {
@@ -223,6 +236,19 @@ const SettingForm = (props: any) => {
                         }}
                         error={!!inputModelNameError}
                         helperText={inputModelNameError}
+                    />
+                </Grid>
+                <Grid item xs={12}>
+                    <TextField
+                        fullWidth
+                        multiline
+                        rows={10}
+                        label={`${t('Prompt')}`}
+                        placeholder={`${t('Prompt')}`}
+                        value={inputPrompt}
+                        onChange={handleInputPromptChange}
+                        error={!!inputPromptError}
+                        helperText={inputPromptError}
                     />
                 </Grid>
 

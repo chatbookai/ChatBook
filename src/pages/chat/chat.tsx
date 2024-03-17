@@ -19,7 +19,7 @@ import ChatContent from 'src/views/chat/Chat/ChatContent'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
-import { GetAllLLMS, ChatChatInit, ChatChatNameList, ChatChatInput, ChatChatOutput, DeleteChatChat  } from 'src/functions/ChatBook'
+import { GetAllLLMS, ChatChatInit, ChatChatNameList, ChatChatInput, ChatChatOutput, DeleteChatChat, DeleteChatChatHistory  } from 'src/functions/ChatBook'
 
 // ** Axios Imports
 import axios from 'axios'
@@ -97,6 +97,7 @@ const AppChat = () => {
         "selectedChat": selectedChat
       }
       setStore(storeInit)
+      DeleteChatChatHistory(auth.user.id, chatId)
       await axios.get(authConfig.backEndApiChatBook + '/api/chatlog/clear/' + chatId + '/' + auth.user.id, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       setHistoryCounter(0)
     }

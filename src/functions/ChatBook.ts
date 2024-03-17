@@ -174,6 +174,13 @@ export function DeleteChatChat() {
     window.localStorage.setItem(ChatChat, JSON.stringify([]))
 }
 
+export function DeleteChatChatHistory(UserId: number, knowledgeId: number | string) {
+	const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
+    const ChatChatHistoryList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : {}
+    ChatChatHistoryList[UserId][knowledgeId] = []
+    window.localStorage.setItem(ChatChatHistory, JSON.stringify(ChatChatHistoryList))
+}
+
 export function ChatChatInit(MsgList: any) {
     const ChatLogList: any = []
     MsgList.map((Item: any)=>{

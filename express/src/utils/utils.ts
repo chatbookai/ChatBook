@@ -138,7 +138,6 @@ export async function addKnowledge(Params: any) {
   return {"status":"ok", "msg":"Updated Success"}
 }
 
-
 export async function setKnowledge(Params: any) {
   try{
     Params.id = Number(Params.id)
@@ -373,7 +372,7 @@ export async function getKnowledgePage(pageid: number, pagesize: number) {
   console.log("pagesizeFiler", pagesizeFiler)
 
   
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from knowledge where userId = ? ");
+  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from knowledge");
   const RecordsTotal: number = Records ? Records.NUM : 0;  
   const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from knowledge order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]) as any[];
   
@@ -626,4 +625,76 @@ export function removeDuplicates(words: string): string {
     }
   }
   return uniqueWords.join(',');
+}
+
+export async function getAgentsPage(pageid: number, pagesize: number) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+  const From = pageidFiler * pagesizeFiler;
+  console.log("pageidFiler", pageidFiler)
+  console.log("pagesizeFiler", pagesizeFiler)
+
+  
+  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from agents");
+  const RecordsTotal: number = Records ? Records.NUM : 0;  
+  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from agents order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]) as any[];
+  
+  const RS: any = {};
+  RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
+  RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
+  RS['from'] = From;
+  RS['pageid'] = pageidFiler;
+  RS['pagesize'] = pagesizeFiler;
+  RS['total'] = RecordsTotal;
+
+  return RS;
+}
+
+export async function addAgent(Params: any) {
+  try{
+    console.log("ParamsParamsParamsParamsParams", Params)
+    Params.title = filterString(Params.title)
+    Params.description = filterString(Params.description)
+    Params.tags = filterString(Params.tags)
+    Params.config = filterString(Params.config)
+    Params.avator = filterString(Params.avator)
+    Params.author = filterString(Params.author)
+    Params.createDate = filterString(Params.createDate)
+
+    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT id from agents where title = ?", [Params.title]);
+    const RecordId: number = Records ? Records.id : 0;
+
+    console.log("RecordId", RecordId, Params.userId)
+    if(RecordId > 0) {
+      Params.id = RecordId
+      setKnowledge(Params)
+      return {"status":"ok", "msg":"Updated Success"}
+    }
+    else {
+      const insertSetting = db.prepare('INSERT OR IGNORE INTO agents (title, description, tags, config, avator, author, createDate, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
+      insertSetting.run(Params.title, Params.description, Params.tags, Params.config, Params.avator, Params.author, Params.createDate, 1);
+      insertSetting.finalize();
+      return {"status":"ok", "msg":"Add Success"}
+    }
+  }
+  catch (error: any) {
+    log('Error setOpenAISetting:', error.message);
+    return {"status":"error", "msg":error.message}
+  }
+}
+
+export async function editAgent(Params: any) {
+  try{
+    Params.id = Number(Params.id)
+    Params.name = filterString(Params.name)
+    Params.summary = filterString(Params.summary)
+    const updateSetting = db.prepare('update agents set title = ?, description = ?, tags = ?, config = ?, avator = ?, author = ? , createDate = ? where id = ?');
+    updateSetting.run(Params.title, Params.description, Params.tags, Params.config, Params.avator, Params.author, Params.createDate, Params.id);
+    updateSetting.finalize();
+  }
+  catch (error: any) {
+    log('Error setOpenAISetting:', error.message);
+  }
+
+  return {"status":"ok", "msg":"Updated Success"}
 }

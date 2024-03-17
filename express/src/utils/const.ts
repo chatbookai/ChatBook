@@ -104,6 +104,11 @@ export const MenuListAdmin = [
     path: '/settings/llms'
   },
   {
+    title: 'Agents Setting',
+    icon: 'mingcute:openai-fill',
+    path: '/settings/agents'
+  },
+  {
     title: 'User Manage',
     icon: 'mdi:users',
     path: '/settings/users'

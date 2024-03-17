@@ -4,7 +4,7 @@
 
   import { MenuListAdmin, MenuListUser } from '../utils/const';
   import { checkUserToken } from '../utils/user';
-  import { getLogsPage, getTemplate, getLLMSSetting, getFilesPage, getFilesKnowledgeId, getChatLogByKnowledgeIdAndUserId, addKnowledge, setOpenAISetting, setTemplate, getKnowledgePage, wholeSiteStatics, getAllImages, deleteUserLogByKnowledgeId } from '../utils/utils';
+  import { getLogsPage, getTemplate, getLLMSSetting, getFilesPage, getFilesKnowledgeId, getChatLogByKnowledgeIdAndUserId, addKnowledge, setOpenAISetting, setTemplate, getKnowledgePage, wholeSiteStatics, getAllImages, deleteUserLogByKnowledgeId, getAgentsPage, addAgent, editAgent } from '../utils/utils';
 
   const app = express();
 
@@ -203,6 +203,62 @@
     const generateimageData = await getAllImages(checkUserTokenData?.data?.id, pageid, pagesize);
     //console.log("generateimageData", generateimageData);
     res.status(200).json(generateimageData).end();
+  });
+
+  app.get('/api/agents/:pageid/:pagesize', async (req: Request, res: Response) => {
+    const { pageid, pagesize } = req.params;
+    const { authorization } = req.headers;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
+        const getAgentsPageData: any = await getAgentsPage(Number(pageid), Number(pagesize));
+        res.status(200).json(getAgentsPageData);
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+    }
+    res.end();
+  });
+
+  app.post('/api/addagent', async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
+        console.log("checkUserTokenData addagent", checkUserTokenData)
+        const addAgentData: any = await addAgent({...req.body, userId: checkUserTokenData.data.id});
+        res.status(200).json(addAgentData);
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+    }
+    res.end();
+  });
+
+  app.post('/api/editagent', async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
+        console.log("checkUserTokenData editagent", checkUserTokenData)
+        const editAgentData: any = await editAgent({...req.body, userId: checkUserTokenData.data.id});
+        res.status(200).json(editAgentData);
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+    }
+    res.end();
+  });
+
+  app.post('/api/deleteagent', async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
+        console.log("checkUserTokenData deleteagent", checkUserTokenData)
+        const editAgentData: any = await editAgent({...req.body, userId: checkUserTokenData.data.id});
+        res.status(200).json(editAgentData);
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+    }
+    res.end();
   });
 
   export default app;

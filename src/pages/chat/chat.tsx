@@ -19,7 +19,7 @@ import ChatContent from 'src/views/chat/Chat/ChatContent'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
-import { GetAllLLMS, ChatChatInit, ChatChatNameList, ChatChatInput, ChatChatOutput  } from 'src/functions/ChatBook'
+import { GetAllLLMS, ChatChatInit, ChatChatNameList, ChatChatInput, ChatChatOutput, DeleteChatChat  } from 'src/functions/ChatBook'
 
 // ** Axios Imports
 import axios from 'axios'
@@ -36,6 +36,7 @@ const AppChat = () => {
   const [llms, setLlms] = useState<any>([])
   const [chatId, setChatId] = useState<number | string>(-1)
   const [chatName, setChatName] = useState<string>("")
+  const [historyCounter, setHistoryCounter] = useState<number>(0)
 
   const AllLLMS: any[] = GetAllLLMS()
 
@@ -52,6 +53,7 @@ const AppChat = () => {
       const RS = await axios.get(authConfig.backEndApiChatBook + '/api/chatlog/' + knowledgeId + '/' + auth.user.id + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       if(RS['data'])  {
         const ChatChatInitList = ChatChatInit(RS['data'].reverse())
+        setHistoryCounter(ChatChatInitList.length)
         const selectedChat = {
           "chat": {
               "id": 1,
@@ -74,6 +76,34 @@ const AppChat = () => {
     }
   }
 
+  const ClearButtonClick = async function () {
+    if (auth && auth.user) {
+      DeleteChatChat()
+      const selectedChat = {
+        "chat": {
+            "id": auth.user.id,
+            "userId": auth.user.id,
+            "unseenMsgs": 0,
+            "chat": []
+        }
+      }
+      const storeInit = {
+        "chats": [],
+        "userProfile": {
+            "id": auth.user.id,
+            "avatar": "/images/avatars/1.png",
+            "fullName": "Current User",
+        },
+        "selectedChat": selectedChat
+      }
+      setStore(storeInit)
+      await axios.get(authConfig.backEndApiChatBook + '/api/chatlog/clear/' + chatId + '/' + auth.user.id, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      setHistoryCounter(0)
+    }
+  }
+
+
+  
   const setActiveId = function (Id: string, Name: string) {
     setChatId(Id)
     setChatName(Name)
@@ -137,6 +167,7 @@ const AppChat = () => {
         "selectedChat": selectedChat
       }
       setStore(storeInit)
+      setHistoryCounter(ChatChatList.length)
     }
     else {
       setSendButtonDisable(true)
@@ -169,7 +200,7 @@ const AppChat = () => {
         setSendButtonLoading(false)
         setRefreshChatCounter(refreshChatCounter + 2)
         setSendButtonText(t("Send") as string)
-        setSendInputText(t("Your message...") as string)  
+        setSendInputText(t("Your message...") as string)
       }
     }
   }
@@ -219,6 +250,9 @@ const AppChat = () => {
         chatId={chatId}
         chatName={chatName}
         email={auth?.user?.email}
+        ClearButtonClick={ClearButtonClick}
+        ClearButtonName={t('Clear')}
+        historyCounter={historyCounter}
       />
       </Box>
     </Fragment>

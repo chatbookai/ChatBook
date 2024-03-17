@@ -170,6 +170,10 @@ export function DeleteChatChatName(Id: number) {
     window.localStorage.setItem(ChatChatName, JSON.stringify(ChatChatList))
 }
 
+export function DeleteChatChat() {
+    window.localStorage.setItem(ChatChat, JSON.stringify([]))
+}
+
 export function ChatChatInit(MsgList: any) {
     const ChatLogList: any = []
     MsgList.map((Item: any)=>{

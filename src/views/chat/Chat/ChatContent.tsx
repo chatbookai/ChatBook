@@ -7,6 +7,7 @@ import MuiAvatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -14,7 +15,6 @@ import Icon from 'src/@core/components/icon'
 // ** Custom Components Import
 import ChatLog from './ChatLog'
 import SendMsgForm from 'src/views/chat/Knowledge/SendMsgForm'
-import OptionsMenu from 'src/@core/components/option-menu'
 
 import { GetAllLLMById } from 'src/functions/ChatBook'
 
@@ -30,7 +30,10 @@ const ChatContent = (props: any) => {
     sendButtonText,
     sendInputText,
     chatId,
-    chatName
+    chatName,
+    ClearButtonClick,
+    ClearButtonName,
+    historyCounter
   } = props
 
   const LLMS = GetAllLLMById(chatId)
@@ -117,12 +120,7 @@ const ChatContent = (props: any) => {
                     <Fragment>
                     </Fragment>
                   ) : null}
-                  <OptionsMenu
-                    menuProps={{ sx: { mt: 2 } }}
-                    icon={<Icon icon='mdi:dots-vertical' fontSize='1.25rem' />}
-                    iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-                    options={['View Contact', 'Mute Notifications', 'Block Contact', 'Clear Chat', 'Report']}
-                  />
+                  <Button onClick={()=>ClearButtonClick()} disabled={historyCounter==0?true:false}>{ClearButtonName}({historyCounter})</Button>
                 </Box>
               </Box>
 

@@ -221,7 +221,20 @@ export async function initChatBookDb() {
                 status INTEGER not null default 0,
                 createtime INTEGER not null default 0
             );
-        `); 
+        `);
+        db.run(`
+            CREATE TABLE IF NOT EXISTS agents (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                title TEXT KEY not null,
+                description TEXT not null,
+                tags TEXT not null,
+                config TEXT not null,
+                avator TEXT not null,
+                author TEXT not null,
+                createDate TEXT not null,
+                status INTEGER not null default 1
+            );
+        `);
     });
 }
 

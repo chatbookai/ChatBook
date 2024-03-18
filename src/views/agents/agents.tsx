@@ -8,7 +8,6 @@ import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
 
-
 const AppChat = () => {
 
   // ** Hook
@@ -16,12 +15,11 @@ const AppChat = () => {
   
   const [pageid, setPageid] = useState<number>(0)
   const [loadingAllData, setLoadingAllData] = useState<boolean>(false)
-  const [imageList, setImageList] = useState<any[]>([])
+  const [agentList, setAgentList] = useState<any[]>([])
   const [favoriteList, setFavoriteList] = useState<any[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [loadingText, setLoadingText] = useState<string>('Loading')
 
-  
   useEffect(() => {
     getAgentList()
   }, [])
@@ -33,16 +31,15 @@ const AppChat = () => {
       const RS = await axios.get(authConfig.backEndApiChatBook + '/api/agents/' + pageid + '/' + pagesize, {
         headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
       }).then(res => res.data);
-      console.log("RS.data", RS.data)
       if(RS && RS.data) {
-        const imageListInitial: string[] = []
+        const agentListInitial: string[] = []
         RS.data.map((Item: any)=>{
-          imageListInitial.push(Item)
+          agentListInitial.push(Item)
         })
         if(RS.data.length < pagesize) {
           setLoadingAllData(true)
         }
-        setImageList([...imageList, ...imageListInitial].filter((element) => element != null))
+        setAgentList([...agentList, ...agentListInitial].filter((element) => element != null))
         setFavoriteList(RS.favorite)
       }
       const timer = setTimeout(() => {
@@ -78,11 +75,11 @@ const AppChat = () => {
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
-  }, [imageList]); 
+  }, [agentList]); 
 
   return (
     <Fragment>
-      <AgentList imageList={imageList} favoriteList={favoriteList} loading={loading} loadingText={loadingText} />
+      <AgentList agentList={agentList} favoriteList={favoriteList} loading={loading} loadingText={loadingText} />
     </Fragment>
   )
 }

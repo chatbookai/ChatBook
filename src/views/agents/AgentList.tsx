@@ -1,6 +1,6 @@
 // ** React Imports
-import { Fragment, Ref, useState, forwardRef, ReactElement, useEffect } from 'react'
-import { saveAs } from 'file-saver';
+import { Fragment, useState } from 'react'
+import ReactMarkdown from 'react-markdown'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -10,28 +10,19 @@ import Button from '@mui/material/Button'
 import CardMedia from '@mui/material/CardMedia'
 import authConfig from 'src/configs/auth'
 import Dialog from '@mui/material/Dialog'
-import IconButton from '@mui/material/IconButton'
-import Typography from '@mui/material/Typography'
-import Fade, { FadeProps } from '@mui/material/Fade'
 import DialogContent from '@mui/material/DialogContent'
-import Divider from '@mui/material/Divider'
-import Container from '@mui/material/Container'
-import CardContent from '@mui/material/CardContent'
-import CircularProgress from '@mui/material/CircularProgress'
-import FavoriteIcon from '@mui/icons-material/Favorite'
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
-import VisibilityIcon from '@mui/icons-material/Visibility'
-import TextField from '@mui/material/TextField'
 import InputAdornment from '@mui/material/InputAdornment'
+import Drawer from '@mui/material/Drawer'
+import Typography from '@mui/material/Typography'
+import TextField from '@mui/material/TextField'
 
 import Avatar from '@mui/material/Avatar'
-import axios from 'axios'
 import { useAuth } from 'src/hooks/useAuth'
+import Container from '@mui/material/Container'
+import CircularProgress from '@mui/material/CircularProgress'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
-
-import { formatTimestamp } from 'src/configs/functions'
 
 import { useTranslation } from 'react-i18next'
 
@@ -42,47 +33,23 @@ const AgentList = (props: any) => {
 
   // ** Props
   const {
-    imageList,
-    favoriteList,
+    agentList,
     loading,
     loadingText
   } = props
 
-  const Transition = forwardRef(function Transition(
-    props: FadeProps & { children?: ReactElement<any, any> },
-    ref: Ref<unknown>
-  ) {
-    return <Fade ref={ref} {...props} />
-  })
-
-  const [show, setShow] = useState<boolean>(true)
-  const [showImg, setShowImg] = useState<any>(null)
-  const [showImgData, setShowImgData] = useState<any>(null)
-  const [myFavorite, setMyFavorite] = useState<any>({})
-  const [favoriteCounter, setFavoriteCounter] = useState<any>({})
+  const [show, setShow] = useState<boolean>(false)
   const [typeName, setTypeName] = useState<string>("")
+  const [agent, setAgent] = useState<any>({})
 
-
-  const handleImgInfo = (Index: number) => {
+  const handleImgInfo = (item: any) => {
     setShow(true)
-    setShowImg(imageList[Index])
-    const data = JSON.parse(imageList[Index].data)
-    setShowImgData(data)
-  }
-
-  const handleDownload = (DownloadUrl: string, FileName: string) => {
-    fetch(DownloadUrl)
-      .then(response => response.blob())
-      .then(blob => {
-        saveAs(blob, FileName);
-      })
-      .catch(error => {
-        console.log('Error downloading file:', error);
-      });
+    setAgent(item)
   }
 
   const handleClickTypeFilter = (Item: string) => {
     setTypeName(Item)
+    console.log("auth", auth)
   }
 
   const TypeList = "写作,代码,软件开发,技术,英语,企业,研究,沟通,联网,前端,电子商务,人工智能,设计师,Typescript"
@@ -105,21 +72,21 @@ const AgentList = (props: any) => {
                       )
                     }}/>
                   </Grid>
-                  <Grid container spacing={2} sx={{ pt: 5, pl: 2}}>
-                    {TypeListArray.map((Item: string) => {
+                  <Grid container spacing={2} sx={{ pt: 3, pl: 2}}>
+                    {TypeListArray.map((Item: string, index: number) => {
 
-                      return (<Button variant={typeName==Item?'contained':'outlined'} size="small" sx={{mr: 2}} onClick={()=>{handleClickTypeFilter(Item)}}>{Item}</Button>)                      
+                      return (<Button key={index} variant={typeName==Item?'contained':'outlined'} size="small" sx={{mr: 2, mt: 2}} onClick={()=>{handleClickTypeFilter(Item)}}>{Item}</Button>)                      
                     })}
                   </Grid>
                   <Grid container spacing={2} sx={{ pt: 2}}>
-                    {imageList && imageList.map((item: any, index: number) => (
+                    {agentList && agentList.map((item: any, index: number) => (
                       <Grid item key={index} xs={12} sm={6} md={3} lg={3} sx={{mt: 2}}>
                         <Box position="relative" sx={{mb: 1, mr: 1}}>
-                          <CardMedia image={`${authConfig.backEndApiChatBook}/images/pages/tree-cone-cube-bg-light.png`} sx={{ height: '13.25rem', objectFit: 'contain', borderRadius: 1, cursor: 'pointer' }} onClick={()=>handleImgInfo(index)}/>
-                          <Box position="absolute" top={10} left={5} m={1} px={0.8} borderRadius={1}>
+                          <CardMedia image={`${authConfig.backEndApiChatBook}/images/pages/tree-cone-cube-bg-light.png`} sx={{ height: '13.25rem', objectFit: 'contain', borderRadius: 1, cursor: 'pointer' }} onClick={()=>handleImgInfo(item)}/>
+                          <Box position="absolute" top={10} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)}>
                             <Avatar src={"/images/avatars/1.png"} sx={{ mr: 3, width: 50, height: 50 }} />
                           </Box>
-                          <Box position="absolute" top={70} left={5} m={1} px={0.8} borderRadius={1}>
+                          <Box position="absolute" top={70} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)}>
                             <Typography sx={{ 
                                   fontWeight: 500,
                                   lineHeight: 1.71,
@@ -131,7 +98,7 @@ const AgentList = (props: any) => {
                                   whiteSpace: 'nowrap',
                                   }} >{item.title}</Typography>
                           </Box>
-                          <Box position="absolute" top={100} left={5} m={1} px={0.8} borderRadius={1}>
+                          <Box position="absolute" top={100} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)}>
                             <Typography variant='caption'>{item.description}</Typography>
                           </Box>
                           <Box position="absolute" bottom={0} left={0} m={1} px={0.8} bgcolor="rgba(0, 0, 0, 0.35)" borderRadius={0.7} color="white" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '200px' }}>
@@ -146,117 +113,64 @@ const AgentList = (props: any) => {
                 <Fragment></Fragment>
               )}
             </Card>
-            {showImg && show && showImgData ?
-            <Dialog
-              fullWidth
+            {show && agent ?
+            <Drawer
               open={show}
-              scroll='body'
-              maxWidth='lg'
+              anchor='right'
               onClose={() => setShow(false)}
-              TransitionComponent={Transition}
-              onBackdropClick={() => setShow(false)}
-            >
-              <DialogContent sx={{ px: { xs: 8, sm: 15 }, py: { xs: 8, sm: 12.5 }, position: 'relative' }}>
-                <IconButton
-                  size='small'
-                  onClick={() => setShow(false)}
-                  sx={{ position: 'absolute', right: '1rem', top: '1rem' }}
-                >
-                  <Icon icon='mdi:close' />
-                </IconButton>                
-                <Container>
-                  <Grid container spacing={2}>
-                    <Grid item xs={8}>
-                        <CardMedia image={`${authConfig.backEndApiChatBook}/api/image/${showImg?.filename}`} sx={{ width: '700px',height: Math.floor(showImgData.width*700/showImgData.height) + 'px', objectFit: 'contain', borderRadius: 1 }}/>
-                        <Button variant='outlined' sx={{ mt: 3, mr: 3 }} size="small" onClick={()=>handleDownload(authConfig.backEndApiChatBook + '/api/imageorigin/' + showImg?.filename, showImg?.filename + '.png')} >{t('Download') as string}</Button>
-                    </Grid>
-                    <Grid item xs={4}>
-                      <Grid sx={{ height: '100%', px: 4 }}>
-                        <Typography variant="h5" sx={{ marginBottom: 2 }}>
-                          {t('Image Information') as string}
-                        </Typography>
-                        <Grid container spacing={2}>
-                          <Grid item xs={12}>
-                            <Typography variant="body1">
-                              <strong>{t('Prompt') as string}:</strong>
-                            </Typography>
-                            <Typography variant="body1">
-                              {showImg.prompt}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={12}>
-                            <Typography variant="body1">
-                              <strong>{t('Negative Prompt') as string}:</strong>
-                            </Typography>
-                            <Typography variant="body1">
-                              {showImg.negative_prompt || '　'}
-                            </Typography>
-                          </Grid>
-                          <Divider sx={{ mt: '0 !important' }} />
-                          <Grid item xs={6}>
-                            <Typography variant="body1">
-                              <strong>{t('Size') as string}:</strong>
-                            </Typography>
-                            <Typography variant="body1">
-                              {showImgData.width} * {showImgData.height}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={6}>
-                            <Typography variant="body1">
-                              <strong>{t('CFG Scale') as string}:</strong>
-                            </Typography>
-                            <Typography variant="body1">
-                              {showImgData.cfg_scale}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={6}>
-                            <Typography variant="body1">
-                              <strong>{t('Steps') as string}:</strong>
-                            </Typography>
-                            <Typography variant="body1">
-                              {showImgData.steps}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={6}>
-                            <Typography variant="body1">
-                              <strong>{t('Seed') as string}:</strong>
-                            </Typography>
-                            <Typography variant="body1">
-                              {showImgData.seed}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={6}>
-                            <Typography variant="body1">
-                              <strong>{t('Style Preset') as string}: </strong>
-                            </Typography>
-                            <Typography variant="body1">
-                              {showImgData.style_preset}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={6}>
-                            <Typography variant="body1">
-                              <strong>{t('AI Model') as string}: </strong>
-                            </Typography>
-                            <Typography variant="body1">
-                              {showImg.model}
-                            </Typography>
-                          </Grid>
-                          <Grid item xs={12}>
-                            <Typography variant="body1">
-                              <strong>{t('Created') as string}: </strong>
-                            </Typography>
-                            <Typography variant="body1">
-                              {formatTimestamp(showImg.createtime)}
-                            </Typography>
-                          </Grid>
-                          
+              ModalProps={{ keepMounted: true }}
+              sx={{ '& .MuiDrawer-paper': { width: [300, 400] } }}
+            >              
+              <Container>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    <Grid sx={{ height: '100%', px: 4 }}>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                        <Box
+                          position="relative"
+                          sx={{
+                            mt: 6, // 设置顶部边距
+                            display: 'flex',
+                            justifyContent: 'center', // 水平居中
+                            alignItems: 'center', // 垂直居中
+                          }}
+                        >
+                          <Avatar src={"/images/avatars/1.png"} sx={{ width: 100, height: 100 }} />
+                        </Box>
+                        </Grid>
+
+                        <Grid item xs={12}>
+                          <Typography variant="body1" sx={{ mb: 2, fontWeight: 'bold', textAlign: 'center' }}>
+                            {agent.title}
+                          </Typography>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Typography variant="body2" sx={{mb: 2}}>
+                            {agent.description}
+                          </Typography>
+                          <Button variant={'contained'} size="small" sx={{mb: 2}} fullWidth>添加助手并会话</Button>
+                          <Button variant={'outlined'} size="small" sx={{mb: 2}} fullWidth>添加助手</Button>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Typography
+                          sx={{
+                            boxShadow: 1,
+                            borderRadius: 1,
+                            width: 'fit-content',
+                            fontSize: '0.875rem',
+                            p: theme => theme.spacing(2, 4),
+                          }}
+                          >
+                            <ReactMarkdown>{agent.config.replace('\n', '  \n')}</ReactMarkdown>
+                          </Typography>
                         </Grid>
                       </Grid>
                     </Grid>
                   </Grid>
-                </Container>
-              </DialogContent>
-            </Dialog>
+                </Grid>
+              </Container>
+            </Drawer>
             :
             null}
             {loading ?

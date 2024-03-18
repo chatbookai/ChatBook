@@ -21,10 +21,9 @@ import WebChatContent from 'src/views/chat/Chat/ChatContent'
 import { useTranslation } from 'react-i18next'
 
 import {
-  ChatChatInit,
-  ChatChatNameList,
-  ChatChatInput,
-  ChatChatOutput,
+  ChatWebPageInit,
+  ChatWebPageInput,
+  ChatWebPageOutput,
   GetWebChatList,
   CheckPermission
 } from 'src/functions/ChatBook'
@@ -47,7 +46,7 @@ const AppChat = () => {
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
 
   const [webChat, setWebChat] = useState<any>([])
-  const [webChatId, setWebChatId] = useState<number | string>(0)
+  const [webChatId, setWebChatId] = useState<number>(0)
   const [webChatName, setWebChatName] = useState<string>('')
 
   const WebChatList: any[] = GetWebChatList()
@@ -74,14 +73,14 @@ const AppChat = () => {
         })
         .then(res => res.data)
       if (RS['data']) {
-        const ChatChatInitList = ChatChatInit(RS['data'].reverse())
-        console.log('ChatChatInitList**************', ChatChatInitList)
+        const ChatWebPageInitList = ChatWebPageInit(RS['data'].reverse())
+        console.log('ChatWebPageInitList**************', ChatWebPageInitList)
         const selectedChat = {
           chat: {
             id: 1,
             userId: auth.user.id,
             unseenMsgs: 0,
-            chat: ChatChatInitList
+            chat: ChatWebPageInitList
           }
         }
         const storeInit = {
@@ -98,7 +97,7 @@ const AppChat = () => {
     }
   }
 
-  const setActiveId = function (Id: string, Name: string) {
+  const setActiveId = function (Id: number, Name: string) {
     setWebChatId(Id)
     setWebChatName(Name)
     getChatLogList(Id)
@@ -131,7 +130,7 @@ const AppChat = () => {
 
   useEffect(() => {
     if (auth.user && auth.user.id) {
-      const ChatChatText = window.localStorage.getItem('ChatChat')
+      const ChatChatText = window.localStorage.getItem('ChatWebPage')
       const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
       if (lastMessage && lastMessage != '') {
         ChatChatList.push(lastChat)
@@ -162,7 +161,7 @@ const AppChat = () => {
   }, [refreshChatCounter, lastMessage, auth])
 
   useEffect(() => {
-    const ChatChatNameListData: string[] = ChatChatNameList()
+    const ChatChatNameListData: string[] = GetWebChatList()
     if (ChatChatNameListData.length == 0) {
       setRefreshChatCounter(refreshChatCounter + 1)
     }
@@ -176,9 +175,9 @@ const AppChat = () => {
       setSendButtonLoading(true)
       setSendButtonText(t('Sending') as string)
       setSendInputText(t('Generating the answer...') as string)
-      ChatChatInput(Obj.message, auth.user.id)
+      ChatWebPageInput(Obj.message, auth.user.id, webChatId)
       setRefreshChatCounter(refreshChatCounter + 1)
-      const ChatChatOutputStatus = await ChatChatOutput(
+      const ChatChatOutputStatus = await ChatWebPageOutput(
         Obj.message,
         auth.user.token,
         auth.user.id,

@@ -80,8 +80,8 @@ Baidu Wenxin
     2 后端: NextJS, Severless
     3 前端: React, NextJS, MUI
 
-# 🚀 交流群组
-- QQ群: 186411255
+## 🚀 交流群组
+    QQ群: 186411255
 
 
 <!-- LINK GROUP -->

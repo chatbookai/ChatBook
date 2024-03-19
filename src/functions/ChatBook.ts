@@ -86,14 +86,14 @@ export function ChatKnowledgeInput(Message: string, UserId: number, knowledgeId:
   window.localStorage.setItem(ChatKnowledge, JSON.stringify(ChatKnowledgeList))
 }
 
-export function ChatWebPageInput(Message: string, UserId: number, knowledgeId: number) {
+export function ChatWebPageInput(Message: string, UserId: number, ChatWebPageId: number) {
   const ChatWebPageText = window.localStorage.getItem(ChatWebPage)
   const ChatWebPageList = ChatWebPageText ? JSON.parse(ChatWebPageText) : []
   ChatWebPageList.push({
     message: Message,
     time: String(Date.now()),
     senderId: UserId,
-    knowledgeId: knowledgeId,
+    ChatWebPageId: ChatWebPageId,
     feedback: {
       isSent: true,
       isDelivered: true,
@@ -207,7 +207,8 @@ export async function ChatWebPageOutput(
     }
     if (responseText) {
       console.log('OpenAI Response:', responseText)
-      ChatWebPageInput(responseText, 999999, knowledgeId)
+      ChatWebPageInput(responseText, 999999, WebChatId)
+      ChatWebPageHistoryInput(Message, responseText, UserId, WebChatId)
 
       return true
     } else {
@@ -242,6 +243,28 @@ export function ChatKnowledgeHistoryInput(question: string, answer: string, User
   }
   console.log('ChatKnowledgeHistoryList', ChatKnowledgeHistoryList)
   window.localStorage.setItem(ChatKnowledgeHistory, JSON.stringify(ChatKnowledgeHistoryList))
+}
+
+// chat history input ,将聊天交互的历史记录保存到本地存储
+export function ChatWebPageHistoryInput(question: string, answer: string, UserId: number, WebChatId: number) {
+  const ChatWebPageHistoryText = window.localStorage.getItem(ChatWebPageHistory)
+  const ChatWebPageHistoryList = ChatWebPageHistoryText ? JSON.parse(ChatWebPageHistoryText) : {}
+
+  if (!ChatWebPageHistoryList[UserId]) {
+    ChatWebPageHistoryList[UserId] = {}
+  }
+
+  if (!ChatWebPageHistoryList[UserId][WebChatId]) {
+    ChatWebPageHistoryList[UserId][WebChatId] = []
+  }
+
+  ChatWebPageHistoryList[UserId][WebChatId].push({
+    question: question,
+    time: String(Date.now()),
+    answer: answer
+  })
+
+  window.localStorage.setItem(ChatWebPageHistory, JSON.stringify(ChatWebPageHistoryList))
 }
 
 export function ChatChatList() {

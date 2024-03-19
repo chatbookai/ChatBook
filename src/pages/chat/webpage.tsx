@@ -15,7 +15,7 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 // ** Chat App Components Imports
 import WebChatLeft from 'src/views/form/WebChatLeft'
 
-import WebChatContent from 'src/views/chat/Chat/ChatContent'
+import WebChatContent from 'src/views/chat/Chat/WebChatContent'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
@@ -65,7 +65,7 @@ const AppChat = () => {
     }
   }, [])
 
-  const getChatLogList = async function (webChatId: number | string) {
+  const getChatLogList = async function (webChatId: number) {
     if (auth && auth.user) {
       const RS = await axios
         .get(authConfig.backEndApiChatBook + '/api/chatlog/' + webChatId + '/' + auth.user.id + '/0/90', {
@@ -130,17 +130,17 @@ const AppChat = () => {
 
   useEffect(() => {
     if (auth.user && auth.user.id) {
-      const ChatChatText = window.localStorage.getItem('ChatWebPage')
-      const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
+      const ChatWebText = window.localStorage.getItem('ChatWebPage')
+      const ChatWebList = ChatWebText ? JSON.parse(ChatWebText) : []
       if (lastMessage && lastMessage != '') {
-        ChatChatList.push(lastChat)
+        ChatWebList.push(lastChat)
       }
       const selectedChat = {
         chat: {
           id: auth.user.id,
           userId: auth.user.id,
           unseenMsgs: 0,
-          chat: ChatChatList
+          chat: ChatWebList
         }
       }
       const storeInit = {

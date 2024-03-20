@@ -44,7 +44,8 @@ const AgentList = (props: any) => {
     addOrDeleteUserAgentText1,
     addOrDeleteUserAgentText2,
     TypeList,
-    handleTypeFilter
+    handleTypeFilter,
+    handleSearchFilter
   } = props
 
   const [typeName, setTypeName] = useState<string>("")
@@ -58,6 +59,13 @@ const AgentList = (props: any) => {
     setTypeName(Item)
     handleTypeFilter(Item)
   }
+
+  const handleKeyPress = (event: any) => {
+    if (event.key === 'Enter') {
+    }
+    setTypeName("ALL")
+    handleSearchFilter(event.target.value)
+  };
 
   const TypeListArray = TypeList.split(',')
   
@@ -77,6 +85,7 @@ const AgentList = (props: any) => {
                         </InputAdornment>
                       )
                     }}
+                    onChange={handleKeyPress}
                     />
                   </Grid>
                   <Grid container spacing={2} sx={{ pt: 3, pl: 2}}>

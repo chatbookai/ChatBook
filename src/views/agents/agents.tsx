@@ -31,7 +31,7 @@ const AppChat = () => {
   const [type, setType] = useState<string>("ALL")
   const [search, setSearch] = useState<string>("ALL")
 
-  const TypeList = "写作,代码,软件开发,技术,英语,企业,研究,沟通,联网,前端,电子商务,人工智能,设计师,Typescript"
+  const TypeList = "全部,写作,代码,软件开发,技术,英语,企业,研究,沟通,联网,前端,电子商务,人工智能,设计师,Typescript"
 
   useEffect(() => {
     getAgentList(type, search)
@@ -43,6 +43,14 @@ const AppChat = () => {
     setLoadingAllData(false)
     setAgentList([])
     setType(Item)
+  }
+
+  const handleSearchFilter = async function (Item: string) {
+    setPageid(0)
+    setLoadingAllData(false)
+    setAgentList([])
+    setType("ALL")
+    setSearch(Item)
   }
 
   const getAgentList = async function (type: string, search: string) {
@@ -177,7 +185,7 @@ const AppChat = () => {
 
   return (
     <Fragment>
-      <AgentList agentList={agentList} favoriteList={favoriteList} loading={loading} loadingText={loadingText} agent={agent} setAgent={setAgent} show={show} setShow={setShow} handelUserAgentAction={handelUserAgentAction} addOrDeleteUserAgentText1={addOrDeleteUserAgentText1} addOrDeleteUserAgentText2={addOrDeleteUserAgentText2} TypeList={TypeList} handleTypeFilter={handleTypeFilter} />
+      <AgentList agentList={agentList} favoriteList={favoriteList} loading={loading} loadingText={loadingText} agent={agent} setAgent={setAgent} show={show} setShow={setShow} handelUserAgentAction={handelUserAgentAction} addOrDeleteUserAgentText1={addOrDeleteUserAgentText1} addOrDeleteUserAgentText2={addOrDeleteUserAgentText2} TypeList={TypeList} handleTypeFilter={handleTypeFilter} handleSearchFilter={handleSearchFilter}/>
     </Fragment>
   )
 }

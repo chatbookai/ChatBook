@@ -15,9 +15,9 @@ import InputAdornment from '@mui/material/InputAdornment'
 import Drawer from '@mui/material/Drawer'
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
+import IconButton from '@mui/material/IconButton'
 
 import Avatar from '@mui/material/Avatar'
-import { useAuth } from 'src/hooks/useAuth'
 import Container from '@mui/material/Container'
 import CircularProgress from '@mui/material/CircularProgress'
 
@@ -29,7 +29,6 @@ import { useTranslation } from 'react-i18next'
 const AgentList = (props: any) => {
   // ** Hook
   const { t } = useTranslation()
-  const auth = useAuth()
 
   // ** Props
   const {
@@ -40,12 +39,13 @@ const AgentList = (props: any) => {
     setAgent,
     show,
     setShow,
-    handelUserAgentAction,
-    addOrDeleteUserAgentText1,
-    addOrDeleteUserAgentText2,
+    handelAddUserAgentAndChat,
+    handelAddUserAgent,
+    handelCancelUserAgent,
     TypeList,
     handleTypeFilter,
-    handleSearchFilter
+    handleSearchFilter,
+    userAgents
   } = props
 
   const [typeName, setTypeName] = useState<string>("")
@@ -68,6 +68,9 @@ const AgentList = (props: any) => {
   };
 
   const TypeListArray = TypeList.split(',')
+
+  console.log("userAgents", userAgents)
+  console.log("agent", agent)
   
   const renderContent = () => {
       return (
@@ -102,6 +105,14 @@ const AgentList = (props: any) => {
                           <Box position="absolute" top={10} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)} sx={{ cursor: 'pointer' }}>
                             <Avatar src={"/images/avatars/1.png"} sx={{ mr: 3, width: 50, height: 50 }} />
                           </Box>
+                          {userAgents && item && item.id && userAgents.includes(item.id) ?
+                          <Box position="absolute" top={0} right={0} m={1} px={0.8} borderRadius={1} sx={{ cursor: 'pointer' }}>
+                            <IconButton aria-label='capture screenshot' onClick={()=>{handelCancelUserAgent()}}>
+                              <Icon icon='mdi:delete-outline' />
+                            </IconButton>
+                          </Box>
+                          :
+                          null}
                           <Box position="absolute" top={70} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)} sx={{ cursor: 'pointer' }}>
                             <Typography sx={{ 
                                   fontWeight: 500,
@@ -189,11 +200,14 @@ const AgentList = (props: any) => {
                           <Typography variant="body2" sx={{mb: 2}}>
                             {agent.description}
                           </Typography>
-                          <Button variant={'contained'} size="small" sx={{mb: 2}} fullWidth onClick={()=>{handelUserAgentAction(1)}}>{addOrDeleteUserAgentText1}</Button>
-                          {addOrDeleteUserAgentText2 ? 
-                          <Button variant={'outlined'} size="small" sx={{mb: 2}} fullWidth onClick={()=>{handelUserAgentAction(2)}}>{addOrDeleteUserAgentText2}</Button>
+                          {userAgents && agent && agent.id && userAgents.includes(agent.id) ?
+                          <Button variant={'contained'} size="small" sx={{mb: 2}} fullWidth onClick={()=>{handelCancelUserAgent()}}>{t('Cancel Agent')}</Button>
                           :
-                          null}
+                          <Fragment>
+                            <Button variant={'contained'} size="small" sx={{mb: 2}} fullWidth onClick={()=>{handelAddUserAgentAndChat()}}>{t('Add Agent And Chat')}</Button>
+                            <Button variant={'outlined'} size="small" sx={{mb: 2}} fullWidth onClick={()=>{handelAddUserAgent()}}>{t('Add Agent')}</Button>
+                          </Fragment>
+                          }
                         </Grid>
                         <Grid item xs={12}>
                           <Typography

@@ -25,8 +25,6 @@ const AppChat = () => {
   const [loadingText, setLoadingText] = useState<string>('Loading')
   const [agent, setAgent] = useState<any>(null)
   const [userAgents, setUserAgents] = useState<number[]>([])
-  const [addOrDeleteUserAgentText1, setAddOrDeleteUserAgentText1] = useState<string>('添加助手并会话')
-  const [addOrDeleteUserAgentText2, setAddOrDeleteUserAgentText2] = useState<string | null>('添加助手')
   
   const [type, setType] = useState<string>("ALL")
   const [search, setSearch] = useState<string>("ALL")
@@ -132,25 +130,20 @@ const AppChat = () => {
     }
   }
 
-  const handelUserAgentAction  = async function (action: number) {
-    if(userAgents.includes(agent.id)) {
-      deleteUserAgent()
-      setAddOrDeleteUserAgentText1("添加助手并会话")
-      setAddOrDeleteUserAgentText2("添加助手")
-      setShow(false)
-    }
-    else {
-      addUserAgent()
-      setAddOrDeleteUserAgentText1("取消关注")
-      setAddOrDeleteUserAgentText2(null)
-      setShow(false)
+  const handelAddUserAgentAndChat  = async function () {
+    addUserAgent()
+    setShow(false)
+    console.log("打开会话")
+  }
 
-      //Open Chat
-      if(action == 1) {
-        console.log("addOrDeleteUserAgentText1", addOrDeleteUserAgentText1)
-        console.log("打开会话")
-      }
-    }
+  const handelAddUserAgent  = async function () {
+    addUserAgent()
+    setShow(false)
+  }
+
+  const handelCancelUserAgent  = async function () {
+    deleteUserAgent()
+    setShow(false)
   }
 
   const getUserAgents = async function () {
@@ -185,7 +178,7 @@ const AppChat = () => {
 
   return (
     <Fragment>
-      <AgentList agentList={agentList} favoriteList={favoriteList} loading={loading} loadingText={loadingText} agent={agent} setAgent={setAgent} show={show} setShow={setShow} handelUserAgentAction={handelUserAgentAction} addOrDeleteUserAgentText1={addOrDeleteUserAgentText1} addOrDeleteUserAgentText2={addOrDeleteUserAgentText2} TypeList={TypeList} handleTypeFilter={handleTypeFilter} handleSearchFilter={handleSearchFilter}/>
+      <AgentList agentList={agentList} favoriteList={favoriteList} loading={loading} loadingText={loadingText} agent={agent} setAgent={setAgent} show={show} setShow={setShow} handelAddUserAgentAndChat={handelAddUserAgentAndChat} handelAddUserAgent={handelAddUserAgent} handelCancelUserAgent={handelCancelUserAgent} TypeList={TypeList} handleTypeFilter={handleTypeFilter} handleSearchFilter={handleSearchFilter} userAgents={userAgents}/>
     </Fragment>
   )
 }

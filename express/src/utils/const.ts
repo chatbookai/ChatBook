@@ -51,7 +51,7 @@ export const MenuListAdmin = [
     path: '/chat/mindmap'
   },
   {
-    title: 'Agents',
+    title: 'Agents Square',
     icon: 'mdi:account-box-multiple-outline',
     path: '/agents'
   },
@@ -157,7 +157,7 @@ export const MenuListUser = [
     path: '/chat/mindmap'
   },
   {
-    title: 'Agents',
+    title: 'Agents Square',
     icon: 'mdi:account-box-multiple-outline',
     path: '/agents'
   },

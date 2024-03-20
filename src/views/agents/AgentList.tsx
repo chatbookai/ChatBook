@@ -76,7 +76,8 @@ const AgentList = (props: any) => {
                           <Icon icon='mdi:search' />
                         </InputAdornment>
                       )
-                    }}/>
+                    }}
+                    />
                   </Grid>
                   <Grid container spacing={2} sx={{ pt: 3, pl: 2}}>
                     {TypeListArray.map((Item: string, index: number) => {

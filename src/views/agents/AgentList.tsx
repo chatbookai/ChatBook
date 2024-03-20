@@ -42,7 +42,9 @@ const AgentList = (props: any) => {
     setShow,
     handelUserAgentAction,
     addOrDeleteUserAgentText1,
-    addOrDeleteUserAgentText2
+    addOrDeleteUserAgentText2,
+    TypeList,
+    handleTypeFilter
   } = props
 
   const [typeName, setTypeName] = useState<string>("")
@@ -54,10 +56,9 @@ const AgentList = (props: any) => {
 
   const handleClickTypeFilter = (Item: string) => {
     setTypeName(Item)
-    console.log("auth", auth)
+    handleTypeFilter(Item)
   }
 
-  const TypeList = "写作,代码,软件开发,技术,英语,企业,研究,沟通,联网,前端,电子商务,人工智能,设计师,Typescript"
   const TypeListArray = TypeList.split(',')
   
   const renderContent = () => {
@@ -83,9 +84,9 @@ const AgentList = (props: any) => {
                       return (<Button key={index} variant={typeName==Item?'contained':'outlined'} size="small" sx={{mr: 2, mt: 2}} onClick={()=>{handleClickTypeFilter(Item)}}>{Item}</Button>)                      
                     })}
                   </Grid>
-                  <Grid container spacing={2} sx={{ pt: 2}}>
+                  <Grid container spacing={2} sx={{ mt: 2, mb: 2}}>
                     {agentList && agentList.map((item: any, index: number) => (
-                      <Grid item key={index} xs={12} sm={6} md={3} lg={3} sx={{mt: 2}}>
+                      <Grid item key={index} xs={12} sm={6} md={3} lg={3}>
                         <Box position="relative" sx={{mb: 1, mr: 1}}>
                           <CardMedia image={`${authConfig.backEndApiChatBook}/images/pages/tree-cone-cube-bg-light.png`} sx={{ height: '13.25rem', objectFit: 'contain', borderRadius: 1 }}/>
                           <Box position="absolute" top={10} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)} sx={{ cursor: 'pointer' }}>
@@ -103,7 +104,14 @@ const AgentList = (props: any) => {
                                   whiteSpace: 'nowrap',
                                   }} >{item.title}</Typography>
                           </Box>
-                          <Box position="absolute" top={100} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)} sx={{ cursor: 'pointer' }}>
+                          <Box position="absolute" top={100} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)} 
+                            sx={{ 
+                              cursor: 'pointer',
+                              overflow: 'hidden',
+                              display: '-webkit-box',
+                              WebkitLineClamp: 4,
+                              WebkitBoxOrient: 'vertical',
+                            }}>
                             <Typography variant='caption'>{item.description}</Typography>
                           </Box>
                           <Box position="absolute" bottom={0} left={1} m={1} px={0.8} bgcolor="rgba(0, 0, 0, 0.35)" borderRadius={0.7} color="white" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '200px' }}>

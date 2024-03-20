@@ -663,17 +663,35 @@ export async function getAgentsPage(pageid: number, pagesize: number) {
 }
 
 
-export async function getAgentsEnabledList(pageid: number, pagesize: number) {
+export async function getAgentsEnabledList(pageid: number, pagesize: number, type: string, search: string) {
   const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
   const From = pageidFiler * pagesizeFiler;
   console.log("pageidFiler", pageidFiler)
   console.log("pagesizeFiler", pagesizeFiler)
+  console.log("type", type)
+  console.log("search", search)
 
   
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from agents where status = 1");
-  const RecordsTotal: number = Records ? Records.NUM : 0;  
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from agents where status = 1 order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]) as any[];
+  let Records: any = null;
+  let RecordsTotal: number = Records ? Records.NUM : 0;  
+  let RecordsAll: any[] = [];
+  if(type != "ALL" && type != "全部") {
+    Records = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from agents where status = 1 and tags like ?", [`%${type}%`]);
+    RecordsTotal = Records ? Records.NUM : 0;  
+    RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from agents where status = 1 and tags like ? order by id desc limit ? OFFSET ? `, [`%${type}%`, pagesizeFiler, From]) as any[];
+    console.log("RecordsAll", RecordsAll, type, search)
+  }
+  else if(search != "ALL" && search != "全部") {
+    Records = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from agents where status = 1 and title like ?", [`%${search}%`]);
+    RecordsTotal = Records ? Records.NUM : 0;  
+    RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from agents where status = 1 and title like ? order by id desc limit ? OFFSET ? `, [`%${search}%`, pagesizeFiler, From]) as any[];
+  }
+  else {
+    Records = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from agents where status = 1");
+    RecordsTotal = Records ? Records.NUM : 0;  
+    RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from agents where status = 1 order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]) as any[];
+  }
   
   const RS: any = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);

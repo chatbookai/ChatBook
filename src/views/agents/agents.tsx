@@ -27,17 +27,30 @@ const AppChat = () => {
   const [userAgents, setUserAgents] = useState<number[]>([])
   const [addOrDeleteUserAgentText1, setAddOrDeleteUserAgentText1] = useState<string>('添加助手并会话')
   const [addOrDeleteUserAgentText2, setAddOrDeleteUserAgentText2] = useState<string | null>('添加助手')
+  
+  const [type, setType] = useState<string>("ALL")
+  const [search, setSearch] = useState<string>("ALL")
+
+  const TypeList = "写作,代码,软件开发,技术,英语,企业,研究,沟通,联网,前端,电子商务,人工智能,设计师,Typescript"
 
   useEffect(() => {
-    getAgentList()
-    getUserAgents()
-  }, [])
+    getAgentList(type, search)
+    getUserAgents()    
+  }, [type, search])
 
-  const getAgentList = async function () {
+  const handleTypeFilter = async function (Item: string) {
+    setPageid(0)
+    setLoadingAllData(false)
+    setAgentList([])
+    setType(Item)
+  }
+
+  const getAgentList = async function (type: string, search: string) {
+    console.log("loadingAllData", loadingAllData)
     if(loadingAllData == false)  {
       const pagesize = 20
       setLoading(true)
-      const RS = await axios.get(authConfig.backEndApiChatBook + '/api/agents/' + pageid + '/' + pagesize, {
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/agents/' + pageid + '/' + pagesize, {type, search},  {
         headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
       }).then(res => res.data);
       if(RS && RS.data) {
@@ -45,7 +58,7 @@ const AppChat = () => {
         RS.data.map((Item: any)=>{
           agentListInitial.push(Item)
         })
-        if(RS.data.length < pagesize) {
+        if(RS.data.length < pagesize && pageid > 0) {
           setLoadingAllData(true)
         }
         setAgentList([...agentList, ...agentListInitial].filter((element) => element != null))
@@ -152,7 +165,7 @@ const AppChat = () => {
     const handleScroll = () => {
       if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight) return;
       setPageid(pageid + 1)
-      getAgentList();
+      getAgentList(type, search);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -164,7 +177,7 @@ const AppChat = () => {
 
   return (
     <Fragment>
-      <AgentList agentList={agentList} favoriteList={favoriteList} loading={loading} loadingText={loadingText} agent={agent} setAgent={setAgent} show={show} setShow={setShow} handelUserAgentAction={handelUserAgentAction} addOrDeleteUserAgentText1={addOrDeleteUserAgentText1} addOrDeleteUserAgentText2={addOrDeleteUserAgentText2}/>
+      <AgentList agentList={agentList} favoriteList={favoriteList} loading={loading} loadingText={loadingText} agent={agent} setAgent={setAgent} show={show} setShow={setShow} handelUserAgentAction={handelUserAgentAction} addOrDeleteUserAgentText1={addOrDeleteUserAgentText1} addOrDeleteUserAgentText2={addOrDeleteUserAgentText2} TypeList={TypeList} handleTypeFilter={handleTypeFilter} />
     </Fragment>
   )
 }

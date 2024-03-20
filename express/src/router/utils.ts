@@ -219,12 +219,13 @@
     res.end();
   });
 
-  app.get('/api/agents/:pageid/:pagesize', async (req: Request, res: Response) => {
+  app.post('/api/agents/:pageid/:pagesize', async (req: Request, res: Response) => {
     const { pageid, pagesize } = req.params;
     const { authorization } = req.headers;
+    const { type, search } = req.body;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        const getAgentsPageData: any = await getAgentsEnabledList(Number(pageid), Number(pagesize));
+        const getAgentsPageData: any = await getAgentsEnabledList(Number(pageid), Number(pagesize), type, search);
         res.status(200).json(getAgentsPageData);
     }
     else {

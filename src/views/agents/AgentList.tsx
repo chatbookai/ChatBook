@@ -121,6 +121,23 @@ const AgentList = (props: any) => {
                         </Box>
                       </Grid>
                     ))}
+                    {agentList && agentList.length == 0 ?
+                    <Grid 
+                      item 
+                      key='0' 
+                      xs={12}
+                      sx={{
+                        textAlign: 'center',
+                        marginTop: '1rem',
+                        fontSize: '1.2rem',
+                        fontWeight: 'bold',
+                        color: 'gray',
+                      }}
+                    >
+                      <Typography variant="body1">{t('No Data')}</Typography>
+                    </Grid>
+                    :
+                    null}
                   </Grid>
                 </Fragment>
               ) : (

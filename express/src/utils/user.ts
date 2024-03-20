@@ -446,3 +446,57 @@
       return {"status":"error", "msg":"Token is invalid in changeUserDetail"}
     }
   }
+  
+
+  export async function addUserAgent(token: string, data: any) {
+    console.log("data", data)
+    const checkUserTokenData: any = await checkUserToken(token);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user' && data && data.agentId)) {
+      console.log("addUserAgent", checkUserTokenData)
+      const insertUser = db.prepare('INSERT OR REPLACE INTO useragents (userId, agentId, createtime) VALUES (?, ?, ?)');
+      insertUser.run(checkUserTokenData.data.id, data.agentId, Date.now());
+      insertUser.finalize();
+      return {"status":"ok", "msg":"Add agent successful"}
+    }
+    else {
+      return {"status":"error", "msg":"Token is invalid in addUserAgent"}
+    }
+  }
+
+  export async function deleteUserAgent(token: string, data: any) {
+    console.log("data", data)
+    const checkUserTokenData: any = await checkUserToken(token);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user' && data && data.agentId)) {
+      console.log("addUserAgent", checkUserTokenData)
+      const commitSql = db.prepare('delete from useragents where userId = ? and agentId = ?');
+      commitSql.run(checkUserTokenData.data.id, data.agentId);
+      commitSql.finalize();
+      return {"status":"ok", "msg":"Cancel agent successful"}
+    }
+    else {
+      return {"status":"error", "msg":"Token is invalid in addUserAgent"}
+    }
+  }
+
+  export async function getUserAgents(userId: string, pageid: number, pagesize: number) {
+    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+    const From = pageidFiler * pagesizeFiler;
+    console.log("pageidFiler", pageidFiler)
+    console.log("pagesizeFiler", pagesizeFiler)
+
+    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from useragents where userId = ? ", [userId]);
+    const RecordsTotal: number = Records ? Records.NUM : 0;
+
+    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * FROM useragents WHERE userId = ? ORDER BY id DESC LIMIT ? OFFSET ? `, [userId, pagesizeFiler, From]) || [];
+
+    const RS: any = {};
+    RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
+    RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
+    RS['from'] = From;
+    RS['pageid'] = pageidFiler;
+    RS['pagesize'] = pagesizeFiler;
+    RS['total'] = RecordsTotal;
+  
+    return RS;
+  }

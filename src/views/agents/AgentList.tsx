@@ -35,12 +35,17 @@ const AgentList = (props: any) => {
   const {
     agentList,
     loading,
-    loadingText
+    loadingText,
+    agent,
+    setAgent,
+    show,
+    setShow,
+    handelUserAgentAction,
+    addOrDeleteUserAgentText1,
+    addOrDeleteUserAgentText2
   } = props
 
-  const [show, setShow] = useState<boolean>(false)
   const [typeName, setTypeName] = useState<string>("")
-  const [agent, setAgent] = useState<any>({})
 
   const handleImgInfo = (item: any) => {
     setShow(true)
@@ -82,11 +87,11 @@ const AgentList = (props: any) => {
                     {agentList && agentList.map((item: any, index: number) => (
                       <Grid item key={index} xs={12} sm={6} md={3} lg={3} sx={{mt: 2}}>
                         <Box position="relative" sx={{mb: 1, mr: 1}}>
-                          <CardMedia image={`${authConfig.backEndApiChatBook}/images/pages/tree-cone-cube-bg-light.png`} sx={{ height: '13.25rem', objectFit: 'contain', borderRadius: 1, cursor: 'pointer' }} onClick={()=>handleImgInfo(item)}/>
-                          <Box position="absolute" top={10} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)}>
+                          <CardMedia image={`${authConfig.backEndApiChatBook}/images/pages/tree-cone-cube-bg-light.png`} sx={{ height: '13.25rem', objectFit: 'contain', borderRadius: 1 }}/>
+                          <Box position="absolute" top={10} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)} sx={{ cursor: 'pointer' }}>
                             <Avatar src={"/images/avatars/1.png"} sx={{ mr: 3, width: 50, height: 50 }} />
                           </Box>
-                          <Box position="absolute" top={70} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)}>
+                          <Box position="absolute" top={70} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)} sx={{ cursor: 'pointer' }}>
                             <Typography sx={{ 
                                   fontWeight: 500,
                                   lineHeight: 1.71,
@@ -98,10 +103,10 @@ const AgentList = (props: any) => {
                                   whiteSpace: 'nowrap',
                                   }} >{item.title}</Typography>
                           </Box>
-                          <Box position="absolute" top={100} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)}>
+                          <Box position="absolute" top={100} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)} sx={{ cursor: 'pointer' }}>
                             <Typography variant='caption'>{item.description}</Typography>
                           </Box>
-                          <Box position="absolute" bottom={0} left={0} m={1} px={0.8} bgcolor="rgba(0, 0, 0, 0.35)" borderRadius={0.7} color="white" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '200px' }}>
+                          <Box position="absolute" bottom={0} left={1} m={1} px={0.8} bgcolor="rgba(0, 0, 0, 0.35)" borderRadius={0.7} color="white" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '200px' }}>
                             <Typography variant="body2" color="white">{item.tags}</Typography>
                           </Box>
                         </Box>
@@ -149,8 +154,11 @@ const AgentList = (props: any) => {
                           <Typography variant="body2" sx={{mb: 2}}>
                             {agent.description}
                           </Typography>
-                          <Button variant={'contained'} size="small" sx={{mb: 2}} fullWidth>添加助手并会话</Button>
-                          <Button variant={'outlined'} size="small" sx={{mb: 2}} fullWidth>添加助手</Button>
+                          <Button variant={'contained'} size="small" sx={{mb: 2}} fullWidth onClick={()=>{handelUserAgentAction(1)}}>{addOrDeleteUserAgentText1}</Button>
+                          {addOrDeleteUserAgentText2 ? 
+                          <Button variant={'outlined'} size="small" sx={{mb: 2}} fullWidth onClick={()=>{handelUserAgentAction(2)}}>{addOrDeleteUserAgentText2}</Button>
+                          :
+                          null}
                         </Grid>
                         <Grid item xs={12}>
                           <Typography

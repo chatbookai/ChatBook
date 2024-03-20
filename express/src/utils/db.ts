@@ -238,6 +238,15 @@ export async function initChatBookDb() {
                 userId TEXT not null
             );
         `);
+        db.run(`
+            CREATE TABLE IF NOT EXISTS useragents (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                userId INTEGER not null default 0,
+                agentId INTEGER not null default 0,
+                createtime INTEGER not null default 0,
+                UNIQUE(userId, agentId)
+            );
+        `);
     });
 }
 

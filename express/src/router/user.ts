@@ -1,7 +1,7 @@
   // app.ts
   import express, { Request, Response, NextFunction } from 'express';
 
-  import { checkUserPassword, registerUser, changeUserPasswordByToken, changeUserDetail, changeUserStatus, checkUserToken, getUsers, getUserLogsAll, getUserLogs, getOneUserByToken, updateUserImageFavorite, updateUserVideoFavorite, refreshUserToken } from '../utils/user';
+  import { checkUserPassword, registerUser, changeUserPasswordByToken, changeUserDetail, changeUserStatus, checkUserToken, getUsers, getUserLogsAll, getUserLogs, getOneUserByToken, updateUserImageFavorite, updateUserVideoFavorite, refreshUserToken, addUserAgent, deleteUserAgent, getUserAgents } from '../utils/user';
 
   const app = express();
 
@@ -114,6 +114,34 @@
     const { authorization } = req.headers;
     const updateUserVideoFavoriteData = await updateUserVideoFavorite(authorization as string, req.body);
     res.status(200).json(updateUserVideoFavoriteData);
+    res.end();
+  });
+
+  app.post('/api/user/agent/add', async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const addUserAgentData = await addUserAgent(authorization as string, req.body);
+    res.status(200).json(addUserAgentData);
+    res.end();
+  });
+
+  app.post('/api/user/agent/delete', async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const deleteUserAgentData = await deleteUserAgent(authorization as string, req.body);
+    res.status(200).json(deleteUserAgentData);
+    res.end();
+  });
+
+  app.post('/api/user/agents', async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const { pageid, pagesize } = req.body;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
+        const getUserAgentsData = await getUserAgents(checkUserTokenData.data.id, Number(pageid), Number(pagesize));
+        res.status(200).json(getUserAgentsData);
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+    }
     res.end();
   });
   

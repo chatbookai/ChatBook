@@ -86,7 +86,7 @@ export function ChatKnowledgeInput(Message: string, UserId: number, knowledgeId:
   window.localStorage.setItem(ChatKnowledge, JSON.stringify(ChatKnowledgeList))
 }
 
-export function ChatWebPageInput(Message: string, UserId: number, ChatWebPageId: number) {
+export function ChatWebPageInput(Message: string, UserId: number, ChatWebPageId: number | string) {
   const ChatWebPageText = window.localStorage.getItem(ChatWebPage)
   const ChatWebPageList = ChatWebPageText ? JSON.parse(ChatWebPageText) : []
   ChatWebPageList.push({
@@ -166,7 +166,7 @@ export async function ChatWebPageOutput(
   Message: string,
   Token: string,
   UserId: number,
-  WebChatId: number,
+  WebChatId: number | string,
   setLastMessage: any
 ) {
   const ChatWebPageHistoryText = window.localStorage.getItem(ChatWebPageHistory)
@@ -182,13 +182,13 @@ export async function ChatWebPageOutput(
   }
   try {
     setLastMessage('')
-    const response = await fetch(authConfig.backEndApiChatBook + `/api/ChatOpenaiWebPage`, {
+    const response = await fetch(authConfig.backEndApiChatBook + `/api/ChatOpenaiKnowledge`, {
       method: 'POST',
       headers: {
         Authorization: Token,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ question: Message, history: History, WebChatId: WebChatId })
+      body: JSON.stringify({ question: Message, history: History, WebChatId: 1 })
     })
     if (!response.body) {
       throw new Error('Response body is not readable as a stream')
@@ -246,7 +246,7 @@ export function ChatKnowledgeHistoryInput(question: string, answer: string, User
 }
 
 // chat history input ,将聊天交互的历史记录保存到本地存储
-export function ChatWebPageHistoryInput(question: string, answer: string, UserId: number, WebChatId: number) {
+export function ChatWebPageHistoryInput(question: string, answer: string, UserId: number, WebChatId: number | string) {
   const ChatWebPageHistoryText = window.localStorage.getItem(ChatWebPageHistory)
   const ChatWebPageHistoryList = ChatWebPageHistoryText ? JSON.parse(ChatWebPageHistoryText) : {}
 

@@ -46,7 +46,7 @@ const AppChat = () => {
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
 
   const [webChat, setWebChat] = useState<any>([])
-  const [webChatId, setWebChatId] = useState<number>(0)
+  const [webChatId, setWebChatId] = useState<number | string>(0)
   const [webChatName, setWebChatName] = useState<string>('')
 
   const WebChatList: any[] = GetWebChatList()
@@ -65,7 +65,7 @@ const AppChat = () => {
     }
   }, [])
 
-  const getChatLogList = async function (webChatId: number) {
+  const getChatLogList = async function (webChatId: number | string) {
     if (auth && auth.user) {
       const RS = await axios
         .get(authConfig.backEndApiChatBook + '/api/chatlog/' + webChatId + '/' + auth.user.id + '/0/90', {
@@ -97,7 +97,9 @@ const AppChat = () => {
     }
   }
 
-  const setActiveId = function (Id: number, Name: string) {
+  // 接受从子组件中传递回来的数据 来改变当前的聊天对象
+
+  const setActiveId = function (Id: number | string, Name: string) {
     setWebChatId(Id)
     setWebChatName(Name)
     getChatLogList(Id)

@@ -13,7 +13,7 @@ import { StatusObjType } from 'src/types/apps/chatTypes'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Chat App Components Imports
-import LLMSLeft from 'src/views/form/LLMSLeft'
+import Left from 'src/views/chat/Chat/Left'
 import ChatContent from 'src/views/chat/Chat/ChatContent'
 
 // ** Third Party Import
@@ -231,7 +231,7 @@ const AppChat = () => {
         ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
       }}
     >
-      <LLMSLeft
+      <Left
         llms={llms}
         setActiveId={setActiveId}
         hidden={false}

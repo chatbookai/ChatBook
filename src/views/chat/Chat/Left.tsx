@@ -1,5 +1,5 @@
 // ** React Imports
-import { ReactNode } from 'react'
+import { useState, ReactNode, useEffect } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -27,40 +27,48 @@ const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: bool
   }
 }
 
-
-const ChatLeft = (props: any) => {
+const Left = (props: any) => {
   // ** Hook
   const { t } = useTranslation()
 
   // ** Props
   const {
-    chatList,
+    llms,
     hidden,
-    setActiveId
+    setActiveId,
+    chatId
   } = props
 
-  const handleChatClick = (id: number, name: string) => {
+  const [active, setActive] = useState<string>('')
+
+  const handleChatClick = (id: string, name: string) => {
     setActiveId(id, name)
+    setActive(id)
   }
 
-  const renderChats = () => {
-    if (chatList && chatList.length) {
+  useEffect(() => {
+    setActive(chatId)
+  }, [chatId])
 
-      return chatList.map((Item: any, index: number) => {
-        const activeCondition = false
+  const renderChats = () => {
+      return llms.map((Item: any, index: number) => {
+        const activeCondition = active === Item.id
 
         return (
           <ListItem key={index} disablePadding sx={{ '&:not(:last-child)': { mb: 1.5 } }}>
             <ListItemButton
               disableRipple
-              onClick={() => handleChatClick(index, Item)}
+              onClick={() => handleChatClick(Item.id, Item.name)}
               sx={{
                 px: 3,
                 py: 2.5,
                 width: '100%',
                 borderRadius: 1,
                 alignItems: 'flex-start',
-                
+                ...(activeCondition && {
+                  backgroundImage: theme =>
+                    `linear-gradient(98deg, ${theme.palette.customColors.primaryGradient}, ${theme.palette.primary.main} 94%)`
+                })
               }}
             >
               <ListItemAvatar sx={{ m: 0 }}>
@@ -88,11 +96,12 @@ const ChatLeft = (props: any) => {
                   }
                 >
                   <MuiAvatar
-                    src={"/images/avatars/"+((index%8)+1)+".png"}
-                    alt={Item}
+                    src={Item.avatar}
+                    alt={Item.name}
                     sx={{
                       width: 38,
                       height: 38,
+                      ...(activeCondition && { border: theme => `2px solid ${theme.palette.common.white}` })
                     }}
                   />
                 </Badge>
@@ -102,15 +111,16 @@ const ChatLeft = (props: any) => {
                   my: 0,
                   ml: 4,
                   mr: 1.5,
+                  ...(activeCondition && { '& .MuiTypography-root': { color: 'common.white' } })
                 }}
                 primary={
                   <Typography noWrap sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
-                    {Item}
+                    {Item.name}
                   </Typography>
                 }
                 secondary={
                   <Typography noWrap variant='body2' sx={{ ...(!activeCondition && { color: 'text.disabled' }) }}>
-                    Summary
+                    {Item.summary}
                   </Typography>
                 }
               />
@@ -118,7 +128,6 @@ const ChatLeft = (props: any) => {
           </ListItem>
         )
       })
-    }
   }
 
   return (
@@ -152,30 +161,27 @@ const ChatLeft = (props: any) => {
         <Box
           sx={{
             px: 5,
-            py: 3.125,
+            py: 3.6,
             display: 'flex',
             alignItems: 'center',
             borderBottom: theme => `1px solid ${theme.palette.divider}`
           }}
         >
-          <Box sx={{ display: 'flex', alignItems: 'center'}} >
-            <Typography variant='h6' sx={{ ml: 3, mb: 1}}>
-                {`${t('Chat')}`}
-            </Typography>
-          </Box>
+          <Typography variant='h6' sx={{ ml: 3, mb: 1}}>
+            {`${t('Chat')}`}
+          </Typography>
         </Box>
 
         <Box sx={{ height: `calc(100% - 4.125rem)` }}>
           <ScrollWrapper hidden={hidden}>
             <Box sx={{ p: theme => theme.spacing(7, 3, 3) }}>
-              <List sx={{ mb: 4, p: 0 }}>{renderChats()}</List>
+              <List sx={{ mb: 4, p: 0 }}>{llms ? renderChats() : null}</List>
             </Box>
           </ScrollWrapper>
         </Box>
       </Drawer>
-
     </div>
   )
 }
 
-export default ChatLeft
+export default Left

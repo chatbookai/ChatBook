@@ -11,6 +11,8 @@ import Typography from '@mui/material/Typography'
 import ListItemText from '@mui/material/ListItemText'
 import ListItemAvatar from '@mui/material/ListItemAvatar'
 import ListItemButton from '@mui/material/ListItemButton'
+import OptionsMenu from 'src/@core/components/option-menu'
+import Icon from 'src/@core/components/icon'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
@@ -52,12 +54,13 @@ const ChatLeft = (props: any) => {
   const renderChats = () => {
       return llms.map((Item: any, index: number) => {
         const activeCondition = active === Item.id
+        console.log("active", active)
+        console.log("activeCondition", activeCondition)
 
         return (
           <ListItem key={index} disablePadding sx={{ '&:not(:last-child)': { mb: 1.5 } }}>
             <ListItemButton
               disableRipple
-              onClick={() => handleChatClick(Item.id, Item.title, Item)}
               sx={{
                 px: 3,
                 py: 2.5,
@@ -70,7 +73,7 @@ const ChatLeft = (props: any) => {
                 })
               }}
             >
-              <ListItemAvatar sx={{ m: 0 }}>
+              <ListItemAvatar sx={{ m: 0 }} onClick={() => handleChatClick(Item.id, Item.title, Item)} >
                   <MuiAvatar
                     src={Item.avatar? Item.avatar : '/images/avatars/1.png'}
                     alt={Item.title}
@@ -98,7 +101,16 @@ const ChatLeft = (props: any) => {
                     {Item.model}
                   </Typography>
                 }
+                onClick={() => handleChatClick(Item.id, Item.title, Item)}
               />
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <OptionsMenu
+                  menuProps={{ sx: { mt: 2 } }}
+                  icon={<Icon icon='mdi:dots-vertical' fontSize='1.25rem' />}
+                  iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
+                  options={['Cancel']}
+                />
+              </Box>
             </ListItemButton>
           </ListItem>
         )

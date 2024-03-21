@@ -43,11 +43,6 @@ export const MenuListAdmin = [
   {
     title: 'Mind Map',
     icon: 'mdi:account-box-multiple-outline',
-    path: '/chat/flow'
-  },
-  {
-    title: 'Mind Map',
-    icon: 'mdi:account-box-multiple-outline',
     path: '/chat/mindmap'
   },
   {
@@ -145,11 +140,6 @@ export const MenuListUser = [
     title: 'Chat',
     icon: 'mdi:message-outline',
     path: '/chat/chat'
-  },
-  {
-    title: 'Mind Map',
-    icon: 'mdi:account-box-multiple-outline',
-    path: '/chat/flow'
   },
   {
     title: 'Mind Map',

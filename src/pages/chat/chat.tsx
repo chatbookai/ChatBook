@@ -247,7 +247,7 @@ const AppChat = () => {
         llms={llms}
         setActiveId={setActiveId}
         hidden={false}
-        chatId={chatId}
+        chatId={agent?.id}
         chatName={chatName}
       />
       <ChatContent

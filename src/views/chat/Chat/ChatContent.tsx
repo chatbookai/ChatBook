@@ -33,7 +33,8 @@ const ChatContent = (props: any) => {
     chatName,
     ClearButtonClick,
     ClearButtonName,
-    historyCounter
+    historyCounter,
+    agent
   } = props
 
   const LLMS = GetAllLLMById(chatId)
@@ -66,7 +67,7 @@ const ChatContent = (props: any) => {
                   borderBottom: theme => `1px solid ${theme.palette.divider}`
                 }}
               >
-                {LLMS && LLMS[0] && LLMS[0].avatar ?                
+                {agent && agent.title ?                
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                   {mdAbove ? null : (
                     <IconButton sx={{ mr: 2 }}>
@@ -96,7 +97,7 @@ const ChatContent = (props: any) => {
                       }
                     >
                       <MuiAvatar
-                        src={LLMS[0].avatar}
+                        src={agent.avatar? agent.avatar : '/images/avatars/1.png'}
                         alt={chatName}
                         sx={{ width: '2.375rem', height: '2.375rem' }}
                       />
@@ -106,7 +107,7 @@ const ChatContent = (props: any) => {
                         {chatName}
                       </Typography>
                       <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                        {LLMS[0].summary}
+                        {agent.model}
                       </Typography>
                     </Box>
                   </Box>

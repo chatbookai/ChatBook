@@ -4,7 +4,6 @@ import { useState, ReactNode, useEffect } from 'react'
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import List from '@mui/material/List'
-import Badge from '@mui/material/Badge'
 import Drawer from '@mui/material/Drawer'
 import MuiAvatar from '@mui/material/Avatar'
 import ListItem from '@mui/material/ListItem'
@@ -27,7 +26,7 @@ const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: bool
   }
 }
 
-const Left = (props: any) => {
+const ChatLeft = (props: any) => {
   // ** Hook
   const { t } = useTranslation()
 
@@ -41,8 +40,8 @@ const Left = (props: any) => {
 
   const [active, setActive] = useState<string>('')
 
-  const handleChatClick = (id: string, name: string) => {
-    setActiveId(id, name)
+  const handleChatClick = (id: string, name: string, agent: any) => {
+    setActiveId(id, name, agent)
     setActive(id)
   }
 
@@ -58,7 +57,7 @@ const Left = (props: any) => {
           <ListItem key={index} disablePadding sx={{ '&:not(:last-child)': { mb: 1.5 } }}>
             <ListItemButton
               disableRipple
-              onClick={() => handleChatClick(Item.id, Item.name)}
+              onClick={() => handleChatClick(Item.id, Item.title, Item)}
               sx={{
                 px: 3,
                 py: 2.5,
@@ -72,39 +71,15 @@ const Left = (props: any) => {
               }}
             >
               <ListItemAvatar sx={{ m: 0 }}>
-                <Badge
-                  overlap='circular'
-                  anchorOrigin={{
-                    vertical: 'bottom',
-                    horizontal: 'right'
-                  }}
-                  badgeContent={
-                    <Box
-                      component='span'
-                      sx={{
-                        width: 8,
-                        height: 8,
-                        borderRadius: '50%',
-                        color: `primary.main`,
-                        backgroundColor: `secondary.main`,
-                        boxShadow: theme =>
-                          `0 0 0 2px ${
-                            !activeCondition ? theme.palette.background.paper : theme.palette.common.white
-                          }`
-                      }}
-                    />
-                  }
-                >
                   <MuiAvatar
-                    src={Item.avatar}
-                    alt={Item.name}
+                    src={Item.avatar? Item.avatar : '/images/avatars/1.png'}
+                    alt={Item.title}
                     sx={{
                       width: 38,
                       height: 38,
                       ...(activeCondition && { border: theme => `2px solid ${theme.palette.common.white}` })
                     }}
                   />
-                </Badge>
               </ListItemAvatar>
               <ListItemText
                 sx={{
@@ -115,12 +90,12 @@ const Left = (props: any) => {
                 }}
                 primary={
                   <Typography noWrap sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
-                    {Item.name}
+                    {Item.title}
                   </Typography>
                 }
                 secondary={
                   <Typography noWrap variant='body2' sx={{ ...(!activeCondition && { color: 'text.disabled' }) }}>
-                    {Item.summary}
+                    {Item.model}
                   </Typography>
                 }
               />
@@ -184,4 +159,4 @@ const Left = (props: any) => {
   )
 }
 
-export default Left
+export default ChatLeft

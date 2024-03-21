@@ -500,3 +500,30 @@
   
     return RS;
   }
+
+  export async function getMyAgents(userId: string, pageid: number, pagesize: number) {
+    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+    const From = pageidFiler * pagesizeFiler;
+    console.log("pageidFiler", pageidFiler)
+    console.log("pagesizeFiler", pagesizeFiler)
+
+    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from useragents where userId = ? ", [userId]);
+    const RecordsTotal: number = Records ? Records.NUM : 0;
+
+    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * FROM useragents WHERE userId = ? ORDER BY id DESC LIMIT ? OFFSET ? `, [userId, pagesizeFiler, From]) || [];
+    const AgentsList: number[] = RecordsAll.map(element => element.agentId);
+    const PlaceHolders = AgentsList.map(() => '?').join(',');
+    const RecordsList: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * FROM agents WHERE id IN (${PlaceHolders}) ORDER BY id DESC`, AgentsList) || [];
+
+    const RS: any = {};
+    RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
+    RS['data'] = RecordsList;
+    RS['RecordsAll'] = RecordsAll;
+    RS['from'] = From;
+    RS['pageid'] = pageidFiler;
+    RS['pagesize'] = pagesizeFiler;
+    RS['total'] = RecordsTotal;
+  
+    return RS;
+  }

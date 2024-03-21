@@ -1,7 +1,7 @@
   // app.ts
   import express, { Request, Response, NextFunction } from 'express';
 
-  import { checkUserPassword, registerUser, changeUserPasswordByToken, changeUserDetail, changeUserStatus, checkUserToken, getUsers, getUserLogsAll, getUserLogs, getOneUserByToken, updateUserImageFavorite, updateUserVideoFavorite, refreshUserToken, addUserAgent, deleteUserAgent, getUserAgents } from '../utils/user';
+  import { checkUserPassword, registerUser, changeUserPasswordByToken, changeUserDetail, changeUserStatus, checkUserToken, getUsers, getUserLogsAll, getUserLogs, getOneUserByToken, updateUserImageFavorite, updateUserVideoFavorite, refreshUserToken, addUserAgent, deleteUserAgent, getUserAgents, getMyAgents } from '../utils/user';
 
   const app = express();
 
@@ -138,6 +138,20 @@
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         const getUserAgentsData = await getUserAgents(checkUserTokenData.data.id, Number(pageid), Number(pagesize));
         res.status(200).json(getUserAgentsData);
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+    }
+    res.end();
+  });
+
+  app.post('/api/my/agents', async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const { pageid, pagesize } = req.body;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
+        const getMyAgentsData = await getMyAgents(checkUserTokenData.data.id, Number(pageid), Number(pagesize));
+        res.status(200).json(getMyAgentsData);
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});

@@ -13,13 +13,13 @@ import { StatusObjType } from 'src/types/apps/chatTypes'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Chat App Components Imports
-import Left from 'src/views/chat/Chat/Left'
+import ChatLeft from 'src/views/chat/Chat/ChatLeft'
 import ChatContent from 'src/views/chat/Chat/ChatContent'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
-import { GetAllLLMS, ChatChatInit, ChatChatNameList, ChatChatInput, ChatChatOutput, DeleteChatChat, DeleteChatChatHistory  } from 'src/functions/ChatBook'
+import { ChatChatInit, ChatChatNameList, ChatChatInput, ChatChatOutput, DeleteChatChat, DeleteChatChatHistory  } from 'src/functions/ChatBook'
 
 // ** Axios Imports
 import axios from 'axios'
@@ -37,16 +37,29 @@ const AppChat = () => {
   const [chatId, setChatId] = useState<number | string>(-1)
   const [chatName, setChatName] = useState<string>("")
   const [historyCounter, setHistoryCounter] = useState<number>(0)
-
-  const AllLLMS: any[] = GetAllLLMS()
+  const [agent, setAgent] = useState<any>(null)
 
   useEffect(() => {
-    setLlms(AllLLMS)
-    setChatId(AllLLMS[0].id)
-    setChatName(AllLLMS[0].name)
-    getChatLogList(AllLLMS[0].id)
-    console.log("AllLLMS", AllLLMS)
+    getMyAgents()
   }, [])
+
+  const getMyAgents = async function () {
+    if(auth && auth.user && auth.user.token)    {
+      const data: any = {pageid: 0, pagesize: 999}
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/my/agents', data, {
+        headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' },
+      }).then(res => res.data);
+      if(RS && RS.data) {
+        setLlms(RS.data)
+        setChatId(RS.data[0].id)
+        setChatName(RS.data[0].title)
+        getChatLogList(RS.data[0].id)
+        setAgent(RS.data[0])
+      }
+    }
+  }
+
+
 
   const getChatLogList = async function (knowledgeId: number | string) {
     if (auth && auth.user) {
@@ -103,13 +116,12 @@ const AppChat = () => {
     }
   }
 
-
-  
-  const setActiveId = function (Id: string, Name: string) {
+  const setActiveId = function (Id: string, Name: string, agent: any) {
     setChatId(Id)
     setChatName(Name)
     getChatLogList(Id)
     setRefreshChatCounter(refreshChatCounter + 1)
+    setAgent(agent)
   }
   
   // ** States
@@ -231,7 +243,7 @@ const AppChat = () => {
         ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
       }}
     >
-      <Left
+      <ChatLeft
         llms={llms}
         setActiveId={setActiveId}
         hidden={false}
@@ -254,6 +266,7 @@ const AppChat = () => {
         ClearButtonClick={ClearButtonClick}
         ClearButtonName={t('Clear')}
         historyCounter={historyCounter}
+        agent={agent}
       />
       </Box>
     </Fragment>

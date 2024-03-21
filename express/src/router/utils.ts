@@ -48,7 +48,7 @@
     res.end();
   });
   
-  app.get('/api/chatlog/:knowledgeId/:userId/:pageid/:pagesize', async (req, res) => {
+  app.get('/api/chatlog/agent/:knowledgeId/:userId/:pageid/:pagesize', async (req, res) => {
     const { knowledgeId, userId, pageid, pagesize } = req.params;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
@@ -62,8 +62,8 @@
     res.end();
   });
 
-  app.get('/api/chatlog/clear/:knowledgeId/:userId', async (req, res) => {
-    const { knowledgeId, userId } = req.params;
+  app.get('/api/chatlog/clear/:userId/:knowledgeId', async (req, res) => {
+    const { userId, knowledgeId } = req.params;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {

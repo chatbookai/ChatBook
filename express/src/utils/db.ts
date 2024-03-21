@@ -84,7 +84,8 @@ export async function initChatBookDb() {
                 timestamp INTEGER not null default 0,
                 source TEXT not null,
                 history TEXT not null,
-                current INTEGER not null default 1
+                current INTEGER not null default 1,
+                agentId INTEGER not null default 0
             );
         `);        
         db.run(`

@@ -40,13 +40,13 @@
   });
   
   app.post('/api/ChatOpenaiKnowledge', async (req: Request, res: Response) => {
-    const { knowledgeId, question, history } = req.body;
+    const { knowledgeId, question, history, agentId } = req.body;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         const getLLMSSettingData = await getLLMSSetting(knowledgeId);   
         if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
-          await chatKnowledgeOpenAI(res, knowledgeId, checkUserTokenData.data.id, question, history);
+          await chatKnowledgeOpenAI(res, knowledgeId, checkUserTokenData.data.id, question, history, agentId);
           res.end();
         }
         else {        
@@ -60,13 +60,13 @@
   });
   
   app.post('/api/ChatOpenai', async (req: Request, res: Response) => {
-    const { knowledgeId, question, history, template } = req.body;
+    const { knowledgeId, question, history, template, agentId } = req.body;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         const getLLMSSettingData = await getLLMSSetting(knowledgeId);   
         if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
-          await chatChatOpenAI(res, knowledgeId, checkUserTokenData.data.id, question, history, template);
+          await chatChatOpenAI(res, knowledgeId, checkUserTokenData.data.id, question, history, template, agentId);
           res.end();
         }
         else {        
@@ -80,13 +80,13 @@
   });
   
   app.post('/api/ChatGemini', async (req: Request, res: Response) => {
-    const { knowledgeId, question, history, template } = req.body;
+    const { knowledgeId, question, history, template, agentId } = req.body;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         const getLLMSSettingData = await getLLMSSetting(knowledgeId);   
         if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
-          await chatChatGemini(res, knowledgeId, checkUserTokenData.data.id, question, history, template);
+          await chatChatGemini(res, knowledgeId, checkUserTokenData.data.id, question, history, template, agentId);
           res.end();
         }
         else {        
@@ -100,13 +100,13 @@
   });
 
   app.post('/api/ChatGeminiMindMap', async (req: Request, res: Response) => {
-    const { knowledgeId, question, history, template } = req.body;
+    const { knowledgeId, question, history, template, agentId } = req.body;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         const getLLMSSettingData = await getLLMSSetting(knowledgeId);   
         if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
-          await chatChatGeminiMindMap(res, knowledgeId, checkUserTokenData.data.id, question, history, template);
+          await chatChatGeminiMindMap(res, knowledgeId, checkUserTokenData.data.id, question, history, template, agentId);
           res.end();
         }
         else {        
@@ -120,11 +120,11 @@
   });
   
   app.post('/api/ChatBaiduwenxin', async (req: Request, res: Response) => {
-    const { knowledgeId, question, history, template } = req.body;
+    const { knowledgeId, question, history, template, agentId } = req.body;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-      const chatChatBaiduWenxinData: any = await chatChatBaiduWenxin(res, knowledgeId, checkUserTokenData.data.id, question, history, template);    
+      const chatChatBaiduWenxinData: any = await chatChatBaiduWenxin(res, knowledgeId, checkUserTokenData.data.id, question, history, template, agentId);    
       res.status(200).json(chatChatBaiduWenxinData);
     }
     else {

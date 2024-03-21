@@ -61,9 +61,9 @@ const AppChat = () => {
 
 
 
-  const getChatLogList = async function (knowledgeId: number | string) {
+  const getChatLogList = async function (agentId: number | string) {
     if (auth && auth.user) {
-      const RS = await axios.get(authConfig.backEndApiChatBook + '/api/chatlog/' + knowledgeId + '/' + auth.user.id + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      const RS = await axios.get(authConfig.backEndApiChatBook + '/api/chatlog/agent/' + agentId + '/' + auth.user.id + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       if(RS['data'])  {
         const ChatChatInitList = ChatChatInit(RS['data'].reverse())
         setHistoryCounter(ChatChatInitList.length)
@@ -90,7 +90,7 @@ const AppChat = () => {
   }
 
   const ClearButtonClick = async function () {
-    if (auth && auth.user) {
+    if (auth && auth.user && agent && agent.id) {
       DeleteChatChat()
       const selectedChat = {
         "chat": {
@@ -110,8 +110,8 @@ const AppChat = () => {
         "selectedChat": selectedChat
       }
       setStore(storeInit)
-      DeleteChatChatHistory(auth.user.id, chatId)
-      await axios.get(authConfig.backEndApiChatBook + '/api/chatlog/clear/' + chatId + '/' + auth.user.id, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      DeleteChatChatHistory(auth.user.id, chatId, agent.id)
+      await axios.get(authConfig.backEndApiChatBook + '/api/chatlog/clear/'+ auth.user.id + '/' + agent.id, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       setHistoryCounter(0)
     }
   }
@@ -200,14 +200,14 @@ const AppChat = () => {
 
 
   const sendMsg = async (Obj: any) => {
-    if(auth.user && auth.user.token)  {
+    if(auth.user && auth.user.token && agent && agent.id)  {
       setSendButtonDisable(true)
       setSendButtonLoading(true)
       setSendButtonText(t("Sending") as string)
       setSendInputText(t("Answering...") as string)
       ChatChatInput(Obj.message, auth.user.id)
       setRefreshChatCounter(refreshChatCounter + 1)
-      const ChatChatOutputStatus = await ChatChatOutput(Obj.message, auth.user.token, auth.user.id, chatId, setProcessingMessage, agent.config, setFinishedMessage)
+      const ChatChatOutputStatus = await ChatChatOutput(Obj.message, auth.user.token, auth.user.id, chatId, agent.id, setProcessingMessage, agent.config, setFinishedMessage)
       if(ChatChatOutputStatus) {
         setSendButtonDisable(false)
         setSendButtonLoading(false)

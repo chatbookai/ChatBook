@@ -129,7 +129,7 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function chatChatOpenAI(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string) {
+  export async function chatChatOpenAI(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string, agentId: number) {
     ChatBookOpenAIStreamResponse = ''
     await initChatBookOpenAIStream(res, knowledgeId)
     const pastMessages: any[] = []
@@ -148,8 +148,8 @@ let ChatBaiduWenxinModel: any = null
     try {
       const chain = new ConversationChain({ llm: ChatOpenAIModel, memory: memory });
       await chain.call({ input: question});      
-      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
-      insertChatLog.run(knowledgeId, question, ChatBookOpenAIStreamResponse, userId, Date.now(), JSON.stringify([]), JSON.stringify(history));
+      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history, agentId) VALUES (?,?,?,?,?,?,?,?)');
+      insertChatLog.run(knowledgeId, question, ChatBookOpenAIStreamResponse, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), agentId);
       insertChatLog.finalize();
     }
     catch(error: any) {
@@ -159,7 +159,7 @@ let ChatBaiduWenxinModel: any = null
     res.end();
   }
 
-  export async function chatKnowledgeOpenAI(res: Response, knowledgeId: number | string, userId: number, question: string, history: any[]) {
+  export async function chatKnowledgeOpenAI(res: Response, knowledgeId: number | string, userId: number, question: string, history: any[], agentId: number) {
     await initChatBookOpenAIStream(res, knowledgeId)
     if(!ChatOpenAIModel) {
       res.end();
@@ -231,8 +231,8 @@ let ChatBaiduWenxinModel: any = null
   
       const sourceDocuments = await documentPromise;
 
-      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
-      insertChatLog.run(Number(knowledgeId), question, response, userId, Date.now(), JSON.stringify(sourceDocuments), JSON.stringify(history));
+      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history, agentId) VALUES (?,?,?,?,?,?,?,?)');
+      insertChatLog.run(Number(knowledgeId), question, response, userId, Date.now(), JSON.stringify(sourceDocuments), JSON.stringify(history), agentId);
       insertChatLog.finalize();
       res.end();
 
@@ -687,7 +687,7 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function chatChatGemini(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string) {
+  export async function chatChatGemini(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string, agentId: number) {
     await initChatBookGeminiStream(res, knowledgeId)
 
     const pastMessages: any[] = []
@@ -710,8 +710,8 @@ let ChatBaiduWenxinModel: any = null
           res.write(chunk.content);
           response = response + chunk.content
       }
-      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
-      insertChatLog.run(knowledgeId, question, response, userId, Date.now(), JSON.stringify([]), JSON.stringify(history));
+      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history, agentId) VALUES (?,?,?,?,?,?,?,?)');
+      insertChatLog.run(knowledgeId, question, response, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), agentId);
       insertChatLog.finalize();
     }
     catch(error: any) {
@@ -721,7 +721,7 @@ let ChatBaiduWenxinModel: any = null
     res.end();
   }
 
-  export async function chatChatGeminiMindMap(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string) {
+  export async function chatChatGeminiMindMap(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string, agentId: number) {
     await initChatBookGeminiStream(res, knowledgeId)
     const TextPrompts = template && template != '' ? template : "\n 要求生成一份PPT的大纲,以行业总结性报告的形式显现,生成15-20页左右,每一页3-6个要点,每一个要点字数在10-30之间,返回格式为Markdown,标题格式使用: **标题名称** 的形式表达."
     const input2 = [
@@ -742,8 +742,8 @@ let ChatBaiduWenxinModel: any = null
           res.write(chunk.content);
           response = response + chunk.content
       }
-      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
-      insertChatLog.run(knowledgeId, question, response, userId, Date.now(), JSON.stringify([]), JSON.stringify(history));
+      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history, agentId) VALUES (?,?,?,?,?,?,?,?)');
+      insertChatLog.run(knowledgeId, question, response, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), agentId);
       insertChatLog.finalize();
     }
     catch(error: any) {
@@ -780,7 +780,7 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function chatChatBaiduWenxin(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string) {
+  export async function chatChatBaiduWenxin(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string, agentId: number) {
     await initChatBookBaiduWenxinStream(res, knowledgeId);
     if(!ChatBaiduWenxinModel) {
       res.end();
@@ -800,8 +800,8 @@ let ChatBaiduWenxinModel: any = null
       pastMessages.push(new HumanMessage(question))
       const response = await ChatBaiduWenxinModel.call(pastMessages);
       console.log("response", response.content);
-      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
-      insertChatLog.run(knowledgeId, question, response.content, userId, Date.now(), JSON.stringify([]), JSON.stringify(history));
+      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history, agentId) VALUES (?,?,?,?,?,?,?,?)');
+      insertChatLog.run(knowledgeId, question, response.content, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), agentId);
       insertChatLog.finalize();
 
       return response.content;

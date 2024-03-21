@@ -174,11 +174,13 @@ export function DeleteChatChat() {
     window.localStorage.setItem(ChatChat, JSON.stringify([]))
 }
 
-export function DeleteChatChatHistory(UserId: number, knowledgeId: number | string) {
+export function DeleteChatChatHistory(UserId: number, knowledgeId: number | string, agentId: number) {
 	const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatHistoryList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : {}
-    ChatChatHistoryList[UserId][knowledgeId] = []
-    window.localStorage.setItem(ChatChatHistory, JSON.stringify(ChatChatHistoryList))
+    if(ChatChatHistoryList[UserId] && ChatChatHistoryList[UserId][knowledgeId] && ChatChatHistoryList[UserId][knowledgeId][agentId]) {
+        ChatChatHistoryList[UserId][knowledgeId][agentId] = []
+        window.localStorage.setItem(ChatChatHistory, JSON.stringify(ChatChatHistoryList))
+    }
 }
 
 export function ChatChatInit(MsgList: any) {
@@ -226,12 +228,12 @@ export function ChatChatInput(Message: string, UserId: number) {
     window.localStorage.setItem(ChatChat, JSON.stringify(ChatChatList))
 }
 
-export async function ChatChatOutput(Message: string, Token: string, UserId: number, chatId: number | string, setProcessingMessage:any, template: string, setFinishedMessage:any) {
+export async function ChatChatOutput(Message: string, Token: string, UserId: number, chatId: number | string, agentId: number, setProcessingMessage:any, template: string, setFinishedMessage:any) {
     const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []
     const History: any = []
-    if(ChatChatList && ChatChatList[UserId] && ChatChatList[UserId][chatId]) {
-        const ChatChatListLast10 = ChatChatList[UserId][chatId].slice(-10)
+    if(ChatChatList && ChatChatList[UserId] && ChatChatList[UserId][chatId] && ChatChatList[UserId][chatId][agentId]) {
+        const ChatChatListLast10 = ChatChatList[UserId][chatId][agentId].slice(-10)
         ChatChatListLast10.map((Item: any)=>{
             if(Item.question && Item.answer) {
                 History.push([Item.question,Item.answer.substring(0, 200)])
@@ -272,7 +274,7 @@ export async function ChatChatOutput(Message: string, Token: string, UserId: num
                 Authorization: Token,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ question: Message, history: History, knowledgeId: chatId, template: template }),
+            body: JSON.stringify({ question: Message, history: History, knowledgeId: chatId, agentId: agentId, template: template }),
             });
             if (!response.body) {
             throw new Error('Response body is not readable as a stream');
@@ -292,7 +294,7 @@ export async function ChatChatOutput(Message: string, Token: string, UserId: num
             if(responseText) {
                 console.log("OpenAI Response:", responseText)
                 ChatChatInput(responseText, 999999)
-                ChatChatHistoryInput(Message, responseText, UserId, chatId)
+                ChatChatHistoryInput(Message, responseText, UserId, chatId, agentId)
                 setFinishedMessage(responseText);
         
                 return true
@@ -314,12 +316,12 @@ export async function ChatChatOutput(Message: string, Token: string, UserId: num
       
 }
 
-export function ChatChatHistoryInput(question: string, answer: string, UserId: number, knowledgeId: number | string) {
+export function ChatChatHistoryInput(question: string, answer: string, UserId: number, knowledgeId: number | string, agentId: number) {
     console.log("ChatChatHistoryList", question, answer, UserId)
 	const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatHistoryList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : {}
-    if(ChatChatHistoryList && ChatChatHistoryList[UserId] && ChatChatHistoryList[UserId][knowledgeId]) {
-        ChatChatHistoryList[UserId][knowledgeId].push({
+    if(ChatChatHistoryList && ChatChatHistoryList[UserId] && ChatChatHistoryList[UserId][knowledgeId] && ChatChatHistoryList[UserId][knowledgeId][agentId]) {
+        ChatChatHistoryList[UserId][knowledgeId][agentId].push({
             "question": question,
             "time": String(Date.now()),
             "answer": answer,
@@ -327,7 +329,8 @@ export function ChatChatHistoryInput(question: string, answer: string, UserId: n
     }
     else {
         ChatChatHistoryList[UserId] = {}
-        ChatChatHistoryList[UserId][knowledgeId] = [{
+        ChatChatHistoryList[UserId][knowledgeId] = {}
+        ChatChatHistoryList[UserId][knowledgeId][agentId] = [{
             "question": question,
             "time": String(Date.now()),
             "answer": answer,

@@ -56,7 +56,7 @@ const AppChat = () => {
 
   const getChatLogList = async function (knowledgeId: number) {
     if (auth && auth.user) {
-      const RS = await axios.get(authConfig.backEndApiChatBook + '/api/chatlog/' + knowledgeId + '/' + auth.user.id + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      const RS = await axios.get(authConfig.backEndApiChatBook + '/api/chatlog/agent/' + knowledgeId + '/' + auth.user.id + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       const ChatKnowledgeInitList = ChatKnowledgeInit(RS['data'].reverse())
       console.log("ChatKnowledgeInitList", ChatKnowledgeInitList)
       const selectedChat = {

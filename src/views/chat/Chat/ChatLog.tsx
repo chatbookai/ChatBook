@@ -40,7 +40,7 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 
 const ChatLog = (props: any) => {
   // ** Props
-  const { data, hidden, chatName, LLMS, rowInMsg, maxRows } = props
+  const { data, hidden, chatName, agent, rowInMsg, maxRows } = props
 
   // ** Ref
   const chatArea = useRef(null)
@@ -161,7 +161,7 @@ const ChatLog = (props: any) => {
           }}
         >
           <div>
-            {LLMS && LLMS[0] && LLMS[0].avatar ?
+            {agent && agent.title ?
             <CustomAvatar
               skin='light'
               color={'primary'}
@@ -174,7 +174,7 @@ const ChatLog = (props: any) => {
               }}
               {...(!isSender
                 ? {
-                    src: LLMS[0].avatar,
+                    src: agent.avatar? agent.avatar : '/images/avatars/1.png',
                     alt: chatName
                   }
                 : {})}

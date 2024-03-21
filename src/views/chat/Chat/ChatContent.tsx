@@ -37,8 +37,6 @@ const ChatContent = (props: any) => {
     agent
   } = props
 
-  const LLMS = GetAllLLMById(chatId)
-
   const [rowInMsg, setRowInMsg] = useState<number>(1)
   
   const maxRows = 8
@@ -126,9 +124,9 @@ const ChatContent = (props: any) => {
               </Box>
 
               {store && store.selectedChat && store.userProfile ? 
-                <ChatLog hidden={hidden} data={{ ...store.selectedChat, userContact: store.userProfile }} chatId={chatId} chatName={chatName} LLMS={LLMS} rowInMsg={rowInMsg} maxRows={maxRows} />
+                <ChatLog hidden={hidden} data={{ ...store.selectedChat, userContact: store.userProfile }} chatId={chatId} chatName={chatName} agent={agent} rowInMsg={rowInMsg} maxRows={maxRows} />
               : 
-                <ChatLog hidden={hidden} data={{}} chatId={chatId} chatName={chatName} LLMS={LLMS} rowInMsg={rowInMsg} maxRows={maxRows} />
+                <ChatLog hidden={hidden} data={{}} chatId={chatId} chatName={chatName} agent={agent} rowInMsg={rowInMsg} maxRows={maxRows} />
                 }
 
               <SendMsgForm store={store} sendMsg={sendMsg} sendButtonDisable={sendButtonDisable} sendButtonLoading={sendButtonLoading} sendButtonText={sendButtonText} sendInputText={sendInputText} rowInMsg={rowInMsg} handleSetRowInMsg={handleSetRowInMsg} maxRows={maxRows} />

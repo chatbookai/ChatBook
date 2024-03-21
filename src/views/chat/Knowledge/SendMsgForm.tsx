@@ -42,7 +42,6 @@ const SendMsgForm = (props: SendMsgComponentType) => {
     handleSetRowInMsg(1)
   }
 
-
   const handleKeyDown = (e: any) => {
     if (e.key === 'Enter') {
       if (!e.shiftKey) {
@@ -65,8 +64,6 @@ const SendMsgForm = (props: SendMsgComponentType) => {
     }
   };
   
-  
-
   const handleChange = (e: any) => {
     setMsg(e.target.value);
     const textarea = e.target;

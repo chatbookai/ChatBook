@@ -51,7 +51,7 @@ const AppChat = () => {
       }).then(res => res.data);
       if(RS && RS.data) {
         setLlms(RS.data)
-        setChatId(RS.data[0].id)
+        setChatId(RS.data[0].model)
         setChatName(RS.data[0].title)
         getChatLogList(RS.data[0].id)
         setAgent(RS.data[0])
@@ -117,7 +117,7 @@ const AppChat = () => {
   }
 
   const setActiveId = function (Id: string, Name: string, agent: any) {
-    setChatId(Id)
+    setChatId(agent.model)
     setChatName(Name)
     getChatLogList(Id)
     setRefreshChatCounter(refreshChatCounter + 1)
@@ -207,7 +207,7 @@ const AppChat = () => {
       setSendInputText(t("Answering...") as string)
       ChatChatInput(Obj.message, auth.user.id)
       setRefreshChatCounter(refreshChatCounter + 1)
-      const ChatChatOutputStatus = await ChatChatOutput(Obj.message, auth.user.token, auth.user.id, chatId, setProcessingMessage, Obj.template, setFinishedMessage)
+      const ChatChatOutputStatus = await ChatChatOutput(Obj.message, auth.user.token, auth.user.id, chatId, setProcessingMessage, agent.config, setFinishedMessage)
       if(ChatChatOutputStatus) {
         setSendButtonDisable(false)
         setSendButtonLoading(false)

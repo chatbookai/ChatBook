@@ -129,12 +129,12 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function chatChatOpenAI(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[]) {
+  export async function chatChatOpenAI(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string) {
     ChatBookOpenAIStreamResponse = ''
     await initChatBookOpenAIStream(res, knowledgeId)
     const pastMessages: any[] = []
-    if(getLLMSSettingData.Prompt && getLLMSSettingData.Prompt!='') {
-      pastMessages.push(new SystemMessage(getLLMSSettingData.Prompt))
+    if(template && template!='') {
+      pastMessages.push(new SystemMessage(template))
     }
     if(history && history.length > 0) {
       history.map((Item) => {
@@ -687,21 +687,23 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function chatChatGemini(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[]) {
+  export async function chatChatGemini(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string) {
     await initChatBookGeminiStream(res, knowledgeId)
 
-    const input2 = [
-        new HumanMessage({
-          content: [
-            {
-              type: "text",
-              text: question,
-            },
-          ],
-        }),
-      ];
+    const pastMessages: any[] = []
+    if(template && template!='') {
+      pastMessages.push(new SystemMessage(template))
+    }
+    if(history && history.length > 0) {
+      history.map((Item) => {
+        pastMessages.push(new HumanMessage(Item[0]))
+        pastMessages.push(new AIMessage(Item[1]))
+      })
+    }
+    pastMessages.push(new HumanMessage(question))
+
     try {
-      const res3 = await ChatGeminiModel.stream(input2);
+      const res3 = await ChatGeminiModel.stream(pastMessages);
       let response = '';
       for await (const chunk of res3) {
           //console.log(chunk.content);
@@ -778,15 +780,25 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function chatChatBaiduWenxin(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[]) {
+  export async function chatChatBaiduWenxin(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string) {
     await initChatBookBaiduWenxinStream(res, knowledgeId);
     if(!ChatBaiduWenxinModel) {
       res.end();
       return
     }
     try {
-      const input2 = [new HumanMessage(question)];
-      const response = await ChatBaiduWenxinModel.call(input2);
+      const pastMessages: any[] = []
+      if(template && template!='') {
+        pastMessages.push(new SystemMessage(template))
+      }
+      if(history && history.length > 0) {
+        history.map((Item) => {
+          pastMessages.push(new HumanMessage(Item[0]))
+          pastMessages.push(new AIMessage(Item[1]))
+        })
+      }
+      pastMessages.push(new HumanMessage(question))
+      const response = await ChatBaiduWenxinModel.call(pastMessages);
       console.log("response", response.content);
       const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (knowledgeId, send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?,?)');
       insertChatLog.run(knowledgeId, question, response.content, userId, Date.now(), JSON.stringify([]), JSON.stringify(history));

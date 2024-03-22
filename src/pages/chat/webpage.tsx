@@ -54,7 +54,9 @@ const AppChat = () => {
   useEffect(() => {
     // 当组件加载时获取聊天列表
     setWebChat(WebChatList)
+    console.log('WebChatList[0].id', WebChatList[0].id)
     setWebChatId(WebChatList[0].id)
+    console.log('WebChatList[0].name', WebChatList[0].name)
     setWebChatName(WebChatList[0].name)
 
     // 清理函数：组件卸载时执行
@@ -100,7 +102,9 @@ const AppChat = () => {
   // 接受从子组件中传递回来的数据 来改变当前的聊天对象
 
   const setActiveId = function (Id: number | string, Name: string) {
+    console.log('setWebChatId', Id)
     setWebChatId(Id)
+    console.log('setWebChatName', Name)
     setWebChatName(Name)
     getChatLogList(Id)
     setRefreshChatCounter(refreshChatCounter + 1)

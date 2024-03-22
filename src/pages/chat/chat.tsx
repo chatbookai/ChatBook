@@ -5,6 +5,7 @@ import { Fragment, useEffect, useState } from 'react'
 import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
+import toast from 'react-hot-toast'
 
 // ** Types
 import { StatusObjType } from 'src/types/apps/chatTypes'
@@ -58,8 +59,6 @@ const AppChat = () => {
       }
     }
   }
-
-
 
   const getChatLogList = async function (agentId: number | string) {
     if (auth && auth.user) {
@@ -123,6 +122,21 @@ const AppChat = () => {
     setRefreshChatCounter(refreshChatCounter + 1)
     setAgent(agent)
   }
+
+  const deleteUserAgent = async function () {
+    if(auth && auth.user && auth.user.token && agent)    {
+      const data: any = {agentId: agent.id}
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/user/agent/delete', data, {
+        headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
+      }).then(res => res.data);
+      if(RS && RS.status && RS.status == 'ok') {
+        toast.success(t(RS.msg) as string, { duration: 2500 })
+        getMyAgents()
+      }
+      else {
+      }
+    }
+  }
   
   // ** States
   const [store, setStore] = useState<any>(null)
@@ -151,7 +165,7 @@ const AppChat = () => {
 
   useEffect(() => {
     if(auth.user && auth.user.id)   {
-      const ChatChatText = window.localStorage.getItem("ChatChat")      
+      const ChatChatText = window.localStorage.getItem("ChatChat")
       const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
       console.log("ChatChatList", ChatChatList)
       console.log("processingMessage", processingMessage)
@@ -249,6 +263,7 @@ const AppChat = () => {
         hidden={false}
         chatId={agent?.id}
         chatName={chatName}
+        deleteUserAgent={deleteUserAgent}
       />
       <ChatContent
         store={store}

@@ -37,7 +37,8 @@ const ChatLeft = (props: any) => {
     llms,
     hidden,
     setActiveId,
-    chatId
+    chatId,
+    deleteUserAgent
   } = props
 
   const [active, setActive] = useState<string>('')
@@ -52,10 +53,13 @@ const ChatLeft = (props: any) => {
   }, [chatId])
 
   const renderChats = () => {
+      const [selectedItem, setSelectedItem] = useState<string>("")
+
       return llms.map((Item: any, index: number) => {
         const activeCondition = active === Item.id
         console.log("active", active)
         console.log("activeCondition", activeCondition)
+        const OptionMenulist = ['Cancel']
 
         return (
           <ListItem key={index} disablePadding sx={{ '&:not(:last-child)': { mb: 1.5 } }}>
@@ -108,7 +112,23 @@ const ChatLeft = (props: any) => {
                   menuProps={{ sx: { mt: 2 } }}
                   icon={<Icon icon='mdi:dots-vertical' fontSize='1.25rem' />}
                   iconButtonProps={{ size: 'small', sx: { color: 'text.secondary' } }}
-                  options={['Cancel']}
+                  options={
+                    OptionMenulist.map((optionValue: string)=>{
+                      return {
+                        text: optionValue,
+                        menuItemProps: {
+                          sx: { py: 2 },
+                          selected: selectedItem === optionValue,
+                          onClick: () => {
+                            console.log("item", optionValue)
+                            setSelectedItem(optionValue)
+                            if(optionValue == "Cancel") {
+                              deleteUserAgent()
+                            }
+                          }
+                        }
+                      }
+                    })}
                 />
               </Box>
             </ListItemButton>

@@ -174,7 +174,7 @@ const ChatLog = (props: any) => {
               }}
               {...(!isSender
                 ? {
-                    src: agent.avator? agent.avator : '/images/avatars/1.png',
+                    src: agent.avatar? agent.avatar : '/images/avatars/1.png',
                     alt: chatName
                   }
                 : {})}

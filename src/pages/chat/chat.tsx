@@ -54,7 +54,7 @@ const AppChat = () => {
         setLlms(RS.data)
         setChatId(RS.data[0].model)
         setChatName(RS.data[0].title)
-        getChatLogList(RS.data[0].id, RS.data[0].config)
+        getChatLogList(RS.data[0].id, "您好, " + RS.data[0].title + ", " + RS.data[0].description + "，让我们开始对话吧！")
         setAgent(RS.data[0])
       }
     }

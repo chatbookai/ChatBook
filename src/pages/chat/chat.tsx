@@ -118,7 +118,7 @@ const AppChat = () => {
   const setActiveId = function (Id: string, Name: string, agent: any) {
     setChatId(agent.model)
     setChatName(Name)
-    getChatLogList(Id, "您好, 我是 " + agent.title + ", " + agent.description + "，让我们开始对话吧！")
+    getChatLogList(Id, "您好, " + agent.title + ", " + agent.description + "，让我们开始对话吧！")
     setRefreshChatCounter(refreshChatCounter + 1)
     setAgent(agent)
   }

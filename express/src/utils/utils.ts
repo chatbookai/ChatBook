@@ -711,7 +711,7 @@ export async function addAgent(Params: any) {
     Params.description = filterString(Params.description)
     Params.tags = filterString(Params.tags)
     Params.config = filterString(Params.config)
-    Params.avator = filterString(Params.avator)
+    Params.avatar = filterString(Params.avatar)
     Params.author = filterString(Params.author)
     Params.model = filterString(Params.model)
 
@@ -726,8 +726,8 @@ export async function addAgent(Params: any) {
     }
     else {
       const formatDateValue = formatDate(Date.now())
-      const insertSetting = db.prepare('INSERT OR IGNORE INTO agents (title, description, tags, config, avator, author, createDate, status, model, type, userId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');formatDate
-      insertSetting.run(Params.title, Params.description, Params.tags, Params.config, Params.avator, Params.author, formatDateValue, 1, Params.model, 1, Params.userId);
+      const insertSetting = db.prepare('INSERT OR IGNORE INTO agents (title, description, tags, config, avatar, author, createDate, status, model, type, userId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');formatDate
+      insertSetting.run(Params.title, Params.description, Params.tags, Params.config, Params.avatar, Params.author, formatDateValue, 1, Params.model, 1, Params.userId);
       insertSetting.finalize();
       return {"status":"ok", "msg":"Add Success"}
     }
@@ -744,8 +744,8 @@ export async function editAgent(Params: any) {
     Params.name = filterString(Params.name)
     Params.summary = filterString(Params.summary)
     const formatDateValue = formatDate(Date.now())
-    const updateSetting = db.prepare('update agents set title = ?, description = ?, tags = ?, config = ?, avator = ?, author = ?, createDate = ?, status = ?, model = ?, type = ? where id = ?');
-    updateSetting.run(Params.title, Params.description, Params.tags, Params.config, Params.avator, Params.author, formatDateValue, Params.status, Params.model, Params.type, Params.id);
+    const updateSetting = db.prepare('update agents set title = ?, description = ?, tags = ?, config = ?, avatar = ?, author = ?, createDate = ?, status = ?, model = ?, type = ? where id = ?');
+    updateSetting.run(Params.title, Params.description, Params.tags, Params.config, Params.avatar, Params.author, formatDateValue, Params.status, Params.model, Params.type, Params.id);
     updateSetting.finalize();
   }
   catch (error: any) {

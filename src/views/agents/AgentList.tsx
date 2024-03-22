@@ -103,7 +103,7 @@ const AgentList = (props: any) => {
                         <Box position="relative" sx={{mb: 1, mr: 1}}>
                           <CardMedia image={`${authConfig.backEndApiChatBook}/images/pages/tree-cone-cube-bg-light.png`} sx={{ height: '13.25rem', objectFit: 'contain', borderRadius: 1 }}/>
                           <Box position="absolute" top={10} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)} sx={{ cursor: 'pointer' }}>
-                            <Avatar src={"/images/avatars/1.png"} sx={{ mr: 3, width: 50, height: 50 }} />
+                            <Avatar src={item.avator} sx={{ mr: 3, width: 50, height: 50 }} />
                           </Box>
                           {userAgents && item && item.id && userAgents.includes(item.id) ?
                           <Box position="absolute" top={0} right={0} m={1} px={0.8} borderRadius={1} sx={{ cursor: 'pointer' }}>
@@ -187,7 +187,7 @@ const AgentList = (props: any) => {
                             alignItems: 'center', // 垂直居中
                           }}
                         >
-                          <Avatar src={"/images/avatars/1.png"} sx={{ width: 100, height: 100 }} />
+                          <Avatar src={agent.avator} sx={{ width: 100, height: 100 }} />
                         </Box>
                         </Grid>
 

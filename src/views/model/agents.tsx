@@ -216,15 +216,15 @@ const Agents = () => {
     }
   }
 
-  const [avator, setAvator] = useState<string>("")
-  const [avatorError, setAvatorError] = useState<string | null>(null)
-  const handleAvatorChange = (event: any) => {
-    setAvator(event.target.value);
+  const [avatar, setAvatar] = useState<string>("")
+  const [avatarError, setAvatarError] = useState<string | null>(null)
+  const handleAvatarChange = (event: any) => {
+    setAvatar(event.target.value);
     if(event.target.value == "") {
-        setAvatorError(`${t('This field cannot be empty')}`)
+        setAvatarError(`${t('This field cannot be empty')}`)
     }
     else {
-        setAvatorError("")
+        setAvatarError("")
     }
   }
 
@@ -274,7 +274,7 @@ const Agents = () => {
     setTitle(value.title)
     setDescription(value.description)
     setStatus(value.status)
-    setAvator(value.avator)
+    setAvatar(value.avatar)
     setConfig(value.config)
     setTags(value.tags)
     setStatus(value.status)
@@ -298,7 +298,7 @@ const Agents = () => {
     }
 
     if (auth && auth.user) {
-      const PostParams = {title, description, tags, config, avator, status, model: modelValue, type: 1, author: ''}
+      const PostParams = {title, description, tags, config, avatar, status, model: modelValue, type: 1, author: ''}
       const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/addagent', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit:", FormSubmit)
       if(FormSubmit?.status == "ok") {
@@ -306,7 +306,7 @@ const Agents = () => {
           setTitle('')
           setDescription('')
           setStatus('')
-          setAvator('')
+          setAvatar('')
           setConfig('')
           setTags('')
       }
@@ -434,10 +434,10 @@ const Agents = () => {
                             <Typography variant='subtitle2' sx={{ color: 'text.primary' }}>
                               <TextField
                                   fullWidth
-                                  label={`${t('Avator')}`}
-                                  placeholder={`${t('Avator')}`}
-                                  value={avator}
-                                  onChange={handleAvatorChange}
+                                  label={`${t('Avatar')}`}
+                                  placeholder={`${t('Avatar')}`}
+                                  value={avatar}
+                                  onChange={handleAvatarChange}
                                   InputProps={{
                                       startAdornment: (
                                           <InputAdornment position='start'>
@@ -446,8 +446,8 @@ const Agents = () => {
                                       )
                                   }}
                                   size="small"
-                                  error={!!avatorError}
-                                  helperText={avatorError}
+                                  error={!!avatarError}
+                                  helperText={avatarError}
                               />
                             </Typography>
                           </TableCell>

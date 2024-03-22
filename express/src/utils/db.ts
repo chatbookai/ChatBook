@@ -230,7 +230,7 @@ export async function initChatBookDb() {
                 description TEXT not null,
                 tags TEXT not null,
                 config TEXT not null,
-                avator TEXT not null,
+                avatar TEXT not null,
                 author TEXT not null,
                 createDate TEXT not null,
                 status INTEGER not null default 1,

@@ -79,7 +79,7 @@ const ChatLeft = (props: any) => {
             >
               <ListItemAvatar sx={{ m: 0 }} onClick={() => handleChatClick(Item.id, Item.title, Item)} >
                   <MuiAvatar
-                    src={Item.avatar? Item.avatar : '/images/avatars/1.png'}
+                    src={Item.avator? Item.avator : '/images/avatars/1.png'}
                     alt={Item.title}
                     sx={{
                       width: 38,

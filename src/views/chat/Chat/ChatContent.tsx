@@ -95,7 +95,7 @@ const ChatContent = (props: any) => {
                       }
                     >
                       <MuiAvatar
-                        src={agent.avatar? agent.avatar : '/images/avatars/1.png'}
+                        src={agent.avator? agent.avator : '/images/avatars/1.png'}
                         alt={chatName}
                         sx={{ width: '2.375rem', height: '2.375rem' }}
                       />

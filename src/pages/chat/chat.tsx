@@ -54,17 +54,17 @@ const AppChat = () => {
         setLlms(RS.data)
         setChatId(RS.data[0].model)
         setChatName(RS.data[0].title)
-        getChatLogList(RS.data[0].id)
+        getChatLogList(RS.data[0].id, RS.data[0].config)
         setAgent(RS.data[0])
       }
     }
   }
 
-  const getChatLogList = async function (agentId: number | string) {
+  const getChatLogList = async function (agentId: number | string, agentTemplate: string) {
     if (auth && auth.user) {
       const RS = await axios.get(authConfig.backEndApiChatBook + '/api/chatlog/agent/' + agentId + '/' + auth.user.id + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       if(RS['data'])  {
-        const ChatChatInitList = ChatChatInit(RS['data'].reverse())
+        const ChatChatInitList = ChatChatInit(RS['data'].reverse(), agentTemplate)
         setHistoryCounter(ChatChatInitList.length)
         const selectedChat = {
           "chat": {
@@ -118,7 +118,7 @@ const AppChat = () => {
   const setActiveId = function (Id: string, Name: string, agent: any) {
     setChatId(agent.model)
     setChatName(Name)
-    getChatLogList(Id)
+    getChatLogList(Id, "您好, 我是 " + agent.title + ", " + agent.description + "，让我们开始对话吧！")
     setRefreshChatCounter(refreshChatCounter + 1)
     setAgent(agent)
   }

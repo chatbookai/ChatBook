@@ -183,8 +183,20 @@ export function DeleteChatChatHistory(UserId: number, knowledgeId: number | stri
     }
 }
 
-export function ChatChatInit(MsgList: any) {
+export function ChatChatInit(MsgList: any, PromptTemplate: string) {
     const ChatLogList: any = []
+    if(PromptTemplate && PromptTemplate!= "") {
+        ChatLogList.push({
+            "message": PromptTemplate,
+            "time": Date.now(),
+            "senderId": 999999,
+            "feedback": {
+                "isSent": true,
+                "isDelivered": true,
+                "isSeen": true
+            }
+        })
+    }
     MsgList.map((Item: any)=>{
         ChatLogList.push({
             "message": Item.send,
@@ -207,6 +219,7 @@ export function ChatChatInit(MsgList: any) {
             }
           })
     })
+    console.log("MsgList", MsgList)
     window.localStorage.setItem(ChatChat, JSON.stringify(ChatLogList))
 
     return ChatLogList

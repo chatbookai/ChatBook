@@ -50,7 +50,7 @@ const AppChat = () => {
     if (auth && auth.user) {
       const RS = await axios.get(authConfig.backEndApiChatBook + '/api/chatlog/agent/' + knowledgeId + '/' + auth.user.id + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       if(RS['data'])  {
-        const ChatChatInitList = ChatChatInit(RS['data'].reverse())
+        const ChatChatInitList = ChatChatInit(RS['data'].reverse(), "")
         const selectedChat = {
           "chat": {
               "id": 1,

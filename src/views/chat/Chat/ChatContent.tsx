@@ -127,7 +127,7 @@ const ChatContent = (props: any) => {
                 <ChatLog hidden={hidden} data={{ ...store.selectedChat, userContact: store.userProfile }} chatId={chatId} chatName={chatName} agent={agent} rowInMsg={rowInMsg} maxRows={maxRows} />
               : 
                 <ChatLog hidden={hidden} data={{}} chatId={chatId} chatName={chatName} agent={agent} rowInMsg={rowInMsg} maxRows={maxRows} />
-                }
+              }
 
               <SendMsgForm store={store} sendMsg={sendMsg} sendButtonDisable={sendButtonDisable} sendButtonLoading={sendButtonLoading} sendButtonText={sendButtonText} sendInputText={sendInputText} rowInMsg={rowInMsg} handleSetRowInMsg={handleSetRowInMsg} maxRows={maxRows} />
 

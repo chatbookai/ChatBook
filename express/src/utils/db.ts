@@ -236,7 +236,7 @@ export async function initChatBookDb() {
                 status INTEGER not null default 1,
                 model TEXT not null default 'Gemini',
                 type INTEGER not null default 1,
-                userId TEXT not null
+                userId TEXT not null default 0
             );
         `);
         db.run(`

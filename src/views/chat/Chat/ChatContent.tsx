@@ -16,8 +16,6 @@ import Icon from 'src/@core/components/icon'
 import ChatLog from './ChatLog'
 import SendMsgForm from 'src/views/chat/Knowledge/SendMsgForm'
 
-import { GetAllLLMById } from 'src/functions/ChatBook'
-
 const ChatContent = (props: any) => {
   // ** Props
   const {

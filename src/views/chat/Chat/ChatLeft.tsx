@@ -32,6 +32,8 @@ const ChatLeft = (props: any) => {
   // ** Hook
   const { t } = useTranslation()
 
+  const [selectedItem, setSelectedItem] = useState<string>("")
+
   // ** Props
   const {
     llms,
@@ -53,7 +55,6 @@ const ChatLeft = (props: any) => {
   }, [chatId])
 
   const renderChats = () => {
-      const [selectedItem, setSelectedItem] = useState<string>("")
 
       return llms.map((Item: any, index: number) => {
         const activeCondition = active === Item.id

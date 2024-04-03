@@ -17,7 +17,6 @@ const AppChat = () => {
   const theme = useTheme()
   const { settings } = useSettings()
 
-
   // ** Vars
   const { skin } = settings
   

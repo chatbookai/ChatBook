@@ -138,8 +138,12 @@ let ChatBaiduWenxinModel: any = null
     }
     if(history && history.length > 0) {
       history.map((Item) => {
-        pastMessages.push(new HumanMessage(Item[0]))
-        pastMessages.push(new AIMessage(Item[1]))
+        if(Item[0]) {
+          pastMessages.push(new HumanMessage(Item[0]))
+        }
+        if(Item[1]) {
+          pastMessages.push(new AIMessage(Item[1]))
+        }
       })
     }
     const memory = new BufferMemory({
@@ -696,8 +700,12 @@ let ChatBaiduWenxinModel: any = null
     }
     if(history && history.length > 0) {
       history.map((Item) => {
-        pastMessages.push(new HumanMessage(Item[0]))
-        pastMessages.push(new AIMessage(Item[1]))
+        if(Item[0]) {
+          pastMessages.push(new HumanMessage(Item[0]))
+        }
+        if(Item[1]) {
+          pastMessages.push(new AIMessage(Item[1]))
+        }
       })
     }
     pastMessages.push(new HumanMessage(question))
@@ -793,8 +801,12 @@ let ChatBaiduWenxinModel: any = null
       }
       if(history && history.length > 0) {
         history.map((Item) => {
-          pastMessages.push(new HumanMessage(Item[0]))
-          pastMessages.push(new AIMessage(Item[1]))
+          if(Item[0]) {
+            pastMessages.push(new HumanMessage(Item[0]))
+          }
+          if(Item[1]) {
+            pastMessages.push(new AIMessage(Item[1]))
+          }
         })
       }
       pastMessages.push(new HumanMessage(question))

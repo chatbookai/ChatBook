@@ -69,6 +69,7 @@
     "i18next-http-backend": "2.2.0",
     "install": "^0.13.0",
     "jsonwebtoken": "^8.5.1",
+    "jszip": "^3.10.1",
     "keen-slider": "6.8.5",
     "langchain": "^0.1.7",
     "markdown-to-json": "^0.5.4",

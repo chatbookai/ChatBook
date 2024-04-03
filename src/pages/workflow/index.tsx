@@ -224,36 +224,8 @@ const AppChat = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
 
-  const sendMsg = async (Obj: any) => {
-    if(auth.user && auth.user.token)  {
-      setSendButtonDisable(true)
-      setSendButtonLoading(true)
-      setSendButtonText(t("Sending") as string)
-      setSendInputText(t("Answering...") as string)
-      setLastQuestion(Obj.message)
-      ChatChatInput(Obj.message, auth.user.id)
-      setRefreshChatCounter(refreshChatCounter + 1)
-      const ChatChatOutputStatus = await ChatChatOutput(Obj.message, auth.user.token, auth.user.id, chatId, 0, setProcessingMessage, Obj.template, setFinishedMessage)
-      if(ChatChatOutputStatus) {
-        setSendButtonDisable(false)
-        setSendButtonLoading(false)
-        setRefreshChatCounter(refreshChatCounter + 2)
-        setSendButtonText(t("Send") as string)
-        setSendInputText(t("Your message...") as string)  
-      }
-    }
-  }
-
   // ** Vars
   const { skin } = settings
-  const mdAbove = useMediaQuery(theme.breakpoints.up('md'))
-  const statusObj: StatusObjType = {
-    busy: 'error',
-    away: 'warning',
-    online: 'success',
-    offline: 'secondary'
-  }
-
   
   return (
     <Fragment>

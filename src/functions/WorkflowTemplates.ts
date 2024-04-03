@@ -8,7 +8,7 @@ import {
   DatasetSearchModule,
   Dataset_SEARCH_DESC
 } from 'src/functions/core/module/template/system/datasetSearch';
-import { getNanoid } from './string.tools';
+import { getNanoid } from 'src/functions/string.tools';
 
 export async function postForm2Modules(data: AppSimpleEditFormType) {
   function userGuideTemplate(formData: AppSimpleEditFormType): ModuleItemType[] {

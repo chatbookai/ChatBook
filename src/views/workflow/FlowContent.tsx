@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import ReactFlow, {
   useNodesState,
   useEdgesState,
@@ -18,77 +18,9 @@ import ButtonEdge from './ButtonEdge';
 import SelfConnectingEdge from './SelfConnectingEdge';
 import BiDirectionalEdge from './BiDirectionalEdge';
 import BiDirectionalNode from './BiDirectionalNode';
-
-const initialNodes: Node[] = [
-  {
-    id: 'button-1',
-    type: 'input',
-    data: { label: 'Button Edge 1' },
-    position: { x: 125, y: 0 },
-  },
-  {
-    id: 'button-2',
-    data: { label: 'Button Edge 2' },
-    position: { x: 125, y: 200 },
-  },
-  {
-    id: 'bi-1',
-    data: { label: 'Bi Directional 1' },
-    position: { x: 0, y: 300 },
-    type: 'bidirectional',
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-  },
-  {
-    id: 'bi-2',
-    data: { label: 'Bi Directional 2' },
-    position: { x: 250, y: 300 },
-    type: 'bidirectional',
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-  },
-  {
-    id: 'self-1',
-    data: { label: 'Self Connecting' },
-    position: { x: 125, y: 500 },
-    sourcePosition: Position.Right,
-    targetPosition: Position.Left,
-  },
-];
-
-const initialEdges: Edge[] = [
-  {
-    id: 'edge-button',
-    source: 'button-1',
-    target: 'button-2',
-    type: 'buttonedge',
-  },
-  {
-    id: 'edge-bi-1',
-    source: 'bi-1',
-    target: 'bi-2',
-    type: 'bidirectional',
-    sourceHandle: 'right',
-    targetHandle: 'left',
-    markerEnd: { type: MarkerType.ArrowClosed },
-  },
-  {
-    id: 'edge-bi-2',
-    source: 'bi-2',
-    target: 'bi-1',
-    type: 'bidirectional',
-    sourceHandle: 'left',
-    targetHandle: 'right',
-    markerEnd: { type: MarkerType.ArrowClosed },
-  },
-  {
-    id: 'edge-self',
-    source: 'self-1',
-    target: 'self-1',
-    type: 'selfconnecting',
-    markerEnd: { type: MarkerType.Arrow },
-  },
-];
+import { workflowData, initialNodes, initialEdges } from './workflowData'
+import { appModule2FlowEdge, appModule2FlowNode } from 'src/functions/utils/adapt';
+import { ModuleItemType } from 'src/functions/core/module/type.d';
 
 const edgeTypes = {
   bidirectional: BiDirectionalEdge,
@@ -101,10 +33,21 @@ const nodeTypes = {
 };
 
 const EdgesFlow = () => {
-  const [nodes, , onNodesChange] = useNodesState(initialNodes);
+  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
-
+  
   const onConnect = useCallback((params: any) => setEdges((eds) => addEdge(params, eds)), []);
+ 
+  useEffect(()=>{
+    const modules: ModuleItemType[] = workflowData.modules
+    const edges = appModule2FlowEdge({modules})
+    setEdges(edges)
+    const nodes = modules.map((item: any) => appModule2FlowNode({ item }))
+    setNodes(nodes)
+    console.log("workflowData", workflowData.modules)
+    console.log("edges", edges)
+    console.log("nodes", nodes)
+  }, [])
 
   return (
     <ReactFlow

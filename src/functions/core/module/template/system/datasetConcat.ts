@@ -12,7 +12,7 @@ import {
 } from '../../constants';
 import { Input_Template_Dataset_Quote, Input_Template_Switch } from '../input';
 import { Output_Template_Finish } from '../output';
-import { getNanoid } from '../../../../common/string/tools';
+import { getNanoid } from 'src/functions/string.tools';
 
 export const getOneQuoteInputTemplate = (key = getNanoid()) => ({
   ...Input_Template_Dataset_Quote,

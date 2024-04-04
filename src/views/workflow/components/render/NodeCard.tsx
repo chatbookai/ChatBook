@@ -55,10 +55,10 @@ const NodeCard = (props: Props) => {
   // custom title edit
   const { onOpenModal, EditModal: EditTitleModal }: any = {};
   const { openConfirm: onOpenConfirmSync, ConfirmModal: ConfirmSyncModal } = useConfirm({
-    content: t('module.Confirm Sync Plugin')
+    content: t('module.Confirm Sync Plugin') as string
   });
   const { openConfirm: onOpenConfirmDeleteNode, ConfirmModal: ConfirmDeleteModal } = useConfirm({
-    content: t('core.module.Confirm Delete Node'),
+    content: t('core.module.Confirm Delete Node') as string,
     type: 'delete'
   });
 
@@ -67,7 +67,8 @@ const NodeCard = (props: Props) => {
     [isTool, nodes]
   );
   const moduleIsTool = useMemo(() => {
-    const { isTool } = splitToolInputs([], moduleId);
+    console.log("moduleId", moduleId)
+    const isTool = true
     return isTool;
   }, [moduleId, splitToolInputs]);
 
@@ -95,7 +96,7 @@ const NodeCard = (props: Props) => {
                   } catch (e) {
                     return toast({
                       status: 'error',
-                      title: getErrText(e, t('plugin.Get Plugin Module Detail Failed'))
+                      title: getErrText(e, t('plugin.Get Plugin Module Detail Failed') as string)
                     });
                   }
                   setLoading(false);
@@ -111,7 +112,7 @@ const NodeCard = (props: Props) => {
               onClick: () =>
                 onOpenModal({
                   defaultVal: name,
-                  onSuccess: (e) => {
+                  onSuccess: (e: any) => {
                     if (!e) {
                       return toast({
                         title: t('app.modules.Title is required'),

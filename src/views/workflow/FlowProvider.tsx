@@ -149,20 +149,13 @@ import {
       return;
     },
     initData: function (modules: ModuleItemType[]): void {
-      throw new Error('Function not implemented.');
     },
     onResetNode: function (e): void {
-      throw new Error('Function not implemented.');
     },
     splitToolInputs: function (
       inputs: FlowNodeInputItemType[],
       moduleId: string
-    ): {
-      isTool: boolean;
-      toolInputs: FlowNodeInputItemType[];
-      commonInputs: FlowNodeInputItemType[];
-    } {
-      throw new Error('Function not implemented.');
+    ) {
     },
     hasToolNode: false
   });

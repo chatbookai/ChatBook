@@ -28,10 +28,10 @@ const NodeUserGuide = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
           <Box pt={4} pb={2}>
             <ChatStartVariable data={data} />
           </Box>
-          <Box pt={3} borderTop={theme.borders.base}>
+          <Box pt={3}>
             <TTSGuide data={data} />
           </Box>
-          <Box mt={3} pt={3} borderTop={theme.borders.base}>
+          <Box mt={3} pt={3}>
             <QuestionGuide data={data} />
           </Box>
         </Container>

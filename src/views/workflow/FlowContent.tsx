@@ -21,29 +21,32 @@ import ButtonEdge from './ButtonEdge';
 import SelfConnectingEdge from './SelfConnectingEdge';
 import BiDirectionalEdge from './BiDirectionalEdge';
 import BiDirectionalNode from './BiDirectionalNode';
+
+import NodeSimple from './nodes/NodeSimple';
+import NodeQuestionInput from 'src/views/workflow/nodes/NodeQuestionInput';
 import { workflowData, initialNodes, initialEdges } from './workflowData'
+//import { appModule2FlowEdge, appModule2FlowNode } from 'src/functions/Workflow';
+
 import { appModule2FlowEdge, appModule2FlowNode } from 'src/functions/utils/adapt';
+
 import { ModuleItemType } from 'src/functions/core/module/type.d';
 
 import { useToast } from 'src/functions/web/hooks/useToast';
 import { useTranslation } from 'next-i18next';
-import dynamic from 'next/dynamic';
 
-import { EDGE_TYPE, FlowNodeTypeEnum } from 'src/functions/core/module/node/constant';
-import { FlowModuleItemType } from 'src/functions/core/module/type';
-
-const edgeTypes1 = {
+const edgeTypes = {
   bidirectional: BiDirectionalEdge,
   selfconnecting: SelfConnectingEdge,
   buttonedge: ButtonEdge,
 };
 
-const nodeTypes1 = {
-  bidirectional: BiDirectionalNode,
+const nodeTypes = {
+  nodeSimple: NodeSimple,
+  questionInput: NodeQuestionInput
 };
 
-const NodeSimple = dynamic(() => import('src/views/workflow/components/nodes/NodeSimple'));
-const nodeTypes: Record<`${FlowNodeTypeEnum}`, any> = {
+/*
+const nodeTypes2: Record<`${FlowNodeTypeEnum}`, any> = {
   [FlowNodeTypeEnum.userGuide]: dynamic(() => import('src/views/workflow/components/nodes/NodeUserGuide')),
   [FlowNodeTypeEnum.questionInput]: dynamic(() => import('src/views/workflow/components/nodes/NodeQuestionInput')),
   [FlowNodeTypeEnum.historyNode]: NodeSimple,
@@ -67,17 +70,17 @@ const nodeTypes: Record<`${FlowNodeTypeEnum}`, any> = {
     <NodeSimple {...data} minW={'100px'} maxW={'300px'} />
   )
 };
+*/
 
-const edgeTypes = {
-  [EDGE_TYPE]: ButtonEdge
+const edgeTypes2 = {
 };
 
 const EdgesFlow = () => {
   const { toast } = useToast();
   const { t } = useTranslation();
 
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   
   const onConnect = useCallback((params: any) => setEdges((eds) => addEdge(params, eds)), []);
 
@@ -101,13 +104,13 @@ const EdgesFlow = () => {
  
   useEffect(()=>{
     const modules: ModuleItemType[] = workflowData.modules
-    const edges = appModule2FlowEdge({modules})
+    const edges = appModule2FlowEdge(modules)
     setEdges(edges)
-    const nodes = modules.map((item: any) => appModule2FlowNode({ item }))
+    const nodes = modules.map((item: any) => appModule2FlowNode(item))
     setNodes(nodes)
-    console.log("workflowData", workflowData.modules)
     console.log("edges", edges)
-    console.log("nodes", nodes)
+    console.log("nodes modules", workflowData.modules)
+    console.log("nodes nodes", nodes)
   }, [])
 
   return (

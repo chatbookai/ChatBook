@@ -6,11 +6,7 @@ import { EDGE_TYPE } from 'src/functions/core/module/node/constant';
 import { UserInputModule } from 'src/functions/core/module/template/system/userInput';
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 6);
 
-export const appModule2FlowNode = ({
-  item
-}: {
-  item: ModuleItemType;
-}): Node<FlowModuleItemType> => {
+export const appModule2FlowNode = (item: ModuleItemType): Node<FlowModuleItemType> => {
   // init some static data
   const template =
     moduleTemplatesFlat.find((template) => template.flowType === item.flowType) || UserInputModule;
@@ -55,7 +51,7 @@ export const appModule2FlowNode = ({
     position: item.position || { x: 0, y: 0 }
   };
 };
-export const appModule2FlowEdge = ({ modules }: { modules: ModuleItemType[] }) => {
+export const appModule2FlowEdge = ( modules : ModuleItemType[] ) => {
   const edges: Edge[] = [];
   modules.forEach((module) =>
     module.outputs.forEach((output) =>

@@ -1,16 +1,21 @@
-import MyIcon from '@fastgpt/web/components/common/Icon';
-import MyTooltip from '@/components/MyTooltip';
+import MyIcon from 'src/functions/web/components/common/Icon';
+import MyTooltip from 'src/components/MyTooltip';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import { Box, Button, Flex, ModalBody, useDisclosure, Image } from '@chakra-ui/react';
 import React, { useCallback, useMemo } from 'react';
 import { useTranslation } from 'next-i18next';
-import { TTSTypeEnum } from '@/constants/app';
 import type { AppTTSConfigType } from 'src/functions/core/module/type.d';
-import { useAudioPlay } from '@/web/common/utils/voice';
-import { useSystemStore } from '@/web/common/system/useSystemStore';
-import MyModal from '@fastgpt/web/components/common/MyModal';
-import MySlider from '@/components/Slider';
-import MySelect from '@fastgpt/web/components/common/MySelect';
+//import { useAudioPlay } from '@/web/common/utils/voice';
+import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
+import MyModal from 'src/functions/web/components/common/MyModal';
+import MySlider from 'src/components/Slider';
+import MySelect from 'src/functions/web/components/common/MySelect';
+
+enum TTSTypeEnum {
+  none = 'none',
+  web = 'web',
+  model = 'model'
+}
 
 const TTSSelect = ({
   value,
@@ -46,7 +51,7 @@ const TTSSelect = ({
     [formatValue, list, t]
   );
 
-  const { playAudio, cancelAudio, audioLoading, audioPlaying } = useAudioPlay({ ttsConfig: value });
+  const { playAudio, cancelAudio, audioLoading, audioPlaying } : any = {};
 
   const onclickChange = useCallback(
     (e: string) => {

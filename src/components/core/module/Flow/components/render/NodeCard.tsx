@@ -1,21 +1,21 @@
 import React, { useMemo } from 'react';
 import { Box, Button, Flex } from '@chakra-ui/react';
-import MyIcon from '@fastgpt/web/components/common/Icon';
-import Avatar from '@/components/Avatar';
+import MyIcon from 'src/functions/web/components/common/Icon';
+import Avatar from 'src/components/Avatar';
 import type { FlowModuleItemType } from 'src/functions/core/module/type.d';
 import { useTranslation } from 'next-i18next';
-import { useEditTitle } from '@/web/common/hooks/useEditTitle';
-import { useToast } from '@fastgpt/web/hooks/useToast';
+//import { useEditTitle } from '@/web/common/hooks/useEditTitle';
+import { useToast } from 'src/functions/web/hooks/useToast';
 import { onChangeNode, onCopyNode, onResetNode, useFlowProviderStore } from '../../FlowProvider';
 import { FlowNodeTypeEnum } from 'src/functions/core/module/node/constant';
 import { ModuleInputKeyEnum } from 'src/functions/core/module/constants';
-import { useSystemStore } from '@/web/common/system/useSystemStore';
-import { getPreviewPluginModule } from '@/web/core/plugin/api';
+import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
+//import { getPreviewPluginModule } from '@/web/core/plugin/api';
 import { getErrText } from 'src/functions/common/error/utils';
-import { useConfirm } from '@fastgpt/web/hooks/useConfirm';
+import { useConfirm } from 'src/functions/web/hooks/useConfirm';
 import { LOGO_ICON } from 'src/functions/common/system/constants';
 import { ToolTargetHandle } from './ToolHandle';
-import { useEditTextarea } from '@fastgpt/web/hooks/useEditTextarea';
+import { useEditTextarea } from 'src/functions/web/hooks/useEditTextarea';
 import TriggerAndFinish from './RenderInput/templates/TriggerAndFinish';
 
 type Props = FlowModuleItemType & {
@@ -53,10 +53,7 @@ const NodeCard = (props: Props) => {
     canEmpty: false
   });
   // custom title edit
-  const { onOpenModal, EditModal: EditTitleModal } = useEditTitle({
-    title: t('common.Custom Title'),
-    placeholder: t('app.module.Custom Title Tip') || ''
-  });
+  const { onOpenModal, EditModal: EditTitleModal }: any = {};
   const { openConfirm: onOpenConfirmSync, ConfirmModal: ConfirmSyncModal } = useConfirm({
     content: t('module.Confirm Sync Plugin')
   });
@@ -90,7 +87,7 @@ const NodeCard = (props: Props) => {
                 onOpenConfirmSync(async () => {
                   try {
                     setLoading(true);
-                    const pluginModule = await getPreviewPluginModule(pluginId);
+                    const pluginModule = {};
                     onResetNode({
                       id: moduleId,
                       module: pluginModule

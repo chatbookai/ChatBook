@@ -11,10 +11,10 @@ import {
   FlowNodeOutputTypeEnum
 } from 'src/functions/core/module/node/constant';
 import Container from '../modules/Container';
-import MyIcon from '@fastgpt/web/components/common/Icon';
-import MyTooltip from '@/components/MyTooltip';
+import MyIcon from 'src/functions/web/components/common/Icon';
+import MyTooltip from 'src/components/MyTooltip';
 import TargetHandle from '../render/TargetHandle';
-import { useToast } from '@fastgpt/web/hooks/useToast';
+import { useToast } from 'src/functions/web/hooks/useToast';
 import {
   EditNodeFieldType,
   FlowNodeInputItemType,

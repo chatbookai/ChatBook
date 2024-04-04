@@ -23,22 +23,22 @@ import {
 import { ModuleInputKeyEnum } from 'src/functions/core/module/constants';
 import { onChangeNode, useFlowProviderStore } from '../../../FlowProvider';
 import { useTranslation } from 'next-i18next';
-import Tabs from '@/components/Tabs';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import Tabs from 'src/components/Tabs';
+import MyIcon from 'src/functions/web/components/common/Icon';
 import { FlowNodeInputItemType } from 'src/functions/core/module/node/type';
-import { useToast } from '@fastgpt/web/hooks/useToast';
-import MyTooltip from '@fastgpt/web/components/common/MyTooltip';
+import { useToast } from 'src/functions/web/hooks/useToast';
+import MyTooltip from 'src/functions/web/components/common/MyTooltip';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
-import JSONEditor from '@fastgpt/web/components/common/Textarea/JsonEditor';
+import JSONEditor from 'src/functions/web/components/common/Textarea/JsonEditor';
 import {
   formatEditorVariablePickerIcon,
   getGuideModule,
   splitGuideModule
 } from 'src/functions/core/module/utils';
-import { EditorVariablePickerType } from '@fastgpt/web/components/common/Textarea/PromptEditor/type';
-import HttpInput from '@fastgpt/web/components/common/Input/HttpInput';
+import { EditorVariablePickerType } from 'src/functions/web/components/common/Textarea/PromptEditor/type';
+import HttpInput from 'src/functions/web/components/common/Input/HttpInput';
 import dynamic from 'next/dynamic';
-import MySelect from '@fastgpt/web/components/common/MySelect';
+import MySelect from 'src/functions/web/components/common/MySelect';
 import RenderToolInput from '../../render/RenderToolInput';
 const CurlImportModal = dynamic(() => import('./CurlImportModal'));
 

@@ -4,10 +4,10 @@ import { Flex, FlexProps, Image, css, useTheme } from '@chakra-ui/react';
 import { ChatSiteItemType } from 'src/functions/core/chat/type';
 import { AppTTSConfigType } from 'src/functions/core/module/type';
 import { OutLinkChatAuthProps } from 'src/functions/support/permission/chat';
-import MyTooltip from '@fastgpt/web/components/common/MyTooltip';
+import MyTooltip from 'src/functions/web/components/common/MyTooltip';
 import React from 'react';
 import { useTranslation } from 'next-i18next';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import MyIcon from 'src/functions/web/components/common/Icon';
 import { formatChatValue2InputType } from '../utils';
 import { ChatRoleEnum } from 'src/functions/core/chat/constants';
 

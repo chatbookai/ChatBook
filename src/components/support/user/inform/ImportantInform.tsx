@@ -1,10 +1,10 @@
 import { UserInformSchema } from 'src/functions/support/user/inform/type';
 import React from 'react';
 import { Box, Flex } from '@chakra-ui/react';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import MyIcon from 'src/functions/web/components/common/Icon';
 import { CloseIcon } from '@chakra-ui/icons';
 import { readInform } from '@/web/support/user/inform/api';
-import { useRequest } from '@fastgpt/web/hooks/useRequest';
+import { useRequest } from 'src/functions/web/hooks/useRequest';
 
 const ImportantInform = ({
   informs,

@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react';
-import { useSystemStore } from '@/web/common/system/useSystemStore';
+import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
 import { LLMModelTypeEnum, llmModelTypeFilterMap } from 'src/functions/core/ai/constants';
 import { Box, Button, useDisclosure } from '@chakra-ui/react';
 import { SettingAIDataType } from 'src/functions/core/module/node/type';
-import AISettingModal from '@/components/core/ai/AISettingModal';
-import Avatar from '@/components/Avatar';
+import AISettingModal from 'src/components/core/ai/AISettingModal';
+import Avatar from 'src/components/Avatar';
 import { HUGGING_FACE_ICON } from 'src/functions/common/system/constants';
 
 type Props = {

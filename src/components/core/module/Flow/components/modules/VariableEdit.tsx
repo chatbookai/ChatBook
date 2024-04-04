@@ -27,17 +27,17 @@ import {
 import { QuestionOutlineIcon, SmallAddIcon } from '@chakra-ui/icons';
 import { VariableInputEnum, variableMap } from 'src/functions/core/module/constants';
 import type { VariableItemType } from 'src/functions/core/module/type.d';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import MyIcon from 'src/functions/web/components/common/Icon';
 import { useForm } from 'react-hook-form';
 import { useFieldArray } from 'react-hook-form';
 import { customAlphabet } from 'nanoid';
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 6);
-import MyModal from '@fastgpt/web/components/common/MyModal';
-import MyTooltip from '@/components/MyTooltip';
+import MyModal from 'src/functions/web/components/common/MyModal';
+import MyTooltip from 'src/components/MyTooltip';
 import { variableTip } from 'src/functions/core/module/template/tip';
 import { useTranslation } from 'next-i18next';
-import { useToast } from '@fastgpt/web/hooks/useToast';
-import MyRadio from '@/components/common/MyRadio';
+import { useToast } from 'src/functions/web/hooks/useToast';
+import MyRadio from 'src/components/common/MyRadio';
 import { formatEditorVariablePickerIcon } from 'src/functions/core/module/utils';
 
 const VariableEdit = ({

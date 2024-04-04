@@ -6,8 +6,8 @@ import { Box, Button, Card, Input, Textarea } from '@chakra-ui/react';
 import ChatAvatar from './ChatAvatar';
 import { MessageCardStyle } from '../constants';
 import { VariableInputEnum } from 'src/functions/core/module/constants';
-import MySelect from '@fastgpt/web/components/common/MySelect';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import MySelect from 'src/functions/web/components/common/MySelect';
+import MyIcon from 'src/functions/web/components/common/Icon';
 import { ChatBoxInputFormType } from '../type.d';
 
 const VariableInput = ({

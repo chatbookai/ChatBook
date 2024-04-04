@@ -29,20 +29,20 @@ import {
 } from '@/web/support/openapi/api';
 import type { EditApiKeyProps } from '@/global/support/openapi/api.d';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { useLoading } from '@fastgpt/web/hooks/useLoading';
+import { useLoading } from 'src/functions/web/hooks/useLoading';
 import dayjs from 'dayjs';
 import { AddIcon, QuestionOutlineIcon } from '@chakra-ui/icons';
 import { useCopyData } from '@/web/common/hooks/useCopyData';
-import { useSystemStore } from '@/web/common/system/useSystemStore';
+import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
 import { useTranslation } from 'next-i18next';
-import MyIcon from '@fastgpt/web/components/common/Icon';
-import MyModal from '@fastgpt/web/components/common/MyModal';
+import MyIcon from 'src/functions/web/components/common/Icon';
+import MyModal from 'src/functions/web/components/common/MyModal';
 import { useForm } from 'react-hook-form';
-import { useRequest } from '@fastgpt/web/hooks/useRequest';
-import MyTooltip from '@/components/MyTooltip';
-import { getDocPath } from '@/web/common/system/doc';
-import MyMenu from '@/components/MyMenu';
-import { useConfirm } from '@fastgpt/web/hooks/useConfirm';
+import { useRequest } from 'src/functions/web/hooks/useRequest';
+import MyTooltip from 'src/components/MyTooltip';
+import { getDocPath } from 'src/functions/web/common/system/doc';
+import MyMenu from 'src/components/MyMenu';
+import { useConfirm } from 'src/functions/web/hooks/useConfirm';
 
 type EditProps = EditApiKeyProps & { _id?: string };
 const defaultEditData: EditProps = {

@@ -8,7 +8,7 @@ import RemarkBreaks from 'remark-breaks';
 import { EventNameEnum, eventBus } from '@/web/common/utils/eventbus';
 
 import 'katex/dist/katex.min.css';
-import styles from '../index.module.scss';
+//import styles from './index.module.scss';
 import Image from '../img/Image';
 
 function MyLink(e: any) {

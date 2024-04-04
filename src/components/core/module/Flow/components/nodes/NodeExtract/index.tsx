@@ -21,7 +21,7 @@ import RenderInput from '../../render/RenderInput';
 import Divider from '../../modules/Divider';
 import type { ContextExtractAgentItemType } from 'src/functions/core/module/type';
 import RenderOutput from '../../render/RenderOutput';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import MyIcon from 'src/functions/web/components/common/Icon';
 import ExtractFieldModal, { defaultField } from './ExtractFieldModal';
 import { ModuleInputKeyEnum } from 'src/functions/core/module/constants';
 import { FlowNodeOutputTypeEnum } from 'src/functions/core/module/node/constant';

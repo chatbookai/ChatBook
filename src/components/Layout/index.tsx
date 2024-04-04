@@ -1,21 +1,21 @@
 import React, { useEffect, useMemo } from 'react';
 import { Box, useColorMode, Flex } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { useLoading } from '@fastgpt/web/hooks/useLoading';
-import { useSystemStore } from '@/web/common/system/useSystemStore';
+import { useLoading } from 'src/functions/web/hooks/useLoading';
+import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
 import { throttle } from 'lodash';
 import { useQuery } from '@tanstack/react-query';
-import { useUserStore } from '@/web/support/user/useUserStore';
+const useUserStore : any = {}
 import { getUnreadCount } from '@/web/support/user/inform/api';
 import dynamic from 'next/dynamic';
 
 import Auth from './auth';
 import Navbar from './navbar';
 import NavbarPhone from './navbarPhone';
-const UpdateInviteModal = dynamic(() => import('@/components/support/user/team/UpdateInviteModal'));
-const NotSufficientModal = dynamic(() => import('@/components/support/wallet/NotSufficientModal'));
-const SystemMsgModal = dynamic(() => import('@/components/support/user/inform/SystemMsgModal'));
-const ImportantInform = dynamic(() => import('@/components/support/user/inform/ImportantInform'));
+const UpdateInviteModal = dynamic(() => import('src/components/support/user/team/UpdateInviteModal'));
+const NotSufficientModal = dynamic(() => import('src/components/support/wallet/NotSufficientModal'));
+const SystemMsgModal = dynamic(() => import('src/components/support/user/inform/SystemMsgModal'));
+const ImportantInform = dynamic(() => import('src/components/support/user/inform/ImportantInform'));
 
 const pcUnShowLayoutRoute: Record<string, boolean> = {
   '/': true,

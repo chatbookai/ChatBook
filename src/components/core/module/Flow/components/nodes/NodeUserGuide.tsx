@@ -8,13 +8,13 @@ import { welcomeTextTip } from 'src/functions/core/module/template/tip';
 import { onChangeNode } from '../../FlowProvider';
 
 import VariableEdit from '../modules/VariableEdit';
-import MyIcon from '@fastgpt/web/components/common/Icon';
-import MyTooltip from '@/components/MyTooltip';
+import MyIcon from 'src/functions/web/components/common/Icon';
+import MyTooltip from 'src/components/MyTooltip';
 import Container from '../modules/Container';
 import NodeCard from '../render/NodeCard';
 import type { VariableItemType } from 'src/functions/core/module/type.d';
-import QGSwitch from '@/components/core/module/Flow/components/modules/QGSwitch';
-import TTSSelect from '@/components/core/module/Flow/components/modules/TTSSelect';
+import QGSwitch from 'src/components/core/module/Flow/components/modules/QGSwitch';
+import TTSSelect from 'src/components/core/module/Flow/components/modules/TTSSelect';
 import { splitGuideModule } from 'src/functions/core/module/utils';
 import { useTranslation } from 'next-i18next';
 

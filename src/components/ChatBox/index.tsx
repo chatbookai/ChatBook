@@ -17,7 +17,7 @@ import type {
   UserChatItemValueItemType
 } from 'src/functions/core/chat/type.d';
 import type { ChatHistoryItemResType } from 'src/functions/core/chat/type.d';
-import { useToast } from '@fastgpt/web/hooks/useToast';
+import { useToast } from 'src/functions/web/hooks/useToast';
 import { getErrText } from 'src/functions/common/error/utils';
 import { Box, Flex, Checkbox } from '@chakra-ui/react';
 import { EventNameEnum, eventBus } from '@/web/common/utils/eventbus';
@@ -27,7 +27,7 @@ import { VariableInputEnum } from 'src/functions/core/module/constants';
 import { DispatchNodeResponseKeyEnum } from 'src/functions/core/module/runtime/constants';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
-import { useSystemStore } from '@/web/common/system/useSystemStore';
+import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
 import { useTranslation } from 'next-i18next';
 import {
   closeCustomFeedback,

@@ -24,8 +24,8 @@ import React, {
   useMemo
 } from 'react';
 import { customAlphabet } from 'nanoid';
-import { appModule2FlowEdge, appModule2FlowNode } from '@/utils/adapt';
-import { useToast } from '@fastgpt/web/hooks/useToast';
+import { appModule2FlowEdge, appModule2FlowNode } from 'src/functions/utils/adapt';
+import { useToast } from 'src/functions/web/hooks/useToast';
 import { EDGE_TYPE, FlowNodeTypeEnum } from 'src/functions/core/module/node/constant';
 import {
   ModuleIOValueTypeEnum,
@@ -34,7 +34,29 @@ import {
 } from 'src/functions/core/module/constants';
 import { useTranslation } from 'next-i18next';
 import { ModuleItemType } from 'src/functions/core/module/type.d';
-import { EventNameEnum, eventBus } from '@/web/common/utils/eventbus';
+
+enum EventNameEnum {
+  sendQuestion = 'sendQuestion',
+  editQuestion = 'editQuestion',
+  requestFlowEvent = 'requestFlowEvent',
+  requestFlowStore = 'requestFlowStore',
+  receiveFlowStore = 'receiveFlowStore'
+}
+type EventNameType = `${EventNameEnum}`;
+
+const eventBus = {
+  list: new Map<EventNameType, Function>(),
+  on: function (name: EventNameType, fn: Function) {
+    this.list.set(name, fn);
+  },
+  emit: function (name: EventNameType, data: Record<string, any> = {}) {
+    const fn = this.list.get(name);
+    fn && fn(data);
+  },
+  off: function (name: EventNameType) {
+    this.list.delete(name);
+  }
+};
 
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 6);
 

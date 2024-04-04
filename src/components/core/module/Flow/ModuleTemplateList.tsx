@@ -5,28 +5,27 @@ import type {
   moduleTemplateListType
 } from 'src/functions/core/module/type.d';
 import { useViewport, XYPosition } from 'reactflow';
-import { useSystemStore } from '@/web/common/system/useSystemStore';
-import Avatar from '@/components/Avatar';
+import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
+import Avatar from 'src/components/Avatar';
 import { onSetNodes, useFlowProviderStore } from './FlowProvider';
 import { customAlphabet } from 'nanoid';
-import { appModule2FlowNode } from '@/utils/adapt';
+import { appModule2FlowNode } from 'src/functions/utils/adapt';
 import { useTranslation } from 'next-i18next';
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 6);
-import EmptyTip from '@/components/EmptyTip';
+import EmptyTip from 'src/components/EmptyTip';
 import { FlowNodeTypeEnum } from 'src/functions/core/module/node/constant';
-import { getPreviewPluginModule } from '@/web/core/plugin/api';
-import { useToast } from '@fastgpt/web/hooks/useToast';
+import { useToast } from 'src/functions/web/hooks/useToast';
 import { getErrText } from 'src/functions/common/error/utils';
 import { moduleTemplatesList } from 'src/functions/core/module/template/constants';
-import RowTabs from '@fastgpt/web/components/common/Tabs/RowTabs';
-import { useWorkflowStore } from '@/web/core/workflow/store/workflow';
-import { useRequest } from '@fastgpt/web/hooks/useRequest';
-import ParentPaths from '@/components/common/ParentPaths';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import RowTabs from 'src/functions/web/components/common/Tabs/RowTabs';
+import { useRequest } from 'src/functions/web/hooks/useRequest';
+import ParentPaths from 'src/components/common/ParentPaths';
+import MyIcon from 'src/functions/web/components/common/Icon';
 import { useRouter } from 'next/router';
 import { PluginTypeEnum } from 'src/functions/core/plugin/constants';
 import { useQuery } from '@tanstack/react-query';
 import { debounce } from 'lodash';
+import { useWorkflowStore } from 'src/functions/core/workflow/workflowstore';
 
 type ModuleTemplateListProps = {
   isOpen: boolean;
@@ -252,7 +251,7 @@ const RenderList = React.memo(function RenderList({
           // get plugin preview module
           if (template.flowType === FlowNodeTypeEnum.pluginModule) {
             setLoading(true);
-            const res = await getPreviewPluginModule(template.id);
+            const res = {};
 
             setLoading(false);
             return res;

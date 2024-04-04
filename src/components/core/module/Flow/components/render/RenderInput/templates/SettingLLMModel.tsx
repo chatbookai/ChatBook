@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import type { RenderInputProps } from '../type';
 import { onChangeNode } from '../../../../FlowProvider';
 import { SettingAIDataType } from 'src/functions/core/module/node/type';
-import SettingLLMModel from '@/components/core/ai/SettingLLMModel';
+import SettingLLMModel from 'src/components/core/ai/SettingLLMModel';
 import { ModuleInputKeyEnum } from 'src/functions/core/module/constants';
 
 const SelectAiModelRender = ({ item, inputs = [], moduleId }: RenderInputProps) => {

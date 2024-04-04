@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { Box, BoxProps } from '@chakra-ui/react';
 import { Handle, Position } from 'reactflow';
-import { FlowValueTypeMap } from '@/web/core/workflow/constants/dataType';
-import MyTooltip from '@/components/MyTooltip';
+import { FlowValueTypeMap } from 'src/functions/core/workflow/dataType';
+import MyTooltip from 'src/components/MyTooltip';
 import { useTranslation } from 'next-i18next';
 import { ModuleIOValueTypeEnum } from 'src/functions/core/module/constants';
 

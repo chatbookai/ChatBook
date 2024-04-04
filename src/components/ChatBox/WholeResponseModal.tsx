@@ -5,7 +5,7 @@ import { useTranslation } from 'next-i18next';
 import { moduleTemplatesFlat } from 'src/functions/core/module/template/constants';
 
 import Tabs from '../Tabs';
-import MyModal from '@fastgpt/web/components/common/MyModal';
+import MyModal from 'src/functions/web/components/common/MyModal';
 import MyTooltip from '../MyTooltip';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import Markdown from '../Markdown';

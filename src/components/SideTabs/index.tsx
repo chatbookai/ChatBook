@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { Box, Flex } from '@chakra-ui/react';
 import type { GridProps } from '@chakra-ui/react';
-import MyIcon from '@fastgpt/web/components/common/Icon';
-import type { IconNameType } from '@fastgpt/web/components/common/Icon/type.d';
+import MyIcon from 'src/functions/web/components/common/Icon';
+import type { IconNameType } from 'src/functions/web/components/common/Icon/type.d';
 
 // @ts-ignore
 export interface Props extends GridProps {

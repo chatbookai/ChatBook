@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react';
-import MyModal from '@fastgpt/web/components/common/MyModal';
+import MyModal from 'src/functions/web/components/common/MyModal';
 import type { EditFieldModalProps } from './type.d';
 import { useTranslation } from 'next-i18next';
 import {
@@ -14,9 +14,9 @@ import {
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { defaultEditFormData } from './constants';
-import MySelect from '@fastgpt/web/components/common/MySelect';
-import { useRequest } from '@fastgpt/web/hooks/useRequest';
-import { useToast } from '@fastgpt/web/hooks/useToast';
+import MySelect from 'src/functions/web/components/common/MySelect';
+import { useRequest } from 'src/functions/web/hooks/useRequest';
+import { useToast } from 'src/functions/web/hooks/useToast';
 import { onChangeNode } from '../../../FlowProvider';
 import { FlowNodeInputItemType } from 'src/functions/core/module/node/type';
 

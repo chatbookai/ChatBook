@@ -1,4 +1,4 @@
-import { useSystemStore } from '@/web/common/system/useSystemStore';
+import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
 import { Flex, Table, Thead, Tbody, Tr, Th, Td, TableContainer } from '@chakra-ui/react';
 import {
   DatasetSearchModeEnum,
@@ -6,7 +6,7 @@ import {
 } from 'src/functions/core/dataset/constants';
 import { useTranslation } from 'next-i18next';
 import React, { useMemo } from 'react';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import MyIcon from 'src/functions/web/components/common/Icon';
 
 const SearchParamsTip = ({
   searchMode,

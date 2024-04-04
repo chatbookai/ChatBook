@@ -1,6 +1,6 @@
 import { Box, Flex, Grid } from '@chakra-ui/react';
-import MdImage from '@/components/Markdown/img/Image';
-import { UserInputFileItemType } from '@/components/ChatBox/type';
+import MdImage from 'src/components/Markdown/img/Image';
+import { UserInputFileItemType } from 'src/components/ChatBox/type';
 
 const FilesBlock = ({ files }: { files: UserInputFileItemType[] }) => {
   return (

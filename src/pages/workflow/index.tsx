@@ -9,7 +9,7 @@ import { useTheme } from '@mui/material/styles'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Chat App Components Imports
-import FlowContent from 'src/views/workflow/FlowContent'
+import FlowContent from 'src/components/core/module/Flow/index'
 
 const AppChat = () => {
 

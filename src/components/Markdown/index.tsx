@@ -6,14 +6,14 @@ import RemarkBreaks from 'remark-breaks';
 import RehypeKatex from 'rehype-katex';
 import RemarkGfm from 'remark-gfm';
 
-import styles from './index.module.scss';
+//import styles from './index.module.scss';
 import dynamic from 'next/dynamic';
 
 import { Link, Button } from '@chakra-ui/react';
 import MyTooltip from '../MyTooltip';
 import { useTranslation } from 'next-i18next';
 import { EventNameEnum, eventBus } from '@/web/common/utils/eventbus';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import MyIcon from 'src/functions/web/components/common/Icon';
 import { getFileAndOpen } from '@/web/core/dataset/utils';
 import { MARKDOWN_QUOTE_SIGN } from 'src/functions/core/chat/constants';
 

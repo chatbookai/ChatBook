@@ -1,10 +1,10 @@
-import MyModal from '@fastgpt/web/components/common/MyModal';
+import MyModal from 'src/functions/web/components/common/MyModal';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 import { Box, ModalBody, ModalFooter } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { checkBalancePayResult } from '@/web/support/wallet/bill/api';
-import { useToast } from '@fastgpt/web/hooks/useToast';
+import { useToast } from 'src/functions/web/hooks/useToast';
 import { useRouter } from 'next/router';
 import { getErrText } from 'src/functions/common/error/utils';
 

@@ -9,10 +9,10 @@ import {
   TextareaProps,
   useDisclosure
 } from '@chakra-ui/react';
-import MyTooltip from '@/components/MyTooltip';
+import MyTooltip from 'src/components/MyTooltip';
 import { useTranslation } from 'next-i18next';
-import MyIcon from '@fastgpt/web/components/common/Icon';
-import MyModal from '@fastgpt/web/components/common/MyModal';
+import MyIcon from 'src/functions/web/components/common/Icon';
+import MyModal from 'src/functions/web/components/common/MyModal';
 
 type Props = TextareaProps & {
   title?: string;

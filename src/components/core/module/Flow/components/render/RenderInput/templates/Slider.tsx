@@ -3,7 +3,7 @@ import type { RenderInputProps } from '../type';
 import { onChangeNode } from '../../../../FlowProvider';
 import { useTranslation } from 'next-i18next';
 import { Box } from '@chakra-ui/react';
-import MySlider from '@/components/Slider';
+import MySlider from 'src/components/Slider';
 
 const SliderRender = ({ item, moduleId }: RenderInputProps) => {
   const { t } = useTranslation();

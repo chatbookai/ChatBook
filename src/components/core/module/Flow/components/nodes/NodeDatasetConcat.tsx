@@ -15,11 +15,11 @@ import {
 import { getOneQuoteInputTemplate } from 'src/functions/core/module/template/system/datasetConcat';
 import { onChangeNode, useFlowProviderStore } from '../../FlowProvider';
 import TargetHandle from '../render/TargetHandle';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import MyIcon from 'src/functions/web/components/common/Icon';
 import SourceHandle from '../render/SourceHandle';
 import { FlowNodeTypeEnum } from 'src/functions/core/module/node/constant';
-import { useSystemStore } from '@/web/common/system/useSystemStore';
-import MySlider from '@/components/Slider';
+import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
+import MySlider from 'src/components/Slider';
 import { FlowNodeInputItemType } from 'src/functions/core/module/node/type';
 
 const NodeDatasetConcat = ({ data, selected }: NodeProps<FlowModuleItemType>) => {

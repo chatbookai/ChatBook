@@ -1,7 +1,7 @@
 import { Box, Card } from '@chakra-ui/react';
 import React from 'react';
 import { MessageCardStyle } from '../constants';
-import Markdown from '@/components/Markdown';
+import Markdown from 'src/components/Markdown';
 import ChatAvatar from './ChatAvatar';
 
 const WelcomeBox = ({ appAvatar, welcomeText }: { appAvatar?: string; welcomeText: string }) => {

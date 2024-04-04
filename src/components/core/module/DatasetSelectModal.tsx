@@ -10,17 +10,17 @@ import {
   Grid,
   Divider
 } from '@chakra-ui/react';
-import Avatar from '@/components/Avatar';
+import Avatar from 'src/components/Avatar';
 import type { SelectedDatasetType } from 'src/functions/core/module/api.d';
-import { useToast } from '@fastgpt/web/hooks/useToast';
-import MyTooltip from '@/components/MyTooltip';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import { useToast } from 'src/functions/web/hooks/useToast';
+import MyTooltip from 'src/components/MyTooltip';
+import MyIcon from 'src/functions/web/components/common/Icon';
 import { DatasetTypeEnum } from 'src/functions/core/dataset/constants';
 import { useTranslation } from 'next-i18next';
-import { useDatasetStore } from '@/web/core/dataset/store/dataset';
-import DatasetSelectContainer, { useDatasetSelect } from '@/components/core/dataset/SelectModal';
-import { useLoading } from '@fastgpt/web/hooks/useLoading';
-import EmptyTip from '@/components/EmptyTip';
+const useDatasetStore : any = {}
+import DatasetSelectContainer, { useDatasetSelect } from 'src/components/core/dataset/SelectModal';
+import { useLoading } from 'src/functions/web/hooks/useLoading';
+import EmptyTip from 'src/components/EmptyTip';
 
 export const DatasetSelectModal = ({
   isOpen,

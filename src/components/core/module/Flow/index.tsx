@@ -17,7 +17,7 @@ import ModuleTemplateList from './ModuleTemplateList';
 import { useFlowProviderStore } from './FlowProvider';
 
 import 'reactflow/dist/style.css';
-import { useToast } from '@fastgpt/web/hooks/useToast';
+import { useToast } from 'src/functions/web/hooks/useToast';
 import { useTranslation } from 'next-i18next';
 import { FlowModuleItemType } from 'src/functions/core/module/type';
 

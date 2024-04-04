@@ -1,5 +1,5 @@
-import MyIcon from '@fastgpt/web/components/common/Icon';
-import MyTooltip from '@/components/MyTooltip';
+import MyIcon from 'src/functions/web/components/common/Icon';
+import MyTooltip from 'src/components/MyTooltip';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import { Box, Flex, Switch, type SwitchProps } from '@chakra-ui/react';
 import React from 'react';

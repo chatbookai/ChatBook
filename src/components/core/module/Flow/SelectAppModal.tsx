@@ -1,12 +1,11 @@
 import React, { useMemo } from 'react';
 import { ModalBody, Flex, Box, useTheme, ModalFooter, Button } from '@chakra-ui/react';
-import MyModal from '@fastgpt/web/components/common/MyModal';
+import MyModal from 'src/functions/web/components/common/MyModal';
 import { useQuery } from '@tanstack/react-query';
 import type { SelectAppItemType } from 'src/functions/core/module/type';
-import Avatar from '@/components/Avatar';
+import Avatar from 'src/components/Avatar';
 import { useTranslation } from 'next-i18next';
-import { useLoading } from '@fastgpt/web/hooks/useLoading';
-import { useAppStore } from '@/web/core/app/store/useAppStore';
+import { useLoading } from 'src/functions/web/hooks/useLoading';
 
 const SelectAppModal = ({
   defaultApps = [],
@@ -25,15 +24,9 @@ const SelectAppModal = ({
   const { Loading } = useLoading();
   const theme = useTheme();
   const [selectedApps, setSelectedApps] = React.useState<string[]>(defaultApps);
-  /* 加载模型 */
-  const { myApps, loadMyApps } = useAppStore();
-  const { isLoading } = useQuery(['loadMyApos'], () => loadMyApps());
 
-  const apps = useMemo(
-    () => myApps.filter((app) => !filterAppIds.includes(app._id)),
-    [myApps, filterAppIds]
-  );
-
+  const apps: any = {}
+  
   return (
     <MyModal
       isOpen

@@ -9,12 +9,12 @@ import React, {
   ForwardedRef
 } from 'react';
 import { Box, Flex, IconButton } from '@chakra-ui/react';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import MyIcon from 'src/functions/web/components/common/Icon';
 import { streamFetch } from '@/web/common/api/fetch';
-import MyTooltip from '@/components/MyTooltip';
-import { useUserStore } from '@/web/support/user/useUserStore';
-import ChatBox from '@/components/ChatBox';
-import type { ComponentRef, StartChatFnProps } from '@/components/ChatBox/type.d';
+import MyTooltip from 'src/components/MyTooltip';
+const useUserStore : any = {}
+import ChatBox from 'src/components/ChatBox';
+import type { ComponentRef, StartChatFnProps } from 'src/components/ChatBox/type.d';
 import { getGuideModule } from 'src/functions/core/module/utils';
 import { checkChatSupportSelectFileByModules } from '@/web/core/chat/utils';
 import { ModuleInputKeyEnum } from 'src/functions/core/module/constants';

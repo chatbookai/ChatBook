@@ -1,4 +1,4 @@
-import Markdown from '@/components/Markdown';
+import Markdown from 'src/components/Markdown';
 import { useMarkdown } from '@/web/common/hooks/useMarkdown';
 import { Box, Card } from '@chakra-ui/react';
 import React from 'react';

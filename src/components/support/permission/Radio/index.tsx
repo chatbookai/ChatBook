@@ -1,5 +1,5 @@
 import React from 'react';
-import MyRadio from '@/components/common/MyRadio';
+import MyRadio from 'src/components/common/MyRadio';
 import { PermissionTypeEnum } from 'src/functions/support/permission/constant';
 import { useTranslation } from 'next-i18next';
 

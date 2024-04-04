@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { Box, Flex } from '@chakra-ui/react';
-import Icon from '@fastgpt/web/components/common/Icon';
+import Icon from 'src/functions/web/components/common/Icon';
 import { useCopyData } from '@/web/common/hooks/useCopyData';
 import { useTranslation } from 'next-i18next';
 

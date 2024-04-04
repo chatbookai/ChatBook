@@ -10,17 +10,17 @@ import {
   Textarea
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
-import MyModal from '@fastgpt/web/components/common/MyModal';
+import MyModal from 'src/functions/web/components/common/MyModal';
 import { DYNAMIC_INPUT_KEY, ModuleIOValueTypeEnum } from 'src/functions/core/module/constants';
 import { useTranslation } from 'next-i18next';
-import { FlowValueTypeMap } from '@/web/core/workflow/constants/dataType';
+import { FlowValueTypeMap } from 'src/functions/core/workflow/dataType';
 import {
   FlowNodeInputTypeEnum,
   FlowNodeOutputTypeEnum
 } from 'src/functions/core/module/node/constant';
 import { EditInputFieldMap, EditNodeFieldType } from 'src/functions/core/module/node/type.d';
-import { useToast } from '@fastgpt/web/hooks/useToast';
-import MySelect from '@fastgpt/web/components/common/MySelect';
+import { useToast } from 'src/functions/web/hooks/useToast';
+import MySelect from 'src/functions/web/components/common/MySelect';
 
 const FieldEditModal = ({
   editField = {

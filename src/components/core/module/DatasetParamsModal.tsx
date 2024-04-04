@@ -13,22 +13,22 @@ import {
 } from '@chakra-ui/react';
 import { useForm } from 'react-hook-form';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
-import MySlider from '@/components/Slider';
-import MyTooltip from '@/components/MyTooltip';
-import MyModal from '@fastgpt/web/components/common/MyModal';
+import MySlider from 'src/components/Slider';
+import MyTooltip from 'src/components/MyTooltip';
+import MyModal from 'src/functions/web/components/common/MyModal';
 import { DatasetSearchModeEnum } from 'src/functions/core/dataset/constants';
 import { useTranslation } from 'next-i18next';
-import { useSystemStore } from '@/web/common/system/useSystemStore';
+import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
 
 import { ModuleInputKeyEnum } from 'src/functions/core/module/constants';
 import { DatasetSearchModeMap } from 'src/functions/core/dataset/constants';
-import MyRadio from '@/components/common/MyRadio';
-import MyIcon from '@fastgpt/web/components/common/Icon';
-import Tabs from '@/components/Tabs';
-import PromptEditor from '@fastgpt/web/components/common/Textarea/PromptEditor';
-import { useUserStore } from '@/web/support/user/useUserStore';
-import { useToast } from '@fastgpt/web/hooks/useToast';
-import SelectAiModel from '@/components/Select/AIModelSelector';
+import MyRadio from 'src/components/common/MyRadio';
+import MyIcon from 'src/functions/web/components/common/Icon';
+import Tabs from 'src/components/Tabs';
+import PromptEditor from 'src/functions/web/components/common/Textarea/PromptEditor';
+const useUserStore : any = {}
+import { useToast } from 'src/functions/web/hooks/useToast';
+import SelectAiModel from 'src/components/Select/AIModelSelector';
 
 export type DatasetParamsProps = {
   searchMode: `${DatasetSearchModeEnum}`;

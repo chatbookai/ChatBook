@@ -16,9 +16,10 @@ import ChatController, { type ChatControllerProps } from './ChatController';
 import ChatAvatar from './ChatAvatar';
 import { MessageCardStyle } from '../constants';
 import { formatChatValue2InputType } from '../utils';
-import Markdown, { CodeClassName } from '@/components/Markdown';
-import styles from '../index.module.scss';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import Markdown, { CodeClassName } from 'src/components/Markdown';
+
+//import styles from '../index.module.scss';
+import MyIcon from 'src/functions/web/components/common/Icon';
 import {
   ChatItemValueTypeEnum,
   ChatRoleEnum,

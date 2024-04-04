@@ -2,21 +2,21 @@ import React, { useEffect, useMemo, useState } from 'react';
 import type { RenderInputProps } from '../type';
 import { getFlowStore, onChangeNode, useFlowProviderStoreType } from '../../../../FlowProvider';
 import { Box, Button, Flex, Grid, useDisclosure, useTheme } from '@chakra-ui/react';
-import { useDatasetStore } from '@/web/core/dataset/store/dataset';
+const useDatasetStore : any = {}
 import { SelectedDatasetType } from 'src/functions/core/module/api';
-import Avatar from '@/components/Avatar';
+import Avatar from 'src/components/Avatar';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'next-i18next';
 import { DatasetSearchModeEnum } from 'src/functions/core/dataset/constants';
 import { FlowNodeTypeEnum } from 'src/functions/core/module/node/constant';
 import { ModuleInputKeyEnum } from 'src/functions/core/module/constants';
-import { useSystemStore } from '@/web/common/system/useSystemStore';
+import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
 
 import dynamic from 'next/dynamic';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import MyIcon from 'src/functions/web/components/common/Icon';
 
-const DatasetSelectModal = dynamic(() => import('@/components/core/module/DatasetSelectModal'));
-const DatasetParamsModal = dynamic(() => import('@/components/core/module/DatasetParamsModal'));
+const DatasetSelectModal = dynamic(() => import('src/components/core/module/DatasetSelectModal'));
+const DatasetParamsModal = dynamic(() => import('src/components/core/module/DatasetParamsModal'));
 
 const SelectDatasetRender = ({ inputs = [], item, moduleId }: RenderInputProps) => {
   const { t } = useTranslation();

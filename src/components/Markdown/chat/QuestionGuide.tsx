@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 import { Box, Flex, useTheme } from '@chakra-ui/react';
 import 'katex/dist/katex.min.css';
-import ChatBoxDivider from '@/components/core/chat/Divider';
+import ChatBoxDivider from 'src/components/core/chat/Divider';
 import { useTranslation } from 'next-i18next';
 import { EventNameEnum, eventBus } from '@/web/common/utils/eventbus';
-import MyTooltip from '@/components/MyTooltip';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import MyTooltip from 'src/components/MyTooltip';
+import MyIcon from 'src/functions/web/components/common/Icon';
 
 const QuestionGuide = ({ text }: { text: string }) => {
   const theme = useTheme();

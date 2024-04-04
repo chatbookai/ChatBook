@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import MyModal from '@fastgpt/web/components/common/MyModal';
+import MyModal from 'src/functions/web/components/common/MyModal';
 import { useTranslation } from 'next-i18next';
 import { useQuery } from '@tanstack/react-query';
 import { DragHandleIcon } from '@chakra-ui/icons';
@@ -26,9 +26,9 @@ import {
   useDisclosure,
   MenuButton
 } from '@chakra-ui/react';
-import MyIcon from '@fastgpt/web/components/common/Icon';
-import Avatar from '@/components/Avatar';
-import { useUserStore } from '@/web/support/user/useUserStore';
+import MyIcon from 'src/functions/web/components/common/Icon';
+import Avatar from 'src/components/Avatar';
+const useUserStore : any = {}
 import {
   TeamMemberRoleEnum,
   TeamMemberRoleMap,
@@ -36,14 +36,14 @@ import {
   TeamMemberStatusMap
 } from 'src/functions/support/user/team/constant';
 import dynamic from 'next/dynamic';
-import { useRequest } from '@fastgpt/web/hooks/useRequest';
+import { useRequest } from 'src/functions/web/hooks/useRequest';
 import { setToken } from '@/web/support/user/auth';
-import { useLoading } from '@fastgpt/web/hooks/useLoading';
+import { useLoading } from 'src/functions/web/hooks/useLoading';
 import { FormDataType, defaultForm } from './EditModal';
-import MyMenu from '@/components/MyMenu';
-import { useConfirm } from '@fastgpt/web/hooks/useConfirm';
-import { useToast } from '@fastgpt/web/hooks/useToast';
-import { useSystemStore } from '@/web/common/system/useSystemStore';
+import MyMenu from 'src/components/MyMenu';
+import { useConfirm } from 'src/functions/web/hooks/useConfirm';
+import { useToast } from 'src/functions/web/hooks/useToast';
+import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
 
 const EditModal = dynamic(() => import('./EditModal'));
 const InviteModal = dynamic(() => import('./InviteModal'));

@@ -1,4 +1,4 @@
-import { getErrText } from '../error/utils';
+import { getErrText } from 'src/functions/common/error/utils';
 import { countPromptTokens } from './tiktoken';
 
 /**

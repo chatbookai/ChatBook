@@ -1,11 +1,9 @@
-import { getDatasets, getDatasetPaths } from '@/web/core/dataset/api';
-import MyModal from '@fastgpt/web/components/common/MyModal';
-import { useQuery } from '@tanstack/react-query';
+import MyModal from 'src/functions/web/components/common/MyModal';
 import React, { Dispatch, useMemo, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { Box } from '@chakra-ui/react';
-import ParentPaths from '@/components/common/ParentPaths';
-import MyBox from '@/components/common/MyBox';
+import ParentPaths from 'src/components/common/ParentPaths';
+import MyBox from 'src/components/common/MyBox';
 
 type PathItemType = {
   parentId: string;
@@ -70,18 +68,14 @@ const DatasetSelectContainer = ({
 export function useDatasetSelect() {
   const [parentId, setParentId] = useState<string>('');
 
-  const { data, isFetching } = useQuery(['loadDatasetData', parentId], () =>
-    Promise.all([getDatasets({ parentId }), getDatasetPaths(parentId)])
-  );
-
-  const paths = useMemo(() => [...(data?.[1] || [])], [data]);
+  const paths = useMemo(() => [], []);
 
   return {
     parentId,
     setParentId,
-    datasets: data?.[0] || [],
+    datasets: [],
     paths,
-    isFetching
+    isFetching: false
   };
 }
 

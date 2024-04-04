@@ -6,12 +6,12 @@ import { useTranslation } from 'next-i18next';
 import { DatasetSearchModeEnum } from 'src/functions/core/dataset/constants';
 import { FlowNodeTypeEnum } from 'src/functions/core/module/node/constant';
 import { ModuleInputKeyEnum } from 'src/functions/core/module/constants';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import MyIcon from 'src/functions/web/components/common/Icon';
 import DatasetParamsModal, {
   DatasetParamsProps
-} from '@/components/core/module/DatasetParamsModal';
-import { useSystemStore } from '@/web/common/system/useSystemStore';
-import SearchParamsTip from '@/components/core/dataset/SearchParamsTip';
+} from 'src/components/core/module/DatasetParamsModal';
+import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
+import SearchParamsTip from 'src/components/core/dataset/SearchParamsTip';
 
 const SelectDatasetParam = ({ inputs = [], moduleId }: RenderInputProps) => {
   const { nodes } = useFlowProviderStore();

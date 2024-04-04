@@ -16,7 +16,7 @@ import {
   Flex
 } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import MyIcon from 'src/functions/web/components/common/Icon';
 import dynamic from 'next/dynamic';
 import { defaultEditFormData } from './constants';
 import { onChangeNode } from '../../../FlowProvider';

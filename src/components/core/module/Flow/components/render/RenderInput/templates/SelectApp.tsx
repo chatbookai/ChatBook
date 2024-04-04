@@ -3,7 +3,7 @@ import type { RenderInputProps } from '../type';
 import { onChangeNode, useFlowProviderStore } from '../../../../FlowProvider';
 import { Box, Button, Flex, useDisclosure, useTheme } from '@chakra-ui/react';
 import { SelectAppItemType } from 'src/functions/core/module/type';
-import Avatar from '@/components/Avatar';
+import Avatar from 'src/components/Avatar';
 import SelectAppModal from '../../../../SelectAppModal';
 import { useTranslation } from 'next-i18next';
 

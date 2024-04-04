@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import type { RenderInputProps } from '../type';
 import { onChangeNode, useFlowProviderStore } from '../../../../FlowProvider';
 import { useTranslation } from 'next-i18next';
-import JSONEditor from '@fastgpt/web/components/common/Textarea/JsonEditor';
+import JSONEditor from 'src/functions/web/components/common/Textarea/JsonEditor';
 import {
   formatEditorVariablePickerIcon,
   getGuideModule,

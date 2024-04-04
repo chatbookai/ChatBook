@@ -4,10 +4,10 @@ import { useTranslation } from 'next-i18next';
 import { onChangeNode, useFlowProviderStoreType } from '../../../FlowProvider';
 import { FlowNodeInputTypeEnum } from 'src/functions/core/module/node/constant';
 import { Box, Flex } from '@chakra-ui/react';
-import MyTooltip from '@/components/MyTooltip';
+import MyTooltip from 'src/components/MyTooltip';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import TargetHandle from '../TargetHandle';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import MyIcon from 'src/functions/web/components/common/Icon';
 
 import dynamic from 'next/dynamic';
 

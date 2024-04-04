@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
-import MyModal from '@fastgpt/web/components/common/MyModal';
+import MyModal from 'src/functions/web/components/common/MyModal';
 import {
   Button,
   ModalFooter,
@@ -13,11 +13,11 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { getTeamList, updateInviteResult } from '@/web/support/user/team/api';
 import { TeamMemberStatusEnum } from 'src/functions/support/user/team/constant';
-import Avatar from '@/components/Avatar';
-import { useRequest } from '@fastgpt/web/hooks/useRequest';
-import { useToast } from '@fastgpt/web/hooks/useToast';
-import { useConfirm } from '@fastgpt/web/hooks/useConfirm';
-import { useSystemStore } from '@/web/common/system/useSystemStore';
+import Avatar from 'src/components/Avatar';
+import { useRequest } from 'src/functions/web/hooks/useRequest';
+import { useToast } from 'src/functions/web/hooks/useToast';
+import { useConfirm } from 'src/functions/web/hooks/useConfirm';
+import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
 
 const UpdateInviteModal = () => {
   const { t } = useTranslation();

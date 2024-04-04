@@ -2,9 +2,9 @@ import { EditNodeFieldType, FlowNodeOutputItemType } from 'src/functions/core/mo
 import React, { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import { Box, Flex } from '@chakra-ui/react';
-import MyIcon from '@fastgpt/web/components/common/Icon';
+import MyIcon from 'src/functions/web/components/common/Icon';
 import { onChangeNode } from '../../../FlowProvider';
-import MyTooltip from '@/components/MyTooltip';
+import MyTooltip from 'src/components/MyTooltip';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import SourceHandle from '../SourceHandle';
 import { FlowNodeOutputTypeEnum } from 'src/functions/core/module/node/constant';

@@ -1,13 +1,12 @@
 import React from 'react';
 import { Tooltip, TooltipProps } from '@chakra-ui/react';
-import { useSystemStore } from '@/web/common/system/useSystemStore';
 
 interface Props extends TooltipProps {
   forceShow?: boolean;
 }
 
 const MyTooltip = ({ children, forceShow = false, shouldWrapChildren = true, ...props }: Props) => {
-  const { isPc } = useSystemStore();
+  const isPc = true;
   return isPc || forceShow ? (
     <Tooltip
       className="tooltip"

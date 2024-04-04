@@ -1,7 +1,7 @@
 import { Box, Flex } from '@chakra-ui/react';
 import React from 'react';
-import MyIcon from '@fastgpt/web/components/common/Icon';
-import type { IconNameType } from '@fastgpt/web/components/common/Icon/type.d';
+import MyIcon from 'src/functions/web/components/common/Icon';
+import type { IconNameType } from 'src/functions/web/components/common/Icon/type.d';
 
 const ChatBoxDivider = ({ icon, text }: { icon: IconNameType; text: string }) => {
   return (

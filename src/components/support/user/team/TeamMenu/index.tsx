@@ -1,11 +1,11 @@
 import React from 'react';
 import { Box, Button, Flex, Image, useDisclosure, useTheme } from '@chakra-ui/react';
-import { useUserStore } from '@/web/support/user/useUserStore';
+const useUserStore : any = {}
 import { useTranslation } from 'next-i18next';
-import MyTooltip from '@/components/MyTooltip';
+import MyTooltip from 'src/components/MyTooltip';
 import dynamic from 'next/dynamic';
-import { useSystemStore } from '@/web/common/system/useSystemStore';
-import { useToast } from '@fastgpt/web/hooks/useToast';
+import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
+import { useToast } from 'src/functions/web/hooks/useToast';
 
 const TeamManageModal = dynamic(() => import('../TeamManageModal'));
 

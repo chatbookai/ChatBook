@@ -1,9 +1,6 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useCallback, useMemo, useState, useEffect } from 'react';
 import { Box, Flex, IconButton, Input, InputGroup, InputLeftElement } from '@chakra-ui/react';
-import type {
-  FlowNodeTemplateType,
-  moduleTemplateListType
-} from 'src/functions/core/module/type.d';
+import type { FlowNodeTemplateType, moduleTemplateListType } from 'src/functions/core/module/type.d';
 import { useViewport, XYPosition } from 'reactflow';
 import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
 import Avatar from 'src/components/Avatar';
@@ -23,7 +20,6 @@ import ParentPaths from 'src/components/common/ParentPaths';
 import MyIcon from 'src/functions/web/components/common/Icon';
 import { useRouter } from 'next/router';
 import { PluginTypeEnum } from 'src/functions/core/plugin/constants';
-import { useQuery } from '@tanstack/react-query';
 import { debounce } from 'lodash';
 import { useWorkflowStore } from 'src/functions/core/workflow/workflowstore';
 
@@ -65,35 +61,26 @@ const ModuleTemplateList = ({ isOpen, onClose }: ModuleTemplateListProps) => {
     const map = {
       [TemplateTypeEnum.basic]: basicNodeTemplates,
       [TemplateTypeEnum.systemPlugin]: systemNodeTemplates,
-      [TemplateTypeEnum.teamPlugin]: teamPluginNodeTemplates.filter((item) =>
-        searchKey ? item.pluginType !== PluginTypeEnum.folder : true
-      )
+      [TemplateTypeEnum.teamPlugin]: teamPluginNodeTemplates
     };
     return JSON.stringify(map[templateType]);
   }, [basicNodeTemplates, searchKey, systemNodeTemplates, teamPluginNodeTemplates, templateType]);
 
-  const { mutate: onChangeTab } = useRequest({
+  const { mutate: any } = useRequest({
     mutationFn: async (e: any) => {
-      const val = e as TemplateTypeEnum;
-      if (val === TemplateTypeEnum.systemPlugin) {
-        await loadSystemNodeTemplates();
-      } else if (val === TemplateTypeEnum.teamPlugin) {
-        await loadTeamPluginNodeTemplates({
-          parentId: currentParent?.parentId
-        });
-      }
+      loadSystemNodeTemplates();
       setTemplateType(val);
     },
     errorToast: t('core.module.templates.Load plugin error')
   });
 
-  useQuery(['teamNodeTemplate', currentParent?.parentId, searchKey], () =>
+  useEffect(() => {
     loadTeamPluginNodeTemplates({
       parentId: currentParent?.parentId,
       searchKey,
       init: true
     })
-  );
+  }, []);
 
   const Render = useMemo(() => {
     const parseTemplates = JSON.parse(templates) as FlowNodeTemplateType[];
@@ -148,7 +135,6 @@ const ModuleTemplateList = ({ isOpen, onClose }: ModuleTemplateListProps) => {
                 ]}
                 py={'5px'}
                 value={templateType}
-                onChange={onChangeTab}
               />
               {/* close icon */}
               <IconButton
@@ -211,7 +197,7 @@ const ModuleTemplateList = ({ isOpen, onClose }: ModuleTemplateListProps) => {
         </Flex>
       </>
     );
-  }, [currentParent, isOpen, onChangeTab, onClose, router, searchKey, t, templateType, templates]);
+  }, [currentParent, isOpen, onClose, router, searchKey, t, templateType, templates]);
 
   return Render;
 };

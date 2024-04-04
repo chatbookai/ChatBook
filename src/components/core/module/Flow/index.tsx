@@ -13,13 +13,15 @@ import { EDGE_TYPE, FlowNodeTypeEnum } from 'src/functions/core/module/node/cons
 import dynamic from 'next/dynamic';
 
 import ButtonEdge from './components/modules/ButtonEdge';
-import ModuleTemplateList from './ModuleTemplateList';
 import { useFlowProviderStore } from './FlowProvider';
+import ModuleTemplateList from './ModuleTemplateList';
 
 import 'reactflow/dist/style.css';
 import { useToast } from 'src/functions/web/hooks/useToast';
 import { useTranslation } from 'next-i18next';
 import { FlowModuleItemType } from 'src/functions/core/module/type';
+
+import { workflowData } from './workflowData';
 
 const NodeSimple = dynamic(() => import('./components/nodes/NodeSimple'));
 const nodeTypes: Record<`${FlowNodeTypeEnum}`, any> = {

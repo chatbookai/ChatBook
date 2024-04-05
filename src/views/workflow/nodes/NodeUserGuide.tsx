@@ -49,32 +49,17 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
         />
         <CardContent sx={{ pt: theme => `${theme.spacing(3)} !important` }}>
           <Grid container spacing={[5, 0]}>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                px: 4,
-                py: '10px',
-                position: 'relative',
-                borderTop: '2px solid',
-                width: '100%',
-              }}
-            >
-              {t(data.name) as string}
-              <Box position={'absolute'} top={'50%'} right={'-13px'}>
-                <Handle
-                  style={{
-                    width: '14px',
-                    height: '14px',
-                    borderWidth: '3.5px',
-                    backgroundColor: 'main.primary',
-                  }}
-                  type="source"
-                  id={moduleId}
-                  position={Position.Right}
-                />
-              </Box>
-            </Box>
+            {data && data.inputs && data.inputs.length>0 && data.inputs.map((item: any) => {
+                return (
+                    <Grid container spacing={[5, 0]}>
+                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            {item.key}
+                        </Box>
+                    </Grid>
+                    )
+            })
+
+            }
           </Grid>
         </CardContent>
       </Card>

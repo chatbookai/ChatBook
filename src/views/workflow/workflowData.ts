@@ -11,7 +11,7 @@ export const workflowData: any = {
     "modules": [
         {
             "moduleId": "userGuide",
-            "name": "core.module.template.User guide",
+            "name": "用户引导",
             "avatar": "/imgs/module/userGuide.png",
             "flowType": "userGuide",
             "position": {
@@ -61,7 +61,7 @@ export const workflowData: any = {
         },
         {
             "moduleId": "userChatInput",
-            "name": "core.module.template.Chat entrance",
+            "name": "对话入口",
             "avatar": "/imgs/module/userChatInput.png",
             "flowType": "questionInput",
             "position": {

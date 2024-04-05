@@ -1,6 +1,5 @@
 import { FlowNodeInputTypeEnum } from 'src/functions/workflow/constants';
 import { FlowNodeTemplateType } from 'src/functions/workflow/type.d';
-import { userGuideTip } from 'src/functions/workflow/template/tip';
 import { ModuleIOValueTypeEnum, ModuleInputKeyEnum, FlowNodeTemplateTypeEnum } from 'src/functions/workflow/constants';
 
 
@@ -33,7 +32,7 @@ export const UserGuideModule: FlowNodeTemplateType = {
   flowType: FlowNodeTypeEnum.userGuide,
   avatar: '/imgs/module/userGuide.png',
   name: '全局配置',
-  intro: userGuideTip,
+  intro: 'userGuideTip',
   inputs: [
     {
       key: ModuleInputKeyEnum.welcomeText,

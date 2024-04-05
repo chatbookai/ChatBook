@@ -1,7 +1,31 @@
-import { FlowNodeInputTypeEnum, FlowNodeTypeEnum } from 'src/functions/workflow/constants';
+import { FlowNodeInputTypeEnum } from 'src/functions/workflow/constants';
 import { FlowNodeTemplateType } from 'src/functions/workflow/type.d';
 import { userGuideTip } from 'src/functions/workflow/template/tip';
 import { ModuleIOValueTypeEnum, ModuleInputKeyEnum, FlowNodeTemplateTypeEnum } from 'src/functions/workflow/constants';
+
+
+export enum FlowNodeTypeEnum {
+  userGuide = 'userGuide',
+  questionInput = 'questionInput',
+  historyNode = 'historyNode',
+  chatNode = 'chatNode',
+
+  datasetSearchNode = 'datasetSearchNode',
+  datasetConcatNode = 'datasetConcatNode',
+
+  answerNode = 'answerNode',
+  classifyQuestion = 'classifyQuestion',
+  contentExtract = 'contentExtract',
+  httpRequest = 'httpRequest',
+  httpRequest468 = 'httpRequest468',
+  runApp = 'app',
+  pluginModule = 'pluginModule',
+  pluginInput = 'pluginInput',
+  pluginOutput = 'pluginOutput',
+  queryExtension = 'cfr',
+  tools = 'tools',
+  stopTool = 'stopTool'
+}
 
 export const UserGuideModule: FlowNodeTemplateType = {
   id: FlowNodeTypeEnum.userGuide,

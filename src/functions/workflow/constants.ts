@@ -1,78 +1,17 @@
+import type { moduleTemplateListType } from 'src/functions/workflow/type.d';
 
-import { UserGuideModule } from 'src/functions/workflow/system/userGuide';
-import { UserInputModule } from 'src/functions/workflow/system/userInput';
-import { AiChatModule } from 'src/functions/workflow/system/aiChat';
-import { DatasetSearchModule } from 'src/functions/workflow/system/datasetSearch';
-import { DatasetConcatModule } from 'src/functions/workflow/system/datasetConcat';
-import { AssignedAnswerModule } from 'src/functions/workflow/system/assignedAnswer';
-import { ClassifyQuestionModule } from 'src/functions/workflow/system/classifyQuestion';
-import { ContextExtractModule } from 'src/functions/workflow/system/contextExtract';
-import { HttpModule468 } from 'src/functions/workflow/system/http468';
+export enum FlowNodeTemplateTypeEnum {
+  userGuide = 'userGuide',
+  systemInput = 'systemInput',
+  tools = 'tools',
+  textAnswer = 'textAnswer',
+  functionCall = 'functionCall',
+  externalCall = 'externalCall',
 
-import { ToolModule } from 'src/functions/workflow/system/tools';
-import { StopToolNode } from 'src/functions/workflow/system/stopTool';
+  personalPlugin = 'personalPlugin',
 
-import { RunAppModule } from 'src/functions/workflow/system/runApp';
-import { PluginInputModule } from 'src/functions/workflow/system/pluginInput';
-import { PluginOutputModule } from 'src/functions/workflow/system/pluginOutput';
-import { RunPluginModule } from 'src/functions/workflow/system/runPlugin';
-import { AiQueryExtension } from 'src/functions/workflow/system/queryExtension';
-
-import type { FlowNodeTemplateType, moduleTemplateListType } from 'src/functions/workflow/type.d';
-
-/* app flow module templates */
-export const appSystemModuleTemplates: FlowNodeTemplateType[] = [
-  UserGuideModule,
-  UserInputModule,
-  AiChatModule,
-  AssignedAnswerModule,
-  DatasetSearchModule,
-  DatasetConcatModule,
-  RunAppModule,
-  ToolModule,
-  StopToolNode,
-  ClassifyQuestionModule,
-  ContextExtractModule,
-  HttpModule468,
-  AiQueryExtension
-];
-/* plugin flow module templates */
-export const pluginSystemModuleTemplates: FlowNodeTemplateType[] = [
-  PluginInputModule,
-  PluginOutputModule,
-  AiChatModule,
-  AssignedAnswerModule,
-  DatasetSearchModule,
-  DatasetConcatModule,
-  RunAppModule,
-  ToolModule,
-  StopToolNode,
-  ClassifyQuestionModule,
-  ContextExtractModule,
-  HttpModule468,
-  AiQueryExtension
-];
-
-/* all module */
-export const moduleTemplatesFlat: FlowNodeTemplateType[] = [
-  UserGuideModule,
-  UserInputModule,
-  AiChatModule,
-  DatasetSearchModule,
-  DatasetConcatModule,
-  AssignedAnswerModule,
-  ClassifyQuestionModule,
-  ContextExtractModule,
-  HttpModule468,
-  ToolModule,
-  StopToolNode,
-  AiChatModule,
-  RunAppModule,
-  PluginInputModule,
-  PluginOutputModule,
-  RunPluginModule,
-  AiQueryExtension
-];
+  other = 'other'
+}
 
 export const moduleTemplatesList: moduleTemplateListType = [
   {
@@ -185,18 +124,7 @@ export const moduleTemplatesList: moduleTemplateListType = [
   
   export const EDGE_TYPE = 'default';
   
-export enum FlowNodeTemplateTypeEnum {
-  userGuide = 'userGuide',
-  systemInput = 'systemInput',
-  tools = 'tools',
-  textAnswer = 'textAnswer',
-  functionCall = 'functionCall',
-  externalCall = 'externalCall',
 
-  personalPlugin = 'personalPlugin',
-
-  other = 'other'
-}
 
 export enum ModuleIOValueTypeEnum {
   string = 'string',
@@ -415,3 +343,168 @@ export enum SseResponseEventEnum {
     db = 'db'
   }
   
+  /* ------------ dataset -------------- */
+export enum DatasetTypeEnum {
+  folder = 'folder',
+  dataset = 'dataset',
+  websiteDataset = 'websiteDataset' // depp link
+}
+export const DatasetTypeMap = {
+  [DatasetTypeEnum.folder]: {
+    icon: 'common/folderFill',
+    label: 'core.dataset.Folder Dataset',
+    collectionLabel: 'common.Folder'
+  },
+  [DatasetTypeEnum.dataset]: {
+    icon: 'core/dataset/commonDataset',
+    label: 'core.dataset.Common Dataset',
+    collectionLabel: 'common.File'
+  },
+  [DatasetTypeEnum.websiteDataset]: {
+    icon: 'core/dataset/websiteDataset',
+    label: 'core.dataset.Website Dataset',
+    collectionLabel: 'common.Website'
+  }
+};
+
+export enum DatasetStatusEnum {
+  active = 'active',
+  syncing = 'syncing'
+}
+export const DatasetStatusMap = {
+  [DatasetStatusEnum.active]: {
+    label: 'core.dataset.status.active'
+  },
+  [DatasetStatusEnum.syncing]: {
+    label: 'core.dataset.status.syncing'
+  }
+};
+
+/* ------------ collection -------------- */
+export enum DatasetCollectionTypeEnum {
+  folder = 'folder',
+  file = 'file',
+  link = 'link', // one link
+  virtual = 'virtual'
+}
+export const DatasetCollectionTypeMap = {
+  [DatasetCollectionTypeEnum.folder]: {
+    name: 'core.dataset.folder'
+  },
+  [DatasetCollectionTypeEnum.file]: {
+    name: 'core.dataset.file'
+  },
+  [DatasetCollectionTypeEnum.link]: {
+    name: 'core.dataset.link'
+  },
+  [DatasetCollectionTypeEnum.virtual]: {
+    name: 'core.dataset.Manual collection'
+  }
+};
+
+export enum DatasetCollectionSyncResultEnum {
+  sameRaw = 'sameRaw',
+  success = 'success'
+}
+export const DatasetCollectionSyncResultMap = {
+  [DatasetCollectionSyncResultEnum.sameRaw]: {
+    label: 'core.dataset.collection.sync.result.sameRaw'
+  },
+  [DatasetCollectionSyncResultEnum.success]: {
+    label: 'core.dataset.collection.sync.result.success'
+  }
+};
+
+/* ------------ data -------------- */
+
+/* ------------ training -------------- */
+export enum ImportDataSourceEnum {
+  fileLocal = 'fileLocal',
+  fileLink = 'fileLink',
+  fileCustom = 'fileCustom',
+  csvTable = 'csvTable'
+}
+
+export enum TrainingModeEnum {
+  chunk = 'chunk',
+  auto = 'auto',
+  qa = 'qa'
+}
+
+export const TrainingTypeMap = {
+  [TrainingModeEnum.chunk]: {
+    label: 'core.dataset.training.Chunk mode',
+    tooltip: 'core.dataset.import.Chunk Split Tip',
+    openSource: true
+  },
+  [TrainingModeEnum.auto]: {
+    label: 'core.dataset.training.Auto mode',
+    tooltip: 'core.dataset.training.Auto mode Tip',
+    openSource: false
+  },
+  [TrainingModeEnum.qa]: {
+    label: 'core.dataset.training.QA mode',
+    tooltip: 'core.dataset.import.QA Import Tip',
+    openSource: true
+  }
+};
+
+/* ------------ search -------------- */
+export enum DatasetSearchModeEnum {
+  embedding = 'embedding',
+  fullTextRecall = 'fullTextRecall',
+  mixedRecall = 'mixedRecall'
+}
+
+export const DatasetSearchModeMap = {
+  [DatasetSearchModeEnum.embedding]: {
+    icon: 'core/dataset/modeEmbedding',
+    title: 'core.dataset.search.mode.embedding',
+    desc: 'core.dataset.search.mode.embedding desc',
+    value: DatasetSearchModeEnum.embedding
+  },
+  [DatasetSearchModeEnum.fullTextRecall]: {
+    icon: 'core/dataset/fullTextRecall',
+    title: 'core.dataset.search.mode.fullTextRecall',
+    desc: 'core.dataset.search.mode.fullTextRecall desc',
+    value: DatasetSearchModeEnum.fullTextRecall
+  },
+  [DatasetSearchModeEnum.mixedRecall]: {
+    icon: 'core/dataset/mixedRecall',
+    title: 'core.dataset.search.mode.mixedRecall',
+    desc: 'core.dataset.search.mode.mixedRecall desc',
+    value: DatasetSearchModeEnum.mixedRecall
+  }
+};
+
+export enum SearchScoreTypeEnum {
+  embedding = 'embedding',
+  fullText = 'fullText',
+  reRank = 'reRank',
+  rrf = 'rrf'
+}
+export const SearchScoreTypeMap = {
+  [SearchScoreTypeEnum.embedding]: {
+    label: 'core.dataset.search.score.embedding',
+    desc: 'core.dataset.search.score.embedding desc',
+    showScore: true
+  },
+  [SearchScoreTypeEnum.fullText]: {
+    label: 'core.dataset.search.score.fullText',
+    desc: 'core.dataset.search.score.fullText desc',
+    showScore: false
+  },
+  [SearchScoreTypeEnum.reRank]: {
+    label: 'core.dataset.search.score.reRank',
+    desc: 'core.dataset.search.score.reRank desc',
+    showScore: true
+  },
+  [SearchScoreTypeEnum.rrf]: {
+    label: 'core.dataset.search.score.rrf',
+    desc: 'core.dataset.search.score.rrf desc',
+    showScore: false
+  }
+};
+
+export const CustomCollectionIcon = 'common/linkBlue';
+export const LinkCollectionIcon = 'common/linkBlue';

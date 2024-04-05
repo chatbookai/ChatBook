@@ -2,10 +2,82 @@ import { AppSimpleEditFormType } from 'src/functions/core/app/type.d';
 import { ModuleItemType } from 'src/functions/core/module/type.d';
 import { FlowNodeInputTypeEnum, FlowNodeTypeEnum } from 'src/functions/workflow/constants';
 import { ModuleIOValueTypeEnum, ModuleInputKeyEnum } from 'src/functions/workflow/constants';
-import { UserInputModule } from 'src/functions/workflow/system/userInput';
-import { ToolModule } from 'src/functions/workflow/system/tools';
-import { DatasetSearchModule, Dataset_SEARCH_DESC } from 'src/functions/workflow/system/datasetSearch';
 import { getNanoid } from 'src/functions/workflow/string.tools';
+
+import { UserGuideModule } from 'src/functions/workflow/system/userGuide';
+import { UserInputModule } from 'src/functions/workflow/system/userInput';
+import { AiChatModule } from 'src/functions/workflow/system/aiChat';
+import { DatasetSearchModule, Dataset_SEARCH_DESC } from 'src/functions/workflow/system/datasetSearch';
+import { DatasetConcatModule } from 'src/functions/workflow/system/datasetConcat';
+import { AssignedAnswerModule } from 'src/functions/workflow/system/assignedAnswer';
+import { ClassifyQuestionModule } from 'src/functions/workflow/system/classifyQuestion';
+import { ContextExtractModule } from 'src/functions/workflow/system/contextExtract';
+import { HttpModule468 } from 'src/functions/workflow/system/http468';
+
+import { ToolModule } from 'src/functions/workflow/system/tools';
+import { StopToolNode } from 'src/functions/workflow/system/stopTool';
+
+import { RunAppModule } from 'src/functions/workflow/system/runApp';
+import { PluginInputModule } from 'src/functions/workflow/system/pluginInput';
+import { PluginOutputModule } from 'src/functions/workflow/system/pluginOutput';
+import { RunPluginModule } from 'src/functions/workflow/system/runPlugin';
+import { AiQueryExtension } from 'src/functions/workflow/system/queryExtension';
+
+import type { FlowNodeTemplateType, moduleTemplateListType } from 'src/functions/workflow/type.d';
+
+/* app flow module templates */
+export const appSystemModuleTemplates: FlowNodeTemplateType[] = [
+  UserGuideModule,
+  UserInputModule,
+  AiChatModule,
+  AssignedAnswerModule,
+  DatasetSearchModule,
+  DatasetConcatModule,
+  RunAppModule,
+  ToolModule,
+  StopToolNode,
+  ClassifyQuestionModule,
+  ContextExtractModule,
+  HttpModule468,
+  AiQueryExtension
+];
+/* plugin flow module templates */
+export const pluginSystemModuleTemplates: FlowNodeTemplateType[] = [
+  PluginInputModule,
+  PluginOutputModule,
+  AiChatModule,
+  AssignedAnswerModule,
+  DatasetSearchModule,
+  DatasetConcatModule,
+  RunAppModule,
+  ToolModule,
+  StopToolNode,
+  ClassifyQuestionModule,
+  ContextExtractModule,
+  HttpModule468,
+  AiQueryExtension
+];
+
+/* all module */
+export const moduleTemplatesFlat: FlowNodeTemplateType[] = [
+  UserGuideModule,
+  UserInputModule,
+  AiChatModule,
+  DatasetSearchModule,
+  DatasetConcatModule,
+  AssignedAnswerModule,
+  ClassifyQuestionModule,
+  ContextExtractModule,
+  HttpModule468,
+  ToolModule,
+  StopToolNode,
+  AiChatModule,
+  RunAppModule,
+  PluginInputModule,
+  PluginOutputModule,
+  RunPluginModule,
+  AiQueryExtension
+];
 
 export async function postForm2Modules(data: AppSimpleEditFormType) {
   function userGuideTemplate(formData: AppSimpleEditFormType): ModuleItemType[] {

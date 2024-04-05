@@ -1,7 +1,7 @@
 import type { ModuleItemType, FlowModuleItemType } from 'src/functions/workflow/type';
 import type { Edge, Node } from 'reactflow';
 import { customAlphabet } from 'nanoid';
-import { moduleTemplatesFlat } from 'src/functions/workflow/constants';
+import { moduleTemplatesFlat } from 'src/functions/workflow/templates';
 import { EDGE_TYPE } from 'src/functions/workflow/constants';
 import { UserInputModule } from 'src/functions/workflow/system/userInput';
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 6);

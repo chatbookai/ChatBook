@@ -159,6 +159,7 @@
   "Or use example images": "Or use example images",
   "Please upload a image first": "Please upload a image first",
   "Prompt Must Not Null": "Prompt Must Not Null",
-  "Negative Prompt Must Not Null": "Negative Prompt Must Not Null"
+  "Negative Prompt Must Not Null": "Negative Prompt Must Not Null",
+  "core.module.template.Chat entrance": "Chat entrance"
   
 }

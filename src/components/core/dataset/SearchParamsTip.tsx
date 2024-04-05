@@ -1,12 +1,12 @@
-import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
+import { useSystemStore } from 'src/functions/temp/web/common/system/useSystemStore';
 import { Flex, Table, Thead, Tbody, Tr, Th, Td, TableContainer } from '@chakra-ui/react';
 import {
   DatasetSearchModeEnum,
   DatasetSearchModeMap
-} from 'src/functions/core/dataset/constants';
+} from 'src/functions/temp/core/dataset/constants';
 import { useTranslation } from 'next-i18next';
 import React, { useMemo } from 'react';
-import MyIcon from 'src/functions/web/components/common/Icon';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
 
 const SearchParamsTip = ({
   searchMode,

@@ -2,7 +2,7 @@ import { useRouter } from 'next/router';
 const useUserStore : any = {}
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'next-i18next';
-import { useToast } from 'src/functions/web/hooks/useToast';
+import { useToast } from 'src/functions/temp/web/hooks/useToast';
 
 const unAuthPage: { [key: string]: boolean } = {
   '/': true,

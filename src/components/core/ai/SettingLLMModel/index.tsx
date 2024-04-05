@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
-import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
-import { LLMModelTypeEnum, llmModelTypeFilterMap } from 'src/functions/core/ai/constants';
+import { useSystemStore } from 'src/functions/temp/web/common/system/useSystemStore';
+import { LLMModelTypeEnum, llmModelTypeFilterMap } from 'src/functions/temp/core/ai/constants';
 import { Box, Button, useDisclosure } from '@chakra-ui/react';
-import { SettingAIDataType } from 'src/functions/core/module/node/type';
+import { SettingAIDataType } from 'src/functions/temp/core/module/node/type';
 import AISettingModal from 'src/components/core/ai/AISettingModal';
 import Avatar from 'src/components/Avatar';
-import { HUGGING_FACE_ICON } from 'src/functions/common/system/constants';
+import { HUGGING_FACE_ICON } from 'src/functions/temp/common/system/constants';
 
 type Props = {
   llmModelType?: `${LLMModelTypeEnum}`;

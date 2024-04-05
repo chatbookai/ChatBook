@@ -1,6 +1,6 @@
-import MyIcon from 'src/functions/web/components/common/Icon';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
 import { Box, Flex } from '@chakra-ui/react';
-import { ParentTreePathItemType } from 'src/functions/common/parentFolder/type';
+import { ParentTreePathItemType } from 'src/functions/temp/common/parentFolder/type';
 import React, { useMemo } from 'react';
 import { useTranslation } from 'next-i18next';
 

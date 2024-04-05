@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { ModalBody, useTheme, ModalFooter, Button, Box, Card, Flex, Grid } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
 import Avatar from '../Avatar';
-import MyIcon from 'src/functions/web/components/common/Icon';
-import { DatasetTypeEnum } from 'src/functions/core/dataset/constants';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
+import { DatasetTypeEnum } from 'src/functions/temp/core/dataset/constants';
 import DatasetSelectModal, { useDatasetSelect } from 'src/components/core/dataset/SelectModal';
 import dynamic from 'next/dynamic';
-import { AdminFbkType } from 'src/functions/core/chat/type.d';
+import { AdminFbkType } from 'src/functions/temp/core/chat/type.d';
 import SelectCollections from '@/web/core/dataset/components/SelectCollections';
 
 const InputDataModal = dynamic(() => import('@/pages/dataset/detail/components/InputDataModal'));

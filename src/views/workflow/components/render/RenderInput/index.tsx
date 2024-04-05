@@ -1,13 +1,13 @@
 import React, { useMemo } from 'react';
-import type { FlowNodeInputItemType } from 'src/functions/core/module/node/type';
+import type { FlowNodeInputItemType } from 'src/functions/temp/core/module/node/type';
 import { Box } from '@chakra-ui/react';
-import { FlowNodeInputTypeEnum } from 'src/functions/core/module/node/constant';
+import { FlowNodeInputTypeEnum } from 'src/functions/temp/core/module/node/constant';
 import dynamic from 'next/dynamic';
 
 import InputLabel from './Label';
 import type { RenderInputProps } from './type.d';
 import { useFlowProviderStore } from '../../../FlowProvider';
-import { ModuleInputKeyEnum } from 'src/functions/core/module/constants';
+import { ModuleInputKeyEnum } from 'src/functions/temp/core/module/constants';
 
 const RenderList: {
   types: `${FlowNodeInputTypeEnum}`[];

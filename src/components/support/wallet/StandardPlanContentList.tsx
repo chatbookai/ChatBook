@@ -1,14 +1,14 @@
-import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
-import { StandardSubLevelEnum, SubModeEnum } from 'src/functions/support/wallet/sub/constants';
+import { useSystemStore } from 'src/functions/temp/web/common/system/useSystemStore';
+import { StandardSubLevelEnum, SubModeEnum } from 'src/functions/temp/support/wallet/sub/constants';
 import React, { useMemo } from 'react';
-import { standardSubLevelMap } from 'src/functions/support/wallet/sub/constants';
+import { standardSubLevelMap } from 'src/functions/temp/support/wallet/sub/constants';
 import { Box, Flex, Grid } from '@chakra-ui/react';
-import MyIcon from 'src/functions/web/components/common/Icon';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
 import { useTranslation } from 'next-i18next';
-import MyTooltip from 'src/functions/web/components/common/MyTooltip';
+import MyTooltip from 'src/functions/temp/web/components/common/MyTooltip';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import { useRouter } from 'next/router';
-import { AI_POINT_USAGE_CARD_ROUTE } from 'src/functions/support/wallet/sub/constants';
+import { AI_POINT_USAGE_CARD_ROUTE } from 'src/functions/temp/support/wallet/sub/constants';
 
 const StandardPlanContentList = ({
   level,

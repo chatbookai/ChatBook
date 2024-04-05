@@ -4,8 +4,8 @@ const useUserStore : any = {}
 import { useTranslation } from 'next-i18next';
 import MyTooltip from 'src/components/MyTooltip';
 import dynamic from 'next/dynamic';
-import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
-import { useToast } from 'src/functions/web/hooks/useToast';
+import { useSystemStore } from 'src/functions/temp/web/common/system/useSystemStore';
+import { useToast } from 'src/functions/temp/web/hooks/useToast';
 
 const TeamManageModal = dynamic(() => import('../TeamManageModal'));
 

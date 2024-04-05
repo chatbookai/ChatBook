@@ -1,17 +1,17 @@
 import React, { useMemo, useState } from 'react';
 import { Box, useTheme, Flex, Image } from '@chakra-ui/react';
-import type { ChatHistoryItemResType } from 'src/functions/core/chat/type.d';
+import type { ChatHistoryItemResType } from 'src/functions/temp/core/chat/type.d';
 import { useTranslation } from 'next-i18next';
-import { moduleTemplatesFlat } from 'src/functions/core/module/template/constants';
+import { moduleTemplatesFlat } from 'src/functions/temp/core/module/template/constants';
 
 import Tabs from '../Tabs';
-import MyModal from 'src/functions/web/components/common/MyModal';
+import MyModal from 'src/functions/temp/web/components/common/MyModal';
 import MyTooltip from '../MyTooltip';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
 import Markdown from '../Markdown';
 import { QuoteList } from './QuoteModal';
-import { DatasetSearchModeMap } from 'src/functions/core/dataset/constants';
-import { formatNumber } from 'src/functions/common/math/tools';
+import { DatasetSearchModeMap } from 'src/functions/temp/core/dataset/constants';
+import { formatNumber } from 'src/functions/temp/common/math/tools';
 
 function Row({
   label,

@@ -1,19 +1,19 @@
 import React, { useMemo, useState } from 'react';
-import { type ChatHistoryItemResType } from 'src/functions/core/chat/type.d';
-import { DispatchNodeResponseType } from 'src/functions/core/module/runtime/type.d';
-import type { ChatItemType } from 'src/functions/core/chat/type';
+import { type ChatHistoryItemResType } from 'src/functions/temp/core/chat/type.d';
+import { DispatchNodeResponseType } from 'src/functions/temp/core/module/runtime/type.d';
+import type { ChatItemType } from 'src/functions/temp/core/chat/type';
 import { Flex, BoxProps, useDisclosure, useTheme, Box } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
-import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
-import type { SearchDataResponseItemType } from 'src/functions/core/dataset/type';
+import { useSystemStore } from 'src/functions/temp/web/common/system/useSystemStore';
+import type { SearchDataResponseItemType } from 'src/functions/temp/core/dataset/type';
 import dynamic from 'next/dynamic';
 import Tag from '../Tag';
 import MyTooltip from '../MyTooltip';
-import { FlowNodeTypeEnum } from 'src/functions/core/module/node/constant';
-import { getSourceNameIcon } from 'src/functions/core/dataset/utils';
+import { FlowNodeTypeEnum } from 'src/functions/temp/core/module/node/constant';
+import { getSourceNameIcon } from 'src/functions/temp/core/dataset/utils';
 import ChatBoxDivider from 'src/components/core/chat/Divider';
-import { strIsLink } from 'src/functions/common/string/tools';
-import MyIcon from 'src/functions/web/components/common/Icon';
+import { strIsLink } from 'src/functions/temp/common/string/tools';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
 
 const QuoteModal = dynamic(() => import('./QuoteModal'));
 const ContextModal = dynamic(() => import('./ContextModal'));

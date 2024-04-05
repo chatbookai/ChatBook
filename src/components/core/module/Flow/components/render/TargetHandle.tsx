@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import { Box, BoxProps } from '@chakra-ui/react';
 import { Handle, OnConnect, Position } from 'reactflow';
-import { FlowValueTypeMap } from 'src/functions/core/workflow/dataType';
+import { FlowValueTypeMap } from 'src/functions/temp/core/workflow/dataType';
 import MyTooltip from 'src/components/MyTooltip';
 import { useTranslation } from 'next-i18next';
-import { ModuleIOValueTypeEnum } from 'src/functions/core/module/constants';
+import { ModuleIOValueTypeEnum } from 'src/functions/temp/core/module/constants';
 
 interface Props extends BoxProps {
   handleKey: string;

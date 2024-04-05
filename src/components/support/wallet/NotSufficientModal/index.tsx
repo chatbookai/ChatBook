@@ -1,9 +1,9 @@
 import React from 'react';
-import MyModal from 'src/functions/web/components/common/MyModal';
+import MyModal from 'src/functions/temp/web/components/common/MyModal';
 import { useTranslation } from 'next-i18next';
 import { Button, ModalBody, ModalFooter } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
+import { useSystemStore } from 'src/functions/temp/web/common/system/useSystemStore';
 
 const NotSufficientModal = () => {
   const { t } = useTranslation();

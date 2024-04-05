@@ -1,7 +1,7 @@
 import React from 'react';
 import type { RenderInputProps } from '../type';
 import { onChangeNode } from '../../../../FlowProvider';
-import MySelect from 'src/functions/web/components/common/MySelect';
+import MySelect from 'src/functions/temp/web/components/common/MySelect';
 
 const SelectRender = ({ item, moduleId }: RenderInputProps) => {
   return (

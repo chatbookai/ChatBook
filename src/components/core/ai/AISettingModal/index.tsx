@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import MyModal from 'src/functions/web/components/common/MyModal';
+import MyModal from 'src/functions/temp/web/components/common/MyModal';
 import { useTranslation } from 'next-i18next';
 import { useForm } from 'react-hook-form';
 import {
@@ -12,16 +12,16 @@ import {
   ModalFooter,
   Switch
 } from '@chakra-ui/react';
-import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
+import { useSystemStore } from 'src/functions/temp/web/common/system/useSystemStore';
 import MySlider from 'src/components/Slider';
-import { ModuleInputKeyEnum } from 'src/functions/core/module/constants';
-import type { SettingAIDataType } from 'src/functions/core/module/node/type.d';
-import { getDocPath } from 'src/functions/web/common/system/doc';
+import { ModuleInputKeyEnum } from 'src/functions/temp/core/module/constants';
+import type { SettingAIDataType } from 'src/functions/temp/core/module/node/type.d';
+import { getDocPath } from 'src/functions/temp/web/common/system/doc';
 import AIModelSelector from 'src/components/Select/AIModelSelector';
-import { LLMModelItemType } from 'src/functions/core/ai/model.d';
-import MyTooltip from 'src/functions/web/components/common/MyTooltip';
+import { LLMModelItemType } from 'src/functions/temp/core/ai/model.d';
+import MyTooltip from 'src/functions/temp/web/components/common/MyTooltip';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
-import QuestionTip from 'src/functions/web/components/common/MyTooltip/QuestionTip';
+import QuestionTip from 'src/functions/temp/web/components/common/MyTooltip/QuestionTip';
 
 const AIChatSettingsModal = ({
   onClose,

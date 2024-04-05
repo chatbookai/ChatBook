@@ -1,5 +1,5 @@
 import React from 'react';
-import MyModal from 'src/functions/web/components/common/MyModal';
+import MyModal from 'src/functions/temp/web/components/common/MyModal';
 import {
   Box,
   Button,
@@ -14,10 +14,10 @@ import {
 import { putUpdateTeam } from '@/web/support/user/team/api';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
-import type { TeamTagItemType } from 'src/functions/support/user/team/type';
-import { useRequest } from 'src/functions/web/hooks/useRequest';
+import type { TeamTagItemType } from 'src/functions/temp/support/user/team/type';
+import { useRequest } from 'src/functions/temp/web/hooks/useRequest';
 import { RepeatIcon } from '@chakra-ui/icons';
-import MyIcon from 'src/functions/web/components/common/Icon';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
 import { useCopyData } from '@/web/common/hooks/useCopyData';
 const useUserStore : any = {}
 import { useQuery } from '@tanstack/react-query';

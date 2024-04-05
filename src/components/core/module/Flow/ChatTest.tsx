@@ -1,5 +1,5 @@
-import type { ModuleItemType } from 'src/functions/core/module/type.d';
-import { AppSchema } from 'src/functions/core/app/type.d';
+import type { ModuleItemType } from 'src/functions/temp/core/module/type.d';
+import { AppSchema } from 'src/functions/temp/core/app/type.d';
 import React, {
   useMemo,
   useCallback,
@@ -9,15 +9,15 @@ import React, {
   ForwardedRef
 } from 'react';
 import { Box, Flex, IconButton } from '@chakra-ui/react';
-import MyIcon from 'src/functions/web/components/common/Icon';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
 import { streamFetch } from '@/web/common/api/fetch';
 import MyTooltip from 'src/components/MyTooltip';
 const useUserStore : any = {}
 import ChatBox from 'src/components/ChatBox';
 import type { ComponentRef, StartChatFnProps } from 'src/components/ChatBox/type.d';
-import { getGuideModule } from 'src/functions/core/module/utils';
+import { getGuideModule } from 'src/functions/temp/core/module/utils';
 import { checkChatSupportSelectFileByModules } from '@/web/core/chat/utils';
-import { ModuleInputKeyEnum } from 'src/functions/core/module/constants';
+import { ModuleInputKeyEnum } from 'src/functions/temp/core/module/constants';
 
 export type ChatTestComponentRef = {
   resetChatTest: () => void;

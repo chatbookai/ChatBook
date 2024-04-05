@@ -15,19 +15,19 @@ import type {
   AIChatItemValueItemType,
   ChatSiteItemType,
   UserChatItemValueItemType
-} from 'src/functions/core/chat/type.d';
-import type { ChatHistoryItemResType } from 'src/functions/core/chat/type.d';
-import { useToast } from 'src/functions/web/hooks/useToast';
-import { getErrText } from 'src/functions/common/error/utils';
+} from 'src/functions/temp/core/chat/type.d';
+import type { ChatHistoryItemResType } from 'src/functions/temp/core/chat/type.d';
+import { useToast } from 'src/functions/temp/web/hooks/useToast';
+import { getErrText } from 'src/functions/temp/common/error/utils';
 import { Box, Flex, Checkbox } from '@chakra-ui/react';
 import { EventNameEnum, eventBus } from '@/web/common/utils/eventbus';
-import { chats2GPTMessages } from 'src/functions/core/chat/adapt';
-import { ModuleItemType } from 'src/functions/core/module/type.d';
-import { VariableInputEnum } from 'src/functions/core/module/constants';
-import { DispatchNodeResponseKeyEnum } from 'src/functions/core/module/runtime/constants';
+import { chats2GPTMessages } from 'src/functions/temp/core/chat/adapt';
+import { ModuleItemType } from 'src/functions/temp/core/module/type.d';
+import { VariableInputEnum } from 'src/functions/temp/core/module/constants';
+import { DispatchNodeResponseKeyEnum } from 'src/functions/temp/core/module/runtime/constants';
 import { useForm } from 'react-hook-form';
 import { useRouter } from 'next/router';
-import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
+import { useSystemStore } from 'src/functions/temp/web/common/system/useSystemStore';
 import { useTranslation } from 'next-i18next';
 import {
   closeCustomFeedback,
@@ -39,7 +39,7 @@ import type { AdminMarkType } from './SelectMarkCollection';
 import MyTooltip from '../MyTooltip';
 
 import { postQuestionGuide } from '@/web/core/ai/api';
-import { splitGuideModule } from 'src/functions/core/module/utils';
+import { splitGuideModule } from 'src/functions/temp/core/module/utils';
 import type {
   generatingMessageProps,
   StartChatFnProps,
@@ -49,12 +49,12 @@ import type {
 } from './type.d';
 import MessageInput from './MessageInput';
 import ChatBoxDivider from '../core/chat/Divider';
-import { OutLinkChatAuthProps } from 'src/functions/support/permission/chat';
-import { getNanoid } from 'src/functions/common/string/tools';
-import { ChatItemValueTypeEnum, ChatRoleEnum } from 'src/functions/core/chat/constants';
+import { OutLinkChatAuthProps } from 'src/functions/temp/support/permission/chat';
+import { getNanoid } from 'src/functions/temp/common/string/tools';
+import { ChatItemValueTypeEnum, ChatRoleEnum } from 'src/functions/temp/core/chat/constants';
 import { formatChatValue2InputType } from './utils';
 import { textareaMinH } from './constants';
-import { SseResponseEventEnum } from 'src/functions/core/module/runtime/constants';
+import { SseResponseEventEnum } from 'src/functions/temp/core/module/runtime/constants';
 import ChatItem from './components/ChatItem';
 
 import dynamic from 'next/dynamic';

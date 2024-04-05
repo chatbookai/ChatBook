@@ -1,4 +1,4 @@
-import { FlowNodeOutputItemType } from 'src/functions/core/module/node/type';
+import { FlowNodeOutputItemType } from 'src/functions/temp/core/module/node/type';
 
 export type RenderOutputProps = {
   outputs?: FlowNodeOutputItemType[];

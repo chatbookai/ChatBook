@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect } from 'react';
 import type { RenderInputProps } from '../type';
 import { onChangeNode } from '../../../../FlowProvider';
-import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
-import { llmModelTypeFilterMap } from 'src/functions/core/ai/constants';
+import { useSystemStore } from 'src/functions/temp/web/common/system/useSystemStore';
+import { llmModelTypeFilterMap } from 'src/functions/temp/core/ai/constants';
 import AIModelSelector from 'src/components/Select/AIModelSelector';
 
 const SelectAiModelRender = ({ item, moduleId }: RenderInputProps) => {

@@ -1,4 +1,4 @@
-import { FlowNodeInputItemType } from 'src/functions/core/module/node/type';
+import { FlowNodeInputItemType } from 'src/functions/temp/core/module/node/type';
 
 export type RenderInputProps = {
   inputs?: FlowNodeInputItemType[];

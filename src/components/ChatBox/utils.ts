@@ -1,6 +1,6 @@
-import { ChatItemValueItemType } from 'src/functions/core/chat/type';
+import { ChatItemValueItemType } from 'src/functions/temp/core/chat/type';
 import { ChatBoxInputType, UserInputFileItemType } from './type';
-import { getNanoid } from 'src/functions/common/string/tools';
+import { getNanoid } from 'src/functions/temp/common/string/tools';
 
 export const formatChatValue2InputType = (value: ChatItemValueItemType[]): ChatBoxInputType => {
   if (!Array.isArray(value)) {

@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 
 import { useTranslation } from 'next-i18next';
-import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
+import { useSystemStore } from 'src/functions/temp/web/common/system/useSystemStore';
 import { useRouter } from 'next/router';
-import { AI_POINT_USAGE_CARD_ROUTE } from 'src/functions/support/wallet/sub/constants';
-import MySelect, { SelectProps } from 'src/functions/web/components/common/MySelect';
-import { HUGGING_FACE_ICON, LOGO_ICON } from 'src/functions/common/system/constants';
+import { AI_POINT_USAGE_CARD_ROUTE } from 'src/functions/temp/support/wallet/sub/constants';
+import MySelect, { SelectProps } from 'src/functions/temp/web/components/common/MySelect';
+import { HUGGING_FACE_ICON, LOGO_ICON } from 'src/functions/temp/common/system/constants';
 import { Box, Flex } from '@chakra-ui/react';
 import Avatar from '../Avatar';
 

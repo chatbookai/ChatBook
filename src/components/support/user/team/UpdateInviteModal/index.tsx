@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
-import MyModal from 'src/functions/web/components/common/MyModal';
+import MyModal from 'src/functions/temp/web/components/common/MyModal';
 import {
   Button,
   ModalFooter,
@@ -12,12 +12,12 @@ import {
 } from '@chakra-ui/react';
 import { useQuery } from '@tanstack/react-query';
 import { getTeamList, updateInviteResult } from '@/web/support/user/team/api';
-import { TeamMemberStatusEnum } from 'src/functions/support/user/team/constant';
+import { TeamMemberStatusEnum } from 'src/functions/temp/support/user/team/constant';
 import Avatar from 'src/components/Avatar';
-import { useRequest } from 'src/functions/web/hooks/useRequest';
-import { useToast } from 'src/functions/web/hooks/useToast';
-import { useConfirm } from 'src/functions/web/hooks/useConfirm';
-import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
+import { useRequest } from 'src/functions/temp/web/hooks/useRequest';
+import { useToast } from 'src/functions/temp/web/hooks/useToast';
+import { useConfirm } from 'src/functions/temp/web/hooks/useConfirm';
+import { useSystemStore } from 'src/functions/temp/web/common/system/useSystemStore';
 
 const UpdateInviteModal = () => {
   const { t } = useTranslation();

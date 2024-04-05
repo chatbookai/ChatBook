@@ -1,7 +1,7 @@
 import React from 'react';
-import { PermissionTypeEnum, PermissionTypeMap } from 'src/functions/support/permission/constant';
+import { PermissionTypeEnum, PermissionTypeMap } from 'src/functions/temp/support/permission/constant';
 import { Box, Flex, FlexProps } from '@chakra-ui/react';
-import MyIcon from 'src/functions/web/components/common/Icon';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
 import { useTranslation } from 'next-i18next';
 
 const PermissionIconText = ({

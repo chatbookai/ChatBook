@@ -8,7 +8,7 @@ import {
   MenuButton,
   MenuItemProps
 } from '@chakra-ui/react';
-import MyIcon from 'src/functions/web/components/common/Icon';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
 
 type MenuItemType = 'primary' | 'danger';
 

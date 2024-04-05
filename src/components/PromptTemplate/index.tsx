@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import MyModal from 'src/functions/web/components/common/MyModal';
+import MyModal from 'src/functions/temp/web/components/common/MyModal';
 import { Box, Button, Flex, Grid, useTheme } from '@chakra-ui/react';
-import { PromptTemplateItem } from 'src/functions/core/ai/type.d';
+import { PromptTemplateItem } from 'src/functions/temp/core/ai/type.d';
 import { ModalBody, ModalFooter } from '@chakra-ui/react';
 
 const PromptTemplate = ({

@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { Box, Flex, Grid, Image } from '@chakra-ui/react';
 import type { GridProps } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
-import MyIcon from 'src/functions/web/components/common/Icon';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
 
 // @ts-ignore
 interface Props extends GridProps {

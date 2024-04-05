@@ -1,7 +1,7 @@
-import { ModuleInputKeyEnum } from 'src/functions/core/module/constants';
-import { FlowNodeTypeEnum } from 'src/functions/core/module/node/constant';
-import { FlowNodeOutputTargetItemType } from 'src/functions/core/module/node/type';
-import { FlowModuleItemType, ModuleItemType } from 'src/functions/core/module/type';
+import { ModuleInputKeyEnum } from 'src/functions/temp/core/module/constants';
+import { FlowNodeTypeEnum } from 'src/functions/temp/core/module/node/constant';
+import { FlowNodeOutputTargetItemType } from 'src/functions/temp/core/module/node/type';
+import { FlowModuleItemType, ModuleItemType } from 'src/functions/temp/core/module/type';
 import { type Node, type Edge } from 'reactflow';
 
 export const flowNode2Modules = ({

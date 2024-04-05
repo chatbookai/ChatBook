@@ -1,15 +1,15 @@
 import { useCopyData } from '@/web/common/hooks/useCopyData';
 import { useAudioPlay } from '@/web/common/utils/voice';
 import { Flex, FlexProps, Image, css, useTheme } from '@chakra-ui/react';
-import { ChatSiteItemType } from 'src/functions/core/chat/type';
-import { AppTTSConfigType } from 'src/functions/core/module/type';
-import { OutLinkChatAuthProps } from 'src/functions/support/permission/chat';
-import MyTooltip from 'src/functions/web/components/common/MyTooltip';
+import { ChatSiteItemType } from 'src/functions/temp/core/chat/type';
+import { AppTTSConfigType } from 'src/functions/temp/core/module/type';
+import { OutLinkChatAuthProps } from 'src/functions/temp/support/permission/chat';
+import MyTooltip from 'src/functions/temp/web/components/common/MyTooltip';
 import React from 'react';
 import { useTranslation } from 'next-i18next';
-import MyIcon from 'src/functions/web/components/common/Icon';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
 import { formatChatValue2InputType } from '../utils';
-import { ChatRoleEnum } from 'src/functions/core/chat/constants';
+import { ChatRoleEnum } from 'src/functions/temp/core/chat/constants';
 
 export type ChatControllerProps = {
   isChatting: boolean;

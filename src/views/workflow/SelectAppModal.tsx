@@ -1,11 +1,11 @@
 import React, { useMemo } from 'react';
 import { ModalBody, Flex, Box, useTheme, ModalFooter, Button } from '@chakra-ui/react';
-import MyModal from 'src/functions/web/components/common/MyModal';
+import MyModal from 'src/functions/temp/web/components/common/MyModal';
 import { useQuery } from '@tanstack/react-query';
-import type { SelectAppItemType } from 'src/functions/core/module/type';
+import type { SelectAppItemType } from 'src/functions/temp/core/module/type';
 import Avatar from 'src/components/Avatar';
 import { useTranslation } from 'next-i18next';
-import { useLoading } from 'src/functions/web/hooks/useLoading';
+import { useLoading } from 'src/functions/temp/web/hooks/useLoading';
 
 const SelectAppModal = ({
   defaultApps = [],

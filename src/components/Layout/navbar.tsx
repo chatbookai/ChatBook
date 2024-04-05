@@ -3,15 +3,15 @@ import { Box, BoxProps, Flex, Link, LinkProps } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
 const useUserStore : any = {}
 import { useChatStore } from '@/web/core/chat/storeChat';
-import { HUMAN_ICON } from 'src/functions/common/system/constants';
+import { HUMAN_ICON } from 'src/functions/temp/common/system/constants';
 import NextLink from 'next/link';
 import Badge from '../Badge';
 import Avatar from '../Avatar';
-import MyIcon from 'src/functions/web/components/common/Icon';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
 import { useTranslation } from 'next-i18next';
-import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
+import { useSystemStore } from 'src/functions/temp/web/common/system/useSystemStore';
 import MyTooltip from '../MyTooltip';
-import { getDocPath } from 'src/functions/web/common/system/doc';
+import { getDocPath } from 'src/functions/temp/web/common/system/doc';
 
 export enum NavbarTypeEnum {
   normal = 'normal',

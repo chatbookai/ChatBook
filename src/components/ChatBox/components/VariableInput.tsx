@@ -1,13 +1,13 @@
-import { VariableItemType } from 'src/functions/core/module/type';
+import { VariableItemType } from 'src/functions/temp/core/module/type';
 import React, { useState } from 'react';
 import { UseFormReturn } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
 import { Box, Button, Card, Input, Textarea } from '@chakra-ui/react';
 import ChatAvatar from './ChatAvatar';
 import { MessageCardStyle } from '../constants';
-import { VariableInputEnum } from 'src/functions/core/module/constants';
-import MySelect from 'src/functions/web/components/common/MySelect';
-import MyIcon from 'src/functions/web/components/common/Icon';
+import { VariableInputEnum } from 'src/functions/temp/core/module/constants';
+import MySelect from 'src/functions/temp/web/components/common/MySelect';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
 import { ChatBoxInputFormType } from '../type.d';
 
 const VariableInput = ({

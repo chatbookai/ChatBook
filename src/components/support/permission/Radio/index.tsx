@@ -1,6 +1,6 @@
 import React from 'react';
 import MyRadio from 'src/components/common/MyRadio';
-import { PermissionTypeEnum } from 'src/functions/support/permission/constant';
+import { PermissionTypeEnum } from 'src/functions/temp/support/permission/constant';
 import { useTranslation } from 'next-i18next';
 
 const PermissionRadio = ({

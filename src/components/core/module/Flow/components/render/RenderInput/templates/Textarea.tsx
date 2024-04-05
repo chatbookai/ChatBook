@@ -2,12 +2,12 @@ import React, { useCallback, useMemo, useTransition } from 'react';
 import type { RenderInputProps } from '../type';
 import { useFlowProviderStore, onChangeNode } from '../../../../FlowProvider';
 import { useTranslation } from 'next-i18next';
-import PromptEditor from 'src/functions/web/components/common/Textarea/PromptEditor';
+import PromptEditor from 'src/functions/temp/web/components/common/Textarea/PromptEditor';
 import {
   formatEditorVariablePickerIcon,
   getGuideModule,
   splitGuideModule
-} from 'src/functions/core/module/utils';
+} from 'src/functions/temp/core/module/utils';
 
 const TextareaRender = ({ inputs = [], item, moduleId }: RenderInputProps) => {
   const { t } = useTranslation();

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NodeProps } from 'reactflow';
 import NodeCard from '../render/NodeCard';
-import { FlowModuleItemType } from 'src/functions/core/module/type.d';
+import { FlowModuleItemType } from 'src/functions/temp/core/module/type.d';
 import { onChangeNode } from '../../FlowProvider';
 import dynamic from 'next/dynamic';
 import { Box, Button, Flex } from '@chakra-ui/react';
@@ -9,9 +9,9 @@ import { QuestionOutlineIcon, SmallAddIcon } from '@chakra-ui/icons';
 import {
   FlowNodeInputTypeEnum,
   FlowNodeOutputTypeEnum
-} from 'src/functions/core/module/node/constant';
+} from 'src/functions/temp/core/module/node/constant';
 import Container from '../modules/Container';
-import MyIcon from 'src/functions/web/components/common/Icon';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
 import MyTooltip from 'src/components/MyTooltip';
 import SourceHandle from '../render/SourceHandle';
 import type {
@@ -19,8 +19,8 @@ import type {
   EditNodeFieldType,
   FlowNodeInputItemType,
   FlowNodeOutputItemType
-} from 'src/functions/core/module/node/type.d';
-import { ModuleIOValueTypeEnum } from 'src/functions/core/module/constants';
+} from 'src/functions/temp/core/module/node/type.d';
+import { ModuleIOValueTypeEnum } from 'src/functions/temp/core/module/constants';
 import { useTranslation } from 'next-i18next';
 
 const FieldEditModal = dynamic(() => import('../render/FieldEditModal'));

@@ -19,12 +19,12 @@ import { formatChatValue2InputType } from '../utils';
 import Markdown, { CodeClassName } from 'src/components/Markdown';
 
 //import styles from '../index.module.scss';
-import MyIcon from 'src/functions/web/components/common/Icon';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
 import {
   ChatItemValueTypeEnum,
   ChatRoleEnum,
   ChatStatusEnum
-} from 'src/functions/core/chat/constants';
+} from 'src/functions/temp/core/chat/constants';
 import FilesBlock from './FilesBox';
 
 const colorMap = {

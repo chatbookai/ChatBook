@@ -1,21 +1,21 @@
 import React, { useMemo } from 'react';
 import { Box, Button, Flex } from '@chakra-ui/react';
-import MyIcon from 'src/functions/web/components/common/Icon';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
 import Avatar from 'src/components/Avatar';
-import type { FlowModuleItemType } from 'src/functions/core/module/type.d';
+import type { FlowModuleItemType } from 'src/functions/temp/core/module/type.d';
 import { useTranslation } from 'next-i18next';
 //import { useEditTitle } from '@/web/common/hooks/useEditTitle';
-import { useToast } from 'src/functions/web/hooks/useToast';
+import { useToast } from 'src/functions/temp/web/hooks/useToast';
 import { onChangeNode, onCopyNode, onResetNode, useFlowProviderStore } from '../../FlowProvider';
-import { FlowNodeTypeEnum } from 'src/functions/core/module/node/constant';
-import { ModuleInputKeyEnum } from 'src/functions/core/module/constants';
-import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
+import { FlowNodeTypeEnum } from 'src/functions/temp/core/module/node/constant';
+import { ModuleInputKeyEnum } from 'src/functions/temp/core/module/constants';
+import { useSystemStore } from 'src/functions/temp/web/common/system/useSystemStore';
 //import { getPreviewPluginModule } from '@/web/core/plugin/api';
-import { getErrText } from 'src/functions/common/error/utils';
-import { useConfirm } from 'src/functions/web/hooks/useConfirm';
-import { LOGO_ICON } from 'src/functions/common/system/constants';
+import { getErrText } from 'src/functions/temp/common/error/utils';
+import { useConfirm } from 'src/functions/temp/web/hooks/useConfirm';
+import { LOGO_ICON } from 'src/functions/temp/common/system/constants';
 import { ToolTargetHandle } from './ToolHandle';
-import { useEditTextarea } from 'src/functions/web/hooks/useEditTextarea';
+import { useEditTextarea } from 'src/functions/temp/web/hooks/useEditTextarea';
 import TriggerAndFinish from './RenderInput/templates/TriggerAndFinish';
 
 type Props = FlowModuleItemType & {

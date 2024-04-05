@@ -2,25 +2,25 @@ import React, { useMemo, useState } from 'react';
 import type { RenderInputProps } from '../type';
 import { Box, BoxProps, Button, Flex, ModalFooter, useDisclosure } from '@chakra-ui/react';
 import { onChangeNode, useFlowProviderStore } from '../../../../FlowProvider';
-import MyModal from 'src/functions/web/components/common/MyModal';
+import MyModal from 'src/functions/temp/web/components/common/MyModal';
 import { useForm } from 'react-hook-form';
-import { PromptTemplateItem } from 'src/functions/core/ai/type';
+import { PromptTemplateItem } from 'src/functions/temp/core/ai/type';
 import { useTranslation } from 'next-i18next';
 import {
   formatEditorVariablePickerIcon,
   getGuideModule,
   splitGuideModule
-} from 'src/functions/core/module/utils';
+} from 'src/functions/temp/core/module/utils';
 import { ModalBody } from '@chakra-ui/react';
 import MyTooltip from 'src/components/MyTooltip';
 import {
   Prompt_QuotePromptList,
   Prompt_QuoteTemplateList
-} from 'src/functions/core/ai/prompt/AIChat';
+} from 'src/functions/temp/core/ai/prompt/AIChat';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';
-import PromptEditor from 'src/functions/web/components/common/Textarea/PromptEditor';
+import PromptEditor from 'src/functions/temp/web/components/common/Textarea/PromptEditor';
 import PromptTemplate from 'src/components/PromptTemplate';
-import { ModuleInputKeyEnum } from 'src/functions/core/module/constants';
+import { ModuleInputKeyEnum } from 'src/functions/temp/core/module/constants';
 
 const SettingQuotePrompt = ({ inputs = [], moduleId }: RenderInputProps) => {
   const { t } = useTranslation();

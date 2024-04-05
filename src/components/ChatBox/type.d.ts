@@ -1,11 +1,11 @@
-import { ChatCompletionMessageParam } from 'src/functions/core/ai/type';
-import { ChatFileTypeEnum } from 'src/functions/core/chat/constants';
+import { ChatCompletionMessageParam } from 'src/functions/temp/core/ai/type';
+import { ChatFileTypeEnum } from 'src/functions/temp/core/chat/constants';
 import {
   ChatItemValueItemType,
   ChatSiteItemType,
   ToolModuleResponseItemType
-} from 'src/functions/core/chat/type';
-import { SseResponseEventEnum } from 'src/functions/core/module/runtime/constants';
+} from 'src/functions/temp/core/chat/type';
+import { SseResponseEventEnum } from 'src/functions/temp/core/module/runtime/constants';
 
 export type generatingMessageProps = {
   event: `${SseResponseEventEnum}`;

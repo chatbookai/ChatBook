@@ -4,7 +4,7 @@ import { Box, Flex } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
 import TargetHandle from '../../TargetHandle';
 import SourceHandle from '../../SourceHandle';
-import { ModuleInputKeyEnum, ModuleOutputKeyEnum } from 'src/functions/core/module/constants';
+import { ModuleInputKeyEnum, ModuleOutputKeyEnum } from 'src/functions/temp/core/module/constants';
 import { useFlowProviderStore } from '../../../../FlowProvider';
 
 const TriggerAndFinish = ({ moduleId, isTool }: { moduleId: string; isTool: boolean }) => {

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, memo, useCallback, useState, useMemo } from '
 import { Box } from '@chakra-ui/react';
 // @ts-ignore
 import mermaid from 'mermaid';
-import MyIcon from 'src/functions/web/components/common/Icon';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
 
 const mermaidAPI = mermaid.mermaidAPI;
 mermaidAPI.initialize({

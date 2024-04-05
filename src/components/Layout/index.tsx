@@ -1,8 +1,8 @@
 import React, { useEffect, useMemo } from 'react';
 import { Box, useColorMode, Flex } from '@chakra-ui/react';
 import { useRouter } from 'next/router';
-import { useLoading } from 'src/functions/web/hooks/useLoading';
-import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
+import { useLoading } from 'src/functions/temp/web/hooks/useLoading';
+import { useSystemStore } from 'src/functions/temp/web/common/system/useSystemStore';
 import { throttle } from 'lodash';
 import { useQuery } from '@tanstack/react-query';
 const useUserStore : any = {}

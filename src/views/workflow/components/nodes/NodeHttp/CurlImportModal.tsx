@@ -1,11 +1,11 @@
 import React from 'react';
-import MyModal from 'src/functions/web/components/common/MyModal';
+import MyModal from 'src/functions/temp/web/components/common/MyModal';
 import { ModalBody, Button, ModalFooter, useDisclosure, Textarea, Box } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
 import { onChangeNode } from '../../../FlowProvider';
-import { ModuleInputKeyEnum } from 'src/functions/core/module/constants';
-import { FlowNodeInputItemType } from 'src/functions/core/module/node/type';
-import { useToast } from 'src/functions/web/hooks/useToast';
+import { ModuleInputKeyEnum } from 'src/functions/temp/core/module/constants';
+import { FlowNodeInputItemType } from 'src/functions/temp/core/module/node/type';
+import { useToast } from 'src/functions/temp/web/hooks/useToast';
 import { useForm } from 'react-hook-form';
 import parse from '@bany/curl-to-json';
 

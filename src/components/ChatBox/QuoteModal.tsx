@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react';
 import { ModalBody, Box, useTheme } from '@chakra-ui/react';
 
-import MyModal from 'src/functions/web/components/common/MyModal';
+import MyModal from 'src/functions/temp/web/components/common/MyModal';
 import { useTranslation } from 'next-i18next';
-import type { SearchDataResponseItemType } from 'src/functions/core/dataset/type';
+import type { SearchDataResponseItemType } from 'src/functions/temp/core/dataset/type';
 import QuoteItem from '../core/dataset/QuoteItem';
 import RawSourceBox from '../core/dataset/RawSourceBox';
 

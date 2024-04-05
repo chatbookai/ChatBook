@@ -1,6 +1,6 @@
 import React from 'react';
 import { Box, BoxProps } from '@chakra-ui/react';
-import Loading from 'src/functions/web/components/common/MyLoading';
+import Loading from 'src/functions/temp/web/components/common/MyLoading';
 
 type Props = BoxProps & {
   isLoading?: boolean;

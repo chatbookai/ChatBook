@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { NodeProps } from 'reactflow';
 import NodeCard from '../render/NodeCard';
-import { FlowModuleItemType } from 'src/functions/core/module/type.d';
+import { FlowModuleItemType } from 'src/functions/temp/core/module/type.d';
 import Divider from '../modules/Divider';
 import Container from '../modules/Container';
 import RenderInput from '../render/RenderInput';
@@ -9,7 +9,7 @@ import RenderOutput from '../render/RenderOutput';
 import RenderToolInput from '../render/RenderToolInput';
 import { useTranslation } from 'next-i18next';
 import { useFlowProviderStore } from '../../FlowProvider';
-import { FlowNodeOutputTypeEnum } from 'src/functions/core/module/node/constant';
+import { FlowNodeOutputTypeEnum } from 'src/functions/temp/core/module/node/constant';
 
 const NodeSimple = ({
   data,

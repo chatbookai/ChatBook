@@ -3,16 +3,16 @@ import { useForm } from 'react-hook-form';
 import { useTranslation } from 'next-i18next';
 import { useSelectFile } from '@/web/common/file/hooks/useSelectFile';
 import { compressImgFileAndUpload } from '@/web/common/file/controller';
-import { useToast } from 'src/functions/web/hooks/useToast';
-import { getErrText } from 'src/functions/common/error/utils';
-import { useRequest } from 'src/functions/web/hooks/useRequest';
-import MyModal from 'src/functions/web/components/common/MyModal';
+import { useToast } from 'src/functions/temp/web/hooks/useToast';
+import { getErrText } from 'src/functions/temp/common/error/utils';
+import { useRequest } from 'src/functions/temp/web/hooks/useRequest';
+import MyModal from 'src/functions/temp/web/components/common/MyModal';
 import { Box, Button, Flex, Input, ModalBody, ModalFooter } from '@chakra-ui/react';
 import MyTooltip from 'src/components/MyTooltip';
 import Avatar from 'src/components/Avatar';
 import { postCreateTeam, putUpdateTeam } from '@/web/support/user/team/api';
-import { CreateTeamProps } from 'src/functions/support/user/team/controller.d';
-import { MongoImageTypeEnum } from 'src/functions/common/file/image/constants';
+import { CreateTeamProps } from 'src/functions/temp/support/user/team/controller.d';
+import { MongoImageTypeEnum } from 'src/functions/temp/common/file/image/constants';
 
 export type FormDataType = CreateTeamProps & {
   id?: string;

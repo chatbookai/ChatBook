@@ -1,5 +1,5 @@
 import { ExportChatType } from '@/types/chat';
-import { ChatItemType } from 'src/functions/core/chat/type';
+import { ChatItemType } from 'src/functions/temp/core/chat/type';
 import { useCallback } from 'react';
 import { htmlTemplate } from '@/constants/common';
 import { fileDownload } from '@/web/common/file/utils';

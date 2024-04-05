@@ -1,10 +1,10 @@
 import React, { useCallback } from 'react';
-import MyModal from 'src/functions/web/components/common/MyModal';
+import MyModal from 'src/functions/temp/web/components/common/MyModal';
 const useUserStore : any = {}
 import { useQuery } from '@tanstack/react-query';
 import { Button, ModalBody, ModalFooter, useDisclosure } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
-import { LOGO_ICON } from 'src/functions/common/system/constants';
+import { LOGO_ICON } from 'src/functions/temp/common/system/constants';
 import { getSystemMsgModalData } from '@/web/support/user/inform/api';
 import Markdown from 'src/components/Markdown';
 

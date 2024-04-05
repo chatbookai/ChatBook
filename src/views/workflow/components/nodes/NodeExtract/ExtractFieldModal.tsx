@@ -9,9 +9,9 @@ import {
   Input,
   Textarea
 } from '@chakra-ui/react';
-import type { ContextExtractAgentItemType } from 'src/functions/core/module/type';
+import type { ContextExtractAgentItemType } from 'src/functions/temp/core/module/type';
 import { useForm } from 'react-hook-form';
-import MyModal from 'src/functions/web/components/common/MyModal';
+import MyModal from 'src/functions/temp/web/components/common/MyModal';
 import { useTranslation } from 'next-i18next';
 import MyTooltip from 'src/components/MyTooltip';
 import { QuestionOutlineIcon } from '@chakra-ui/icons';

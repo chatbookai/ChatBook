@@ -2,12 +2,12 @@ import React, { useCallback, useMemo } from 'react';
 import type { RenderInputProps } from '../type';
 import { onChangeNode, useFlowProviderStore } from '../../../../FlowProvider';
 import { useTranslation } from 'next-i18next';
-import JSONEditor from 'src/functions/web/components/common/Textarea/JsonEditor';
+import JSONEditor from 'src/functions/temp/web/components/common/Textarea/JsonEditor';
 import {
   formatEditorVariablePickerIcon,
   getGuideModule,
   splitGuideModule
-} from 'src/functions/core/module/utils';
+} from 'src/functions/temp/core/module/utils';
 
 const JsonEditor = ({ inputs = [], item, moduleId }: RenderInputProps) => {
   const { t } = useTranslation();

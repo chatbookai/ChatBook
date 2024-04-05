@@ -1,14 +1,14 @@
 import React, { useMemo, useState } from 'react';
-import MyModal from 'src/functions/web/components/common/MyModal';
+import MyModal from 'src/functions/temp/web/components/common/MyModal';
 import { useTranslation } from 'next-i18next';
 import { ModalCloseButton, ModalBody, Box, ModalFooter, Button } from '@chakra-ui/react';
 import TagTextarea from 'src/components/common/Textarea/TagTextarea';
-import { TeamMemberRoleEnum } from 'src/functions/support/user/team/constant';
-import { useRequest } from 'src/functions/web/hooks/useRequest';
+import { TeamMemberRoleEnum } from 'src/functions/temp/support/user/team/constant';
+import { useRequest } from 'src/functions/temp/web/hooks/useRequest';
 import { postInviteTeamMember } from '@/web/support/user/team/api';
-import { useConfirm } from 'src/functions/web/hooks/useConfirm';
-import type { InviteMemberResponse } from 'src/functions/support/user/team/controller.d';
-import MySelect from 'src/functions/web/components/common/MySelect';
+import { useConfirm } from 'src/functions/temp/web/hooks/useConfirm';
+import type { InviteMemberResponse } from 'src/functions/temp/support/user/team/controller.d';
+import MySelect from 'src/functions/temp/web/components/common/MySelect';
 
 const InviteModal = ({
   teamId,

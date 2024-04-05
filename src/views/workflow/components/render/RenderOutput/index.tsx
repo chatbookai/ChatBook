@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
-import type { FlowNodeOutputItemType } from 'src/functions/core/module/node/type';
+import type { FlowNodeOutputItemType } from 'src/functions/temp/core/module/node/type';
 import { Box } from '@chakra-ui/react';
-import { FlowNodeOutputTypeEnum } from 'src/functions/core/module/node/constant';
-import { ModuleOutputKeyEnum } from 'src/functions/core/module/constants';
+import { FlowNodeOutputTypeEnum } from 'src/functions/temp/core/module/node/constant';
+import { ModuleOutputKeyEnum } from 'src/functions/temp/core/module/constants';
 import OutputLabel from './Label';
 import { RenderOutputProps } from './type';
 import dynamic from 'next/dynamic';

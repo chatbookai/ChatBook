@@ -1,9 +1,9 @@
 import { Box, Flex, FlexProps } from '@chakra-ui/react';
-import { DatasetTypeEnum } from 'src/functions/core/dataset/constants';
-import MyIcon from 'src/functions/web/components/common/Icon';
+import { DatasetTypeEnum } from 'src/functions/temp/core/dataset/constants';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
 import { useTranslation } from 'next-i18next';
 import React from 'react';
-import { DatasetTypeMap } from 'src/functions/core/dataset/constants';
+import { DatasetTypeMap } from 'src/functions/temp/core/dataset/constants';
 
 const DatasetTypeTag = ({ type, ...props }: { type: `${DatasetTypeEnum}` } & FlexProps) => {
   const { t } = useTranslation();

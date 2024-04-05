@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import type {
   FlowNodeInputItemType,
   FlowNodeOutputItemType
-} from 'src/functions/core/module/node/type';
+} from 'src/functions/temp/core/module/node/type';
 import {
   Box,
   Button,
@@ -16,7 +16,7 @@ import {
   Flex
 } from '@chakra-ui/react';
 import { useTranslation } from 'next-i18next';
-import MyIcon from 'src/functions/web/components/common/Icon';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
 import dynamic from 'next/dynamic';
 import { defaultEditFormData } from './constants';
 import { onChangeNode } from '../../../FlowProvider';

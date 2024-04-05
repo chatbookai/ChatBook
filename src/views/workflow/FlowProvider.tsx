@@ -8,11 +8,11 @@ import {
     Connection,
     addEdge
   } from 'reactflow';
-  import type { FlowModuleItemType, FlowNodeTemplateType } from 'src/functions/core/module/type.d';
+  import type { FlowModuleItemType, FlowNodeTemplateType } from 'src/functions/temp/core/module/type.d';
   import type {
     FlowNodeChangeProps,
     FlowNodeInputItemType
-  } from 'src/functions/core/module/node/type';
+  } from 'src/functions/temp/core/module/node/type';
   import React, {
     type SetStateAction,
     type Dispatch,
@@ -25,15 +25,15 @@ import {
   } from 'react';
   import { customAlphabet } from 'nanoid';
   import { appModule2FlowEdge, appModule2FlowNode } from 'src/functions/temp/utils/adapt';
-  import { useToast } from 'src/functions/web/hooks/useToast';
-  import { EDGE_TYPE, FlowNodeTypeEnum } from 'src/functions/core/module/node/constant';
+  import { useToast } from 'src/functions/temp/web/hooks/useToast';
+  import { EDGE_TYPE, FlowNodeTypeEnum } from 'src/functions/temp/core/module/node/constant';
   import {
     ModuleIOValueTypeEnum,
     ModuleInputKeyEnum,
     ModuleOutputKeyEnum
-  } from 'src/functions/core/module/constants';
+  } from 'src/functions/temp/core/module/constants';
   import { useTranslation } from 'next-i18next';
-  import { ModuleItemType } from 'src/functions/core/module/type.d';
+  import { ModuleItemType } from 'src/functions/temp/core/module/type.d';
   
   enum EventNameEnum {
     sendQuestion = 'sendQuestion',

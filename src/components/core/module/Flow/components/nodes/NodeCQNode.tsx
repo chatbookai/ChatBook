@@ -2,21 +2,21 @@ import React, { useMemo } from 'react';
 import { NodeProps } from 'reactflow';
 import { Box, Button, Flex, Textarea } from '@chakra-ui/react';
 import NodeCard from '../render/NodeCard';
-import { FlowModuleItemType } from 'src/functions/core/module/type.d';
+import { FlowModuleItemType } from 'src/functions/temp/core/module/type.d';
 import Divider from '../modules/Divider';
 import Container from '../modules/Container';
 import RenderInput from '../render/RenderInput';
-import type { ClassifyQuestionAgentItemType } from 'src/functions/core/module/type.d';
+import type { ClassifyQuestionAgentItemType } from 'src/functions/temp/core/module/type.d';
 import { customAlphabet } from 'nanoid';
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 4);
-import MyIcon from 'src/functions/web/components/common/Icon';
-import { FlowNodeOutputTypeEnum } from 'src/functions/core/module/node/constant';
-import { ModuleIOValueTypeEnum, ModuleInputKeyEnum } from 'src/functions/core/module/constants';
+import MyIcon from 'src/functions/temp/web/components/common/Icon';
+import { FlowNodeOutputTypeEnum } from 'src/functions/temp/core/module/node/constant';
+import { ModuleIOValueTypeEnum, ModuleInputKeyEnum } from 'src/functions/temp/core/module/constants';
 import { useTranslation } from 'next-i18next';
 import SourceHandle from '../render/SourceHandle';
 import MyTooltip from 'src/components/MyTooltip';
 import { onChangeNode } from '../../FlowProvider';
-import { FlowNodeInputItemType } from 'src/functions/core/module/node/type';
+import { FlowNodeInputItemType } from 'src/functions/temp/core/module/node/type';
 
 const NodeCQNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const { t } = useTranslation();

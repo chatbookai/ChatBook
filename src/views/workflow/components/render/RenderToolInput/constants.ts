@@ -1,5 +1,5 @@
-import { FlowNodeInputItemType } from 'src/functions/core/module/node/type';
-import { FlowNodeInputTypeEnum } from 'src/functions/core/module/node/constant';
+import { FlowNodeInputItemType } from 'src/functions/temp/core/module/node/type';
+import { FlowNodeInputTypeEnum } from 'src/functions/temp/core/module/node/constant';
 
 export const defaultEditFormData: FlowNodeInputItemType = {
   valueType: 'string',

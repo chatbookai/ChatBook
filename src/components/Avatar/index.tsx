@@ -1,7 +1,7 @@
 import React from 'react';
 import { Image } from '@chakra-ui/react';
 import type { ImageProps } from '@chakra-ui/react';
-import { LOGO_ICON } from 'src/functions/common/system/constants';
+import { LOGO_ICON } from 'src/functions/temp/common/system/constants';
 
 const Avatar = ({ w = '30px', src, ...props }: ImageProps) => {
   return (

@@ -1,4 +1,4 @@
-import type { FlowNodeInputItemType } from '../node/type.d';
+import type { FlowNodeInputItemType } from 'src/functions/workflow/type.d';
 import { DYNAMIC_INPUT_KEY, ModuleInputKeyEnum } from 'src/functions/workflow/constants';
 import { FlowNodeInputTypeEnum } from 'src/functions/workflow/constants';
 import { ModuleIOValueTypeEnum } from 'src/functions/workflow/constants';

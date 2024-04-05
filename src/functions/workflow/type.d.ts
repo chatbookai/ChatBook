@@ -1,19 +1,17 @@
-import { FlowNodeTypeEnum } from './constants';
+import { FlowNodeTypeEnum } from 'src/functions/workflow/constants';
 import {
   ModuleIOValueTypeEnum,
   ModuleOutputKeyEnum,
   FlowNodeTemplateTypeEnum,
   VariableInputEnum
-} from './constants';
-import { DispatchNodeResponseKeyEnum, UserStatusEnum } from './constants';
+} from 'src/functions/workflow/constants';
+import { DispatchNodeResponseKeyEnum, UserStatusEnum } from 'src/functions/workflow/constants';
 import {
   ChatItemValueItemType,
   ToolRunResponseItemType,
   UserChatItemValueItemType
-} from '../chat/type';
-import { ChatNodeUsageType } from '../support/wallet/bill/type';
-import { RunningModuleItemType } from './runtime/type';
-import { PluginTypeEnum } from 'core/plugin/constants';
+} from 'src/functions/workflow/constants';
+import { PluginTypeEnum } from 'src/functions/workflow/constants';
 
 export type FlowNodeTemplateType = {
   id: string; // module id, unique
@@ -116,8 +114,8 @@ export type ChatDispatchProps = {
 };
 
 export type ModuleDispatchProps<T> = ChatDispatchProps & {
-  module: RunningModuleItemType;
-  runtimeModules: RunningModuleItemType[];
+  module: any;
+  runtimeModules: any[];
   params: T;
 };
 

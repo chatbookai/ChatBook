@@ -2,16 +2,16 @@ import {
   FlowNodeInputTypeEnum,
   FlowNodeOutputTypeEnum,
   FlowNodeTypeEnum
-} from '../../node/constant';
-import { FlowNodeTemplateType } from '../../type.d';
+} from 'src/functions/workflow/constants';
+import { FlowNodeTemplateType } from 'src/functions/workflow/type.d';
 import {
   ModuleIOValueTypeEnum,
   ModuleInputKeyEnum,
   ModuleOutputKeyEnum,
   FlowNodeTemplateTypeEnum
-} from '../../constants';
-import { Input_Template_Dataset_Quote, Input_Template_Switch } from '../input';
-import { Output_Template_Finish } from '../output';
+} from 'src/functions/workflow/constants';
+import { Input_Template_Dataset_Quote, Input_Template_Switch } from 'src/functions/workflow/template/input';
+import { Output_Template_Finish } from 'src/functions/workflow/template/output';
 import { getNanoid } from 'src/functions/workflow/string.tools';
 
 export const getOneQuoteInputTemplate = (key = getNanoid()) => ({

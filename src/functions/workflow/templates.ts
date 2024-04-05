@@ -1,14 +1,11 @@
 import { AppSimpleEditFormType } from 'src/functions/core/app/type.d';
 import { ModuleItemType } from 'src/functions/core/module/type.d';
-import { FlowNodeInputTypeEnum, FlowNodeTypeEnum } from 'src/functions/core/module/node/constant';
-import { ModuleIOValueTypeEnum, ModuleInputKeyEnum } from 'src/functions/core/module/constants';
-import { UserInputModule } from 'src/functions/core/module/template/system/userInput';
-import { ToolModule } from 'src/functions/core/module/template/system/tools';
-import {
-  DatasetSearchModule,
-  Dataset_SEARCH_DESC
-} from 'src/functions/core/module/template/system/datasetSearch';
-import { getNanoid } from 'src/functions/string.tools';
+import { FlowNodeInputTypeEnum, FlowNodeTypeEnum } from 'src/functions/workflow/constants';
+import { ModuleIOValueTypeEnum, ModuleInputKeyEnum } from 'src/functions/workflow/constants';
+import { UserInputModule } from 'src/functions/workflow/system/userInput';
+import { ToolModule } from 'src/functions/workflow/system/tools';
+import { DatasetSearchModule, Dataset_SEARCH_DESC } from 'src/functions/workflow/system/datasetSearch';
+import { getNanoid } from 'src/functions/workflow/string.tools';
 
 export async function postForm2Modules(data: AppSimpleEditFormType) {
   function userGuideTemplate(formData: AppSimpleEditFormType): ModuleItemType[] {

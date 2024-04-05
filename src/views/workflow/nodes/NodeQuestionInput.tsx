@@ -19,10 +19,8 @@ import { ThemeColor } from 'src/@core/layouts/types'
 import OptionsMenu from 'src/@core/components/option-menu'
 import CustomAvatar from 'src/@core/components/mui/avatar'
 
-
-
 import React from 'react';
-import { NodeProps } from 'reactflow';
+import { NodeProps, Handle, Position } from 'reactflow';
 import NodeCard from '../components/render/NodeCard';
 import { FlowModuleItemType } from 'src/functions/core/module/type.d';
 import Container from '../components/modules/Container';
@@ -31,6 +29,10 @@ import RenderOutput from '../components/render/RenderOutput';
 
 const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const { moduleId, outputs } = data;
+
+  console.log("moduleId", moduleId)
+  console.log("outputs", outputs)
+  console.log("data", data)
 
   return (
     <Card sx={{ border: theme => `1px solid ${theme.palette.divider}` }}>
@@ -55,7 +57,20 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
         <CardContent sx={{ pt: theme => `${theme.spacing(3)} !important` }}>
           <Grid container spacing={[5, 0]}>
             <Box px={4} py={'10px'} position={'relative'} borderTop={'2px solid'}>
-              <RenderOutput moduleId={moduleId} flowOutputList={outputs} />
+              00000
+            <Box position={'absolute'} top={'50%'} right={'-18px'}>
+              <Handle
+                style={{
+                  width: '14px',
+                  height: '14px',
+                  borderWidth: '3.5px',
+                  backgroundColor: 'main.primary',
+                }}
+                type="source"
+                id={moduleId}
+                position={Position.Right}
+              />
+              </Box>
             </Box>
           </Grid>
         </CardContent>

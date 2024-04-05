@@ -25,9 +25,9 @@ import BiDirectionalNode from './BiDirectionalNode';
 import NodeSimple from './nodes/NodeSimple';
 import NodeQuestionInput from 'src/views/workflow/nodes/NodeQuestionInput';
 import { workflowData, initialNodes, initialEdges } from './workflowData'
-//import { appModule2FlowEdge, appModule2FlowNode } from 'src/functions/Workflow';
+import { appModule2FlowEdge, appModule2FlowNode } from 'src/functions/workflow/functions';
 
-import { appModule2FlowEdge, appModule2FlowNode } from 'src/functions/utils/adapt';
+//import { appModule2FlowEdge, appModule2FlowNode } from 'src/functions/utils/adapt';
 
 import { ModuleItemType } from 'src/functions/core/module/type.d';
 
@@ -101,7 +101,7 @@ const EdgesFlow = () => {
     },
     [onConnect, t, toast]
   );
- 
+  
   useEffect(()=>{
     const modules: ModuleItemType[] = workflowData.modules
     const edges = appModule2FlowEdge(modules)

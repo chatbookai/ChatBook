@@ -2,16 +2,16 @@ import {
   FlowNodeInputTypeEnum,
   FlowNodeOutputTypeEnum,
   FlowNodeTypeEnum
-} from '../../node/constant';
-import { FlowNodeTemplateType } from '../../type.d';
+} from 'src/functions/workflow/constants';
+import { FlowNodeTemplateType } from 'src/functions/workflow/type.d';
 import {
   ModuleIOValueTypeEnum,
   ModuleInputKeyEnum,
   ModuleOutputKeyEnum,
   FlowNodeTemplateTypeEnum
-} from '../../constants';
-import { Input_Template_Switch, Input_Template_UserChatInput } from '../input';
-import { Output_Template_Finish, Output_Template_UserChatInput } from '../output';
+} from 'src/functions/workflow/constants';
+import { Input_Template_Switch, Input_Template_UserChatInput } from 'src/functions/workflow/template/input';
+import { Output_Template_Finish, Output_Template_UserChatInput } from 'src/functions/workflow/template/output';
 import { DatasetSearchModeEnum } from 'src/functions/workflow/constants';
 
 export const Dataset_SEARCH_DESC =

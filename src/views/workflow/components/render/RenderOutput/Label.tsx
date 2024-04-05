@@ -34,43 +34,6 @@ const OutputLabel = ({
       alignItems={'center'}
       position={'relative'}
     >
-      {edit && (
-        <>
-          <MyIcon
-            name={'common/settingLight'}
-            w={'14px'}
-            cursor={'pointer'}
-            mr={3}
-            _hover={{ color: 'primary.500' }}
-            onClick={() =>
-              setEditField({
-                key: outputKey,
-                label: item.label,
-                description: item.description,
-                valueType: item.valueType,
-                outputType: item.type,
-                required: item.required,
-                defaultValue: item.defaultValue
-              })
-            }
-          />
-          <MyIcon
-            className="delete"
-            name={'delete'}
-            w={'14px'}
-            cursor={'pointer'}
-            mr={3}
-            _hover={{ color: 'red.500' }}
-            onClick={() => {
-              onChangeNode({
-                moduleId,
-                type: 'delOutput',
-                key: outputKey
-              });
-            }}
-          />
-        </>
-      )}
       {description && (
         <MyTooltip label={t(description)} forceShow>
           <QuestionOutlineIcon display={['none', 'inline']} mr={1} />

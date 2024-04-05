@@ -29,9 +29,10 @@ import { appModule2FlowEdge, appModule2FlowNode } from 'src/functions/workflow/f
 
 //import { appModule2FlowEdge, appModule2FlowNode } from 'src/functions/utils/adapt';
 
-import { ModuleItemType } from 'src/functions/core/module/type.d';
+import { ModuleItemType } from 'src/functions/workflow/type';
 
-import { useToast } from 'src/functions/web/hooks/useToast';
+import toast from 'react-hot-toast'
+
 import { useTranslation } from 'next-i18next';
 
 const edgeTypes = {
@@ -76,7 +77,6 @@ const edgeTypes2 = {
 };
 
 const EdgesFlow = () => {
-  const { toast } = useToast();
   const { t } = useTranslation();
 
   const [nodes, setNodes, onNodesChange] = useNodesState([]);

@@ -24,7 +24,7 @@ import React, {
   useMemo
 } from 'react';
 import { customAlphabet } from 'nanoid';
-import { appModule2FlowEdge, appModule2FlowNode } from 'src/functions/utils/adapt';
+import { appModule2FlowEdge, appModule2FlowNode } from 'src/functions/temp/utils/adapt';
 import { useToast } from 'src/functions/web/hooks/useToast';
 import { EDGE_TYPE, FlowNodeTypeEnum } from 'src/functions/core/module/node/constant';
 import {

@@ -6,7 +6,7 @@ import { useSystemStore } from 'src/functions/web/common/system/useSystemStore';
 import Avatar from 'src/components/Avatar';
 import { onSetNodes, useFlowProviderStore } from './FlowProvider';
 import { customAlphabet } from 'nanoid';
-import { appModule2FlowNode } from 'src/functions/utils/adapt';
+import { appModule2FlowNode } from 'src/functions/temp/utils/adapt';
 import { useTranslation } from 'next-i18next';
 const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 6);
 import EmptyTip from 'src/components/EmptyTip';

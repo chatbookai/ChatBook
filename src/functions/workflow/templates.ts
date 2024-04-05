@@ -1,5 +1,5 @@
-import { AppSimpleEditFormType } from 'src/functions/core/app/type.d';
-import { ModuleItemType } from 'src/functions/core/module/type.d';
+import { AppSimpleEditFormType } from 'src/functions/workflow/type';
+import { ModuleItemType } from 'src/functions/workflow/type';
 import { FlowNodeInputTypeEnum, FlowNodeTypeEnum } from 'src/functions/workflow/constants';
 import { ModuleIOValueTypeEnum, ModuleInputKeyEnum } from 'src/functions/workflow/constants';
 import { getNanoid } from 'src/functions/workflow/string.tools';

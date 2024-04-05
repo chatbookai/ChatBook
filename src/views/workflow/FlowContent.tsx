@@ -24,6 +24,7 @@ import BiDirectionalNode from './BiDirectionalNode';
 
 import NodeSimple from './nodes/NodeSimple';
 import NodeQuestionInput from 'src/views/workflow/nodes/NodeQuestionInput';
+import NodeUserGuide from 'src/views/workflow/nodes/NodeUserGuide';
 import { workflowData, initialNodes, initialEdges } from './workflowData'
 import { appModule2FlowEdge, appModule2FlowNode } from 'src/functions/workflow/functions';
 
@@ -43,7 +44,15 @@ const edgeTypes = {
 
 const nodeTypes = {
   nodeSimple: NodeSimple,
-  questionInput: NodeQuestionInput
+  questionInput: NodeQuestionInput,
+  userGuide: NodeUserGuide,
+  chatNode: NodeSimple,
+  historyNode: NodeSimple,
+  datasetSearchNode: NodeSimple,
+  httpRequest: NodeSimple,
+  runApp: NodeSimple,
+  pluginModule: NodeSimple,
+  queryExtension: NodeSimple
 };
 
 /*

@@ -20,6 +20,10 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { NodeProps, Handle, Position } from 'reactflow';
 import { FlowModuleItemType } from 'src/functions/workflow/type';
 
+import Button from '@mui/material/Button'
+import Icon from 'src/@core/components/icon'
+import IconButton from '@mui/material/IconButton'
+
 const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const { moduleId, outputs } = data;
   const { t } = useTranslation()
@@ -62,7 +66,9 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                         <Fragment>
                           <Grid container spacing={[5, 0]} sx={{pt:3}}>
                             <Box display="flex" mb={1} alignItems="center">
-                              <Avatar src={'/icons/core/modules/welcomeText.svg'} variant="rounded" sx={{ width: '32px', height: '32px'}} />
+                              <Avatar src={'/icons/core/modules/welcomeText.svg'} variant="rounded" sx={{ width: '32px', height: '32px', '& svg':  {
+                                                                stroke: '#E74694'
+                                                                } }} />
                               <Typography sx={{pl: 2}}>{t(item.label) as string}</Typography>
                               <Tooltip title={t('welcomeTextTip')}>
                                 <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
@@ -90,24 +96,17 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                         <Fragment>
                           <Grid container spacing={[5, 0]} sx={{pt:3}}>
                             <Box display="flex" mb={1} alignItems="center">
-                              <Avatar src={'/icons/core/modules/welcomeText.svg'} variant="rounded" sx={{ width: '32px', height: '32px'}} />
+                              <Avatar src={'/icons/core/app/simpleMode/variable.svg'} variant="rounded" sx={{ width: '32px', height: '32px'}} />
                               <Typography sx={{pl: 2}}>{t(item.label) as string}</Typography>
                               <Tooltip title={t('variableTip')}>
                                 <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
                               </Tooltip>
+                              <Box position={'absolute'} right={'10px'}>
+                                <Button variant='outlined' size="small" startIcon={<Icon icon='mdi:delete-outline' />} >
+                                新增
+                                </Button>
+                              </Box>
                             </Box>
-                            <TextField
-                              multiline
-                              rows={4}
-                              defaultValue={item.value}
-                              style={{ width: '100%', resize: 'both'}}
-                              placeholder={item.value}
-                              onChange={(e) => {
-                                startTst(() => {
-                                  //Action
-                                });
-                              }}
-                            />
                           </Grid>
                           <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
                         </Fragment>

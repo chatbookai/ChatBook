@@ -89,7 +89,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           {
             key: ModuleInputKeyEnum.welcomeText,
             type: FlowNodeInputTypeEnum.hidden,
-            label: 'core.app.Welcome Text',
+            label: 'WelcomeText',
             value: formData.userGuide.welcomeText
           },
           {

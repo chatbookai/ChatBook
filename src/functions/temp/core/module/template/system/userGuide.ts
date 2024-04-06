@@ -19,7 +19,7 @@ export const UserGuideModule: FlowNodeTemplateType = {
       key: ModuleInputKeyEnum.welcomeText,
       type: FlowNodeInputTypeEnum.hidden,
       valueType: ModuleIOValueTypeEnum.string,
-      label: 'core.app.Welcome Text',
+      label: 'WelcomeText',
       showTargetInApp: false,
       showTargetInPlugin: false
     },
@@ -27,7 +27,7 @@ export const UserGuideModule: FlowNodeTemplateType = {
       key: ModuleInputKeyEnum.variables,
       type: FlowNodeInputTypeEnum.hidden,
       valueType: ModuleIOValueTypeEnum.any,
-      label: 'core.module.Variable',
+      label: 'ModuleVariable',
       value: [],
       showTargetInApp: false,
       showTargetInPlugin: false

@@ -12,6 +12,11 @@ import CardContent from '@mui/material/CardContent'
 
 import { useTranslation } from 'react-i18next'
 import toast from 'react-hot-toast'
+import Switch from '@mui/material/Switch'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import InputLabel from '@mui/material/InputLabel'
+import FormControl from '@mui/material/FormControl'
 
 import React from 'react';
 import { NodeProps, Handle, Position } from 'reactflow';
@@ -74,6 +79,15 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                   position={Position.Right}
                 />
               </Box>
+              <FormControl>
+                            <InputLabel id='demo-simple-select-helper-label'>Age</InputLabel>
+                            <Select label='Age' defaultValue='' id='demo-simple-select-helper' labelId='demo-simple-select-helper-label'>
+                              <MenuItem value=''>None</MenuItem>
+                              <MenuItem value={10}>Ten</MenuItem>
+                              <MenuItem value={20}>Twenty</MenuItem>
+                              <MenuItem value={30}>Thirty</MenuItem>
+                            </Select>
+                          </FormControl>
             </Box>
           </Grid>
         </CardContent>

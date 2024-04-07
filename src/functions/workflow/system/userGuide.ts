@@ -55,7 +55,7 @@ export const UserGuideModule: FlowNodeTemplateType = {
       key: ModuleInputKeyEnum.questionGuide,
       valueType: ModuleIOValueTypeEnum.boolean,
       type: FlowNodeInputTypeEnum.switch,
-      label: '',
+      label: 'QuestionGuide',
       showTargetInApp: false,
       showTargetInPlugin: false
     },
@@ -63,7 +63,7 @@ export const UserGuideModule: FlowNodeTemplateType = {
       key: ModuleInputKeyEnum.tts,
       type: FlowNodeInputTypeEnum.hidden,
       valueType: ModuleIOValueTypeEnum.any,
-      label: '',
+      label: 'Tts',
       showTargetInApp: false,
       showTargetInPlugin: false
     }

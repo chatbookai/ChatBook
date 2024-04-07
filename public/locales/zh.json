@@ -176,8 +176,16 @@
   "Disabled": "禁用",
   "Enabled": "启用",
   "AudioBrowser": "浏览器自带(免费)",
+  "Add":"关闭",
+  "Edit":"编辑",
+  "Delete":"删除",
+  "View":"查看",
+  "Close":"关闭",
+  "Open":"打开",
   "Cancel":"取消",
   "Submit":"提交",
-  "TrialListening":"试听"
+  "TrialListening":"试听",
+  "TTSSpeed":"语速",
+  "TTSModel":"语音模型"
   
 }

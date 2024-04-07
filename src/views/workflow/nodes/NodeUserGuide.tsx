@@ -126,8 +126,8 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                 <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
                               </Tooltip>
                               <Box position={'absolute'} right={'10px'}>
-                                <Button variant='outlined' size="small" startIcon={<Icon icon='mdi:delete-outline' />} >
-                                新增
+                                <Button variant='outlined' size="small" startIcon={<Icon icon='mdi:add' />} >
+                                {t("Add")}
                                 </Button>
                               </Box>
                             </Box>
@@ -164,7 +164,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                         <Fragment>
                           <Grid item spacing={[5, 5]} xs={12}>
                             <Box display="flex" mb={1} alignItems="center">
-                              <Avatar src={'/icons/core/app/simpleMode/tts.svg'} variant="rounded" sx={{ width: '28px', height: '28px'}} />
+                              <Avatar src={'/icons/core/app/simpleMode/tts.svg'} variant="rounded" sx={{ width: '25px', height: '25px', pl: 1}} />
                               <Typography sx={{pl: 2}}>{t(item.label) as string}</Typography>
                               <Tooltip title={t('ttsTip')}>
                                 <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
@@ -182,7 +182,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                           <Dialog maxWidth='xs' fullWidth open={TTSOpen} onClose={handleTTSClose}>
                             <DialogTitle>
                             <Box display="flex" alignItems="center">
-                              <Avatar src={'/icons/core/app/simpleMode/tts.svg'} variant="rounded" sx={{ width: '28px', height: '28px'}} />
+                              <Avatar src={'/icons/core/app/simpleMode/tts.svg'} variant="rounded" sx={{ width: '25px', height: '25px', pl: 1}} />
                               <Typography sx={{pl: 2}}>{t(item.label) as string}</Typography>
                               <Box position={'absolute'} right={'5px'} top={'1px'}>
                                 <IconButton size="small" edge="end" onClick={handleTTSClose} aria-label="close">
@@ -194,15 +194,20 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                             <DialogContent sx={{  }}>
                               <Grid item xs={12}>
                                 <FormControl sx={{ mt: 4, mr: 4 }}>
-                                  <InputLabel id='demo-dialog-select-label'>语音模型</InputLabel>
+                                  <InputLabel id='demo-dialog-select-label'>{t("TTSModel")}</InputLabel>
                                   <Select 
                                     size="small" 
-                                    label='Age' 
+                                    label={t("Tts")}
                                     labelId='demo-dialog-select-label' 
                                     id='demo-dialog-select' 
                                     defaultValue={TTSValue} 
                                     value={TTSValue}
                                     fullWidth
+                                    onChange={(e: any) => {
+                                      if(e.target.value) {
+                                        setTTSValue(e.target.value as string)
+                                      }
+                                    }}
                                     >
                                     <MenuItem value={"Disabled"}>{t("Disabled")}</MenuItem>
                                     <MenuItem value={"AudioBrowser"}>{t("AudioBrowser")}</MenuItem>
@@ -213,7 +218,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                 </FormControl>
                               </Grid>
                               <Grid item xs={11.8} pt={8}>
-                              <Typography sx={{ fontWeight: 500 }}>语速</Typography>
+                              <Typography sx={{ fontWeight: 500 }}>{t("TTSSpeed")}</Typography>
                               <Slider
                                 size="small"
                                 min={0.3}
@@ -243,6 +248,9 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                             <DialogActions>
                               <Button size="small" variant='contained' startIcon={<Icon icon='arcticons:ds-audio' />}>
                                 {t("TrialListening")}
+                              </Button>
+                              <Button size="small" variant='outlined' onClick={handleTTSClose}>
+                                {t("Close")}
                               </Button>
                             </DialogActions>
                           </Dialog>

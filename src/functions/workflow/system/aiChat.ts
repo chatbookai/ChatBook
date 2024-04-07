@@ -86,7 +86,7 @@ export const AiChatModule: FlowNodeTemplateType = {
     // settings modal ---
     {
       ...Input_Template_System_Prompt,
-      label: 'core.ai.Prompt',
+      label: 'NodeChatPrompt',
       description: chatNodeSystemPromptTip,
       placeholder: chatNodeSystemPromptTip
     },

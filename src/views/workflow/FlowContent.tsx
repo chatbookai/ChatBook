@@ -22,9 +22,10 @@ import SelfConnectingEdge from './SelfConnectingEdge';
 import BiDirectionalEdge from './BiDirectionalEdge';
 import BiDirectionalNode from './BiDirectionalNode';
 
-import NodeSimple from './nodes/NodeSimple';
+import NodeSimple from 'src/views/workflow/nodes/NodeSimple';
 import NodeQuestionInput from 'src/views/workflow/nodes/NodeQuestionInput';
 import NodeUserGuide from 'src/views/workflow/nodes/NodeUserGuide';
+import NodeChatNode from 'src/views/workflow/nodes/NodeChatNode';
 import { workflowData, initialNodes, initialEdges } from './workflowData'
 import { appModule2FlowEdge, appModule2FlowNode } from 'src/functions/workflow/functions';
 
@@ -46,7 +47,7 @@ const nodeTypes = {
   nodeSimple: NodeSimple,
   questionInput: NodeQuestionInput,
   userGuide: NodeUserGuide,
-  chatNode: NodeSimple,
+  chatNode: NodeChatNode,
   historyNode: NodeSimple,
   datasetSearchNode: NodeSimple,
   httpRequest: NodeSimple,

@@ -76,7 +76,7 @@ export const workflowData: any = {
                     "key": "userChatInput",
                     "type": "systemInput",
                     "valueType": "string",
-                    "label": "core.module.input.label.user question",
+                    "label": "label.user question",
                     "showTargetInApp": false,
                     "showTargetInPlugin": false,
                     "connected": false
@@ -85,7 +85,7 @@ export const workflowData: any = {
             "outputs": [
                 {
                     "key": "userChatInput",
-                    "label": "core.module.input.label.user question",
+                    "label": "label.user question",
                     "type": "source",
                     "valueType": "string",
                     "targets": [
@@ -111,7 +111,7 @@ export const workflowData: any = {
                 {
                     "key": "switch",
                     "type": "target",
-                    "label": "core.module.input.label.switch",
+                    "label": "label.switch",
                     "valueType": "any",
                     "showTargetInApp": true,
                     "showTargetInPlugin": true,
@@ -120,7 +120,7 @@ export const workflowData: any = {
                 {
                     "key": "model",
                     "type": "selectLLMModel",
-                    "label": "core.module.input.label.aiModel",
+                    "label": "label.aiModel",
                     "required": true,
                     "valueType": "string",
                     "showTargetInApp": false,
@@ -226,7 +226,7 @@ export const workflowData: any = {
                 {
                     "key": "history",
                     "type": "numberInput",
-                    "label": "core.module.input.label.chat history",
+                    "label": "label.chat history",
                     "required": true,
                     "min": 0,
                     "max": 30,
@@ -249,7 +249,7 @@ export const workflowData: any = {
                 {
                     "key": "userChatInput",
                     "type": "target",
-                    "label": "core.module.input.label.user question",
+                    "label": "label.user question",
                     "required": true,
                     "valueType": "string",
                     "showTargetInApp": true,
@@ -268,8 +268,8 @@ export const workflowData: any = {
                 },
                 {
                     "key": "finish",
-                    "label": "core.module.output.label.running done",
-                    "description": "core.module.output.description.running done",
+                    "label": "label.running done",
+                    "description": "description.running done",
                     "valueType": "boolean",
                     "type": "source",
                     "targets": []
@@ -366,7 +366,7 @@ export const appTemplates: any[] = [
             key: 'userChatInput',
             type: 'systemInput',
             valueType: 'string',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             showTargetInApp: false,
             showTargetInPlugin: false,
             connected: false
@@ -375,7 +375,7 @@ export const appTemplates: any[] = [
         outputs: [
           {
             key: 'userChatInput',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             type: 'source',
             valueType: 'string',
             targets: [
@@ -401,7 +401,7 @@ export const appTemplates: any[] = [
           {
             key: 'switch',
             type: 'target',
-            label: 'core.module.input.label.switch',
+            label: 'switch',
             valueType: 'any',
             showTargetInApp: true,
             showTargetInPlugin: true,
@@ -410,7 +410,7 @@ export const appTemplates: any[] = [
           {
             key: 'model',
             type: 'selectLLMModel',
-            label: 'core.module.input.label.aiModel',
+            label: 'aiModel',
             required: true,
             valueType: 'string',
             showTargetInApp: false,
@@ -518,7 +518,7 @@ export const appTemplates: any[] = [
           {
             key: 'history',
             type: 'numberInput',
-            label: 'core.module.input.label.chat history',
+            label: 'chat history',
             required: true,
             min: 0,
             max: 30,
@@ -541,7 +541,7 @@ export const appTemplates: any[] = [
           {
             key: 'userChatInput',
             type: 'target',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             required: true,
             valueType: 'string',
             showTargetInApp: true,
@@ -560,8 +560,8 @@ export const appTemplates: any[] = [
           },
           {
             key: 'finish',
-            label: 'core.module.output.label.running done',
-            description: 'core.module.output.description.running done',
+            label: 'running done',
+            description: 'description.running done',
             valueType: 'boolean',
             type: 'source',
             targets: []
@@ -681,7 +681,7 @@ export const appTemplates: any[] = [
             key: 'userChatInput',
             type: 'systemInput',
             valueType: 'string',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             showTargetInApp: false,
             showTargetInPlugin: false,
             connected: false
@@ -690,7 +690,7 @@ export const appTemplates: any[] = [
         outputs: [
           {
             key: 'userChatInput',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             type: 'source',
             valueType: 'string',
             targets: [
@@ -716,7 +716,7 @@ export const appTemplates: any[] = [
           {
             key: 'switch',
             type: 'target',
-            label: 'core.module.input.label.switch',
+            label: 'switch',
             valueType: 'any',
             showTargetInApp: true,
             showTargetInPlugin: true,
@@ -725,7 +725,7 @@ export const appTemplates: any[] = [
           {
             key: 'model',
             type: 'selectLLMModel',
-            label: 'core.module.input.label.aiModel',
+            label: 'aiModel',
             required: true,
             valueType: 'string',
             showTargetInApp: false,
@@ -834,7 +834,7 @@ export const appTemplates: any[] = [
           {
             key: 'history',
             type: 'numberInput',
-            label: 'core.module.input.label.chat history',
+            label: 'chat history',
             required: true,
             min: 0,
             max: 30,
@@ -857,7 +857,7 @@ export const appTemplates: any[] = [
           {
             key: 'userChatInput',
             type: 'target',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             required: true,
             valueType: 'string',
             showTargetInApp: true,
@@ -876,8 +876,8 @@ export const appTemplates: any[] = [
           },
           {
             key: 'finish',
-            label: 'core.module.output.label.running done',
-            description: 'core.module.output.description.running done',
+            label: 'running done',
+            description: 'description.running done',
             valueType: 'boolean',
             type: 'source',
             targets: []
@@ -972,7 +972,7 @@ export const appTemplates: any[] = [
             key: 'userChatInput',
             type: 'systemInput',
             valueType: 'string',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             showTargetInApp: false,
             showTargetInPlugin: false,
             connected: false
@@ -981,7 +981,7 @@ export const appTemplates: any[] = [
         outputs: [
           {
             key: 'userChatInput',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             type: 'source',
             valueType: 'string',
             targets: [
@@ -1008,8 +1008,8 @@ export const appTemplates: any[] = [
           {
             key: 'switch',
             type: 'target',
-            label: 'core.module.input.label.switch',
-            description: 'core.module.input.description.Trigger',
+            label: 'switch',
+            description: 'description.Trigger',
             valueType: 'any',
             showTargetInApp: true,
             showTargetInPlugin: true,
@@ -1018,7 +1018,7 @@ export const appTemplates: any[] = [
           {
             key: 'model',
             type: 'settingLLMModel',
-            label: 'core.module.input.label.aiModel',
+            label: 'aiModel',
             required: true,
             valueType: 'string',
             showTargetInApp: false,
@@ -1095,7 +1095,7 @@ export const appTemplates: any[] = [
           {
             key: 'history',
             type: 'numberInput',
-            label: 'core.module.input.label.chat history',
+            label: 'chat history',
             required: true,
             min: 0,
             max: 30,
@@ -1130,31 +1130,31 @@ export const appTemplates: any[] = [
         outputs: [
           {
             key: 'userChatInput',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             type: 'hidden',
             valueType: 'string',
             targets: []
           },
           {
             key: 'history',
-            label: 'core.module.output.label.New context',
-            description: 'core.module.output.description.New context',
+            label: 'New context',
+            description: 'description.New context',
             valueType: 'chatHistory',
             type: 'source',
             targets: []
           },
           {
             key: 'answerText',
-            label: 'core.module.output.label.Ai response content',
-            description: 'core.module.output.description.Ai response content',
+            label: 'Ai response content',
+            description: 'description.Ai response content',
             valueType: 'string',
             type: 'source',
             targets: []
           },
           {
             key: 'finish',
-            label: 'core.module.output.label.running done',
-            description: 'core.module.output.description.running done',
+            label: 'running done',
+            description: 'description.running done',
             valueType: 'boolean',
             type: 'source',
             targets: []
@@ -1176,8 +1176,8 @@ export const appTemplates: any[] = [
           {
             key: 'switch',
             type: 'target',
-            label: 'core.module.input.label.switch',
-            description: 'core.module.input.description.Trigger',
+            label: 'switch',
+            description: 'description.Trigger',
             valueType: 'any',
             showTargetInApp: true,
             showTargetInPlugin: true,
@@ -1186,7 +1186,7 @@ export const appTemplates: any[] = [
           {
             key: 'datasets',
             type: 'selectDataset',
-            label: 'core.module.input.label.Select dataset',
+            label: 'Select dataset',
             value: [],
             valueType: 'selectDataset',
             list: [],
@@ -1279,7 +1279,7 @@ export const appTemplates: any[] = [
         outputs: [
           {
             key: 'userChatInput',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             type: 'hidden',
             valueType: 'string',
             targets: [
@@ -1291,14 +1291,14 @@ export const appTemplates: any[] = [
           },
           {
             key: 'isEmpty',
-            label: 'core.module.output.label.Search result empty',
+            label: 'Search result empty',
             type: 'source',
             valueType: 'boolean',
             targets: []
           },
           {
             key: 'unEmpty',
-            label: 'core.module.output.label.Search result not empty',
+            label: 'Search result not empty',
             type: 'source',
             valueType: 'boolean',
             targets: []
@@ -1317,8 +1317,8 @@ export const appTemplates: any[] = [
           },
           {
             key: 'finish',
-            label: 'core.module.output.label.running done',
-            description: 'core.module.output.description.running done',
+            label: 'running done',
+            description: 'description.running done',
             valueType: 'boolean',
             type: 'source',
             targets: []
@@ -1347,7 +1347,7 @@ export const appTemplates: any[] = [
             key: 'userChatInput',
             type: 'systemInput',
             valueType: 'string',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             showTargetInApp: false,
             showTargetInPlugin: false,
             connected: false
@@ -1356,7 +1356,7 @@ export const appTemplates: any[] = [
         outputs: [
           {
             key: 'userChatInput',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             type: 'source',
             valueType: 'string',
             targets: [
@@ -1381,8 +1381,8 @@ export const appTemplates: any[] = [
           {
             key: 'switch',
             type: 'target',
-            label: 'core.module.input.label.switch',
-            description: 'core.module.input.description.Trigger',
+            label: 'switch',
+            description: 'description.Trigger',
             valueType: 'any',
             showTargetInApp: true,
             showTargetInPlugin: true,
@@ -1392,7 +1392,7 @@ export const appTemplates: any[] = [
             key: 'model',
             type: 'selectLLMModel',
             valueType: 'string',
-            label: 'core.module.input.label.Classify model',
+            label: 'Classify model',
             required: true,
             showTargetInApp: false,
             showTargetInPlugin: false,
@@ -1403,9 +1403,9 @@ export const appTemplates: any[] = [
             key: 'systemPrompt',
             type: 'textarea',
             valueType: 'string',
-            label: 'core.module.input.label.Background',
-            description: 'core.module.input.description.Background',
-            placeholder: 'core.module.input.placeholder.Classify background',
+            label: 'Background',
+            description: 'description.Background',
+            placeholder: 'placeholder.Classify background',
             showTargetInApp: true,
             showTargetInPlugin: true,
             value: '',
@@ -1414,7 +1414,7 @@ export const appTemplates: any[] = [
           {
             key: 'history',
             type: 'numberInput',
-            label: 'core.module.input.label.chat history',
+            label: 'chat history',
             required: true,
             min: 0,
             max: 30,
@@ -1500,7 +1500,7 @@ export const appTemplates: any[] = [
           },
           {
             key: 'userChatInput',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             type: 'hidden',
             valueType: 'string',
             targets: [
@@ -1524,8 +1524,8 @@ export const appTemplates: any[] = [
           {
             key: 'switch',
             type: 'target',
-            label: 'core.module.input.label.switch',
-            description: 'core.module.input.description.Trigger',
+            label: 'switch',
+            description: 'description.Trigger',
             valueType: 'any',
             showTargetInApp: true,
             showTargetInPlugin: true,
@@ -1535,9 +1535,9 @@ export const appTemplates: any[] = [
             key: 'text',
             type: 'textarea',
             valueType: 'any',
-            label: 'core.module.input.label.Response content',
-            description: 'core.module.input.description.Response content',
-            placeholder: 'core.module.input.description.Response content',
+            label: 'Response content',
+            description: 'description.Response content',
+            placeholder: 'description.Response content',
             showTargetInApp: true,
             showTargetInPlugin: true,
             value: '你好，有什么可以帮助你的？',
@@ -1547,8 +1547,8 @@ export const appTemplates: any[] = [
         outputs: [
           {
             key: 'finish',
-            label: 'core.module.output.label.running done',
-            description: 'core.module.output.description.running done',
+            label: 'running done',
+            description: 'description.running done',
             valueType: 'boolean',
             type: 'source',
             targets: []
@@ -1567,8 +1567,8 @@ export const appTemplates: any[] = [
           {
             key: 'switch',
             type: 'target',
-            label: 'core.module.input.label.switch',
-            description: 'core.module.input.description.Trigger',
+            label: 'switch',
+            description: 'description.Trigger',
             valueType: 'any',
             showTargetInApp: true,
             showTargetInPlugin: true,
@@ -1578,9 +1578,9 @@ export const appTemplates: any[] = [
             key: 'text',
             type: 'textarea',
             valueType: 'any',
-            label: 'core.module.input.label.Response content',
-            description: 'core.module.input.description.Response content',
-            placeholder: 'core.module.input.description.Response content',
+            label: 'Response content',
+            description: 'description.Response content',
+            placeholder: 'description.Response content',
             showTargetInApp: true,
             showTargetInPlugin: true,
             value: '你好，我仅能回答电影《星际穿越》相关问题，请问你有什么问题么？',
@@ -1590,8 +1590,8 @@ export const appTemplates: any[] = [
         outputs: [
           {
             key: 'finish',
-            label: 'core.module.output.label.running done',
-            description: 'core.module.output.description.running done',
+            label: 'running done',
+            description: 'description.running done',
             valueType: 'boolean',
             type: 'source',
             targets: []
@@ -1611,8 +1611,8 @@ export const appTemplates: any[] = [
           {
             key: 'switch',
             type: 'target',
-            label: 'core.module.input.label.switch',
-            description: 'core.module.input.description.Trigger',
+            label: 'switch',
+            description: 'description.Trigger',
             valueType: 'any',
             showTargetInApp: true,
             showTargetInPlugin: true,
@@ -1621,7 +1621,7 @@ export const appTemplates: any[] = [
           {
             key: 'model',
             type: 'selectLLMModel',
-            label: 'core.module.input.label.aiModel',
+            label: 'aiModel',
             required: true,
             valueType: 'string',
             showTargetInApp: false,
@@ -1699,7 +1699,7 @@ export const appTemplates: any[] = [
           {
             key: 'history',
             type: 'numberInput',
-            label: 'core.module.input.label.chat history',
+            label: 'chat history',
             required: true,
             min: 0,
             max: 30,
@@ -1733,31 +1733,31 @@ export const appTemplates: any[] = [
         outputs: [
           {
             key: 'answerText',
-            label: 'core.module.output.label.Ai response content',
-            description: 'core.module.output.description.Ai response content',
+            label: 'Ai response content',
+            description: 'description.Ai response content',
             valueType: 'string',
             type: 'source',
             targets: []
           },
           {
             key: 'finish',
-            label: 'core.module.output.label.running done',
-            description: 'core.module.output.description.running done',
+            label: 'running done',
+            description: 'description.running done',
             valueType: 'boolean',
             type: 'source',
             targets: []
           },
           {
             key: 'history',
-            label: 'core.module.output.label.New context',
-            description: 'core.module.output.description.New context',
+            label: 'New context',
+            description: 'description.New context',
             valueType: 'chatHistory',
             type: 'source',
             targets: []
           },
           {
             key: 'userChatInput',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             type: 'hidden',
             valueType: 'string',
             targets: []
@@ -1777,8 +1777,8 @@ export const appTemplates: any[] = [
           {
             key: 'switch',
             type: 'target',
-            label: 'core.module.input.label.switch',
-            description: 'core.module.input.description.Trigger',
+            label: 'switch',
+            description: 'description.Trigger',
             valueType: 'any',
             showTargetInApp: true,
             showTargetInPlugin: true,
@@ -1787,7 +1787,7 @@ export const appTemplates: any[] = [
           {
             key: 'datasets',
             type: 'selectDataset',
-            label: 'core.module.input.label.Select dataset',
+            label: 'Select dataset',
             value: [],
             valueType: 'selectDataset',
             list: [],
@@ -1880,7 +1880,7 @@ export const appTemplates: any[] = [
         outputs: [
           {
             key: 'isEmpty',
-            label: 'core.module.output.label.Search result empty',
+            label: 'Search result empty',
             type: 'source',
             valueType: 'boolean',
             targets: [
@@ -1892,7 +1892,7 @@ export const appTemplates: any[] = [
           },
           {
             key: 'unEmpty',
-            label: 'core.module.output.label.Search result not empty',
+            label: 'Search result not empty',
             type: 'source',
             valueType: 'boolean',
             targets: [
@@ -1916,15 +1916,15 @@ export const appTemplates: any[] = [
           },
           {
             key: 'finish',
-            label: 'core.module.output.label.running done',
-            description: 'core.module.output.description.running done',
+            label: 'running done',
+            description: 'description.running done',
             valueType: 'boolean',
             type: 'source',
             targets: []
           },
           {
             key: 'userChatInput',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             type: 'hidden',
             valueType: 'string',
             targets: [
@@ -1998,8 +1998,8 @@ export const appTemplates: any[] = [
           {
             key: 'switch',
             type: 'target',
-            label: 'core.module.input.label.switch',
-            description: 'core.module.input.description.Trigger',
+            label: 'switch',
+            description: 'description.Trigger',
             valueType: 'any',
             showTargetInApp: true,
             showTargetInPlugin: true,
@@ -2009,9 +2009,9 @@ export const appTemplates: any[] = [
             key: 'text',
             type: 'textarea',
             valueType: 'any',
-            label: 'core.module.input.label.Response content',
-            description: 'core.module.input.description.Response content',
-            placeholder: 'core.module.input.description.Response content',
+            label: 'Response content',
+            description: 'description.Response content',
+            placeholder: 'description.Response content',
             showTargetInApp: true,
             showTargetInPlugin: true,
             value: '对不起，我找不到你的问题，请更加详细的描述你的问题。',
@@ -2021,8 +2021,8 @@ export const appTemplates: any[] = [
         outputs: [
           {
             key: 'finish',
-            label: 'core.module.output.label.running done',
-            description: 'core.module.output.description.running done',
+            label: 'running done',
+            description: 'description.running done',
             valueType: 'boolean',
             type: 'source',
             targets: []

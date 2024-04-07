@@ -83,7 +83,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
   function userGuideTemplate(formData: AppSimpleEditFormType): ModuleItemType[] {
     return [
       {
-        name: 'core.module.template.User guide',
+        name: 'User guide',
         flowType: FlowNodeTypeEnum.userGuide,
         inputs: [
           {
@@ -124,7 +124,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
     return [
       {
         moduleId: 'userChatInput',
-        name: 'core.module.template.Chat entrance',
+        name: 'Chat entrance',
         avatar: '/imgs/module/userChatInput.png',
         flowType: 'questionInput',
         position: {
@@ -136,7 +136,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
             key: 'userChatInput',
             type: 'systemInput',
             valueType: 'string',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             showTargetInApp: false,
             showTargetInPlugin: false,
             connected: false
@@ -145,7 +145,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
         outputs: [
           {
             key: 'userChatInput',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             type: 'source',
             valueType: 'string',
             targets: [
@@ -171,7 +171,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           {
             key: 'switch',
             type: 'target',
-            label: 'core.module.input.label.switch',
+            label: 'switch',
             valueType: 'any',
             showTargetInApp: true,
             showTargetInPlugin: true,
@@ -180,7 +180,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           {
             key: 'model',
             type: 'selectLLMModel',
-            label: 'core.module.input.label.aiModel',
+            label: 'aiModel',
             required: true,
             valueType: 'string',
             showTargetInApp: false,
@@ -276,7 +276,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           {
             key: 'systemPrompt',
             type: 'textarea',
-            label: 'core.ai.Prompt',
+            label: 'NodeChatPrompt',
             max: 300,
             valueType: 'string',
             description:
@@ -291,7 +291,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           {
             key: 'history',
             type: 'numberInput',
-            label: 'core.module.input.label.chat history',
+            label: 'chat history',
             required: true,
             min: 0,
             max: 30,
@@ -314,7 +314,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           {
             key: 'userChatInput',
             type: 'target',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             required: true,
             valueType: 'string',
             showTargetInApp: true,
@@ -355,7 +355,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
     return [
       {
         moduleId: 'userChatInput',
-        name: 'core.module.template.Chat entrance',
+        name: 'Chat entrance',
         intro: '当用户发送一个内容后，流程将会从这个模块开始执行。',
         avatar: '/imgs/module/userChatInput.svg',
         flowType: 'questionInput',
@@ -368,7 +368,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
             key: 'userChatInput',
             type: 'systemInput',
             valueType: 'string',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             showTargetInApp: false,
             showTargetInPlugin: false,
             connected: false
@@ -377,7 +377,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
         outputs: [
           {
             key: 'userChatInput',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             type: 'source',
             valueType: 'string',
             targets: [
@@ -404,7 +404,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           {
             key: 'switch',
             type: 'target',
-            label: 'core.module.input.label.switch',
+            label: 'switch',
             description: 'core.module.input.description.Trigger',
             valueType: 'any',
             showTargetInApp: true,
@@ -414,7 +414,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           {
             key: 'model',
             type: 'settingLLMModel',
-            label: 'core.module.input.label.aiModel',
+            label: 'aiModel',
             required: true,
             valueType: 'string',
             showTargetInApp: false,
@@ -481,9 +481,9 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
             type: 'textarea',
             max: 3000,
             valueType: 'string',
-            label: 'core.ai.Prompt',
-            description: 'core.app.tip.chatNodeSystemPromptTip',
-            placeholder: 'core.app.tip.chatNodeSystemPromptTip',
+            label: 'NodeChatPrompt',
+            description: 'chatNodeSystemPromptTip',
+            placeholder: 'chatNodeSystemPromptTip',
             showTargetInApp: true,
             showTargetInPlugin: true,
             connected: false,
@@ -492,7 +492,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           {
             key: 'history',
             type: 'numberInput',
-            label: 'core.module.input.label.chat history',
+            label: 'chat history',
             required: true,
             min: 0,
             max: 30,
@@ -527,7 +527,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
         outputs: [
           {
             key: 'userChatInput',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             type: 'hidden',
             valueType: 'string',
             targets: []
@@ -573,7 +573,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           {
             key: 'switch',
             type: 'target',
-            label: 'core.module.input.label.switch',
+            label: 'switch',
             description: 'core.module.input.description.Trigger',
             valueType: 'any',
             showTargetInApp: true,
@@ -583,7 +583,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           {
             key: 'datasets',
             type: 'selectDataset',
-            label: 'core.module.input.label.Select dataset',
+            label: 'Select dataset',
             value: formData.dataset.datasets,
             valueType: 'selectDataset',
             list: [],
@@ -677,7 +677,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
         outputs: [
           {
             key: 'userChatInput',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             type: 'hidden',
             valueType: 'string',
             targets: [
@@ -736,7 +736,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
                 {
                   key: 'switch',
                   type: 'target',
-                  label: 'core.module.input.label.switch',
+                  label: 'switch',
                   description: 'core.module.input.description.Trigger',
                   valueType: 'any',
                   showTargetInApp: true,
@@ -839,7 +839,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
               outputs: [
                 {
                   key: 'userChatInput',
-                  label: 'core.module.input.label.user question',
+                  label: 'user question',
                   type: 'hidden',
                   valueType: 'string',
                   targets: []
@@ -925,7 +925,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           {
             key: 'switch',
             type: 'target',
-            label: 'core.module.input.label.switch',
+            label: 'switch',
             description: 'core.module.input.description.Trigger',
             valueType: 'any',
             showTargetInApp: true,
@@ -935,7 +935,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           {
             key: 'model',
             type: 'selectLLMModel',
-            label: 'core.module.input.label.aiModel',
+            label: 'aiModel',
             required: true,
             valueType: 'string',
             showTargetInApp: false,
@@ -973,9 +973,9 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
             type: 'textarea',
             max: 3000,
             valueType: 'string',
-            label: 'core.ai.Prompt',
-            description: 'core.app.tip.chatNodeSystemPromptTip',
-            placeholder: 'core.app.tip.chatNodeSystemPromptTip',
+            label: 'NodeChatPrompt',
+            description: 'chatNodeSystemPromptTip',
+            placeholder: 'chatNodeSystemPromptTip',
             showTargetInApp: true,
             showTargetInPlugin: true,
             connected: false,
@@ -984,7 +984,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           {
             key: 'history',
             type: 'numberInput',
-            label: 'core.module.input.label.chat history',
+            label: 'chat history',
             required: true,
             min: 0,
             max: 30,
@@ -1008,7 +1008,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
         outputs: [
           {
             key: 'userChatInput',
-            label: 'core.module.input.label.user question',
+            label: 'user question',
             type: 'hidden',
             valueType: 'string',
             targets: []

@@ -60,7 +60,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   }
   
   return (
-    <Card sx={{ border: theme => `1px solid ${theme.palette.divider}` }}>
+    <Card sx={{ border: theme => `1px solid ${theme.palette.divider}`, width: '500px' }}>
         <CardHeader
           title={
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -98,7 +98,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                           <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
                           <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
                             <Box display="flex" alignItems="center">
-                            <Typography sx={{ pl: 2 }}>{t(item.label)}</Typography>
+                            <Typography sx={{ pl: 2, py: 2 }}>{t(item.label)}</Typography>
                             {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
                             </Box>
                             <Button size="small">{item.value}</Button>
@@ -108,11 +108,30 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                         :
                         null}
 
+                        {item.type == 'settingDatasetQuotePrompt' ?
+                        <Fragment>
+                          <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
+                          <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
+                            <Box display="flex" alignItems="center">
+                            <Typography sx={{ pl: 2, py: 2 }}>{t(item.label || item.key)}</Typography>
+                            {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
+                            <Tooltip title={t(item.description)}>
+                                <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
+                              </Tooltip>
+                            </Box>
+                            <Button size="small">{t('Setting quote prompt')}</Button>
+                          </Box>
+                          </Grid>
+                        </Fragment>
+                        :
+
+                        null}
+
                         {item.type == 'textarea' ?
                         <Fragment>
                           <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
                             <Box display="flex" mb={1} alignItems="center">
-                              <Typography sx={{pl: 2}}>{t(item.label) as string}</Typography>
+                              <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
                               <Tooltip title={t(item.placeholder)}>
                                 <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
                               </Tooltip>
@@ -134,12 +153,57 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                         :
                         null}
 
+                        {item.type == 'numberInput' ?
+                        <Fragment>
+                          <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
+                            <Box display="flex" mb={1} alignItems="center">
+                              <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
+                              {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
+                              {item.placeholder ?
+                              <Tooltip title={t(item.placeholder)}>
+                                <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
+                              </Tooltip>                              
+                              :
+                              null}
+                            </Box>
+                            <TextField
+                              type='number'
+                              size='small'
+                              defaultValue={item.value}
+                              sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
+                              placeholder={t(item.placeholder) as string}
+                              onChange={(e) => {
+                                startTst(() => {
+                                  //Action
+                                });
+                              }}
+                            />
+                          </Grid>
+                        </Fragment>
+                        :
+                        null}
+
+                        {item.type == 'custom' ?
+                        <Fragment>
+                          <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
+                            <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
+                              <Box display="flex" alignItems="center">
+                              <Typography sx={{ pl: 2, py: 2 }}>{t(item.toolDescription)}</Typography>
+                              {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
+                              </Box>
+                              <Typography sx={{ pr: 2, py: 2 }}>{t(item.toolDescription)}</Typography>
+                            </Box>
+                          </Grid>
+                        </Fragment>
+                        :
+                        null}
+
                         {item.key == 'variables' ?
                         <Fragment>
                           <Grid item spacing={[5, 5]} sx={{pt: 7, pb: 1}} xs={12}>
                             <Box display="flex" mb={1} alignItems="center">
                               <Avatar src={'/icons/core/app/simpleMode/variable.svg'} variant="rounded" sx={{ width: '32px', height: '32px'}} />
-                              <Typography sx={{pl: 2}}>{t(item.label) as string}</Typography>
+                              <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
                               <Tooltip title={t('variableTip')}>
                                 <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
                               </Tooltip>
@@ -162,7 +226,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                           <Grid item spacing={[5, 5]} xs={12}>
                             <Box display="flex" mb={1} alignItems="center">
                               <Avatar src={'/icons/core/chat/QGFill.svg'} variant="rounded" sx={{ width: '28px', height: '28px'}} />
-                              <Typography sx={{pl: 2}}>{t(item.label) as string}</Typography>
+                              <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
                               <Tooltip title={t('questionGuideTip')}>
                                 <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
                               </Tooltip>
@@ -183,7 +247,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                           <Grid item spacing={[5, 5]} xs={12}>
                             <Box display="flex" mb={1} alignItems="center">
                               <Avatar src={'/icons/core/app/simpleMode/tts.svg'} variant="rounded" sx={{ width: '25px', height: '25px', pl: 1}} />
-                              <Typography sx={{pl: 2}}>{t(item.label) as string}</Typography>
+                              <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
                               <Tooltip title={t('ttsTip')}>
                                 <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
                               </Tooltip>
@@ -201,7 +265,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                             <DialogTitle>
                             <Box display="flex" alignItems="center">
                               <Avatar src={'/icons/core/app/simpleMode/tts.svg'} variant="rounded" sx={{ width: '25px', height: '25px', pl: 1}} />
-                              <Typography sx={{pl: 2}}>{t(item.label) as string}</Typography>
+                              <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
                               <Box position={'absolute'} right={'5px'} top={'1px'}>
                                 <IconButton size="small" edge="end" onClick={handleTTSClose} aria-label="close">
                                   <CloseIcon />

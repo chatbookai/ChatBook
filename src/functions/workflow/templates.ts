@@ -267,7 +267,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           {
             key: 'aiSettings',
             type: 'aiSettings',
-            label: '',
+            label: 'aiSettings',
             valueType: 'any',
             showTargetInApp: false,
             showTargetInPlugin: false,

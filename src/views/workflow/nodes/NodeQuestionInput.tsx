@@ -26,7 +26,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
   console.log("data", data)
 
   return (
-    <Card sx={{ border: theme => `1px solid ${theme.palette.divider}` }}>
+    <Card sx={{ border: theme => `1px solid ${theme.palette.divider}`, width: '500px' }}>
         <CardHeader
           title={
               <Box sx={{ display: 'flex', alignItems: 'center' }}>

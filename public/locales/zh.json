@@ -206,6 +206,16 @@
   "switch": "触发器",
   "textEditor textarea": "文本编辑",
   "user question": "用户问题",
-  "NodeChatPrompt":"提示词"
+  "NodeChatPrompt": "提示词",
+  "aiSettings": "",
+  "Quote prompt setting": "引用提示词配置",
+  "Qupte prompt setting": "",
+  "Select app": "选择应用",
+  "Setting quote prompt": "配置引用提示词",
+  "Unlink tip": "【{{name}}】存在未填或未连接参数",
+  "Variable": "全局变量",
+  "Variable Setting": "变量设置",
+  "Variable import": "外部参数输入",
+  "Input description": "可接收知识库搜索的结果。"
   
 }

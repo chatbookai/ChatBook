@@ -359,7 +359,7 @@ export const httpApiSchema2Plugins = async ({
           {
             key: 'switch',
             type: 'target',
-            label: 'core.module.input.label.switch',
+            label: 'switch',
             description: 'core.module.input.description.Trigger',
             valueType: 'any',
             showTargetInApp: true,
@@ -464,8 +464,8 @@ export const httpApiSchema2Plugins = async ({
         outputs: [
           {
             key: 'finish',
-            label: 'core.module.output.label.running done',
-            description: 'core.module.output.description.running done',
+            label: 'running done',
+            description: 'running done',
             valueType: 'boolean',
             type: 'source',
             targets: []

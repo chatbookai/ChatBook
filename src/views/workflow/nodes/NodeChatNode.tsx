@@ -89,261 +89,289 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
         </Grid>
         <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
         
-          <Grid container spacing={2}>
-            {data && data.inputs && data.inputs.length>0 && data.inputs.map((item: any) => {
+        <Grid container spacing={2} pb={5}>
+          {data && data.inputs && data.inputs.length>0 && data.inputs.map((item: any) => {
 
-                return (<Fragment>
-                        {item.type == 'settingLLMModel' ?
-                        <Fragment>
-                          <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
+              return (<Fragment>
+                      {item.type == 'settingLLMModel' ?
+                      <Fragment>
+                        <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
+                        <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
+                          <Box display="flex" alignItems="center">
+                          <Typography sx={{ pl: 2, py: 2 }}>{t(item.label)}</Typography>
+                          {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
+                          </Box>
+                          <Button size="small">{item.value}</Button>
+                        </Box>
+                        </Grid>
+                      </Fragment>
+                      :
+                      null}
+
+                      {item.type == 'settingDatasetQuotePrompt' ?
+                      <Fragment>
+                        <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
+                        <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
+                          <Box display="flex" alignItems="center">
+                          <Typography sx={{ pl: 2, py: 2 }}>{t(item.label || item.key)}</Typography>
+                          {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
+                          <Tooltip title={t(item.description)}>
+                              <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
+                            </Tooltip>
+                          </Box>
+                          <Button size="small">{t('Setting quote prompt')}</Button>
+                        </Box>
+                        </Grid>
+                      </Fragment>
+                      :
+
+                      null}
+
+                      {item.type == 'textarea' ?
+                      <Fragment>
+                        <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
+                          <Box display="flex" mb={1} alignItems="center">
+                            <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
+                            <Tooltip title={t(item.placeholder)}>
+                              <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
+                            </Tooltip>
+                          </Box>
+                          <TextField
+                            multiline
+                            rows={4}
+                            defaultValue={item.value}
+                            sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
+                            placeholder={t(item.placeholder) as string}
+                            onChange={(e) => {
+                              startTst(() => {
+                                //Action
+                              });
+                            }}
+                          />
+                        </Grid>
+                      </Fragment>
+                      :
+                      null}
+
+                      {item.type == 'numberInput' ?
+                      <Fragment>
+                        <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
+                          <Box display="flex" mb={1} alignItems="center">
+                            <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
+                            {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
+                            {item.placeholder ?
+                            <Tooltip title={t(item.placeholder)}>
+                              <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
+                            </Tooltip>                              
+                            :
+                            null}
+                          </Box>
+                          <TextField
+                            type='number'
+                            size='small'
+                            defaultValue={item.value}
+                            sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
+                            placeholder={t(item.placeholder) as string}
+                            onChange={(e) => {
+                              startTst(() => {
+                                //Action
+                              });
+                            }}
+                          />
+                        </Grid>
+                      </Fragment>
+                      :
+                      null}
+
+                      {item.type == 'custom' ?
+                      <Fragment>
+                        <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
                           <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
                             <Box display="flex" alignItems="center">
-                            <Typography sx={{ pl: 2, py: 2 }}>{t(item.label)}</Typography>
+                            <Typography sx={{ pl: 2, py: 2 }}>{t(item.toolDescription)}</Typography>
                             {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
                             </Box>
-                            <Button size="small">{item.value}</Button>
+                            <Typography sx={{ pr: 2, py: 2 }}>{t(item.toolDescription)}</Typography>
                           </Box>
-                          </Grid>
-                        </Fragment>
-                        :
-                        null}
+                        </Grid>
+                      </Fragment>
+                      :
+                      null}
 
-                        {item.type == 'settingDatasetQuotePrompt' ?
-                        <Fragment>
-                          <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
-                          <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
-                            <Box display="flex" alignItems="center">
-                            <Typography sx={{ pl: 2, py: 2 }}>{t(item.label || item.key)}</Typography>
-                            {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
-                            <Tooltip title={t(item.description)}>
-                                <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
-                              </Tooltip>
+                      {item.key == 'variables' ?
+                      <Fragment>
+                        <Grid item spacing={[5, 5]} sx={{pt: 7, pb: 1}} xs={12}>
+                          <Box display="flex" mb={1} alignItems="center">
+                            <Avatar src={'/icons/core/app/simpleMode/variable.svg'} variant="rounded" sx={{ width: '32px', height: '32px'}} />
+                            <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
+                            <Tooltip title={t('variableTip')}>
+                              <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
+                            </Tooltip>
+                            <Box position={'absolute'} right={'10px'}>
+                              <Button variant='outlined' size="small" startIcon={<Icon icon='mdi:add' />} >
+                              {t("Add")}
+                              </Button>
                             </Box>
-                            <Button size="small">{t('Setting quote prompt')}</Button>
                           </Box>
-                          </Grid>
-                        </Fragment>
-                        :
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
+                        </Grid>
+                      </Fragment>
+                      :
+                      null}
 
-                        null}
+                      {item.key == 'questionGuide' ?
+                      <Fragment>
+                        <Grid item spacing={[5, 5]} xs={12}>
+                          <Box display="flex" mb={1} alignItems="center">
+                            <Avatar src={'/icons/core/chat/QGFill.svg'} variant="rounded" sx={{ width: '28px', height: '28px'}} />
+                            <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
+                            <Tooltip title={t('questionGuideTip')}>
+                              <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
+                            </Tooltip>
+                            <Box position={'absolute'} right={'10px'}>
+                              <Switch defaultChecked />
+                            </Box>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
+                        </Grid>
+                      </Fragment>
+                      :
+                      null}
 
-                        {item.type == 'textarea' ?
-                        <Fragment>
-                          <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
-                            <Box display="flex" mb={1} alignItems="center">
-                              <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
-                              <Tooltip title={t(item.placeholder)}>
-                                <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
-                              </Tooltip>
-                            </Box>
-                            <TextField
-                              multiline
-                              rows={4}
-                              defaultValue={item.value}
-                              sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
-                              placeholder={t(item.placeholder) as string}
-                              onChange={(e) => {
-                                startTst(() => {
-                                  //Action
-                                });
-                              }}
-                            />
-                          </Grid>
-                        </Fragment>
-                        :
-                        null}
-
-                        {item.type == 'numberInput' ?
-                        <Fragment>
-                          <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
-                            <Box display="flex" mb={1} alignItems="center">
-                              <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
-                              {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
-                              {item.placeholder ?
-                              <Tooltip title={t(item.placeholder)}>
-                                <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
-                              </Tooltip>                              
-                              :
-                              null}
-                            </Box>
-                            <TextField
-                              type='number'
-                              size='small'
-                              defaultValue={item.value}
-                              sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
-                              placeholder={t(item.placeholder) as string}
-                              onChange={(e) => {
-                                startTst(() => {
-                                  //Action
-                                });
-                              }}
-                            />
-                          </Grid>
-                        </Fragment>
-                        :
-                        null}
-
-                        {item.type == 'custom' ?
-                        <Fragment>
-                          <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
-                            <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
-                              <Box display="flex" alignItems="center">
-                              <Typography sx={{ pl: 2, py: 2 }}>{t(item.toolDescription)}</Typography>
-                              {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
-                              </Box>
-                              <Typography sx={{ pr: 2, py: 2 }}>{t(item.toolDescription)}</Typography>
-                            </Box>
-                          </Grid>
-                        </Fragment>
-                        :
-                        null}
-
-                        {item.key == 'variables' ?
-                        <Fragment>
-                          <Grid item spacing={[5, 5]} sx={{pt: 7, pb: 1}} xs={12}>
-                            <Box display="flex" mb={1} alignItems="center">
-                              <Avatar src={'/icons/core/app/simpleMode/variable.svg'} variant="rounded" sx={{ width: '32px', height: '32px'}} />
-                              <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
-                              <Tooltip title={t('variableTip')}>
-                                <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
-                              </Tooltip>
-                              <Box position={'absolute'} right={'10px'}>
-                                <Button variant='outlined' size="small" startIcon={<Icon icon='mdi:add' />} >
-                                {t("Add")}
-                                </Button>
-                              </Box>
-                            </Box>
-                          </Grid>
-                          <Grid item xs={12}>
-                            <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
-                          </Grid>
-                        </Fragment>
-                        :
-                        null}
-
-                        {item.key == 'questionGuide' ?
-                        <Fragment>
-                          <Grid item spacing={[5, 5]} xs={12}>
-                            <Box display="flex" mb={1} alignItems="center">
-                              <Avatar src={'/icons/core/chat/QGFill.svg'} variant="rounded" sx={{ width: '28px', height: '28px'}} />
-                              <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
-                              <Tooltip title={t('questionGuideTip')}>
-                                <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
-                              </Tooltip>
-                              <Box position={'absolute'} right={'10px'}>
-                                <Switch defaultChecked />
-                              </Box>
-                            </Box>
-                          </Grid>
-                          <Grid item xs={12}>
-                            <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
-                          </Grid>
-                        </Fragment>
-                        :
-                        null}
-
-                        {item.key == 'tts' ?
-                        <Fragment>
-                          <Grid item spacing={[5, 5]} xs={12}>
-                            <Box display="flex" mb={1} alignItems="center">
-                              <Avatar src={'/icons/core/app/simpleMode/tts.svg'} variant="rounded" sx={{ width: '25px', height: '25px', pl: 1}} />
-                              <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
-                              <Tooltip title={t('ttsTip')}>
-                                <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
-                              </Tooltip>
-                              <Box position={'absolute'} right={'10px'}>
-                                <Button variant='outlined' size="small" onClick={handleClickTTSOpen}>
-                                  {t(TTSValue) as string}
-                                </Button>
-                              </Box>
-                            </Box>
-                          </Grid>
-                          <Grid item xs={12}>
-                            <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
-                          </Grid>
-                          <Dialog maxWidth='xs' fullWidth open={TTSOpen} onClose={handleTTSClose}>
-                            <DialogTitle>
-                            <Box display="flex" alignItems="center">
-                              <Avatar src={'/icons/core/app/simpleMode/tts.svg'} variant="rounded" sx={{ width: '25px', height: '25px', pl: 1}} />
-                              <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
-                              <Box position={'absolute'} right={'5px'} top={'1px'}>
-                                <IconButton size="small" edge="end" onClick={handleTTSClose} aria-label="close">
-                                  <CloseIcon />
-                                </IconButton>
-                              </Box>
-                            </Box>
-                            </DialogTitle>
-                            <DialogContent sx={{  }}>
-                              <Grid item xs={12}>
-                                <FormControl sx={{ mt: 4, mr: 4 }}>
-                                  <InputLabel id='demo-dialog-select-label'>{t("TTSModel")}</InputLabel>
-                                  <Select 
-                                    size="small" 
-                                    label={t("Tts")}
-                                    labelId='demo-dialog-select-label' 
-                                    id='demo-dialog-select' 
-                                    defaultValue={TTSValue} 
-                                    value={TTSValue}
-                                    fullWidth
-                                    onChange={(e: any) => {
-                                      if(e.target.value) {
-                                        setTTSValue(e.target.value as string)
-                                      }
-                                    }}
-                                    >
-                                    <MenuItem value={"Disabled"}>{t("Disabled")}</MenuItem>
-                                    <MenuItem value={"AudioBrowser"}>{t("AudioBrowser")}</MenuItem>
-                                    {llms && llms.audioSpeechModels && llms.audioSpeechModels[0] && llms.audioSpeechModels[0].voices && llms.audioSpeechModels[0].voices.map((item: any)=>{
-                                      return <MenuItem value={item.value}>{item.label}</MenuItem>
-                                    })}
-                                  </Select>
-                                </FormControl>
-                              </Grid>
-                              <Grid item xs={11.8} pt={8}>
-                              <Typography sx={{ fontWeight: 500 }}>{t("TTSSpeed")}</Typography>
-                              <Slider
-                                size="small"
-                                min={0.3}
-                                max={2}
-                                step={0.1}
-                                onChange={(e: any) => {
-                                  if(e.target.value) {
-                                    setTTSSpeed(Number(e.target.value as string))
-                                  }
-                                }}
-                                value={TTSSpeed}
-                                valueLabelDisplay='on'
-                                aria-labelledby="custom-marks-slider"
-                                marks={[
-                                  {
-                                    value: 0.3,
-                                    label: '0.3'
-                                  },
-                                  {
-                                    value: 2,
-                                    label: '2'
-                                  }
-                                  ]}
-                              />
-                              </Grid>
-                            </DialogContent>
-                            <DialogActions>
-                              <Button size="small" variant='contained' startIcon={<Icon icon='arcticons:ds-audio' />}>
-                                {t("TrialListening")}
+                      {item.key == 'tts' ?
+                      <Fragment>
+                        <Grid item spacing={[5, 5]} xs={12}>
+                          <Box display="flex" mb={1} alignItems="center">
+                            <Avatar src={'/icons/core/app/simpleMode/tts.svg'} variant="rounded" sx={{ width: '25px', height: '25px', pl: 1}} />
+                            <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
+                            <Tooltip title={t('ttsTip')}>
+                              <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
+                            </Tooltip>
+                            <Box position={'absolute'} right={'10px'}>
+                              <Button variant='outlined' size="small" onClick={handleClickTTSOpen}>
+                                {t(TTSValue) as string}
                               </Button>
-                              <Button size="small" variant='outlined' onClick={handleTTSClose}>
-                                {t("Close")}
-                              </Button>
-                            </DialogActions>
-                          </Dialog>
-                        </Fragment>
-                        :
-                        null}
+                            </Box>
+                          </Box>
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
+                        </Grid>
+                        <Dialog maxWidth='xs' fullWidth open={TTSOpen} onClose={handleTTSClose}>
+                          <DialogTitle>
+                          <Box display="flex" alignItems="center">
+                            <Avatar src={'/icons/core/app/simpleMode/tts.svg'} variant="rounded" sx={{ width: '25px', height: '25px', pl: 1}} />
+                            <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
+                            <Box position={'absolute'} right={'5px'} top={'1px'}>
+                              <IconButton size="small" edge="end" onClick={handleTTSClose} aria-label="close">
+                                <CloseIcon />
+                              </IconButton>
+                            </Box>
+                          </Box>
+                          </DialogTitle>
+                          <DialogContent sx={{  }}>
+                            <Grid item xs={12}>
+                              <FormControl sx={{ mt: 4, mr: 4 }}>
+                                <InputLabel id='demo-dialog-select-label'>{t("TTSModel")}</InputLabel>
+                                <Select 
+                                  size="small" 
+                                  label={t("Tts")}
+                                  labelId='demo-dialog-select-label' 
+                                  id='demo-dialog-select' 
+                                  defaultValue={TTSValue} 
+                                  value={TTSValue}
+                                  fullWidth
+                                  onChange={(e: any) => {
+                                    if(e.target.value) {
+                                      setTTSValue(e.target.value as string)
+                                    }
+                                  }}
+                                  >
+                                  <MenuItem value={"Disabled"}>{t("Disabled")}</MenuItem>
+                                  <MenuItem value={"AudioBrowser"}>{t("AudioBrowser")}</MenuItem>
+                                  {llms && llms.audioSpeechModels && llms.audioSpeechModels[0] && llms.audioSpeechModels[0].voices && llms.audioSpeechModels[0].voices.map((item: any)=>{
+                                    return <MenuItem value={item.value}>{item.label}</MenuItem>
+                                  })}
+                                </Select>
+                              </FormControl>
+                            </Grid>
+                            <Grid item xs={11.8} pt={8}>
+                            <Typography sx={{ fontWeight: 500 }}>{t("TTSSpeed")}</Typography>
+                            <Slider
+                              size="small"
+                              min={0.3}
+                              max={2}
+                              step={0.1}
+                              onChange={(e: any) => {
+                                if(e.target.value) {
+                                  setTTSSpeed(Number(e.target.value as string))
+                                }
+                              }}
+                              value={TTSSpeed}
+                              valueLabelDisplay='on'
+                              aria-labelledby="custom-marks-slider"
+                              marks={[
+                                {
+                                  value: 0.3,
+                                  label: '0.3'
+                                },
+                                {
+                                  value: 2,
+                                  label: '2'
+                                }
+                                ]}
+                            />
+                            </Grid>
+                          </DialogContent>
+                          <DialogActions>
+                            <Button size="small" variant='contained' startIcon={<Icon icon='arcticons:ds-audio' />}>
+                              {t("TrialListening")}
+                            </Button>
+                            <Button size="small" variant='outlined' onClick={handleTTSClose}>
+                              {t("Close")}
+                            </Button>
+                          </DialogActions>
+                        </Dialog>
+                      </Fragment>
+                      :
+                      null}
 
-                        </Fragment>)
-            })
-            }
-          </Grid>
+                      </Fragment>)
+          })
+          }
+        </Grid>
+
+        <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
+        <Grid item xs={12} sx={{ py: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+            <Typography variant="body1" sx={{ fontWeight: 'bold', textAlign: 'center' }}>
+                {t("Outputs")}
+            </Typography>
+        </Grid>
+        <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
+
+        <Grid container spacing={2}>
+          {data && data.outputs && data.outputs.length>0 && data.outputs.map((item: any) => {
+
+              return (<Fragment>
+                      {item.type == 'source' ?
+                      <Fragment>
+                        <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
+                        <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="flex-end">
+                          <Typography sx={{ pr: 2, py: 2 }}>{t(item.label)}</Typography>
+                        </Box>
+                        </Grid>
+                      </Fragment>
+                      :
+                      null}
+
+              </Fragment>)
+          })
+          }
+        </Grid>
 
 
           

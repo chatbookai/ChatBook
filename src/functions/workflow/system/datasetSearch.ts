@@ -31,7 +31,7 @@ export const DatasetSearchModule: FlowNodeTemplateType = {
     {
       key: ModuleInputKeyEnum.datasetSelectList,
       type: FlowNodeInputTypeEnum.selectDataset,
-      label: 'core.module.input.label.Select dataset',
+      label: 'Select dataset',
       value: [],
       valueType: ModuleIOValueTypeEnum.selectDataset,
       list: [],
@@ -110,14 +110,14 @@ export const DatasetSearchModule: FlowNodeTemplateType = {
     Output_Template_UserChatInput,
     {
       key: ModuleOutputKeyEnum.datasetIsEmpty,
-      label: 'core.module.output.label.Search result empty',
+      label: 'Search result empty',
       type: FlowNodeOutputTypeEnum.source,
       valueType: ModuleIOValueTypeEnum.boolean,
       targets: []
     },
     {
       key: ModuleOutputKeyEnum.datasetUnEmpty,
-      label: 'core.module.output.label.Search result not empty',
+      label: 'Search result not empty',
       type: FlowNodeOutputTypeEnum.source,
       valueType: ModuleIOValueTypeEnum.boolean,
       targets: []

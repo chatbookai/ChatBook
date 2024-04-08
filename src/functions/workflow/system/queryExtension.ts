@@ -52,8 +52,8 @@ export const AiQueryExtension: FlowNodeTemplateType = {
     Output_Template_UserChatInput,
     {
       key: ModuleOutputKeyEnum.text,
-      label: 'core.module.output.label.query extension result',
-      description: 'core.module.output.description.query extension result',
+      label: 'query extension result',
+      description: 'query extension result',
       valueType: ModuleIOValueTypeEnum.string,
       type: FlowNodeOutputTypeEnum.source,
       targets: []

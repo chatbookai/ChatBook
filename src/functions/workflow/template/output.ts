@@ -5,7 +5,7 @@ import { ModuleIOValueTypeEnum } from 'src/functions/workflow/constants';
 
 export const Output_Template_UserChatInput: FlowNodeOutputItemType = {
   key: ModuleOutputKeyEnum.userChatInput,
-  label: 'core.module.input.label.user question',
+  label: 'user question',
   type: FlowNodeOutputTypeEnum.hidden,
   valueType: ModuleIOValueTypeEnum.string,
   targets: []

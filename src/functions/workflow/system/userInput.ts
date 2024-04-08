@@ -23,7 +23,7 @@ export const UserInputModule: FlowNodeTemplateType = {
       key: ModuleInputKeyEnum.userChatInput,
       type: FlowNodeInputTypeEnum.systemInput,
       valueType: ModuleIOValueTypeEnum.string,
-      label: 'core.module.input.label.user question',
+      label: 'user question',
       showTargetInApp: false,
       showTargetInPlugin: false
     }
@@ -31,7 +31,7 @@ export const UserInputModule: FlowNodeTemplateType = {
   outputs: [
     {
       key: ModuleOutputKeyEnum.userChatInput,
-      label: 'core.module.input.label.user question',
+      label: 'user question',
       type: FlowNodeOutputTypeEnum.source,
       valueType: ModuleIOValueTypeEnum.string,
       targets: []

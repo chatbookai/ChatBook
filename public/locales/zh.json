@@ -216,6 +216,15 @@
   "Variable": "全局变量",
   "Variable Setting": "变量设置",
   "Variable import": "外部参数输入",
-  "Input description": "可接收知识库搜索的结果。"
+  "Input description": "可接收知识库搜索的结果。",
+  "Ai response content": "AI回复内容",
+  "New context": "新的上下文",
+  "Search result empty": "搜索结果为空",
+  "Search result not empty": "搜索结果不为空",
+  "query extension result": "优化结果",
+  "result false": "False",
+  "result true": "True",
+  "running done": "模块调用结束",
+  "text output": "文本输出"
   
 }

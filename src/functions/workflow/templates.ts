@@ -333,8 +333,8 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           },
           {
             key: 'finish',
-            label: 'core.module.output.label.running done',
-            description: 'core.module.output.description.running done',
+            label: 'running done',
+            description: 'running done',
             valueType: 'boolean',
             type: 'source',
             targets: []
@@ -534,24 +534,24 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           },
           {
             key: 'history',
-            label: 'core.module.output.label.New context',
-            description: 'core.module.output.description.New context',
+            label: 'New context',
+            description: 'New context',
             valueType: 'chatHistory',
             type: 'source',
             targets: []
           },
           {
             key: 'answerText',
-            label: 'core.module.output.label.Ai response content',
-            description: 'core.module.output.description.Ai response content',
+            label: 'Ai response content',
+            description: 'Ai response content',
             valueType: 'string',
             type: 'source',
             targets: []
           },
           {
             key: 'finish',
-            label: 'core.module.output.label.running done',
-            description: 'core.module.output.description.running done',
+            label: 'running done',
+            description: 'running done',
             valueType: 'boolean',
             type: 'source',
             targets: []
@@ -689,14 +689,14 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           },
           {
             key: 'isEmpty',
-            label: 'core.module.output.label.Search result empty',
+            label: 'Search result empty',
             type: 'source',
             valueType: 'boolean',
             targets: []
           },
           {
             key: 'unEmpty',
-            label: 'core.module.output.label.Search result not empty',
+            label: 'Search result not empty',
             type: 'source',
             valueType: 'boolean',
             targets: []
@@ -846,14 +846,14 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
                 },
                 {
                   key: 'isEmpty',
-                  label: 'core.module.output.label.Search result empty',
+                  label: 'Search result empty',
                   type: 'source',
                   valueType: 'boolean',
                   targets: []
                 },
                 {
                   key: 'unEmpty',
-                  label: 'core.module.output.label.Search result not empty',
+                  label: 'Search result not empty',
                   type: 'source',
                   valueType: 'boolean',
                   targets: []
@@ -1024,8 +1024,8 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           },
           {
             key: 'finish',
-            label: 'core.module.output.label.running done',
-            description: 'core.module.output.description.running done',
+            label: 'running done',
+            description: 'running done',
             valueType: 'boolean',
             type: 'source',
             targets: []

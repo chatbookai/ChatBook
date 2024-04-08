@@ -22,7 +22,7 @@ export const AssignedAnswerModule: FlowNodeTemplateType = {
       key: ModuleInputKeyEnum.answerText,
       type: FlowNodeInputTypeEnum.textarea,
       valueType: ModuleIOValueTypeEnum.any,
-      label: 'core.module.input.label.Response content',
+      label: 'Response content',
       description: 'core.module.input.description.Response content',
       placeholder: 'core.module.input.description.Response content',
       showTargetInApp: true,

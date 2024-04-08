@@ -17,7 +17,7 @@ export const Input_Template_Switch: FlowNodeInputItemType = {
 export const Input_Template_History: FlowNodeInputItemType = {
   key: ModuleInputKeyEnum.history,
   type: FlowNodeInputTypeEnum.numberInput,
-  label: 'core.module.input.label.chat history',
+  label: 'chat history',
   required: true,
   min: 0,
   max: 30,
@@ -62,7 +62,7 @@ export const Input_Template_DynamicInput: FlowNodeInputItemType = {
 export const Input_Template_SelectAIModel: FlowNodeInputItemType = {
   key: ModuleInputKeyEnum.aiModel,
   type: FlowNodeInputTypeEnum.selectLLMModel,
-  label: 'core.module.input.label.aiModel',
+  label: 'aiModel',
   required: true,
   valueType: ModuleIOValueTypeEnum.string,
   showTargetInApp: false,
@@ -71,7 +71,7 @@ export const Input_Template_SelectAIModel: FlowNodeInputItemType = {
 export const Input_Template_SettingAiModel: FlowNodeInputItemType = {
   key: ModuleInputKeyEnum.aiModel,
   type: FlowNodeInputTypeEnum.settingLLMModel,
-  label: 'core.module.input.label.aiModel',
+  label: 'aiModel',
   required: true,
   valueType: ModuleIOValueTypeEnum.string,
   showTargetInApp: false,

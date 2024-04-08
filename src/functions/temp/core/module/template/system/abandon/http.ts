@@ -31,7 +31,7 @@ export const HttpModule: FlowNodeTemplateType = {
       key: ModuleInputKeyEnum.httpMethod,
       type: FlowNodeInputTypeEnum.select,
       valueType: ModuleIOValueTypeEnum.string,
-      label: 'core.module.input.label.Http Request Method',
+      label: 'Http Request Method',
       value: 'POST',
       list: [
         {
@@ -51,7 +51,7 @@ export const HttpModule: FlowNodeTemplateType = {
       key: ModuleInputKeyEnum.httpReqUrl,
       type: FlowNodeInputTypeEnum.input,
       valueType: ModuleIOValueTypeEnum.string,
-      label: 'core.module.input.label.Http Request Url',
+      label: 'Http Request Url',
       description: 'core.module.input.description.Http Request Url',
       placeholder: 'https://api.ai.com/getInventory',
       required: false,
@@ -63,7 +63,7 @@ export const HttpModule: FlowNodeTemplateType = {
       type: FlowNodeInputTypeEnum.JSONEditor,
       valueType: ModuleIOValueTypeEnum.string,
       value: '',
-      label: 'core.module.input.label.Http Request Header',
+      label: 'Http Request Header',
       description: 'core.module.input.description.Http Request Header',
       placeholder: 'core.module.input.description.Http Request Header',
       required: false,

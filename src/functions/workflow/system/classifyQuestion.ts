@@ -35,7 +35,7 @@ export const ClassifyQuestionModule: FlowNodeTemplateType = {
     },
     {
       ...Input_Template_System_Prompt,
-      label: 'core.module.input.label.Background',
+      label: 'Background',
       description: 'core.module.input.description.Background',
       placeholder: 'core.module.input.placeholder.Classify background'
     },

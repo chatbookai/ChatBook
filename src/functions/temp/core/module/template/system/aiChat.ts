@@ -98,16 +98,16 @@ export const AiChatModule: FlowNodeTemplateType = {
     Output_Template_UserChatInput,
     {
       key: ModuleOutputKeyEnum.history,
-      label: 'core.module.output.label.New context',
-      description: 'core.module.output.description.New context',
+      label: 'New context',
+      description: 'New context',
       valueType: ModuleIOValueTypeEnum.chatHistory,
       type: FlowNodeOutputTypeEnum.source,
       targets: []
     },
     {
       key: ModuleOutputKeyEnum.answerText,
-      label: 'core.module.output.label.Ai response content',
-      description: 'core.module.output.description.Ai response content',
+      label: 'Ai response content',
+      description: 'Ai response content',
       valueType: ModuleIOValueTypeEnum.string,
       type: FlowNodeOutputTypeEnum.source,
       targets: []

@@ -360,9 +360,22 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                       {item.type == 'source' ?
                       <Fragment>
                         <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
-                        <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="flex-end">
-                          <Typography sx={{ pr: 2, py: 2 }}>{t(item.label)}</Typography>
-                        </Box>
+                          <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="flex-end">
+                            <Typography sx={{ pr: 2, py: 2 }}>{t(item.label)}</Typography>
+                          </Box>
+                          <Box position={'absolute'} right={'-2px'}>
+                            <Handle
+                              style={{
+                                width: '14px',
+                                height: '14px',
+                                borderWidth: '3.5px',
+                                backgroundColor: 'main.primary',
+                              }}
+                              type="source"
+                              id={moduleId}
+                              position={Position.Right}
+                            />
+                          </Box>
                         </Grid>
                       </Fragment>
                       :

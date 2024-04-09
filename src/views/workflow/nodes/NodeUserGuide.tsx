@@ -83,13 +83,13 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
         <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
         <CardContent sx={{ pt: theme => `${theme.spacing(3)} !important` }}>
           <Grid container spacing={2}>
-            {data && data.inputs && data.inputs.length>0 && data.inputs.map((item: any) => {
+            {data && data.inputs && data.inputs.length>0 && data.inputs.map((item: any, index: number) => {
 
-                return (<Fragment>
+                return (<Fragment key={`inputs_${index}`}>
 
                         {item.key == 'welcomeText' ?
                         <Fragment>
-                          <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
+                          <Grid item sx={{pt:4}} xs={12}>
                             <Box display="flex" mb={1} alignItems="center">
                               <Avatar src={'/icons/core/modules/welcomeText.svg'} variant="rounded" sx={{ width: '32px', height: '32px', '& svg':  {
                                                                 stroke: '#E74694'
@@ -118,7 +118,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
 
                         {item.key == 'variables' ?
                         <Fragment>
-                          <Grid item spacing={[5, 5]} sx={{pt: 7, pb: 1}} xs={12}>
+                          <Grid item sx={{pt: 7, pb: 1}} xs={12}>
                             <Box display="flex" mb={1} alignItems="center">
                               <Avatar src={'/icons/core/app/simpleMode/variable.svg'} variant="rounded" sx={{ width: '32px', height: '32px'}} />
                               <Typography sx={{pl: 2}}>{t(item.label) as string}</Typography>
@@ -141,7 +141,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
 
                         {item.key == 'questionGuide' ?
                         <Fragment>
-                          <Grid item spacing={[5, 5]} xs={12}>
+                          <Grid item xs={12}>
                             <Box display="flex" mb={1} alignItems="center">
                               <Avatar src={'/icons/core/chat/QGFill.svg'} variant="rounded" sx={{ width: '28px', height: '28px'}} />
                               <Typography sx={{pl: 2}}>{t(item.label) as string}</Typography>
@@ -162,7 +162,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
 
                         {item.key == 'tts' ?
                         <Fragment>
-                          <Grid item spacing={[5, 5]} xs={12}>
+                          <Grid item xs={12}>
                             <Box display="flex" mb={1} alignItems="center">
                               <Avatar src={'/icons/core/app/simpleMode/tts.svg'} variant="rounded" sx={{ width: '25px', height: '25px', pl: 1}} />
                               <Typography sx={{pl: 2}}>{t(item.label) as string}</Typography>
@@ -212,7 +212,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                     <MenuItem value={"Disabled"}>{t("Disabled")}</MenuItem>
                                     <MenuItem value={"AudioBrowser"}>{t("AudioBrowser")}</MenuItem>
                                     {llms && llms.audioSpeechModels && llms.audioSpeechModels[0] && llms.audioSpeechModels[0].voices && llms.audioSpeechModels[0].voices.map((item: any)=>{
-                                      return <MenuItem value={item.value}>{item.label}</MenuItem>
+                                      return <MenuItem value={item.value} key={`voices_${index}`}>{item.label}</MenuItem>
                                     })}
                                   </Select>
                                 </FormControl>
@@ -263,8 +263,6 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
             }
           </Grid>
 
-
-          
         </CardContent>
       </Card>
   );

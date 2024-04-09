@@ -56,33 +56,6 @@ const nodeTypes = {
   queryExtension: NodeSimple
 };
 
-/*
-const nodeTypes2: Record<`${FlowNodeTypeEnum}`, any> = {
-  [FlowNodeTypeEnum.userGuide]: dynamic(() => import('src/views/workflow/components/nodes/NodeUserGuide')),
-  [FlowNodeTypeEnum.questionInput]: dynamic(() => import('src/views/workflow/components/nodes/NodeQuestionInput')),
-  [FlowNodeTypeEnum.historyNode]: NodeSimple,
-  [FlowNodeTypeEnum.chatNode]: NodeSimple,
-  [FlowNodeTypeEnum.datasetSearchNode]: NodeSimple,
-  [FlowNodeTypeEnum.datasetConcatNode]: dynamic(
-    () => import('./components/nodes/NodeDatasetConcat')
-  ),
-  [FlowNodeTypeEnum.answerNode]: dynamic(() => import('src/views/workflow/components/nodes/NodeAnswer')),
-  [FlowNodeTypeEnum.classifyQuestion]: dynamic(() => import('src/views/workflow/components/nodes/NodeCQNode')),
-  [FlowNodeTypeEnum.contentExtract]: dynamic(() => import('src/views/workflow/components/nodes/NodeExtract')),
-  [FlowNodeTypeEnum.httpRequest468]: dynamic(() => import('src/views/workflow/components/nodes/NodeHttp')),
-  [FlowNodeTypeEnum.httpRequest]: NodeSimple,
-  [FlowNodeTypeEnum.runApp]: NodeSimple,
-  [FlowNodeTypeEnum.pluginInput]: dynamic(() => import('src/views/workflow/components/nodes/NodePluginInput')),
-  [FlowNodeTypeEnum.pluginOutput]: dynamic(() => import('src/views/workflow/components/nodes/NodePluginOutput')),
-  [FlowNodeTypeEnum.pluginModule]: NodeSimple,
-  [FlowNodeTypeEnum.queryExtension]: NodeSimple,
-  [FlowNodeTypeEnum.tools]: dynamic(() => import('src/views/workflow/components/nodes/NodeTools')),
-  [FlowNodeTypeEnum.stopTool]: (data: NodeProps<FlowModuleItemType>) => (
-    <NodeSimple {...data} minW={'100px'} maxW={'300px'} />
-  )
-};
-*/
-
 const edgeTypes2 = {
 };
 
@@ -114,11 +87,11 @@ const EdgesFlow = () => {
   
   useEffect(()=>{
     const modules: ModuleItemType[] = workflowData.modules
-    const edges = appModule2FlowEdge(modules)
-    setEdges(edges)
+    //const edges = appModule2FlowEdge(modules)
+    //setEdges(edges)
+    //console.log("edges", edges)
     const nodes = modules.map((item: any) => appModule2FlowNode(item))
     setNodes(nodes)
-    console.log("edges", edges)
     console.log("nodes modules", workflowData.modules)
     console.log("nodes nodes", nodes)
   }, [])

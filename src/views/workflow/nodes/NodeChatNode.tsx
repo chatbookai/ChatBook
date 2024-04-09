@@ -83,7 +83,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
         />
 
         <Fragment>
-          <Grid item spacing={[5, 0]} xs={12}>
+          <Grid container spacing={[5, 0]}>
             <Box display="flex" mb={1} alignItems="center" justifyContent="space-between">
               <Box position={'absolute'} left={'-2px'}>
                 <Handle
@@ -132,10 +132,10 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
         <Grid container spacing={2} pb={5}>
           {data && data.inputs && data.inputs.length>0 && data.inputs.map((item: any, index: number) => {
 
-              return (<Fragment>
+              return (<Fragment key={`inputs_${index}`}>
                       {item.type == 'settingLLMModel' ?
                       <Fragment>
-                        <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
+                        <Grid item sx={{pt:4}} xs={12}>
                         <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
                           <Box display="flex" alignItems="center">
                           <Typography sx={{ pl: 2, py: 2 }}>{t(item.label)}</Typography>
@@ -150,7 +150,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
 
                       {item.type == 'settingDatasetQuotePrompt' ?
                       <Fragment>
-                        <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
+                        <Grid item sx={{pt:4}} xs={12}>
                         <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
                           <Box position={'absolute'} left={'-2px'}>
                             <Handle
@@ -181,7 +181,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
 
                       {item.type == 'textarea' ?
                       <Fragment>
-                        <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
+                        <Grid item sx={{pt:4}} xs={12}>
                           <Box display="flex" mb={1} alignItems="center">
                             <Box position={'absolute'} left={'-2px'}>
                               <Handle
@@ -221,7 +221,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
 
                       {item.type == 'numberInput' ?
                       <Fragment>
-                        <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
+                        <Grid item sx={{pt:4}} xs={12}>
                           <Box display="flex" mb={1} alignItems="center">
                             <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
                             {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
@@ -251,7 +251,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
 
                       {item.type == 'custom' && item.key == 'userChatInput' ?
                       <Fragment>
-                        <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
+                        <Grid item sx={{pt:4}} xs={12}>
                           <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
                             <Box position={'absolute'} left={'-2px'}>
                               <Handle
@@ -292,7 +292,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
 
                       {item.key == 'variables' ?
                       <Fragment>
-                        <Grid item spacing={[5, 5]} sx={{pt: 7, pb: 1}} xs={12}>
+                        <Grid item sx={{pt: 7, pb: 1}} xs={12}>
                           <Box display="flex" mb={1} alignItems="center">
                             <Avatar src={'/icons/core/app/simpleMode/variable.svg'} variant="rounded" sx={{ width: '32px', height: '32px'}} />
                             <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
@@ -315,7 +315,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
 
                       {item.key == 'questionGuide' ?
                       <Fragment>
-                        <Grid item spacing={[5, 5]} xs={12}>
+                        <Grid item xs={12}>
                           <Box display="flex" mb={1} alignItems="center">
                             <Avatar src={'/icons/core/chat/QGFill.svg'} variant="rounded" sx={{ width: '28px', height: '28px'}} />
                             <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
@@ -336,7 +336,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
 
                       {item.key == 'tts' ?
                       <Fragment>
-                        <Grid item spacing={[5, 5]} xs={12}>
+                        <Grid item xs={12}>
                           <Box display="flex" mb={1} alignItems="center">
                             <Avatar src={'/icons/core/app/simpleMode/tts.svg'} variant="rounded" sx={{ width: '25px', height: '25px', pl: 1}} />
                             <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
@@ -385,8 +385,8 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                                   >
                                   <MenuItem value={"Disabled"}>{t("Disabled")}</MenuItem>
                                   <MenuItem value={"AudioBrowser"}>{t("AudioBrowser")}</MenuItem>
-                                  {llms && llms.audioSpeechModels && llms.audioSpeechModels[0] && llms.audioSpeechModels[0].voices && llms.audioSpeechModels[0].voices.map((item: any)=>{
-                                    return <MenuItem value={item.value}>{item.label}</MenuItem>
+                                  {llms && llms.audioSpeechModels && llms.audioSpeechModels[0] && llms.audioSpeechModels[0].voices && llms.audioSpeechModels[0].voices.map((item: any, indexItem: number)=>{
+                                    return <MenuItem value={item.value} key={`voices_${indexItem}`}>{item.label}</MenuItem>
                                   })}
                                 </Select>
                               </FormControl>
@@ -448,10 +448,10 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
         <Grid container spacing={2}>
           {data && data.outputs && data.outputs.length>0 && data.outputs.map((item: any, index: number) => {
 
-              return (<Fragment>
+              return (<Fragment key={`outputs_${index}`}>
                       {item.type == 'source' ?
                       <Fragment>
-                        <Grid item spacing={[5, 0]} xs={12}>
+                        <Grid item xs={12}>
                           <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="flex-end">
                             <Typography sx={{ pr: 3, py: 2 }}>{t(item.label)}</Typography>
                           </Box>

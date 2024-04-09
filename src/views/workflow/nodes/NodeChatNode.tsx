@@ -81,6 +81,46 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
             }
           }}
         />
+
+        <Fragment>
+          <Grid item spacing={[5, 0]} xs={12}>
+            <Box display="flex" mb={1} alignItems="center" justifyContent="space-between">
+              <Box position={'absolute'} left={'-2px'}>
+                <Handle
+                  style={{
+                    width: '14px',
+                    height: '14px',
+                    borderWidth: '3.5px',
+                    backgroundColor: 'info.primary',
+                    top: '-3px'
+                  }}
+                  type="target"
+                  id={`Triger_Left`}
+                  position={Position.Left}
+                />
+              </Box>
+              <Box display="flex" alignItems="center">
+                <Typography sx={{ pl: 3, pb: 2 }}>{t('switch')}</Typography>
+              </Box>
+              <Typography sx={{ pr: 3, pb: 2 }}>{t('running done')}</Typography>
+              <Box position={'absolute'} right={'-2px'}>
+              <Handle
+                style={{
+                  width: '14px',
+                  height: '14px',
+                  borderWidth: '3.5px',
+                  backgroundColor: 'info.primary',
+                  top: '-3px'
+                }}
+                type="source"
+                id={`Triger_Right`}
+                position={Position.Right}
+              />
+            </Box>
+            </Box>
+          </Grid>
+        </Fragment>
+
         <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
         <Grid item xs={12} sx={{ py: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <Typography variant="body1" sx={{ fontWeight: 'bold', textAlign: 'center' }}>
@@ -112,8 +152,21 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                       <Fragment>
                         <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
                         <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
+                          <Box position={'absolute'} left={'-2px'}>
+                            <Handle
+                              style={{
+                                width: '14px',
+                                height: '14px',
+                                borderWidth: '3.5px',
+                                backgroundColor: 'info.primary',
+                              }}
+                              type="target"
+                              id={`${item.label}${index}'_Left'`}
+                              position={Position.Left}
+                            />
+                          </Box>
                           <Box display="flex" alignItems="center">
-                          <Typography sx={{ pl: 2, py: 2 }}>{t(item.label || item.key)}</Typography>
+                          <Typography sx={{ pl: 3, py: 2 }}>{t(item.label || item.key)}</Typography>
                           {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
                           <Tooltip title={t(item.description)}>
                               <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
@@ -124,16 +177,29 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                         </Grid>
                       </Fragment>
                       :
-
                       null}
 
                       {item.type == 'textarea' ?
                       <Fragment>
                         <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
                           <Box display="flex" mb={1} alignItems="center">
-                            <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
-                            <Tooltip title={t(item.placeholder)}>
-                              <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
+                            <Box position={'absolute'} left={'-2px'}>
+                              <Handle
+                                style={{
+                                  width: '14px',
+                                  height: '14px',
+                                  borderWidth: '3.5px',
+                                  backgroundColor: 'info.primary',
+                                  top: '2px'
+                                }}
+                                type="target"
+                                id={`${item.label}${index}'_Left'`}
+                                position={Position.Left}
+                              />
+                            </Box>
+                            <Typography sx={{pl: 3, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
+                            <Tooltip title={t(item.placeholder)} >
+                              <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1, pt: 1.3 }} />
                             </Tooltip>
                           </Box>
                           <TextField
@@ -385,7 +451,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
               return (<Fragment>
                       {item.type == 'source' ?
                       <Fragment>
-                        <Grid item spacing={[5, 0]} sx={{pt:3}} xs={12}>
+                        <Grid item spacing={[5, 0]} xs={12}>
                           <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="flex-end">
                             <Typography sx={{ pr: 3, py: 2 }}>{t(item.label)}</Typography>
                           </Box>

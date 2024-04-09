@@ -90,7 +90,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
         <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
         
         <Grid container spacing={2} pb={5}>
-          {data && data.inputs && data.inputs.length>0 && data.inputs.map((item: any) => {
+          {data && data.inputs && data.inputs.length>0 && data.inputs.map((item: any, index: number) => {
 
               return (<Fragment>
                       {item.type == 'settingLLMModel' ?
@@ -183,15 +183,41 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                       :
                       null}
 
-                      {item.type == 'custom' ?
+                      {item.type == 'custom' && item.key == 'userChatInput' ?
                       <Fragment>
                         <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
                           <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
-                            <Box display="flex" alignItems="center">
-                            <Typography sx={{ pl: 2, py: 2 }}>{t(item.toolDescription)}</Typography>
-                            {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
+                            <Box position={'absolute'} left={'-2px'}>
+                              <Handle
+                                style={{
+                                  width: '14px',
+                                  height: '14px',
+                                  borderWidth: '3.5px',
+                                  backgroundColor: 'info.primary',
+                                }}
+                                type="target"
+                                id={`${item.label}${index}'_Left'`}
+                                position={Position.Left}
+                              />
                             </Box>
-                            <Typography sx={{ pr: 2, py: 2 }}>{t(item.toolDescription)}</Typography>
+                            <Box display="flex" alignItems="center">
+                              <Typography sx={{ pl: 3, py: 2 }}>{t(item.toolDescription)}</Typography>
+                              {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
+                            </Box>
+                            <Typography sx={{ pr: 3, py: 2 }}>{t(item.toolDescription)}</Typography>
+                            <Box position={'absolute'} right={'-2px'}>
+                            <Handle
+                              style={{
+                                width: '14px',
+                                height: '14px',
+                                borderWidth: '3.5px',
+                                backgroundColor: 'info.primary',
+                              }}
+                              type="source"
+                              id={`${item.label}${index}'_Right'`}
+                              position={Position.Right}
+                            />
+                          </Box>
                           </Box>
                         </Grid>
                       </Fragment>
@@ -354,14 +380,14 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
         <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
 
         <Grid container spacing={2}>
-          {data && data.outputs && data.outputs.length>0 && data.outputs.map((item: any) => {
+          {data && data.outputs && data.outputs.length>0 && data.outputs.map((item: any, index: number) => {
 
               return (<Fragment>
                       {item.type == 'source' ?
                       <Fragment>
-                        <Grid item spacing={[5, 0]} sx={{pt:4}} xs={12}>
+                        <Grid item spacing={[5, 0]} sx={{pt:3}} xs={12}>
                           <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="flex-end">
-                            <Typography sx={{ pr: 2, py: 2 }}>{t(item.label)}</Typography>
+                            <Typography sx={{ pr: 3, py: 2 }}>{t(item.label)}</Typography>
                           </Box>
                           <Box position={'absolute'} right={'-2px'}>
                             <Handle
@@ -369,10 +395,11 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                                 width: '14px',
                                 height: '14px',
                                 borderWidth: '3.5px',
-                                backgroundColor: 'main.primary',
+                                backgroundColor: 'info.primary',
+                                top: '-22px',
                               }}
                               type="source"
-                              id={moduleId}
+                              id={`${item.label}${index}`}
                               position={Position.Right}
                             />
                           </Box>
@@ -387,7 +414,6 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
         </Grid>
 
 
-          
       </Card>
   );
 };

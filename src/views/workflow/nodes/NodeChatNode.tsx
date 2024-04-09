@@ -161,7 +161,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                                 backgroundColor: 'info.primary',
                               }}
                               type="target"
-                              id={`${item.label}${index}'_Left'`}
+                              id={`${item.label}${index}_Left`}
                               position={Position.Left}
                             />
                           </Box>
@@ -193,7 +193,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                                   top: '2px'
                                 }}
                                 type="target"
-                                id={`${item.label}${index}'_Left'`}
+                                id={`${item.label}${index}_Left`}
                                 position={Position.Left}
                               />
                             </Box>
@@ -262,7 +262,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                                   backgroundColor: 'info.primary',
                                 }}
                                 type="target"
-                                id={`${item.label}${index}'_Left'`}
+                                id={`${item.label}${index}_Left`}
                                 position={Position.Left}
                               />
                             </Box>
@@ -280,7 +280,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                                 backgroundColor: 'info.primary',
                               }}
                               type="source"
-                              id={`${item.label}${index}'_Right'`}
+                              id={`${item.label}${index}_Right`}
                               position={Position.Right}
                             />
                           </Box>

@@ -29,8 +29,6 @@ import NodeChatNode from 'src/views/workflow/nodes/NodeChatNode';
 import { workflowData, initialNodes, initialEdges } from './workflowData'
 import { appModule2FlowEdge, appModule2FlowNode } from 'src/functions/workflow/functions';
 
-//import { appModule2FlowEdge, appModule2FlowNode } from 'src/functions/utils/adapt';
-
 import { ModuleItemType } from 'src/functions/workflow/type';
 
 import toast from 'react-hot-toast'
@@ -59,7 +57,7 @@ const nodeTypes = {
 const edgeTypes2 = {
 };
 
-const EdgesFlow = () => {
+const FlowContent = () => {
   const { t } = useTranslation();
 
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -67,32 +65,56 @@ const EdgesFlow = () => {
   
   const onConnect = useCallback((params: any) => setEdges((eds) => addEdge(params, eds)), []);
 
-  const customOnConnect = useCallback(
-    (connect: Connection) => {
-      if (!connect.sourceHandle || !connect.targetHandle) {
-        return;
-      }
-      if (connect.source === connect.target) {
-        return toast({
-          status: 'warning',
-          title: t('core.module.Can not connect self') as string
-        });
-      }
-      onConnect({
-        connect
-      });
-    },
-    [onConnect, t, toast]
-  );
+  const customOnConnect = (connect: Connection) => {
+    if (!connect.sourceHandle || !connect.targetHandle) {
+      return;
+    }
+    console.log("customOnConnect", connect)
+    if (connect.source === connect.target) {
+      //return toast({
+      //  status: 'warning',
+      //  title: t('core.module.Can not connect self') as string
+      //});
+    }
+    onConnect({
+      ...connect,
+      type: 'buttonedge',
+      style: { stroke: '#00ff00', strokeWidth: 2 }
+    });
+  }
   
   useEffect(()=>{
     const modules: ModuleItemType[] = workflowData.modules
     //const edges = appModule2FlowEdge(modules)
     //setEdges(edges)
-    //console.log("edges", edges)
+    const edges = [
+      {
+      id: "bmf6ry",
+      source: "userChatInput",
+      sourceHandle: "userChatInput",
+      target: "chatModule",
+      targetHandle: "NodeChatPrompt7_Left",
+      type: "buttonedge",
+      animated: true,
+      style: { stroke: '#00ff00', strokeWidth: 2 }
+      },
+      {
+        id: "bmf6r1",
+        source: "userChatInput",
+        sourceHandle: "userChatInput",
+        target: "chatModule",
+        targetHandle: "9_Left",
+        type: "buttonedge",
+        animated: true,
+        style: { stroke: '#00ff00', strokeWidth: 2 }
+      }
+    ]
+    console.log("nodes edges", edges)
+    setEdges(edges)
+
     const nodes = modules.map((item: any) => appModule2FlowNode(item))
     setNodes(nodes)
-    console.log("nodes modules", workflowData.modules)
+    //console.log("nodes modules", workflowData.modules)
     console.log("nodes nodes", nodes)
   }, [])
 
@@ -123,4 +145,4 @@ const EdgesFlow = () => {
   );
 };
 
-export default EdgesFlow;
+export default FlowContent;

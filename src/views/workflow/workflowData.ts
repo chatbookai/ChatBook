@@ -105,7 +105,7 @@ export const workflowData: any = {
             "showStatus": true,
             "position": {
                 "x": 1150.8317145593148,
-                "y": 957.9676672880053
+                "y": 720
             },
             "inputs": [
                 {
@@ -395,7 +395,7 @@ export const appTemplates: any[] = [
         showStatus: true,
         position: {
           x: 1150.8317145593148,
-          y: 957.9676672880053
+          y: 720
         },
         inputs: [
           {

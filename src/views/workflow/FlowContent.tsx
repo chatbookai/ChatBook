@@ -136,7 +136,7 @@ const FlowContent = () => {
       onNodesChange={onNodesChange}
       onEdgesChange={onEdgesChange}
       onConnect={customOnConnect}
-      attributionPosition="top-right"
+      attributionPosition="bottom-right"
       connectionMode={ConnectionMode.Loose}
     >
       <Controls />

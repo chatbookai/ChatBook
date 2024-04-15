@@ -229,6 +229,7 @@
   "System Setting": "System Setting",
   "userChatInputIntro": "The flow will start executing from this module when a user sends a message.",
   "AI Chat": "AI Chat",
-  "AI Model Chat": "AI Model Chat"
+  "AI Model Chat": "AI Model Chat",
+  "KnowledgeBaseRef":"Knowledge Base Reference"
   
 }

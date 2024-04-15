@@ -26,8 +26,8 @@ export const AiChatModule: FlowNodeTemplateType = {
   templateType: FlowNodeTemplateTypeEnum.textAnswer,
   flowType: FlowNodeTypeEnum.chatNode,
   avatar: '/imgs/module/AI.png',
-  name: 'AI 对话',
-  intro: 'AI 大模型对话',
+  name: 'AI Chat',
+  intro: 'AI Model Chat',
   showStatus: true,
   isTool: true,
   inputs: [
@@ -91,7 +91,7 @@ export const AiChatModule: FlowNodeTemplateType = {
       placeholder: chatNodeSystemPromptTip
     },
     Input_Template_History,
-    { ...Input_Template_UserChatInput, toolDescription: 'toolDescription' },
+    { ...Input_Template_UserChatInput, toolDescription: 'user question' },
     Input_Template_Dataset_Quote
   ],
   outputs: [

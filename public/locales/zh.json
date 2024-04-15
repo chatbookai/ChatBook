@@ -229,7 +229,8 @@
   "welcomeTextInitial": "你好，我是知识库助手，请不要忘记选择知识库噢~\n[你是谁]\n[如何使用]",
   "System Setting": "系统设置",
   "userChatInputIntro": "当用户发送一个内容后，流程将会从这个模块开始执行。",
-  "AI 对话": "AI 对话",
-  "AI 大模型对话": "AI 大模型对话"
+  "AI Chat": "AI 对话",
+  "AI Model Chat": "AI 大模型对话",
+  "KnowledgeBaseRef":"知识库引用"
   
 }

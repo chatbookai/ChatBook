@@ -235,6 +235,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                           <TextField
                             type='number'
                             size='small'
+                            InputProps={{ inputProps: { min: 0, max: 100 } }}
                             defaultValue={item.value}
                             sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                             placeholder={t(item.placeholder) as string}

@@ -23,7 +23,7 @@ import { PluginOutputModule } from 'src/functions/workflow/system/pluginOutput';
 import { RunPluginModule } from 'src/functions/workflow/system/runPlugin';
 import { AiQueryExtension } from 'src/functions/workflow/system/queryExtension';
 
-import type { FlowNodeTemplateType, moduleTemplateListType } from 'src/functions/workflow/type.d';
+import type { FlowNodeTemplateType, moduleTemplateListType } from 'src/functions/workflow/type';
 
 /* app flow module templates */
 export const appSystemModuleTemplates: FlowNodeTemplateType[] = [
@@ -41,6 +41,7 @@ export const appSystemModuleTemplates: FlowNodeTemplateType[] = [
   HttpModule468,
   AiQueryExtension
 ];
+
 /* plugin flow module templates */
 export const pluginSystemModuleTemplates: FlowNodeTemplateType[] = [
   PluginInputModule,
@@ -95,19 +96,19 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           {
             key: ModuleInputKeyEnum.variables,
             type: FlowNodeInputTypeEnum.hidden,
-            label: 'core.app.Chat Variable',
+            label: 'Chat Variable',
             value: formData.userGuide.variables
           },
           {
             key: ModuleInputKeyEnum.questionGuide,
             type: FlowNodeInputTypeEnum.hidden,
-            label: 'core.app.Question Guide',
+            label: 'Question Guide',
             value: formData.userGuide.questionGuide
           },
           {
             key: ModuleInputKeyEnum.tts,
             type: FlowNodeInputTypeEnum.hidden,
-            label: 'core.app.TTS',
+            label: 'TTS',
             value: formData.userGuide.tts
           }
         ],
@@ -128,8 +129,8 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
         avatar: '/imgs/module/userChatInput.png',
         flowType: 'questionInput',
         position: {
-          x: 464.32198615344566,
-          y: 1602.2698463081606
+          x: 450,
+          y: 1350
         },
         inputs: [
           {
@@ -159,13 +160,13 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
       },
       {
         moduleId: 'chatModule',
-        name: 'AI 对话',
+        name: 'AI Chat',
         avatar: '/imgs/module/AI.png',
         flowType: 'chatNode',
         showStatus: true,
         position: {
           x: 981.9682828103937,
-          y: 890.014595014464
+          y: 600
         },
         inputs: [
           {
@@ -391,8 +392,8 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
       },
       {
         moduleId: '63toub',
-        name: 'AI 对话',
-        intro: 'AI 大模型对话',
+        name: 'AI Chat',
+        intro: 'AI Model Chat',
         avatar: '/imgs/module/AI.png',
         flowType: 'chatNode',
         showStatus: true,
@@ -516,7 +517,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
           {
             key: 'quoteQA',
             type: 'settingDatasetQuotePrompt',
-            label: '知识库引用',
+            label: 'KnowledgeBaseRef',
             description: 'core.module.Dataset quote.Input description',
             valueType: 'datasetQuote',
             showTargetInApp: true,
@@ -1043,6 +1044,8 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
     if (data.dataset.datasets.length > 0) return datasetTemplate(data);
     return simpleChatTemplate(data);
   })();
+
+  console.log("userGuideTemplate data", data)
 
   return [...userGuideTemplate(data), ...modules];
 }

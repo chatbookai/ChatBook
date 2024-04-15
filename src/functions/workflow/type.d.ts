@@ -13,6 +13,50 @@ import {
 } from 'src/functions/workflow/constants';
 import { PluginTypeEnum } from 'src/functions/workflow/constants';
 
+export type AppSimpleEditFormType = {
+  // templateId: string;
+  aiSettings: {
+    model: string;
+    systemPrompt?: string | undefined;
+    temperature: number;
+    maxToken: number;
+    isResponseAnswerText: boolean;
+    maxHistories: number;
+  };
+  dataset: {
+    datasets: SelectedDatasetType;
+    searchMode: `${DatasetSearchModeEnum}`;
+    similarity?: number;
+    limit?: number;
+    usingReRank?: boolean;
+    datasetSearchUsingExtensionQuery?: boolean;
+    datasetSearchExtensionModel?: string;
+    datasetSearchExtensionBg?: string;
+  };
+  selectedTools: FlowNodeTemplateType[];
+  userGuide: {
+    welcomeText: string;
+    variables: {
+      id: string;
+      key: string;
+      label: string;
+      type: `${VariableInputEnum}`;
+      required: boolean;
+      maxLen: number;
+      enums: {
+        value: string;
+      }[];
+    }[];
+    questionGuide: boolean;
+    tts: {
+      type: 'none' | 'web' | 'model';
+      model?: string | undefined;
+      voice?: string | undefined;
+      speed?: number | undefined;
+    };
+  };
+};
+
 export type FlowNodeTemplateType = {
   id: string; // module id, unique
   templateType: `${FlowNodeTemplateTypeEnum}`;

@@ -68,8 +68,8 @@ export const workflowData: any = {
             "avatar": "/imgs/module/userChatInput.png",
             "flowType": "questionInput",
             "position": {
-                "x": 464.32198615344566,
-                "y": 1602.2698463081606
+                "x": 450,
+                "y": 1350
             },
             "inputs": [
                 {
@@ -99,7 +99,7 @@ export const workflowData: any = {
         },
         {
             "moduleId": "chatModule",
-            "name": "AI 对话",
+            "name": "AI Chat",
             "avatar": "/imgs/module/AI.png",
             "flowType": "chatNode",
             "showStatus": true,
@@ -358,8 +358,8 @@ export const appTemplates: any[] = [
         avatar: '/imgs/module/userChatInput.png',
         flowType: 'questionInput',
         position: {
-          x: 464.32198615344566,
-          y: 1602.2698463081606
+          x: 450,
+          y: 1350
         },
         inputs: [
           {
@@ -389,7 +389,7 @@ export const appTemplates: any[] = [
       },
       {
         moduleId: 'chatModule',
-        name: 'AI 对话',
+        name: 'AI Chat',
         avatar: '/imgs/module/AI.png',
         flowType: 'chatNode',
         showStatus: true,
@@ -673,8 +673,8 @@ export const appTemplates: any[] = [
         avatar: '/imgs/module/userChatInput.png',
         flowType: 'questionInput',
         position: {
-          x: 464.32198615344566,
-          y: 1602.2698463081606
+          x: 450,
+          y: 1350
         },
         inputs: [
           {
@@ -704,13 +704,13 @@ export const appTemplates: any[] = [
       },
       {
         moduleId: 'chatModule',
-        name: 'AI 对话',
+        name: 'AI Chat',
         avatar: '/imgs/module/AI.png',
         flowType: 'chatNode',
         showStatus: true,
         position: {
           x: 981.9682828103937,
-          y: 890.014595014464
+          y: 600
         },
         inputs: [
           {
@@ -1119,7 +1119,7 @@ export const appTemplates: any[] = [
           {
             key: 'quoteQA',
             type: 'settingDatasetQuotePrompt',
-            label: '知识库引用',
+            label: 'KnowledgeBaseRef',
             description: 'core.module.Dataset quote.Input description',
             valueType: 'datasetQuote',
             showTargetInApp: true,
@@ -1600,7 +1600,7 @@ export const appTemplates: any[] = [
       },
       {
         moduleId: 'nlfwkc',
-        name: 'AI 对话',
+        name: 'AI Chat',
         flowType: 'chatNode',
         showStatus: true,
         position: {
@@ -1722,7 +1722,7 @@ export const appTemplates: any[] = [
           {
             key: 'quoteQA',
             type: 'target',
-            label: '知识库引用',
+            label: 'KnowledgeBaseRef',
             description: 'core.module.Dataset quote.Input description',
             valueType: 'datasetQuote',
             showTargetInApp: true,

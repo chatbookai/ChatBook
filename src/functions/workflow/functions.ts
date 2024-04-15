@@ -9,6 +9,7 @@ const nanoid = customAlphabet('abcdefghijklmnopqrstuvwxyz1234567890', 6);
 export const appModule2FlowNode = (item: ModuleItemType): Node<FlowModuleItemType> => {
   // init some static data
   const template = moduleTemplatesFlat.find((template) => template.flowType === item.flowType) || UserInputModule;
+  console.log("appModule2FlowNode data", template)
 
   const concatInputs = template.inputs.concat(
     item.inputs.filter((input) => !template.inputs.find((item) => item.key === input.key))
@@ -50,6 +51,7 @@ export const appModule2FlowNode = (item: ModuleItemType): Node<FlowModuleItemTyp
     position: item.position || { x: 0, y: 0 }
   };
 };
+
 export const appModule2FlowEdge = ( modules : ModuleItemType[] ) => {
   const edges: Edge[] = [];
   modules.forEach((module) =>

@@ -12,7 +12,7 @@ export const workflowData: any = {
     "modules": [
         {
             "moduleId": "userGuide",
-            "name": "用户引导",
+            "name": "System Setting",
             "avatar": "/imgs/module/userGuide.png",
             "flowType": "userGuide",
             "position": {
@@ -29,7 +29,7 @@ export const workflowData: any = {
                     "showTargetInPlugin": false,
                     "connected": false,
                     "avatar": "/imgs/module/userGuide.png",
-                    "value": "你好，我是知识库助手，请不要忘记选择知识库噢~\n[你是谁]\n[如何使用]"
+                    "value": 'welcomeTextInitial'
                 },
                 {
                     "key": "variables",
@@ -64,7 +64,7 @@ export const workflowData: any = {
         },
         {
             "moduleId": "userChatInput",
-            "name": "对话入口",
+            "name": "Chat entrance",
             "avatar": "/imgs/module/userChatInput.png",
             "flowType": "questionInput",
             "position": {
@@ -354,7 +354,7 @@ export const appTemplates: any[] = [
       },
       {
         moduleId: 'userChatInput',
-        name: 'core.module.template.Chat entrance',
+        name: 'Chat entrance',
         avatar: '/imgs/module/userChatInput.png',
         flowType: 'questionInput',
         position: {
@@ -669,7 +669,7 @@ export const appTemplates: any[] = [
       },
       {
         moduleId: 'userChatInput',
-        name: 'core.module.template.Chat entrance',
+        name: 'Chat entrance',
         avatar: '/imgs/module/userChatInput.png',
         flowType: 'questionInput',
         position: {
@@ -920,7 +920,7 @@ export const appTemplates: any[] = [
             "showTargetInApp": false,
             "showTargetInPlugin": false,
             "connected": false,
-            "value": "你好，我是知识库助手，请不要忘记选择知识库噢~\n[你是谁]\n[如何使用]"
+            "value": 'welcomeTextInitial'
           },
           {
             key: 'variables',
@@ -959,8 +959,8 @@ export const appTemplates: any[] = [
       },
       {
         moduleId: 'userChatInput',
-        name: 'core.module.template.Chat entrance',
-        intro: '当用户发送一个内容后，流程将会从这个模块开始执行。',
+        name: 'Chat entrance',
+        intro: 'userChatInputIntro',
         avatar: '/imgs/module/userChatInput.svg',
         flowType: 'questionInput',
         position: {
@@ -995,8 +995,8 @@ export const appTemplates: any[] = [
       },
       {
         moduleId: '63toub',
-        name: 'AI 对话',
-        intro: 'AI 大模型对话',
+        name: 'AI Chat',
+        intro: 'AI Model Chat',
         avatar: '/imgs/module/AI.png',
         flowType: 'chatNode',
         showStatus: true,
@@ -1113,7 +1113,7 @@ export const appTemplates: any[] = [
             valueType: 'string',
             showTargetInApp: true,
             showTargetInPlugin: true,
-            toolDescription: '用户问题',
+            toolDescription: 'user question',
             connected: true
           },
           {
@@ -1336,7 +1336,7 @@ export const appTemplates: any[] = [
     modules: [
       {
         moduleId: '7z5g5h',
-        name: 'core.module.template.Chat entrance',
+        name: 'Chat entrance',
         flowType: 'questionInput',
         position: {
           x: -269.50851681351924,

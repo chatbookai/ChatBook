@@ -100,7 +100,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                 />
               </Box>
               <Box display="flex" alignItems="center">
-                <Typography sx={{ pl: 3, pb: 2 }}>{t('switch')}</Typography>
+                <Typography sx={{ pl: 3, pb: 2, pr: 2 }}>{t('switch')}</Typography>
               </Box>
               <Typography sx={{ pr: 3, pb: 2 }}>{t('running done')}</Typography>
               <Box position={'absolute'} right={'-2px'}>
@@ -204,7 +204,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                           </Box>
                           <TextField
                             multiline
-                            rows={4}
+                            rows={6}
                             defaultValue={item.value}
                             sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                             placeholder={t(item.placeholder) as string}

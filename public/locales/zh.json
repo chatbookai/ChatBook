@@ -161,7 +161,7 @@
   "Please upload a image first": "请先上传一个图片",
   "Prompt Must Not Null": "提示不能为空",
   "Negative Prompt Must Not Null": "负向提示不能为空",
-  "core.module.template.Chat entrance": "对话入口",
+  "Chat entrance": "对话入口",
   "Add a intro to app": "快来给应用一个介绍~",
   "chatNodeSystemPromptTip": "模型固定的引导词，通过调整该内容，可以引导模型聊天方向。该内容会被固定在上下文的开头。可使用变量，例如 {{language}}\n如果关联了知识库，你还可以通过适当的描述，来引导模型何时去调用知识库搜索。例如：\n你是电影《星际穿越》的助手，当用户询问与《星际穿越》相关的内容时，请搜索知识库并结合搜索结果进行回答。",
   "userGuideTip": "可以在对话前设置引导语，设置全局变量，设置下一步指引",
@@ -176,7 +176,7 @@
   "Disabled": "禁用",
   "Enabled": "启用",
   "AudioBrowser": "浏览器自带(免费)",
-  "Add":"关闭",
+  "Add":"添加",
   "Edit":"编辑",
   "Delete":"删除",
   "View":"查看",
@@ -225,6 +225,11 @@
   "result false": "False",
   "result true": "True",
   "running done": "模块调用结束",
-  "text output": "文本输出"
+  "text output": "文本输出",
+  "welcomeTextInitial": "你好，我是知识库助手，请不要忘记选择知识库噢~\n[你是谁]\n[如何使用]",
+  "System Setting": "系统设置",
+  "userChatInputIntro": "当用户发送一个内容后，流程将会从这个模块开始执行。",
+  "AI 对话": "AI 对话",
+  "AI 大模型对话": "AI 大模型对话"
   
 }

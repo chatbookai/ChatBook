@@ -91,7 +91,7 @@ export const AiChatModule: FlowNodeTemplateType = {
       placeholder: chatNodeSystemPromptTip
     },
     Input_Template_History,
-    { ...Input_Template_UserChatInput, toolDescription: '用户问题' },
+    { ...Input_Template_UserChatInput, toolDescription: 'toolDescription' },
     Input_Template_Dataset_Quote
   ],
   outputs: [

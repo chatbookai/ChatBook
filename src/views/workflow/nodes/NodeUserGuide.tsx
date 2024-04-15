@@ -102,9 +102,9 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                             <TextField
                               multiline
                               rows={4}
-                              defaultValue={item.value}
+                              defaultValue={t(item.value) as string}
                               style={{ width: '100%', resize: 'both'}}
-                              placeholder={item.value}
+                              placeholder={t(item.value) as string}
                               onChange={(e) => {
                                 startTst(() => {
                                   //Action

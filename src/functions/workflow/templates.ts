@@ -356,7 +356,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
       {
         moduleId: 'userChatInput',
         name: 'Chat entrance',
-        intro: '当用户发送一个内容后，流程将会从这个模块开始执行。',
+        intro: 'userChatInputIntro',
         avatar: '/imgs/module/userChatInput.svg',
         flowType: 'questionInput',
         position: {
@@ -510,7 +510,7 @@ export async function postForm2Modules(data: AppSimpleEditFormType) {
             valueType: 'string',
             showTargetInApp: true,
             showTargetInPlugin: true,
-            toolDescription: '用户问题',
+            toolDescription: 'user question',
             connected: true
           },
           {

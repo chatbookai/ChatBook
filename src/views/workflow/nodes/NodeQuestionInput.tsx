@@ -36,7 +36,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
             }
           subheader={
             <Typography variant='subtitle1'>
-              {data.intro}
+              {t(data.intro) as string}
             </Typography>
           }
           titleTypographyProps={{

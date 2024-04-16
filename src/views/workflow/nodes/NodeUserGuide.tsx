@@ -63,9 +63,9 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                               })
   const [GlobalVariable,setGlobalVariable] = useState<any>({GlobalVariableOpen: false, 
                                                 required: true, 
-                                                Model: 'gpt-3.5-turbo', 
                                                 VariableName: 'Label', 
                                                 VariableValue: '',
+                                                VariableKey: '',
                                                 VariableType: 'text',
                                                 TextMaxLength: 50,
                                                 SelectOptions: ''

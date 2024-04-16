@@ -235,6 +235,18 @@
   "simpleChatIntro":"A very simple AI application that you can bind to a knowledge base or tool.",
   "Mind Map":"Mind Map",
   "Agents Square":"Agents Square",
-  "Confirm":"Confirm"
+  "Confirm":"Confirm",
+  "Required":"Required",
+  "VariableName":"Variable Name",
+  "VariableKey":"Variable Key",
+  "VariableType":"Variable Type",
+  "TextMaxLength":"Text Max Length",
+  "SelectOptions":"Select Options",
+  "VariableTypeParagraphTip":"Allow users to input up to 4000 characters in the dialogue box.",
+  "VariableTypeApiTip":"You can pass variables through API endpoints or shared link queries. The main purpose of introducing this variable type is for variable prompts.",
+  "text":"Text",
+  "select":"Select",
+  "paragraph":"Paragraph",
+  "api":"API"
   
 }

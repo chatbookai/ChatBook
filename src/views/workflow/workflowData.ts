@@ -4,8 +4,8 @@ export const workflowData: any = {
     "_id": "660d13ad361cf48ed91321fb",
     "teamId": "65ad85ddb9c540f1cfe0f22f",
     "tmbId": "65ad85ddb9c540f1cfe0f231",
-    "id": "simleChat",
-    "name": "简易模板",
+    "id": "simpleChat",
+    "name": "simpleChat",
     "avatar": "/icon/logo.svg",
     "intro": "一个极其简单的 AI 应用，你可以绑定知识库或工具。",
     "type": "simple",
@@ -288,7 +288,6 @@ export const workflowData: any = {
     "permission": "private",
     "teamTags": [],
     "updateTime": "2024-04-03T08:30:37.267Z",
-    "__v": 0,
     "isOwner": true,
     "canWrite": true
 }

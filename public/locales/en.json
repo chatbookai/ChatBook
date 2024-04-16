@@ -230,6 +230,10 @@
   "userChatInputIntro": "The flow will start executing from this module when a user sends a message.",
   "AI Chat": "AI Chat",
   "AI Model Chat": "AI Model Chat",
-  "KnowledgeBaseRef":"Knowledge Base Reference"
+  "KnowledgeBaseRef":"Knowledge Base Reference",
+  "simpleChat":"Simple Chat",
+  "simpleChatIntro":"A very simple AI application that you can bind to a knowledge base or tool.",
+  "Mind Map":"Mind Map",
+  "Agents Square":"Agents Square"
   
 }

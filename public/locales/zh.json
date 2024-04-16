@@ -231,6 +231,10 @@
   "userChatInputIntro": "当用户发送一个内容后，流程将会从这个模块开始执行。",
   "AI Chat": "AI 对话",
   "AI Model Chat": "AI 大模型对话",
-  "KnowledgeBaseRef":"知识库引用"
+  "KnowledgeBaseRef":"知识库引用",
+  "simpleChat":"简易模板",
+  "simpleChatIntro":"一个极其简单的 AI 应用，你可以绑定知识库或工具。",
+  "Mind Map":"思维导图",
+  "Agents Square":"应用广场"
   
 }

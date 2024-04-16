@@ -83,7 +83,7 @@ const TTS = (props: any) => {
                     value={TTSModel.TTSValue}
                     fullWidth
                     onChange={(e: any) => {
-                        if(e.target.value) {
+                        if(e.target.value != null) {
                             setTTSModel( (prevState: any) => ({ ...prevState, TTSValue: String(e.target.value) }) )
                         }
                     }}
@@ -99,28 +99,28 @@ const TTS = (props: any) => {
                 <Grid item xs={11.8} pt={8}>
                 <Typography sx={{ fontWeight: 500 }}>{t("TTSSpeed")}</Typography>
                 <Slider
-                size="small"
-                min={0.3}
-                max={2}
-                step={0.1}
-                onChange={(e: any) => {
-                    if(e.target.value) {
-                        setTTSModel( (prevState: any) => ({ ...prevState, TTSSpeed: Number(e.target.value as string) }) )
-                    }
-                }}
-                value={TTSModel.TTSSpeed}
-                valueLabelDisplay='on'
-                aria-labelledby="custom-marks-slider"
-                marks={[
-                    {
-                    value: 0.3,
-                    label: '0.3'
-                    },
-                    {
-                    value: 2,
-                    label: '2'
-                    }
-                    ]}
+                    size="small"
+                    min={0.3}
+                    max={2}
+                    step={0.1}
+                    onChange={(e: any) => {
+                        if(e.target.value != null) {
+                            setTTSModel( (prevState: any) => ({ ...prevState, TTSSpeed: Number(e.target.value as string) }) )
+                        }
+                    }}
+                    value={TTSModel.TTSSpeed}
+                    valueLabelDisplay='on'
+                    aria-labelledby="custom-marks-slider"
+                    marks={[
+                        {
+                        value: 0.3,
+                        label: '0.3'
+                        },
+                        {
+                        value: 2,
+                        label: '2'
+                        }
+                        ]}
                 />
                 </Grid>
             </DialogContent>

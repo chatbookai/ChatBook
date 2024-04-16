@@ -37,9 +37,7 @@ import Icon from 'src/@core/components/icon'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close';
 
-
 import TTS from 'src/views/workflow/components/TTS'
-import LLMModels from 'src/views/workflow/components/LLMModels'
 import GlobalVariableModel from 'src/views/workflow/components/GlobalVariable'
 
 const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
@@ -52,15 +50,6 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
   console.log("QuestionInputNode data", data)
 
   const [TTSModel,setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
-  const [LLMModel,setLLMModel] = useState<any>({LLMModelOpen: false, 
-                                                Model: 'gpt-3.5-turbo', 
-                                                quoteMaxToken: 2, 
-                                                maxContext: 16000,
-                                                functionCall: true,
-                                                maxTemperature: 1.2,
-                                                maxResponse: 4000,
-                                                maxChatHistories: 6
-                                              })
   const [GlobalVariable,setGlobalVariable] = useState<any>({GlobalVariableOpen: false, 
                                                 required: true, 
                                                 VariableName: 'Label', 

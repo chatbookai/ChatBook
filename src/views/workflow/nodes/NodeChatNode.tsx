@@ -35,7 +35,9 @@ import { llms } from 'src/functions/llms'
 import Button from '@mui/material/Button'
 import Icon from 'src/@core/components/icon'
 import IconButton from '@mui/material/IconButton'
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from '@mui/icons-material/Close'
+
+import LLMModelModel from 'src/views/workflow/components/LLMModel'
 
 const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const { moduleId, outputs, inputs } = data;
@@ -50,6 +52,18 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const [TTSOpen, setTTSOpen] = useState<boolean>(false)
   const [TTSValue, setTTSValue] = useState<string>("Disabled")
   const [TTSSpeed, setTTSSpeed] = useState<number>(1)
+
+  const [TTSModel,setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
+  const [LLMModel,setLLMModel] = useState<any>({LLMModelOpen: false, 
+                                                model: 'gpt-3.5-turbo', 
+                                                quoteMaxToken: 2, 
+                                                maxContext: 16000,
+                                                functionCall: true,
+                                                temperature: 0,
+                                                maxResponse: 4000,
+                                                maxChatHistories: 6,
+                                                charsPointsPrice: 2
+                                              })
   
   const handleClickTTSOpen = () => {
     setTTSOpen(true)
@@ -135,13 +149,18 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                       {item.type == 'settingLLMModel' ?
                       <Fragment>
                         <Grid item sx={{pt:4}} xs={12}>
-                        <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
-                          <Box display="flex" alignItems="center">
-                          <Typography sx={{ pl: 2, py: 2 }}>{t(item.label)}</Typography>
-                          {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
+                          <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
+                            <Box display="flex" alignItems="center">
+                            <Typography sx={{ pl: 2, py: 2 }}>{t(item.label)}</Typography>
+                            {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
+                            </Box>
+                            <Button size="small" onClick={
+                                  () => { setLLMModel( (prevState: any) => ({ ...prevState, LLMModelOpen: true }) ) }
+                                }>
+                                  {LLMModel.model}
+                            </Button>
                           </Box>
-                          <Button size="small">{item.value}00000</Button>
-                        </Box>
+                          <LLMModelModel LLMModel={LLMModel} setLLMModel={setLLMModel} ModelData={item} />
                         </Grid>
                       </Fragment>
                       :
@@ -378,7 +397,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                                   value={TTSValue}
                                   fullWidth
                                   onChange={(e: any) => {
-                                    if(e.target.value) {
+                                    if(e.target.value != null) {
                                       setTTSValue(e.target.value as string)
                                     }
                                   }}
@@ -399,7 +418,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                               max={2}
                               step={0.1}
                               onChange={(e: any) => {
-                                if(e.target.value) {
+                                if(e.target.value != null) {
                                   setTTSSpeed(Number(e.target.value as string))
                                 }
                               }}

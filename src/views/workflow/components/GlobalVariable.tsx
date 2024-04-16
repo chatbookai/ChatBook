@@ -119,7 +119,7 @@ const GlobalVariable = (props: any) => {
                               value={t(GlobalVariable.VariableName) as string}
                               size="small"
                               onChange={(e: any) => {
-                                if(e.target.value) {
+                                if(e.target.value != null) {
                                     setGlobalVariable((prevState: any) => ({ ...prevState, VariableName: e.target.value }))
                                 }
                               }}
@@ -138,7 +138,7 @@ const GlobalVariable = (props: any) => {
                               value={t(GlobalVariable.VariableKey) as string}
                               size="small"
                               onChange={(e: any) => {
-                                if(e.target.value) {
+                                if(e.target.value != null) {
                                     setGlobalVariable((prevState: any) => ({ ...prevState, VariableKey: e.target.value }))
                                 }
                               }}
@@ -176,7 +176,7 @@ const GlobalVariable = (props: any) => {
                         inputProps={{ min: 0, max: 500 }} 
                         size="small"
                         onChange={(e: any) => {
-                            if(e.target.value) {
+                            if(e.target.value != null) {
                                 setGlobalVariable((prevState: any) => ({ ...prevState, TextMaxLength: e.target.value }))
                             }
                         }}
@@ -194,7 +194,7 @@ const GlobalVariable = (props: any) => {
                         value={t(GlobalVariable.SelectOptions) as string}
                         size="small"
                         onChange={(e: any) => {
-                            if(e.target.value) {
+                            if(e.target.value != null) {
                                 setGlobalVariable((prevState: any) => ({ ...prevState, SelectOptions: e.target.value }))
                             }
                         }}

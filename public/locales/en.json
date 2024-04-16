@@ -247,6 +247,16 @@
   "text":"Text",
   "select":"Select",
   "paragraph":"Paragraph",
-  "api":"API"
+  "api":"API",
+  "charsPointsPrice":"AI points price",
+  "credit":"Credit",
+  "maxContext":"Max Context",
+  "maxResponse":"Max Response",
+  "maxChatHistories":"Max Chat Histories",
+  "functionCall":"Function Call",
+  "temperature":"Temperature",
+  "rigorous":"Rigorous",
+  "moderate":"Moderate",
+  "divergent":"Divergent"
   
 }

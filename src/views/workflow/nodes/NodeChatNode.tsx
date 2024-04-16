@@ -81,7 +81,6 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
             }
           }}
         />
-
         <Fragment>
           <Grid container spacing={[5, 0]}>
             <Box display="flex" mb={1} alignItems="center" justifyContent="space-between">
@@ -122,7 +121,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
         </Fragment>
 
         <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
-        <Grid item xs={12} sx={{ py: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Grid item xs={12} sx={{ py: 2, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <Typography variant="body1" sx={{ fontWeight: 'bold', textAlign: 'center' }}>
                 {t("Inputs")}
             </Typography>
@@ -141,7 +140,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                           <Typography sx={{ pl: 2, py: 2 }}>{t(item.label)}</Typography>
                           {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
                           </Box>
-                          <Button size="small">{item.value}</Button>
+                          <Button size="small">{item.value}00000</Button>
                         </Box>
                         </Grid>
                       </Fragment>
@@ -439,7 +438,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
         </Grid>
 
         <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
-        <Grid item xs={12} sx={{ py: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <Grid item xs={12} sx={{ py: 2, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             <Typography variant="body1" sx={{ fontWeight: 'bold', textAlign: 'center' }}>
                 {t("Outputs")}
             </Typography>

@@ -37,6 +37,9 @@ import Icon from 'src/@core/components/icon'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close';
 
+
+import TTS from 'src/views/workflow/components/TTS'
+
 const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const { moduleId, outputs } = data;
   const { t } = useTranslation()
@@ -46,17 +49,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
   console.log("QuestionInputNode outputs", outputs)
   console.log("QuestionInputNode data", data)
 
-  const [TTSOpen, setTTSOpen] = useState<boolean>(false)
-  const [TTSValue, setTTSValue] = useState<string>("Disabled")
-  const [TTSSpeed, setTTSSpeed] = useState<number>(1)
-  
-  const handleClickTTSOpen = () => {
-    setTTSOpen(true)
-  }
-
-  const handleTTSClose = () => {
-    setTTSOpen(false)
-  }
+  const [TTSModel,setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
   
   return (
     <Card sx={{ border: theme => `1px solid ${theme.palette.divider}`, width: '500px' }}>
@@ -102,9 +95,8 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                             <TextField
                               multiline
                               rows={4}
-                              defaultValue={t(item.value) as string}
+                              value={t(item.value) as string}
                               style={{ width: '100%', resize: 'both'}}
-                              placeholder={t(item.value) as string}
                               onChange={(e) => {
                                 startTst(() => {
                                   //Action
@@ -170,8 +162,10 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                 <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
                               </Tooltip>
                               <Box position={'absolute'} right={'10px'}>
-                                <Button variant='outlined' size="small" onClick={handleClickTTSOpen}>
-                                  {t(TTSValue) as string}
+                                <Button variant='outlined' size="small" onClick={
+                                  () => { setTTSModel( (prevState: any) => ({ ...prevState, TTSOpen: true }) ) }
+                                }>
+                                  {t(TTSModel.TTSValue) as string}
                                 </Button>
                               </Box>
                             </Box>
@@ -179,81 +173,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                           <Grid item xs={12}>
                             <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
                           </Grid>
-                          <Dialog maxWidth='xs' fullWidth open={TTSOpen} onClose={handleTTSClose}>
-                            <DialogTitle>
-                            <Box display="flex" alignItems="center">
-                              <Avatar src={'/icons/core/app/simpleMode/tts.svg'} variant="rounded" sx={{ width: '25px', height: '25px', pl: 1}} />
-                              <Typography sx={{pl: 2}}>{t(item.label) as string}</Typography>
-                              <Box position={'absolute'} right={'5px'} top={'1px'}>
-                                <IconButton size="small" edge="end" onClick={handleTTSClose} aria-label="close">
-                                  <CloseIcon />
-                                </IconButton>
-                              </Box>
-                            </Box>
-                            </DialogTitle>
-                            <DialogContent sx={{  }}>
-                              <Grid item xs={12}>
-                                <FormControl sx={{ mt: 4, mr: 4 }}>
-                                  <InputLabel id='demo-dialog-select-label'>{t("TTSModel")}</InputLabel>
-                                  <Select 
-                                    size="small" 
-                                    label={t("Tts")}
-                                    labelId='demo-dialog-select-label' 
-                                    id='demo-dialog-select' 
-                                    defaultValue={TTSValue} 
-                                    value={TTSValue}
-                                    fullWidth
-                                    onChange={(e: any) => {
-                                      if(e.target.value) {
-                                        setTTSValue(e.target.value as string)
-                                      }
-                                    }}
-                                    >
-                                    <MenuItem value={"Disabled"}>{t("Disabled")}</MenuItem>
-                                    <MenuItem value={"AudioBrowser"}>{t("AudioBrowser")}</MenuItem>
-                                    {llms && llms.audioSpeechModels && llms.audioSpeechModels[0] && llms.audioSpeechModels[0].voices && llms.audioSpeechModels[0].voices.map((item: any)=>{
-                                      return <MenuItem value={item.value} key={`voices_${index}`}>{item.label}</MenuItem>
-                                    })}
-                                  </Select>
-                                </FormControl>
-                              </Grid>
-                              <Grid item xs={11.8} pt={8}>
-                              <Typography sx={{ fontWeight: 500 }}>{t("TTSSpeed")}</Typography>
-                              <Slider
-                                size="small"
-                                min={0.3}
-                                max={2}
-                                step={0.1}
-                                onChange={(e: any) => {
-                                  if(e.target.value) {
-                                    setTTSSpeed(Number(e.target.value as string))
-                                  }
-                                }}
-                                value={TTSSpeed}
-                                valueLabelDisplay='on'
-                                aria-labelledby="custom-marks-slider"
-                                marks={[
-                                  {
-                                    value: 0.3,
-                                    label: '0.3'
-                                  },
-                                  {
-                                    value: 2,
-                                    label: '2'
-                                  }
-                                  ]}
-                              />
-                              </Grid>
-                            </DialogContent>
-                            <DialogActions>
-                              <Button size="small" variant='contained' startIcon={<Icon icon='arcticons:ds-audio' />}>
-                                {t("TrialListening")}
-                              </Button>
-                              <Button size="small" variant='outlined' onClick={handleTTSClose}>
-                                {t("Close")}
-                              </Button>
-                            </DialogActions>
-                          </Dialog>
+                          <TTS TTSModel={TTSModel} setTTSModel={setTTSModel} ModelData={item} />
                         </Fragment>
                         :
                         null}

@@ -234,6 +234,7 @@
   "simpleChat":"Simple Chat",
   "simpleChatIntro":"A very simple AI application that you can bind to a knowledge base or tool.",
   "Mind Map":"Mind Map",
-  "Agents Square":"Agents Square"
+  "Agents Square":"Agents Square",
+  "Confirm":"Confirm"
   
 }

@@ -39,6 +39,8 @@ import CloseIcon from '@mui/icons-material/Close';
 
 
 import TTS from 'src/views/workflow/components/TTS'
+import LLMModels from 'src/views/workflow/components/LLMModels'
+import GlobalVariableModel from 'src/views/workflow/components/GlobalVariable'
 
 const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const { moduleId, outputs } = data;
@@ -50,6 +52,24 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
   console.log("QuestionInputNode data", data)
 
   const [TTSModel,setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
+  const [LLMModel,setLLMModel] = useState<any>({LLMModelOpen: false, 
+                                                Model: 'gpt-3.5-turbo', 
+                                                quoteMaxToken: 2, 
+                                                maxContext: 16000,
+                                                functionCall: true,
+                                                maxTemperature: 1.2,
+                                                maxResponse: 4000,
+                                                maxChatHistories: 6
+                                              })
+  const [GlobalVariable,setGlobalVariable] = useState<any>({GlobalVariableOpen: false, 
+                                                required: true, 
+                                                Model: 'gpt-3.5-turbo', 
+                                                VariableName: 'Label', 
+                                                VariableValue: '',
+                                                VariableType: 'text',
+                                                TextMaxLength: 50,
+                                                SelectOptions: ''
+                                              })
   
   return (
     <Card sx={{ border: theme => `1px solid ${theme.palette.divider}`, width: '500px' }}>
@@ -118,7 +138,9 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                 <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
                               </Tooltip>
                               <Box position={'absolute'} right={'10px'}>
-                                <Button variant='outlined' size="small" startIcon={<Icon icon='mdi:add' />} >
+                                <Button variant='outlined' size="small" startIcon={<Icon icon='mdi:add' />} onClick={
+                                  () => { setGlobalVariable( (prevState: any) => ({ ...prevState, GlobalVariableOpen: true }) ) }
+                                }>
                                 {t("Add")}
                                 </Button>
                               </Box>
@@ -127,6 +149,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                           <Grid item xs={12}>
                             <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
                           </Grid>
+                          <GlobalVariableModel GlobalVariable={GlobalVariable} setGlobalVariable={setGlobalVariable} ModelData={item} />
                         </Fragment>
                         :
                         null}

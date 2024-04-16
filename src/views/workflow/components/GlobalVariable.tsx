@@ -41,9 +41,9 @@ import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close';
 
 
-const LLMModels = (props: any) => {
+const GlobalVariable = (props: any) => {
     // ** Props
-    const {TTSModel, setTTSModel, ModelData } = props
+    const {GlobalVariable, setGlobalVariable, ModelData } = props
 
     // ** Hook
     const { t } = useTranslation()
@@ -54,8 +54,8 @@ const LLMModels = (props: any) => {
     }, [])
 
     return (
-        <Dialog maxWidth='xs' fullWidth open={TTSModel.TTSOpen} onClose={
-            () => { setTTSModel( (prevState: any) => ({ ...prevState, TTSOpen: false }) ) }
+        <Dialog maxWidth='xs' fullWidth open={GlobalVariable.GlobalVariableOpen} onClose={
+            () => { setGlobalVariable( (prevState: any) => ({ ...prevState, GlobalVariableOpen: false }) ) }
         }>
             <DialogTitle>
                 <Box display="flex" alignItems="center">
@@ -63,7 +63,7 @@ const LLMModels = (props: any) => {
                 <Typography sx={{pl: 2}}>{t(ModelData.label) as string}</Typography>
                 <Box position={'absolute'} right={'5px'} top={'1px'}>
                     <IconButton size="small" edge="end" onClick={
-                        () => { setTTSModel( (prevState: any) => ({ ...prevState, TTSOpen: false }) ) }
+                        () => { setGlobalVariable( (prevState: any) => ({ ...prevState, GlobalVariableOpen: false }) ) }
                     } aria-label="close">
                     <CloseIcon />
                     </IconButton>
@@ -73,18 +73,18 @@ const LLMModels = (props: any) => {
             <DialogContent sx={{  }}>
                 <Grid item xs={12}>
                 <FormControl sx={{ mt: 4, mr: 4 }}>
-                    <InputLabel id='demo-dialog-select-label'>{t("TTSModel")}</InputLabel>
+                    <InputLabel id='demo-dialog-select-label'>{t("GlobalVariable")}</InputLabel>
                     <Select 
                     size="small" 
                     label={t("Tts")}
                     labelId='demo-dialog-select-label' 
                     id='demo-dialog-select' 
-                    defaultValue={TTSModel.TTSValue} 
-                    value={TTSModel.TTSValue}
+                    defaultValue={GlobalVariable.TTSValue} 
+                    value={GlobalVariable.TTSValue}
                     fullWidth
                     onChange={(e: any) => {
                         if(e.target.value) {
-                            setTTSModel( (prevState: any) => ({ ...prevState, TTSValue: String(e.target.value) }) )
+                            setGlobalVariable( (prevState: any) => ({ ...prevState, TTSValue: String(e.target.value) }) )
                         }
                     }}
                     >
@@ -105,10 +105,10 @@ const LLMModels = (props: any) => {
                 step={0.1}
                 onChange={(e: any) => {
                     if(e.target.value) {
-                        setTTSModel( (prevState: any) => ({ ...prevState, TTSSpeed: Number(e.target.value as string) }) )
+                        setGlobalVariable( (prevState: any) => ({ ...prevState, TTSSpeed: Number(e.target.value as string) }) )
                     }
                 }}
-                value={TTSModel.TTSSpeed}
+                value={GlobalVariable.TTSSpeed}
                 valueLabelDisplay='on'
                 aria-labelledby="custom-marks-slider"
                 marks={[
@@ -129,7 +129,7 @@ const LLMModels = (props: any) => {
                 {t("TrialListening")}
                 </Button>
                 <Button size="small" variant='outlined' onClick={
-                    () => { setTTSModel( (prevState: any) => ({ ...prevState, TTSOpen: false }) ) }
+                    () => { setGlobalVariable( (prevState: any) => ({ ...prevState, GlobalVariableOpen: false }) ) }
                 }>
                 {t("Confirm")}
                 </Button>
@@ -138,4 +138,4 @@ const LLMModels = (props: any) => {
     );
 };
 
-export default memo(LLMModels);
+export default memo(GlobalVariable);

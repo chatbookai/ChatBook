@@ -26,10 +26,8 @@ import NodeSimple from 'src/views/workflow/nodes/NodeSimple';
 import NodeQuestionInput from 'src/views/workflow/nodes/NodeQuestionInput';
 import NodeUserGuide from 'src/views/workflow/nodes/NodeUserGuide';
 import NodeChatNode from 'src/views/workflow/nodes/NodeChatNode';
-import { workflowData, initialNodes, initialEdges } from './workflowData'
-import { appModule2FlowEdge, appModule2FlowNode } from 'src/functions/workflow/functions';
-
-import { ModuleItemType } from 'src/functions/workflow/type';
+import { workflowData } from './workflowData'
+import type { FlowModuleItemType } from 'src/functions/workflow/type';
 
 import toast from 'react-hot-toast'
 
@@ -54,14 +52,11 @@ const nodeTypes = {
   queryExtension: NodeSimple
 };
 
-const edgeTypes2 = {
-};
-
 const FlowContent = () => {
   const { t } = useTranslation();
 
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodes, setNodes, onNodesChange] = useNodesState<FlowModuleItemType>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<any[]>([]);
   
   const onConnect = useCallback((params: any) => setEdges((eds) => addEdge(params, eds)), []);
 
@@ -84,38 +79,12 @@ const FlowContent = () => {
   }
   
   useEffect(()=>{
-    const modules: ModuleItemType[] = workflowData.modules
-    //const edges = appModule2FlowEdge(modules)
-    //setEdges(edges)
-    const edges = [
-      {
-      id: "bmf6ry",
-      source: "userChatInput",
-      sourceHandle: "userChatInput",
-      target: "chatModule",
-      targetHandle: "NodeChatPrompt7_Left",
-      type: "buttonedge",
-      animated: true,
-      style: { stroke: '#00ff00', strokeWidth: 2 }
-      },
-      {
-        id: "bmf6r1",
-        source: "userChatInput",
-        sourceHandle: "userChatInput",
-        target: "chatModule",
-        targetHandle: "9_Left",
-        type: "buttonedge",
-        animated: true,
-        style: { stroke: '#00ff00', strokeWidth: 2 }
-      }
-    ]
-    console.log("nodes edges", edges)
+    const modules: Node<FlowModuleItemType, string | undefined>[] = workflowData.modules
+    const edges: Edge<any[]>[] = workflowData.edges
     setEdges(edges)
-
-    const nodes = modules.map((item: any) => appModule2FlowNode(item))
-    setNodes(nodes)
-    //console.log("nodes modules", workflowData.modules)
-    console.log("nodes nodes", nodes)
+    setNodes(modules)
+    console.log("nodes edges", edges)
+    console.log("nodes nodes", modules)
   }, [])
 
   return (

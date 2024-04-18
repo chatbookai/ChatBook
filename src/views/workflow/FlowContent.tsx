@@ -28,6 +28,7 @@ import NodeUserGuide from 'src/views/workflow/nodes/NodeUserGuide';
 import NodeChatNode from 'src/views/workflow/nodes/NodeChatNode';
 import { workflowData } from './workflowData'
 import type { FlowModuleItemType } from 'src/functions/workflow/type';
+import { getNanoid } from 'src/functions/workflow/string.tools';
 
 import toast from 'react-hot-toast'
 
@@ -65,17 +66,24 @@ const FlowContent = () => {
       return;
     }
     console.log("customOnConnect", connect)
-    if (connect.source === connect.target) {
-      //return toast({
-      //  status: 'warning',
-      //  title: t('core.module.Can not connect self') as string
-      //});
+    if (connect.source === connect.target)      {
+      // can not connect
+      toast.error(t('Can not connect self') as string, {
+        duration: 2000
+      })
     }
-    onConnect({
-      ...connect,
-      type: 'buttonedge',
-      style: { stroke: '#00ff00', strokeWidth: 2 }
-    });
+    else {
+      // allow connect
+      console.log("edgesedges", edges, connect)
+      const newEdge: any = {
+        ...connect,
+        id: getNanoid(6),
+        type: 'buttonedge',
+        style: { stroke: '#00ff00', strokeWidth: 2 }
+      }
+      console.log("edgesedges", newEdge)
+      onConnect(newEdge);
+    }
   }
   
   useEffect(()=>{

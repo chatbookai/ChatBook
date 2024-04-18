@@ -90,7 +90,41 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
     setIsOpen(false);
   };
 
-  const handleSaveNodeTitle = () => {
+  const handleRenameNode = () => {
+    const updatedNodes = nodes.map((node: any) => {
+      if (node.id == 'chatModule') {
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            name: NodeTitle
+          }
+        };
+      }
+      return node;
+    });
+    setNodes(updatedNodes);
+    setRenameOpen(false);
+  };
+
+  const handleEditNode = () => {
+    const updatedNodes = nodes.map((node: any) => {
+      if (node.id == 'chatModule') {
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            name: NodeTitle
+          }
+        };
+      }
+      return node;
+    });
+    setNodes(updatedNodes);
+    setRenameOpen(false);
+  };
+
+  const handleDeleteNode = () => {
     const updatedNodes = nodes.map((node: any) => {
       if (node.id == 'chatModule') {
         return {
@@ -576,7 +610,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
               <Button size="small" variant='outlined' onClick={() => { setRenameOpen(false) } }>
                 {t("Close")}
               </Button>
-              <Button size="small" variant='outlined' onClick={handleSaveNodeTitle}>
+              <Button size="small" variant='outlined' onClick={handleRenameNode}>
                 {t("Confirm")}
               </Button>
             </DialogActions>
@@ -590,12 +624,12 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                 </Button>
               </Grid>
               <Grid item sx={{ml: 2, mt: 0, width: '100px'}}>
-                <Button size="small" variant='outlined' startIcon={<Icon icon='mdi:pencil-outline' />}>
+                <Button size="small" variant='outlined' startIcon={<Icon icon='mdi:pencil-outline' />} onClick={handleEditNode}>
                   {t('Edit')}
                 </Button>
               </Grid>
               <Grid item sx={{ml: 2, mt: 0, width: '100px'}}>
-                <Button size="small" variant='outlined' startIcon={<Icon icon='mdi:delete-outline' />}>
+                <Button size="small" variant='outlined' startIcon={<Icon icon='mdi:delete-outline' />} onClick={handleDeleteNode}>
                   {t('Delete')}
                 </Button>
               </Grid>

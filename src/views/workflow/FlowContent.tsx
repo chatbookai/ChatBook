@@ -13,7 +13,10 @@ import ReactFlow, {
   Connection,
   MarkerType,
   NodeProps,
-  ReactFlowProvider
+  ReactFlowProvider,
+  getIncomers,
+  getOutgoers,
+  getConnectedEdges
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
@@ -31,7 +34,6 @@ import type { FlowModuleItemType } from 'src/functions/workflow/type';
 import { getNanoid } from 'src/functions/workflow/string.tools';
 
 import toast from 'react-hot-toast'
-
 import { useTranslation } from 'next-i18next';
 
 const edgeTypes = {
@@ -85,15 +87,41 @@ const FlowContent = () => {
       onConnect(newEdge);
     }
   }
+
+  const onNodesDelete = useCallback(
+    (deleted: any) => {
+      setEdges(
+        deleted.reduce((acc: any, node: any) => {
+          const incomers = getIncomers(node, nodes, edges);
+          const outgoers = getOutgoers(node, nodes, edges);
+          const connectedEdges = getConnectedEdges([node], edges);
+
+          const remainingEdges = acc.filter((edge: any) => !connectedEdges.includes(edge));
+
+          const createdEdges = incomers.flatMap(({ id: source }) =>
+            outgoers.map(({ id: target }) => ({ id: `${source}->${target}`, source, target }))
+          );
+
+          return [...remainingEdges, ...createdEdges];
+        }, edges)
+      );
+    },
+    [nodes, edges]
+  );
   
   useEffect(()=>{
     const modules: Node<FlowModuleItemType, string | undefined>[] = workflowData.modules
-    const edges: Edge<any[]>[] = workflowData.edges
-    setEdges(edges)
+    const edgesInitial: Edge<any[]>[] = workflowData.edges
+    setEdges(edgesInitial)
     setNodes(modules)
-    console.log("nodes edges", edges)
+    console.log("nodes edges", edgesInitial)
     console.log("nodes nodes", modules)
   }, [])
+
+  useEffect(()=>{
+    console.log("nodes edges useEffect", edges)
+    console.log("nodes nodes useEffect", nodes)
+  }, [edges])
 
   return (
     <ReactFlow
@@ -111,6 +139,7 @@ const FlowContent = () => {
       nodeTypes={nodeTypes}
       edgeTypes={edgeTypes}
       onNodesChange={onNodesChange}
+      onNodesDelete={onNodesDelete}
       onEdgesChange={onEdgesChange}
       onConnect={customOnConnect}
       attributionPosition="bottom-right"

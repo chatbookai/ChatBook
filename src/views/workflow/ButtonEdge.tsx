@@ -7,11 +7,6 @@ import {
   useReactFlow,
 } from 'reactflow';
 
-const onEdgeClick = (evt: any, id: any) => {
-  evt.stopPropagation();
-  alert(`remove ${id}`);
-};
-
 export default function CustomEdge({
   id,
   sourceX,
@@ -35,6 +30,7 @@ export default function CustomEdge({
 
   const onEdgeClick = () => {
     setEdges((edges) => edges.filter((edge) => edge.id !== id));
+    console.log("Delete Edge id", id)
   };
 
   return (

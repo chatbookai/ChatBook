@@ -20,6 +20,7 @@ import ReactFlow, {
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 
+import { FlowContext } from './FlowContext';
 import ButtonEdge from './ButtonEdge';
 import SelfConnectingEdge from './SelfConnectingEdge';
 import BiDirectionalEdge from './BiDirectionalEdge';
@@ -123,31 +124,39 @@ const FlowContent = () => {
     console.log("nodes nodes useEffect", nodes)
   }, [edges])
 
+  useEffect(() => {
+    console.log('Nodes changed:', nodes);
+  }, [nodes]);
+
   return (
-    <ReactFlow
-      fitView
-      nodes={nodes}
-      edges={edges}
-      minZoom={0.1}
-      maxZoom={1.5}
-      defaultEdgeOptions={{
-        animated: true,
-        zIndex: 0
-      }}
-      elevateEdgesOnSelect
-      connectionLineStyle={{ strokeWidth: 2, stroke: '#5A646Es' }}
-      nodeTypes={nodeTypes}
-      edgeTypes={edgeTypes}
-      onNodesChange={onNodesChange}
-      onNodesDelete={onNodesDelete}
-      onEdgesChange={onEdgesChange}
-      onConnect={customOnConnect}
-      attributionPosition="bottom-right"
-      connectionMode={ConnectionMode.Loose}
-    >
-      <Controls />
-      <Background />
-    </ReactFlow>
+    <FlowContext.Provider value={{ setNodes, nodes }}>
+      <ReactFlowProvider>
+        <ReactFlow
+          fitView
+          nodes={nodes}
+          edges={edges}
+          minZoom={0.1}
+          maxZoom={1.5}
+          defaultEdgeOptions={{
+            animated: true,
+            zIndex: 0
+          }}
+          elevateEdgesOnSelect
+          connectionLineStyle={{ strokeWidth: 2, stroke: '#5A646Es' }}
+          nodeTypes={nodeTypes}
+          edgeTypes={edgeTypes}
+          onNodesChange={onNodesChange}
+          onNodesDelete={onNodesDelete}
+          onEdgesChange={onEdgesChange}
+          onConnect={customOnConnect}
+          attributionPosition="bottom-right"
+          connectionMode={ConnectionMode.Loose}
+        >
+          <Controls />
+          <Background />
+        </ReactFlow>
+      </ReactFlowProvider>
+    </FlowContext.Provider>
   );
 };
 

@@ -1,5 +1,5 @@
 // ** React Imports
-import React, { ReactElement, Fragment, useTransition, useState } from 'react'
+import React, { ReactElement, Fragment, useTransition, useState, useEffect, useContext } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -37,21 +37,28 @@ import Icon from 'src/@core/components/icon'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 
+import { FlowContext } from '../FlowContext';
+
 import LLMModelModel from 'src/views/workflow/components/LLMModel'
 
 const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
-  const { moduleId, outputs, inputs } = data;
+  const { moduleId, outputs, inputs, name } = data;
   const { t } = useTranslation()
   const [, startTst] = useTransition();
+
+  const { setNodes, nodes } = useContext(FlowContext);
 
   console.log("NodeChatNode moduleId", moduleId)
   console.log("NodeChatNode inputs", inputs)
   console.log("NodeChatNode outputs", outputs)
   console.log("NodeChatNode data", data)
 
+
   const [TTSOpen, setTTSOpen] = useState<boolean>(false)
+  const [RenameOpen, setRenameOpen] = useState<boolean>(false)
   const [TTSValue, setTTSValue] = useState<string>("Disabled")
   const [TTSSpeed, setTTSSpeed] = useState<number>(1)
+  const [NodeTitle, setNodeTitle] = useState<string>("")
 
   const [TTSModel,setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
   const [LLMModel,setLLMModel] = useState<any>({LLMModelOpen: false, 
@@ -82,6 +89,29 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const handlePopoverClose = () => {
     setIsOpen(false);
   };
+
+  const handleSaveNodeTitle = () => {
+    const updatedNodes = nodes.map((node: any) => {
+      if (node.id == 'chatModule') {
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            name: NodeTitle
+          }
+        };
+      }
+      return node;
+    });
+    setNodes(updatedNodes);
+    setRenameOpen(false);
+  };
+
+  useEffect(()=>{
+    setNodeTitle(t(name) as string)
+    console.log("setNodes", setNodes)
+    console.log("setNodes", nodes)
+  }, [])
   
   return (
         <Grid container spacing={2} onMouseEnter={handlePopoverOpen} onMouseLeave={handlePopoverClose}>
@@ -90,7 +120,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
               title={
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <Avatar src={data.avatar} sx={{ mr: 2.5, width: 36, height: 36 }} />
-                    <Typography sx={{ fontWeight: 600, fontSize: '1.25rem' }}>{t(data.name) as string}</Typography>
+                    <Typography sx={{ fontWeight: 600, fontSize: '1.25rem' }}>{t(name) as string}</Typography>
                   </Box>
                 }
               subheader={
@@ -517,10 +547,45 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
             </Grid>
 
           </Card>
+
+          <Dialog maxWidth='xs' fullWidth open={RenameOpen} onClose={() => {
+                                                                    setRenameOpen(false)
+                                                                  }}>
+            <DialogTitle>
+            <Box display="flex" alignItems="center">
+              <Avatar src={'/icons/core/app/simpleMode/tts.svg'} variant="rounded" sx={{ width: '25px', height: '25px', pl: 1}} />
+              <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t('Custom Title') as string}</Typography>
+              <Box position={'absolute'} right={'5px'} top={'1px'}>
+                <IconButton size="small" edge="end" onClick={() => { setRenameOpen(false) } } aria-label="close">
+                  <CloseIcon />
+                </IconButton>
+              </Box>
+            </Box>
+            </DialogTitle>
+            <DialogContent sx={{  }}>
+              <Grid item xs={12}>
+                  <TextField
+                    defaultValue={NodeTitle}
+                    sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
+                    placeholder={t(NodeTitle) as string}
+                    onChange={(e) => { setNodeTitle(e.target.value) }}
+                  />
+              </Grid>
+            </DialogContent>
+            <DialogActions>
+              <Button size="small" variant='outlined' onClick={() => { setRenameOpen(false) } }>
+                {t("Close")}
+              </Button>
+              <Button size="small" variant='outlined' onClick={handleSaveNodeTitle}>
+                {t("Confirm")}
+              </Button>
+            </DialogActions>
+          </Dialog>
+
           {isOpen ? 
             <Grid container direction="column" spacing={2} sx={{ width: '100px' }}>
               <Grid item sx={{ml: 2, mt: 0, width: '100px'}}>
-                <Button size="small" variant='outlined' startIcon={<Icon icon='mdi:rename-box-outline' />}>
+                <Button size="small" variant='outlined' startIcon={<Icon icon='mdi:rename-box-outline' />} onClick={() => { setRenameOpen(true) } }>
                   {t('Rename')}
                 </Button>
               </Grid>

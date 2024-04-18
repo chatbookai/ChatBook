@@ -257,6 +257,8 @@
   "temperature":"Temperature",
   "rigorous":"Rigorous",
   "moderate":"Moderate",
-  "divergent":"Divergent"
+  "divergent":"Divergent",
+  "Rename":"Rename",
+  "Custom Title":"Custom Title"
   
 }

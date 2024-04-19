@@ -272,7 +272,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                                     left: '-13px'                                    
                                   }}
                                   type="target"
-                                  id={`${item.label}${index}_Left`}
+                                  id={`${item.key}_Left`}
                                   position={Position.Left}
                                 />
                               </Box>
@@ -305,7 +305,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                                       left: '-13px'
                                     }}
                                     type="target"
-                                    id={`${item.label}${index}_Left`}
+                                    id={`${item.key}_Left`}
                                     position={Position.Left}
                                   />
                                 </Box>
@@ -376,7 +376,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                                       left: '-13px'
                                     }}
                                     type="target"
-                                    id={`${item.label}${index}_Left`}
+                                    id={`${item.key}_Left`}
                                     position={Position.Left}
                                   />
                                 </Box>
@@ -395,7 +395,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                                     right: '87px'
                                   }}
                                   type="source"
-                                  id={`${item.label}${index}_Right`}
+                                  id={`${item.key}_Right`}
                                   position={Position.Right}
                                 />
                               </Box>
@@ -581,7 +581,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                                     right: '87px'
                                   }}
                                   type="source"
-                                  id={`${item.label}${index}`}
+                                  id={`${item.key}_Right`}
                                   position={Position.Right}
                                 />
                               </Box>

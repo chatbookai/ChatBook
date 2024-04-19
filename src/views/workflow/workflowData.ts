@@ -454,31 +454,11 @@ export const workflowData: any = {
     ],
     "edges":  [
       {
-        id: "bmf6ry",
-        source: "questionInputNodeInitial_1",
-        sourceHandle: "userChatInput",
-        target: "chatNodeInitial_1",
-        targetHandle: "NodeChatPrompt7_Left",
-        type: "buttonedge",
-        animated: true,
-        style: { stroke: '#00ff00', strokeWidth: 2 }
-      },
-      {
         id: "bmf6r1",
         source: "questionInputNodeInitial_1",
         sourceHandle: "userChatInput",
         target: "chatNodeInitial_1",
-        targetHandle: "9_Left",
-        type: "buttonedge",
-        animated: true,
-        style: { stroke: '#00ff00', strokeWidth: 2 }
-      },
-      {
-        id: "bmf6ry",
-        source: "questionInputNodeInitial_1",
-        sourceHandle: "userChatInput",
-        target: "chatNodeInitial_2",
-        targetHandle: "NodeChatPrompt7_Left",
+        targetHandle: "userChatInput_Left",
         type: "buttonedge",
         animated: true,
         style: { stroke: '#00ff00', strokeWidth: 2 }
@@ -487,8 +467,28 @@ export const workflowData: any = {
         id: "bmf6r2",
         source: "questionInputNodeInitial_1",
         sourceHandle: "userChatInput",
+        target: "chatNodeInitial_1",
+        targetHandle: "systemPrompt_Left",
+        type: "buttonedge",
+        animated: true,
+        style: { stroke: '#00ff00', strokeWidth: 2 }
+      },
+      {
+        id: "bmf6r3",
+        source: "questionInputNodeInitial_1",
+        sourceHandle: "userChatInput",
         target: "chatNodeInitial_2",
-        targetHandle: "9_Left",
+        targetHandle: "userChatInput_Left",
+        type: "buttonedge",
+        animated: true,
+        style: { stroke: '#00ff00', strokeWidth: 2 }
+      },
+      {
+        id: "bmf6r4",
+        source: "questionInputNodeInitial_1",
+        sourceHandle: "userChatInput",
+        target: "chatNodeInitial_2",
+        targetHandle: "systemPrompt_Left",
         type: "buttonedge",
         animated: true,
         style: { stroke: '#00ff00', strokeWidth: 2 }

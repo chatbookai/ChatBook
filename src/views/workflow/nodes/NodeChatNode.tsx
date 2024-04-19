@@ -38,11 +38,12 @@ import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 
 import { FlowContext } from '../FlowContext';
+import { getNanoid } from 'src/functions/workflow/string.tools';
 
 import LLMModelModel from 'src/views/workflow/components/LLMModel'
 
 const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
-  const { moduleId, outputs, inputs, name } = data;
+  const { moduleId, outputs, inputs, name, id } = data;
   const { t } = useTranslation()
   const [, startTst] = useTransition();
 
@@ -107,21 +108,32 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
     setRenameOpen(false);
   };
 
-  const handleEditNode = () => {
-    const updatedNodes = nodes.map((node: any) => {
-      if (node.id == 'chatModule') {
+  const handleCopyNode = (nodeId: string) => {
+    const getNanoidValue = getNanoid(6);
+    const currentNode1 = nodes.filter((node: any) => {
+      return node.id == nodeId
+    });
+    console.log("nodeId", nodeId, nodes, currentNode1)
+    const currentNode2 = currentNode1.map((node: any) => {
+      if (node.id == nodeId) {
         return {
           ...node,
           data: {
             ...node.data,
-            name: NodeTitle
-          }
+            id: getNanoidValue
+          },
+          position: {
+            x: node.position.x + 200,
+            y: node.position.y + 100,
+          },
+          id: getNanoidValue
         };
       }
       return node;
     });
+    const updatedNodes = nodes.concat(currentNode2);
     setNodes(updatedNodes);
-    setRenameOpen(false);
+    console.log("updatedNodes currentNode", updatedNodes)
   };
 
   const handleDeleteNode = () => {
@@ -145,7 +157,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
     setNodeTitle(t(name) as string)
     console.log("setNodes", setNodes)
     console.log("setNodes", nodes)
-  }, [])
+  }, [t])
   
   return (
         <Grid container spacing={2} onMouseEnter={handlePopoverOpen} onMouseLeave={handlePopoverClose}>
@@ -624,8 +636,8 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                 </Button>
               </Grid>
               <Grid item sx={{ml: 2, mt: 0, width: '100px'}}>
-                <Button size="small" variant='outlined' startIcon={<Icon icon='mdi:pencil-outline' />} onClick={handleEditNode}>
-                  {t('Edit')}
+                <Button size="small" variant='outlined' startIcon={<Icon icon='mdi:pencil-outline' />} onClick={()=>handleCopyNode(id)}>
+                  {t('Copy')}
                 </Button>
               </Grid>
               <Grid item sx={{ml: 2, mt: 0, width: '100px'}}>

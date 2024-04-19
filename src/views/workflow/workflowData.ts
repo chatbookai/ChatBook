@@ -11,10 +11,10 @@ export const workflowData: any = {
     "type": "simple",
     "modules": [
       {
-          "id": "userGuide",
+          "id": "userGuide1",
           "type": "userGuide",
           "data": {
-              "id": "userGuide",
+              "id": "userGuide1",
               "templateType": "userGuide",
               "flowType": "userGuide",
               "avatar": "/imgs/module/userGuide.png",
@@ -65,10 +65,10 @@ export const workflowData: any = {
           }
       },
       {
-          "id": "userChatInput",
+          "id": "userChatInput1",
           "type": "questionInput",
           "data": {
-              "id": "questionInput",
+              "id": "questionInput1",
               "templateType": "systemInput",
               "flowType": "questionInput",
               "avatar": "/imgs/module/userChatInput.svg",
@@ -106,10 +106,10 @@ export const workflowData: any = {
           }
       },
       {
-          "id": "chatModule",
+          "id": "chatNode1",
           "type": "chatNode",
           "data": {
-              "id": "chatNode",
+              "id": "chatNode1",
               "templateType": "textAnswer",
               "flowType": "chatNode",
               "avatar": "/imgs/module/AI.png",

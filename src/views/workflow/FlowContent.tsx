@@ -21,16 +21,16 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 
 import { FlowContext } from './FlowContext';
-import ButtonEdge from './ButtonEdge';
-import SelfConnectingEdge from './SelfConnectingEdge';
-import BiDirectionalEdge from './BiDirectionalEdge';
-import BiDirectionalNode from './BiDirectionalNode';
+import ButtonEdge from './edges/ButtonEdge';
+import SelfConnectingEdge from './edges/SelfConnectingEdge';
+import BiDirectionalEdge from './edges/BiDirectionalEdge';
+import BiDirectionalNode from './edges/BiDirectionalNode';
 
 import NodeSimple from 'src/views/workflow/nodes/NodeSimple';
 import NodeQuestionInput from 'src/views/workflow/nodes/NodeQuestionInput';
 import NodeUserGuide from 'src/views/workflow/nodes/NodeUserGuide';
 import NodeChatNode from 'src/views/workflow/nodes/NodeChatNode';
-import { workflowData } from './workflowData'
+import { workflowData } from './data/workflowData'
 import type { FlowModuleItemType } from 'src/functions/workflow/type';
 import { getNanoid } from 'src/functions/workflow/string.tools';
 

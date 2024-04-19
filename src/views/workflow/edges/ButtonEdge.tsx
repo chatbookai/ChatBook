@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import IconButton from '@mui/material/IconButton'
 import Icon from 'src/@core/components/icon'
-import { FlowContext } from './FlowContext'
+import { FlowContext } from '../FlowContext'
 
 import {
   BaseEdge,

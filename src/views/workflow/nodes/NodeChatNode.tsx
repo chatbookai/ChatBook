@@ -47,7 +47,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const { t } = useTranslation()
   const [, startTst] = useTransition();
 
-  const { setNodes, nodes } = useContext(FlowContext);
+  const { setNodes, nodes, setEdges, edges } = useContext(FlowContext);
 
   console.log("NodeChatNode moduleId", selected, id, name, moduleId, inputs, outputs)
   console.log("NodeChatNode data", data)
@@ -161,6 +161,32 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   useEffect(()=>{
     setNodeTitle(t(name) as string)
   }, [t])
+
+  useEffect(()=>{
+    if(selected) {
+      const updateEdges = edges.map((item: any)=>{
+        if(item.target == id) {
+          return {
+            ...item,
+            style: {
+              stroke: '#00BFFF',
+              strokeWidth: 4
+            }
+          };
+        }
+        else {
+          return {
+            ...item,
+            style: {
+              stroke: '#808080',
+              strokeWidth: 2
+            }
+          };
+        }
+      })
+      setEdges(updateEdges)
+    }
+  }, [selected])
   
   return (
         <Grid container spacing={2} onMouseEnter={handlePopoverOpen} onMouseLeave={handlePopoverClose}>

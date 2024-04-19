@@ -45,10 +45,10 @@ export default function CustomEdge({
       targetPosition,
     });
 
-    const onEdgeClick = () => {
+    const onDeleteClick = (event: any) => {
+      event.stopPropagation()
+      console.log("onDeleteClick", onDeleteClick)
       setEdges((edges) => edges.filter((edge) => edge.id !== id));
-      console.log("Delete Edge id", id)
-      console.log("active", active)
     };
 
     return (
@@ -60,15 +60,15 @@ export default function CustomEdge({
               position: 'absolute',
               transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
               fontSize: 12,
-              
+
               // everything inside EdgeLabelRenderer has no pointer events by default
               // if you have an interactive element, set pointer-events: all
               pointerEvents: 'all',
               zIndex: 999
             }}
           >
-            <IconButton onClick={onEdgeClick} color='primary'>
-              <Icon icon='fa:remove' fontSize={20} />
+            <IconButton onClick={onDeleteClick} color='primary'>
+              <Icon icon='fa:remove' fontSize={25} />
             </IconButton>
           </div>
         </EdgeLabelRenderer>

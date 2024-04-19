@@ -109,6 +109,35 @@ const FlowContent = () => {
     },
     [nodes, edges]
   );
+
+  const onEdgeClick = (event: any, edge: any) => {
+    const updateEdges: Edge<any[]>[] = edges.map((item: any)=>{
+      if(item.id == edge.id) {
+        return {
+          ...item,
+          style: {
+            stroke: '#00BFFF',
+            strokeWidth: 4
+          }
+        };
+      }
+      else {
+        return {
+          ...item,
+          style: {
+            stroke: '#808080',
+            strokeWidth: 2
+          }
+        };
+      }
+    })
+    setEdges(updateEdges)
+    console.log('onEdgeClick onDeleteClick', event);
+  };
+
+  const onSelectionChange = (elements: any) => {
+    console.log('Selection changed:', elements);
+  };
   
   useEffect(()=>{
     const modules: Node<FlowModuleItemType, string | undefined>[] = workflowData.modules
@@ -129,7 +158,7 @@ const FlowContent = () => {
   }, [nodes]);
 
   return (
-    <FlowContext.Provider value={{ setNodes, nodes }}>
+    <FlowContext.Provider value={{ setNodes, nodes, setEdges, edges }}>
       <ReactFlowProvider>
         <ReactFlow
           fitView
@@ -145,8 +174,10 @@ const FlowContent = () => {
           connectionLineStyle={{ strokeWidth: 2, stroke: '#5A646Es' }}
           nodeTypes={nodeTypes}
           edgeTypes={edgeTypes}
+          onSelectionChange={onSelectionChange}
           onNodesChange={onNodesChange}
           onNodesDelete={onNodesDelete}
+          onEdgeClick={onEdgeClick}
           onEdgesChange={onEdgesChange}
           onConnect={customOnConnect}
           attributionPosition="bottom-right"

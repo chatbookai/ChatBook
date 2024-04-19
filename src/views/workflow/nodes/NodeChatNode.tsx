@@ -49,9 +49,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
 
   const { setNodes, nodes } = useContext(FlowContext);
 
-  console.log("NodeChatNode moduleId", moduleId)
-  console.log("NodeChatNode inputs", inputs)
-  console.log("NodeChatNode outputs", outputs)
+  console.log("NodeChatNode moduleId", selected, id, name, moduleId, inputs, outputs)
   console.log("NodeChatNode data", data)
 
 
@@ -91,9 +89,9 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
     setIsOpen(false);
   };
 
-  const handleRenameNode = () => {
+  const handleRenameNode = (nodeId: string) => {
     const updatedNodes = nodes.map((node: any) => {
-      if (node.id == 'chatModule') {
+      if (node.id == nodeId) {
         return {
           ...node,
           data: {
@@ -110,10 +108,18 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
 
   const handleCopyNode = (nodeId: string) => {
     const getNanoidValue = getNanoid(6);
-    const currentNode1 = nodes.filter((node: any) => {
+    const copyNodes = nodes.map((node: any) => {
+      if (node.id == nodeId) {
+        return {
+          ...node,
+          selected: false
+        };
+      }
+      return node;
+    });
+    const currentNode1 = copyNodes.filter((node: any) => {
       return node.id == nodeId
     });
-    console.log("nodeId", nodeId, nodes, currentNode1)
     const currentNode2 = currentNode1.map((node: any) => {
       if (node.id == nodeId) {
         return {
@@ -124,39 +130,36 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
           },
           position: {
             x: node.position.x + 200,
-            y: node.position.y + 100,
+            y: node.position.y + 80,
           },
-          id: getNanoidValue
+          positionAbsolute: {
+            x: node.position.x + 200,
+            y: node.position.y + 80,
+          },
+          id: getNanoidValue,
+          selected: true
         };
       }
-      return node;
+      else {
+        return node;
+      }
     });
-    const updatedNodes = nodes.concat(currentNode2);
+    const updatedNodes = copyNodes.concat(currentNode2);
     setNodes(updatedNodes);
-    console.log("updatedNodes currentNode", updatedNodes)
+
+    //console.log("handleCopyNode", nodeId, copyNodes, currentNode1)
+    //console.log("handleCopyNode updatedNodes", updatedNodes)
   };
 
-  const handleDeleteNode = () => {
-    const updatedNodes = nodes.map((node: any) => {
-      if (node.id == 'chatModule') {
-        return {
-          ...node,
-          data: {
-            ...node.data,
-            name: NodeTitle
-          }
-        };
-      }
-      return node;
+  const handleDeleteNode = (nodeId: string) => {
+    const DeletedNodes = nodes.filter((node: any) => {
+      return node.id != nodeId;
     });
-    setNodes(updatedNodes);
-    setRenameOpen(false);
+    setNodes(DeletedNodes);
   };
 
   useEffect(()=>{
     setNodeTitle(t(name) as string)
-    console.log("setNodes", setNodes)
-    console.log("setNodes", nodes)
   }, [t])
   
   return (
@@ -622,7 +625,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
               <Button size="small" variant='outlined' onClick={() => { setRenameOpen(false) } }>
                 {t("Close")}
               </Button>
-              <Button size="small" variant='outlined' onClick={handleRenameNode}>
+              <Button size="small" variant='outlined' onClick={()=>handleRenameNode(id)}>
                 {t("Confirm")}
               </Button>
             </DialogActions>
@@ -641,7 +644,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                 </Button>
               </Grid>
               <Grid item sx={{ml: 2, mt: 0, width: '100px'}}>
-                <Button size="small" variant='outlined' startIcon={<Icon icon='mdi:delete-outline' />} onClick={handleDeleteNode}>
+                <Button size="small" variant='outlined' startIcon={<Icon icon='mdi:delete-outline' />} onClick={()=>handleDeleteNode(id)}>
                   {t('Delete')}
                 </Button>
               </Grid>

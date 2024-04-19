@@ -11,10 +11,10 @@ export const workflowData: any = {
     "type": "simple",
     "modules": [
       {
-          "id": "userGuide",
+          "id": "userGuideNodeInitial_1",
           "type": "userGuide",
           "data": {
-              "id": "userGuide",
+              "id": "userGuideNodeInitial_1",
               "templateType": "userGuide",
               "flowType": "userGuide",
               "avatar": "/imgs/module/userGuide.png",
@@ -65,10 +65,10 @@ export const workflowData: any = {
           }
       },
       {
-          "id": "userChatInput",
+          "id": "questionInputNodeInitial_1",
           "type": "questionInput",
           "data": {
-              "id": "questionInput",
+              "id": "questionInputNodeInitial_1",
               "templateType": "systemInput",
               "flowType": "questionInput",
               "avatar": "/imgs/module/userChatInput.svg",
@@ -106,10 +106,10 @@ export const workflowData: any = {
           }
       },
       {
-          "id": "chatModule",
+          "id": "chatNodeInitial_1",
           "type": "chatNode",
           "data": {
-              "id": "chatNode",
+              "id": "chatNodeInitial_1",
               "templateType": "textAnswer",
               "flowType": "chatNode",
               "avatar": "/imgs/module/AI.png",
@@ -282,9 +282,9 @@ export const workflowData: any = {
     "edges":  [
       {
         id: "bmf6ry",
-        source: "userChatInput",
+        source: "questionInputNodeInitial_1",
         sourceHandle: "userChatInput",
-        target: "chatModule",
+        target: "chatNodeInitial_1",
         targetHandle: "NodeChatPrompt7_Left",
         type: "buttonedge",
         animated: true,
@@ -292,9 +292,9 @@ export const workflowData: any = {
       },
       {
         id: "bmf6r1",
-        source: "userChatInput",
+        source: "questionInputNodeInitial_1",
         sourceHandle: "userChatInput",
-        target: "chatModule",
+        target: "chatNodeInitial_1",
         targetHandle: "9_Left",
         type: "buttonedge",
         animated: true,
@@ -2047,74 +2047,3 @@ export const appTemplates: any[] = [
     ]
   }
 ];
-
-export const initialNodes: Node[] = [
-    {
-      id: 'button-1',
-      type: 'input',
-      data: { label: 'Button Edge 1' },
-      position: { x: 125, y: 0 },
-    },
-    {
-      id: 'button-2',
-      data: { label: 'Button Edge 2' },
-      position: { x: 125, y: 200 },
-    },
-    {
-      id: 'bi-1',
-      data: { label: 'Bi Directional 1' },
-      position: { x: 0, y: 300 },
-      type: 'bidirectional',
-      sourcePosition: Position.Right,
-      targetPosition: Position.Left,
-    },
-    {
-      id: 'bi-2',
-      data: { label: 'Bi Directional 2' },
-      position: { x: 250, y: 300 },
-      type: 'bidirectional',
-      sourcePosition: Position.Right,
-      targetPosition: Position.Left,
-    },
-    {
-      id: 'self-1',
-      data: { label: 'Self Connecting' },
-      position: { x: 125, y: 500 },
-      sourcePosition: Position.Right,
-      targetPosition: Position.Left,
-    },
-  ];
-  
-export const initialEdges: Edge[] = [
-    {
-      id: 'edge-button',
-      source: 'button-1',
-      target: 'button-2',
-      type: 'buttonedge',
-    },
-    {
-      id: 'edge-bi-1',
-      source: 'bi-1',
-      target: 'bi-2',
-      type: 'bidirectional',
-      sourceHandle: 'right',
-      targetHandle: 'left',
-      markerEnd: { type: MarkerType.ArrowClosed },
-    },
-    {
-      id: 'edge-bi-2',
-      source: 'bi-2',
-      target: 'bi-1',
-      type: 'bidirectional',
-      sourceHandle: 'left',
-      targetHandle: 'right',
-      markerEnd: { type: MarkerType.ArrowClosed },
-    },
-    {
-      id: 'edge-self',
-      source: 'self-1',
-      target: 'self-1',
-      type: 'selfconnecting',
-      markerEnd: { type: MarkerType.Arrow },
-    },
-  ];

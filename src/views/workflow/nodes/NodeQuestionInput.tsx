@@ -18,10 +18,9 @@ import { NodeProps, Handle, Position } from 'reactflow';
 import { FlowModuleItemType } from 'src/functions/workflow/type';
 
 const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
-  const { moduleId, outputs } = data;
+  const { outputs } = data;
   const { t } = useTranslation()
 
-  console.log("moduleId", moduleId)
   console.log("outputs", outputs)
   console.log("data", data)
 
@@ -49,32 +48,36 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
         />
         <CardContent sx={{ pt: theme => `${theme.spacing(3)} !important` }}>
           <Grid container spacing={[5, 0]}>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'flex-end',
-                px: 4,
-                py: '10px',
-                position: 'relative',
-                borderTop: '2px solid',
-                width: '100%',
-              }}
-            >
-              {t(data.name) as string}
-              <Box position={'absolute'} top={'50%'} right={'-13px'}>
-                <Handle
-                  style={{
-                    width: '14px',
-                    height: '14px',
-                    borderWidth: '3.5px',
-                    backgroundColor: 'main.primary',
+            {outputs && outputs.map((output: any)=>{
+              return (
+                <Box
+                  sx={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    px: 4,
+                    py: '10px',
+                    position: 'relative',
+                    borderTop: '2px solid',
+                    width: '100%',
                   }}
-                  type="source"
-                  id={moduleId}
-                  position={Position.Right}
-                />
-              </Box>
-            </Box>
+                >
+                  {t(output.label) as string}
+                  <Box position={'absolute'} top={'50%'} right={'-13px'}>
+                    <Handle
+                      style={{
+                        width: '14px',
+                        height: '14px',
+                        borderWidth: '3.5px',
+                        backgroundColor: 'main.primary',
+                      }}
+                      type="source"
+                      id={output.key}
+                      position={Position.Right}
+                    />
+                  </Box>
+                </Box>
+              )
+            })}
           </Grid>
         </CardContent>
       </Card>

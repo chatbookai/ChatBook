@@ -461,7 +461,7 @@ export const workflowData: any = {
         targetHandle: "userChatInput_Left",
         type: "buttonedge",
         animated: true,
-        style: { stroke: '#00ff00', strokeWidth: 2 }
+        style: { stroke: '#00BFFF', strokeWidth: 4 }
       },
       {
         id: "bmf6r2",
@@ -471,7 +471,7 @@ export const workflowData: any = {
         targetHandle: "systemPrompt_Left",
         type: "buttonedge",
         animated: true,
-        style: { stroke: '#00ff00', strokeWidth: 2 }
+        style: { stroke: '#00BFFF', strokeWidth: 4 }
       },
       {
         id: "bmf6r3",
@@ -481,7 +481,7 @@ export const workflowData: any = {
         targetHandle: "userChatInput_Left",
         type: "buttonedge",
         animated: true,
-        style: { stroke: '#00ff00', strokeWidth: 2 }
+        style: { stroke: '#808080', strokeWidth: 4 }
       },
       {
         id: "bmf6r4",
@@ -491,7 +491,7 @@ export const workflowData: any = {
         targetHandle: "systemPrompt_Left",
         type: "buttonedge",
         animated: true,
-        style: { stroke: '#00ff00', strokeWidth: 2 }
+        style: { stroke: '#808080', strokeWidth: 4 }
       }
     ],
     "permission": "private",

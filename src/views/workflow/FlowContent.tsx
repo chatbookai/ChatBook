@@ -82,7 +82,7 @@ const FlowContent = () => {
         ...connect,
         id: getNanoid(6),
         type: 'buttonedge',
-        style: { stroke: '#00ff00', strokeWidth: 2 }
+        style: { stroke: '#00BFFF', strokeWidth: 4 }
       }
       console.log("edgesedges", newEdge)
       onConnect(newEdge);

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import ReactFlow, {
   useNodesState,
   useEdgesState,
@@ -21,6 +21,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 
 import { FlowContext } from './FlowContext';
+import FlowLeft from './FlowLeft';
 import ButtonEdge from './edges/ButtonEdge';
 import SelfConnectingEdge from './edges/SelfConnectingEdge';
 import BiDirectionalEdge from './edges/BiDirectionalEdge';
@@ -36,6 +37,11 @@ import { getNanoid } from 'src/functions/workflow/string.tools';
 
 import toast from 'react-hot-toast'
 import { useTranslation } from 'next-i18next';
+
+import Fab from '@mui/material/Fab'
+import Box from '@mui/material/Box'
+import Icon from 'src/@core/components/icon'
+
 
 const edgeTypes = {
   bidirectional: BiDirectionalEdge,
@@ -58,6 +64,8 @@ const nodeTypes = {
 
 const FlowContent = () => {
   const { t } = useTranslation();
+
+  const [LeftOpen, setLeftOpen] = useState<boolean>(false);
 
   const [nodes, setNodes, onNodesChange] = useNodesState<FlowModuleItemType>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<any[]>([]);
@@ -185,6 +193,12 @@ const FlowContent = () => {
         >
           <Controls />
           <Background />
+          <Box sx={{pt: 2, pl: 2}}>
+            <Fab color='primary' aria-label='add' size='small' onClick={()=>{setLeftOpen(true)}}>
+              <Icon icon='mdi:plus' />
+            </Fab>
+          </Box>
+          <FlowLeft LeftOpen={LeftOpen} setLeftOpen={setLeftOpen} />
         </ReactFlow>
       </ReactFlowProvider>
     </FlowContext.Provider>

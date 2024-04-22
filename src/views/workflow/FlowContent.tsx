@@ -65,7 +65,7 @@ const nodeTypes = {
 const FlowContent = () => {
   const { t } = useTranslation();
 
-  const [LeftOpen, setLeftOpen] = useState<boolean>(false);
+  const [LeftOpen, setLeftOpen] = useState<boolean>(true);
 
   const [nodes, setNodes, onNodesChange] = useNodesState<FlowModuleItemType>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<any[]>([]);
@@ -96,6 +96,48 @@ const FlowContent = () => {
       onConnect(newEdge);
     }
   }
+
+  const handleAddNode = (flowType: string) => {
+    const getNanoidValue = getNanoid(6);
+    const copyNodes = nodes.map((node: any) => {
+      return {
+        ...node,
+        selected: false
+      };
+    });
+    const currentNode1 = copyNodes.filter((node: any) => {
+      return node.type == flowType
+    });
+    const currentNode2 = currentNode1.map((node: any) => {
+      if (node.type == flowType) {
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            id: getNanoidValue
+          },
+          position: {
+            x: node.position.x + 200,
+            y: node.position.y + 80,
+          },
+          positionAbsolute: {
+            x: node.position.x + 200,
+            y: node.position.y + 80,
+          },
+          id: getNanoidValue,
+          selected: true
+        };
+      }
+      else {
+        return node;
+      }
+    });
+    const updatedNodes = copyNodes.concat(currentNode2);
+    setNodes(updatedNodes);
+
+    //console.log("handleCopyNode", nodeId, copyNodes, currentNode1)
+    //console.log("handleCopyNode updatedNodes", updatedNodes)
+  };
 
   const onNodesDelete = useCallback(
     (deleted: any) => {
@@ -198,7 +240,7 @@ const FlowContent = () => {
               <Icon icon='mdi:plus' />
             </Fab>
           </Box>
-          <FlowLeft LeftOpen={LeftOpen} setLeftOpen={setLeftOpen} />
+          <FlowLeft LeftOpen={LeftOpen} setLeftOpen={setLeftOpen} handleAddNode={handleAddNode}/>
         </ReactFlow>
       </ReactFlowProvider>
     </FlowContext.Provider>

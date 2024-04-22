@@ -1,4 +1,5 @@
 // ** MUI Imports
+import React, { Fragment, useState } from 'react';
 import Drawer from '@mui/material/Drawer'
 import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
@@ -10,6 +11,12 @@ import FormControl from '@mui/material/FormControl'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
+import CardContent from '@mui/material/CardContent'
+import Card from '@mui/material/Card'
+import Avatar from '@mui/material/Avatar'
+import { useTranslation } from 'next-i18next'
+
+import { appTypeTemplate } from './data/workflowData'
 
 // ** Custom Components Imports
 import CustomChip from 'src/@core/components/mui/chip'
@@ -22,7 +29,11 @@ const Header = styled(Box)<BoxProps>(({ theme }) => ({
   backgroundColor: theme.palette.background.default
 }))
 
-const FlowLeft = ({ LeftOpen, setLeftOpen }: any) => {
+const FlowLeft = ({ LeftOpen, setLeftOpen, handleAddNode }: any) => {
+  const { t } = useTranslation();
+  
+  const appTypeTemplateKeys: string[] = Object.keys(appTypeTemplate)
+
   return (
     <Drawer
       open={LeftOpen}
@@ -33,55 +44,92 @@ const FlowLeft = ({ LeftOpen, setLeftOpen }: any) => {
       ModalProps={{ keepMounted: true }}
     >
       <Header>
-        <Typography variant='h6'>Send Invoice</Typography>
+        <Typography variant='h6'>{t('Base Function')}</Typography>
         <IconButton size='small' onClick={()=>{setLeftOpen(false)}} sx={{ color: 'text.primary' }}>
           <Icon icon='mdi:close' fontSize={20} />
         </IconButton>
       </Header>
-      <Box sx={{ p: 5 }}>
-        <FormControl fullWidth sx={{ mb: 6 }}>
-          <TextField type='email' label='From' variant='outlined' defaultValue='shelbyComapny@email.com' />
-        </FormControl>
-        <FormControl fullWidth sx={{ mb: 6 }}>
-          <TextField type='email' label='To' variant='outlined' defaultValue='qConsolidated@email.com' />
-        </FormControl>
-        <FormControl fullWidth sx={{ mb: 6 }}>
-          <TextField label='Subject' variant='outlined' defaultValue='Invoice of purchased Admin Templates' />
-        </FormControl>
-        <FormControl fullWidth sx={{ mb: 6 }}>
-          <TextField
-            rows={10}
-            multiline
-            label='Message'
-            type='textarea'
-            variant='outlined'
-            defaultValue={`Dear Queen Consolidated,
+      <Box>
+      <CardContent>
+        {appTypeTemplateKeys.map((appTypeTemplateKey: any) => {
+            const appTypeTemplateItemList: any[] = appTypeTemplate[appTypeTemplateKey];
+            return (
+                <Fragment>
+                <Typography sx={{ 
+                            fontWeight: 'bold', 
+                            lineHeight: 1.71,
+                            letterSpacing: '0.22px',
+                            fontSize: '0.875rem !important',
+                            maxWidth: '200px',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap' ,
+                            pb: 4
+                        }} >
+                            {t(appTypeTemplateKey)}
+                </Typography>
+                {appTypeTemplateItemList.map((item: any, index: number) => {
+                    console.log("appTypeTemplateKey", item);
+                    return (
+                        <Fragment>
+                            <Box key={index} sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+                                onClick={()=>{handleAddNode(item.flowType)}} >
+                                <Avatar src={item.avatar} sx={{ mr: 3, width: 42, height: 42 }} />
+                                <Box
+                                    sx={{
+                                        width: '100%',
+                                        display: 'flex',
+                                        flexWrap: 'wrap',
+                                        alignItems: 'center',
+                                        justifyContent: 'space-between',
+                                        pb: 4
+                                    }}
+                                >
+                                    <Box sx={{ mr: 2, display: 'flex', mb: 0.4, flexDirection: 'column' }}>
+                                        <Typography sx={{ 
+                                            fontWeight: 500,
+                                            lineHeight: 1.71,
+                                            letterSpacing: '0.22px',
+                                            fontSize: '0.875rem !important',
+                                            maxWidth: '200px',
+                                            overflow: 'hidden',
+                                            textOverflow: 'ellipsis',
+                                            whiteSpace: 'nowrap' 
+                                        }} >
+                                            {t(item.name)}
+                                        </Typography>
+                                        <Box
+                                            sx={{
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                '& svg': { mr: 1, color: 'text.secondary', verticalAlign: 'middle' }
+                                            }}
+                                        >
+                                            <Typography 
+                                                variant='caption' 
+                                                sx={{ 
+                                                    display: '-webkit-box',
+                                                    WebkitBoxOrient: 'vertical',
+                                                    WebkitLineClamp: 3,
+                                                    overflow: 'hidden',
+                                                    textOverflow: 'ellipsis'
+                                                }}
+                                            >
+                                                {t(item.intro)}
+                                            </Typography>
+                                        </Box>
+                                    </Box>
+                                </Box>
+                            </Box>
+                        </Fragment>
+                    );
+                })}
+                </Fragment>
+            )
+            
+        })}
+      </CardContent>
 
-Thank you for your business, always a pleasure to work with you!
-
-We have generated a new invoice in the amount of $95.59
-
-We would appreciate payment of this invoice by 05/11/2019`}
-          />
-        </FormControl>
-        <Box sx={{ mb: 6 }}>
-          <CustomChip
-            size='small'
-            skin='light'
-            color='primary'
-            label='Invoice Attached'
-            sx={{ borderRadius: '5px' }}
-            icon={<Icon icon='mdi:attachment' fontSize={20} />}
-          />
-        </Box>
-        <div>
-          <Button size='large' variant='contained' onClick={()=>{setLeftOpen(false)}} sx={{ mr: 4 }}>
-            Send
-          </Button>
-          <Button size='large' variant='outlined' color='secondary' onClick={()=>{setLeftOpen(false)}}>
-            Cancel
-          </Button>
-        </div>
       </Box>
     </Drawer>
   )

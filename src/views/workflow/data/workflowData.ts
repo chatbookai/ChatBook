@@ -278,177 +278,54 @@ export const workflowData: any = {
           }
       },
       {
-          "id": "chatNodeInitial_2",
-          "type": "chatNode",
-          "data": {
-              "id": "chatNodeInitial_2",
-              "templateType": "textAnswer",
-              "flowType": "chatNode",
-              "avatar": "/imgs/module/AI.png",
-              "name": "AI Chat",
-              "intro": "AI Model Chat",
-              "showStatus": true,
-              "isTool": true,
-              "inputs": [
-                  {
-                      "key": "switch",
-                      "type": "hidden",
-                      "label": "",
-                      "description": "Trigger",
-                      "valueType": "any",
-                      "showTargetInApp": true,
-                      "showTargetInPlugin": true
-                  },
-                  {
-                      "key": "model",
-                      "type": "settingLLMModel",
-                      "label": "aiModel",
-                      "required": true,
-                      "valueType": "string",
-                      "showTargetInApp": false,
-                      "showTargetInPlugin": false,
-                      "value": "gpt-3.5-turbo"
-                  },
-                  {
-                      "key": "temperature",
-                      "type": "hidden",
-                      "label": "",
-                      "value": 0,
-                      "valueType": "number",
-                      "min": 0,
-                      "max": 10,
-                      "step": 1,
-                      "showTargetInApp": false,
-                      "showTargetInPlugin": false
-                  },
-                  {
-                      "key": "maxToken",
-                      "type": "hidden",
-                      "label": "",
-                      "value": 8000,
-                      "valueType": "number",
-                      "min": 100,
-                      "max": 4000,
-                      "step": 50,
-                      "showTargetInApp": false,
-                      "showTargetInPlugin": false
-                  },
-                  {
-                      "key": "isResponseAnswerText",
-                      "type": "hidden",
-                      "label": "",
-                      "value": true,
-                      "valueType": "boolean",
-                      "showTargetInApp": false,
-                      "showTargetInPlugin": false
-                  },
-                  {
-                      "key": "quoteTemplate",
-                      "type": "hidden",
-                      "label": "",
-                      "valueType": "string",
-                      "showTargetInApp": false,
-                      "showTargetInPlugin": false
-                  },
-                  {
-                      "key": "quotePrompt",
-                      "type": "hidden",
-                      "label": "",
-                      "valueType": "string",
-                      "showTargetInApp": false,
-                      "showTargetInPlugin": false
-                  },
-                  {
-                      "key": "systemPrompt",
-                      "type": "textarea",
-                      "max": 3000,
-                      "valueType": "string",
-                      "label": "NodeChatPrompt",
-                      "description": "chatNodeSystemPromptTip",
-                      "placeholder": "chatNodeSystemPromptTip",
-                      "showTargetInApp": true,
-                      "showTargetInPlugin": true
-                  },
-                  {
-                      "key": "history",
-                      "type": "numberInput",
-                      "label": "chat history",
-                      "required": true,
-                      "min": 0,
-                      "max": 30,
-                      "valueType": "chatHistory",
-                      "value": 6,
-                      "showTargetInApp": true,
-                      "showTargetInPlugin": true
-                  },
-                  {
-                      "key": "userChatInput",
-                      "type": "custom",
-                      "label": "",
-                      "required": true,
-                      "valueType": "string",
-                      "showTargetInApp": true,
-                      "showTargetInPlugin": true,
-                      "toolDescription": "user question"
-                  },
-                  {
-                      "key": "quoteQA",
-                      "type": "settingDatasetQuotePrompt",
-                      "label": "KnowledgeBaseRef",
-                      "description": "Input description",
-                      "valueType": "datasetQuote",
-                      "showTargetInApp": true,
-                      "showTargetInPlugin": true
-                  },
-                  {
-                      "key": "aiSettings",
-                      "type": "aiSettings",
-                      "label": "",
-                      "valueType": "any",
-                      "showTargetInApp": false,
-                      "showTargetInPlugin": false,
-                      "connected": false
-                  }
+        "id": "assignedReply_1",
+        "type": "assignedReply",
+        "data": {
+            "id": "assignedReply_1",
+            "templateType": "assignedReply",
+            "flowType": "assignedReply",
+            "avatar": "/imgs/module/reply.png",
+            "name": "Assigned reply",
+            "intro": "Assigned reply intro",
+            "inputs": [
+                {
+                  "key": "switch",
+                  "type": "hidden",
+                  "label": "",
+                  "description": "Trigger",
+                  "valueType": "any",
+                  "showTargetInApp": true,
+                  "showTargetInPlugin": true,
+                  "connected": false
+                },
+                {
+                  "key": "text",
+                  "type": "textarea",
+                  "valueType": "any",
+                  "label": "Response content",
+                  "description": "Response content help",
+                  "placeholder": "Response content help",
+                  "showTargetInApp": true,
+                  "showTargetInPlugin": true,
+                  "connected": false
+                }
               ],
-              "outputs": [
-                  {
-                      "key": "answerText",
-                      "label": "Ai response content",
-                      "description": "Ai response content",
-                      "valueType": "string",
-                      "type": "source",
-                      "targets": []
-                  },
-                  {
-                      "key": "finish",
-                      "label": "",
-                      "description": "",
-                      "valueType": "boolean",
-                      "type": "hidden",
-                      "targets": []
-                  },
-                  {
-                      "key": "history",
-                      "label": "New context",
-                      "description": "New context",
-                      "valueType": "chatHistory",
-                      "type": "source",
-                      "targets": []
-                  },
-                  {
-                      "key": "userChatInput",
-                      "label": "user question",
-                      "type": "hidden",
-                      "valueType": "string",
-                      "targets": []
-                  }
-              ],
-              "moduleId": "chatModule"
-          },
-          "position": {
-              "x": 1300,
-              "y": 900
-          }
+            "outputs": [
+              {
+                "key": "finish",
+                "label": "",
+                "description": "",
+                "valueType": "boolean",
+                "type": "hidden",
+                "targets": []
+              }
+            ],
+            "moduleId": "assignedReply"
+        },
+        "position": {
+            "x": 1800,
+            "y": 721
+        }
       }
     ],
     "edges":  [
@@ -471,26 +348,6 @@ export const workflowData: any = {
         type: "buttonedge",
         animated: true,
         style: { stroke: '#00BFFF', strokeWidth: 4 }
-      },
-      {
-        id: "bmf6r3",
-        source: "questionInputNodeInitial_1",
-        sourceHandle: "userChatInput",
-        target: "chatNodeInitial_2",
-        targetHandle: "userChatInput_Left",
-        type: "buttonedge",
-        animated: true,
-        style: { stroke: '#808080', strokeWidth: 4 }
-      },
-      {
-        id: "bmf6r4",
-        source: "questionInputNodeInitial_1",
-        sourceHandle: "userChatInput",
-        target: "chatNodeInitial_2",
-        targetHandle: "systemPrompt_Left",
-        type: "buttonedge",
-        animated: true,
-        style: { stroke: '#808080', strokeWidth: 4 }
       }
     ],
     "permission": "private",
@@ -511,8 +368,8 @@ export const appTypeTemplate: {[key: string]: any[]} = {
             "intro": "AI Model Chat",
         },
         {
-            "templateType": "AssignedReply",
-            "flowType": "AssignedReply",
+            "templateType": "assignedReply",
+            "flowType": "assignedReply",
             "avatar": "/imgs/module/reply.png",
             "name": "Assigned reply",
             "intro": "Assigned reply intro",
@@ -565,22 +422,25 @@ export const appTypeTemplate: {[key: string]: any[]} = {
             "name": "Http request",
             "intro": "Http request intro",
         },
-    ],
-    
-    "System input module": [
-        {
-            "templateType": "systemInput",
-            "flowType": "questionInput",
-            "avatar": "/imgs/module/userChatInput.png",
-            "name": "Chat entrance",
-            "intro": "Chat entrance intro",
-        },
-        {
-            "templateType": "userGuide",
-            "flowType": "userGuide",
-            "avatar": "/imgs/module/userGuide.png",
-            "name": "System Setting",
-            "intro": "userGuideTip",
-        },
     ]
 }
+
+
+/*
+"System input module": [
+    {
+        "templateType": "systemInput",
+        "flowType": "questionInput",
+        "avatar": "/imgs/module/userChatInput.png",
+        "name": "Chat entrance",
+        "intro": "Chat entrance intro",
+    },
+    {
+        "templateType": "userGuide",
+        "flowType": "userGuide",
+        "avatar": "/imgs/module/userGuide.png",
+        "name": "System Setting",
+        "intro": "userGuideTip",
+    },
+]
+*/

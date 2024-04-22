@@ -51,10 +51,11 @@ const FlowLeft = ({ LeftOpen, setLeftOpen, handleAddNode }: any) => {
       </Header>
       <Box>
       <CardContent>
-        {appTypeTemplateKeys.map((appTypeTemplateKey: any) => {
+        {appTypeTemplateKeys.map((appTypeTemplateKey: any, appTypeTemplateIndex: number) => {
             const appTypeTemplateItemList: any[] = appTypeTemplate[appTypeTemplateKey];
+
             return (
-                <Fragment>
+                <Fragment key={appTypeTemplateIndex}>
                 <Typography sx={{ 
                             fontWeight: 'bold', 
                             lineHeight: 1.71,
@@ -69,10 +70,10 @@ const FlowLeft = ({ LeftOpen, setLeftOpen, handleAddNode }: any) => {
                             {t(appTypeTemplateKey)}
                 </Typography>
                 {appTypeTemplateItemList.map((item: any, index: number) => {
-                    console.log("appTypeTemplateKey", item);
+                    
                     return (
-                        <Fragment>
-                            <Box key={index} sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
+                        <Fragment key={index}>
+                            <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
                                 onClick={()=>{handleAddNode(item.flowType)}} >
                                 <Avatar src={item.avatar} sx={{ mr: 3, width: 42, height: 42 }} />
                                 <Box

@@ -31,6 +31,8 @@ import NodeSimple from 'src/views/workflow/nodes/NodeSimple';
 import NodeQuestionInput from 'src/views/workflow/nodes/NodeQuestionInput';
 import NodeUserGuide from 'src/views/workflow/nodes/NodeUserGuide';
 import NodeChatNode from 'src/views/workflow/nodes/NodeChatNode';
+import NodeAssignedReply from 'src/views/workflow/nodes/NodeAssignedReply';
+
 import { workflowData } from './data/workflowData'
 import type { FlowModuleItemType } from 'src/functions/workflow/type';
 import { getNanoid } from 'src/functions/workflow/string.tools';
@@ -59,13 +61,14 @@ const nodeTypes = {
   httpRequest: NodeSimple,
   runApp: NodeSimple,
   pluginModule: NodeSimple,
-  queryExtension: NodeSimple
+  queryExtension: NodeSimple,
+  assignedReply: NodeAssignedReply
 };
 
 const FlowContent = () => {
   const { t } = useTranslation();
 
-  const [LeftOpen, setLeftOpen] = useState<boolean>(true);
+  const [LeftOpen, setLeftOpen] = useState<boolean>(false);
 
   const [nodes, setNodes, onNodesChange] = useNodesState<FlowModuleItemType>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<any[]>([]);
@@ -76,7 +79,7 @@ const FlowContent = () => {
     if (!connect.sourceHandle || !connect.targetHandle) {
       return;
     }
-    console.log("customOnConnect", connect)
+    //console.log("customOnConnect", connect)
     if (connect.source === connect.target)      {
       // can not connect
       toast.error(t('Can not connect self') as string, {
@@ -85,14 +88,14 @@ const FlowContent = () => {
     }
     else {
       // allow connect
-      console.log("edgesedges", edges, connect)
+      //console.log("edgesedges", edges, connect)
       const newEdge: any = {
         ...connect,
         id: getNanoid(6),
         type: 'buttonedge',
         style: { stroke: '#00BFFF', strokeWidth: 4 }
       }
-      console.log("edgesedges", newEdge)
+      //console.log("edgesedges", newEdge)
       onConnect(newEdge);
     }
   }
@@ -134,6 +137,7 @@ const FlowContent = () => {
     });
     const updatedNodes = copyNodes.concat(currentNode2);
     setNodes(updatedNodes);
+    setLeftOpen(false);
 
     //console.log("handleCopyNode", nodeId, copyNodes, currentNode1)
     //console.log("handleCopyNode updatedNodes", updatedNodes)
@@ -182,11 +186,11 @@ const FlowContent = () => {
       }
     })
     setEdges(updateEdges)
-    console.log('onEdgeClick onDeleteClick', event);
+    //console.log('onEdgeClick onDeleteClick', event);
   };
 
   const onSelectionChange = (elements: any) => {
-    console.log('Selection changed:', elements);
+    //console.log('Selection changed:', elements);
   };
   
   useEffect(()=>{
@@ -194,17 +198,17 @@ const FlowContent = () => {
     const edgesInitial: Edge<any[]>[] = workflowData.edges
     setEdges(edgesInitial)
     setNodes(modules)
-    console.log("nodes edges", edgesInitial)
-    console.log("nodes nodes", modules)
+    //console.log("nodes edges", edgesInitial)
+    //console.log("nodes nodes", modules)
   }, [])
 
   useEffect(()=>{
-    console.log("nodes edges useEffect", edges)
-    console.log("nodes nodes useEffect", nodes)
+    //console.log("nodes edges useEffect", edges)
+    //console.log("nodes nodes useEffect", nodes)
   }, [edges])
 
   useEffect(() => {
-    console.log('Nodes changed:', nodes);
+    //console.log('Nodes changed:', nodes);
   }, [nodes]);
 
   return (

@@ -299,6 +299,9 @@
   "App system setting": "系统配置",
   "http body placeholder": "与APIFox相同的语法",
   "textEditor": "文本加工",
-  "textEditor intro": "可对固定或传入的文本进行加工后输出，非字符串类型数据最终会转成字符串类型。"
+  "textEditor intro": "可对固定或传入的文本进行加工后输出，非字符串类型数据最终会转成字符串类型。",
+  "Response content help": "可以使用 \\n 来实现连续换行。\n可以通过外部模块输入实现回复，外部模块输入时会覆盖当前填写的内容。\n如传入非字符串类型数据将会自动转成字符串"
+
+
   
 }

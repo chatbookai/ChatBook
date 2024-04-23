@@ -599,6 +599,174 @@ export const workflowData: any = {
             "x": 2100,
             "y": 721
         }
+      },
+      {
+        "id": "httpRequest_1",
+        "type": "httpRequest",
+        "data": {
+            "id": "httpRequest_1",
+            "templateType": "httpRequest",
+            "flowType": "httpRequest",
+            "avatar": "/imgs/module/http.png",
+            "name": "Http request",
+            "intro": "Http request intro",
+            "inputs": [
+              {
+                "key": "switch",
+                "type": "hidden",
+                "label": "",
+                "description": "Trigger",
+                "valueType": "any",
+                "showTargetInApp": true,
+                "showTargetInPlugin": true,
+                "connected": true
+              },
+              {
+                "key": "httpMethod",
+                "type": "httpMethod",
+                "valueType": "string",
+                "label": "Http request settings",
+                "value": "POST",
+                "httpReqUrl": "https://",
+                "required": true,
+                "showTargetInApp": false,
+                "showTargetInPlugin": false,
+                "connected": false
+              },
+              {
+                "key": "httpParams",
+                "type": "httpParams",   
+                "valueType": "any",
+                "valueParams": [{
+                    "key": "Accept-Charset",
+                    "type": "string",
+                    "value": ""
+                  },
+                  {
+                    "key": "Accept-Encoding",
+                    "type": "string",
+                    "value": ""
+                  }],
+                "valueBody": "valueBody",
+                "valueHeader": [{
+                    "key": "Accept-Charset",
+                    "type": "string",
+                    "value": ""
+                  },
+                  {
+                    "key": "Accept-Encoding",
+                    "type": "string",
+                    "value": ""
+                  }],
+                "label": "Http request props",
+                "description": "Props tip",
+                "placeholder": "Http Request Header",
+                "required": false,
+                "showTargetInApp": false,
+                "showTargetInPlugin": false,
+                "connected": false
+              },
+              {
+                "key": "httpParams",
+                "type": "hidden",
+                "valueType": "any",
+                "value": [],
+                "label": "",
+                "required": false,
+                "showTargetInApp": false,
+                "showTargetInPlugin": false,
+                "connected": false
+              },
+              {
+                "key": "httpJsonBody",
+                "type": "hidden",
+                "valueType": "any",
+                "value": "",
+                "label": "",
+                "required": false,
+                "showTargetInApp": false,
+                "showTargetInPlugin": false,
+                "connected": false
+              },
+              {
+                "key": "DYNAMIC_INPUT_KEY",
+                "type": "target",
+                "valueType": "any",
+                "label": "core.module.inputType.dynamicTargetInput",
+                "description": "dynamic input",
+                "required": false,
+                "showTargetInApp": false,
+                "showTargetInPlugin": true,
+                "hideInApp": true,
+                "connected": false
+              },
+              {
+                "key": "system_addInputParam",
+                "type": "addInputParam",
+                "valueType": "any",
+                "label": "",
+                "required": false,
+                "showTargetInApp": false,
+                "showTargetInPlugin": false,
+                "editField": {
+                  "key": true,
+                  "description": true,
+                  "dataType": true
+                },
+                "defaultEditField": {
+                  "label": "",
+                  "key": "",
+                  "description": "",
+                  "inputType": "target",
+                  "valueType": "string"
+                },
+                "connected": false
+              }
+            ],
+            "outputs": [
+              {
+                "key": "httpRawResponse",
+                "label": "原始响应",
+                "description": "HTTP请求的原始响应。只能接受字符串或JSON类型响应数据。",
+                "valueType": "any",
+                "type": "source",
+                "targets": []
+              },
+              {
+                "key": "system_addOutputParam",
+                "type": "addOutputParam",
+                "valueType": "any",
+                "label": "",
+                "targets": [],
+                "editField": {
+                  "key": true,
+                  "description": true,
+                  "dataType": true,
+                  "defaultValue": true
+                },
+                "defaultEditField": {
+                  "label": "",
+                  "key": "",
+                  "description": "",
+                  "outputType": "source",
+                  "valueType": "string"
+                }
+              },
+              {
+                "key": "finish",
+                "label": "",
+                "description": "",
+                "valueType": "boolean",
+                "type": "hidden",
+                "targets": []
+              }
+            ],
+            "moduleId": "httpRequest_1"
+        },
+        "position": {
+            "x": 1400,
+            "y": 900
+        }
       }
     ],
     "edges":  [
@@ -651,13 +819,6 @@ export const appTypeTemplate: {[key: string]: any[]} = {
 
     "Function module": [
         {
-            "templateType": "DatasetSearch",
-            "flowType": "DatasetSearch",
-            "avatar": "/imgs/module/db.png",
-            "name": "Dataset search",
-            "intro": "Dataset search intro",
-        },
-        {
             "templateType": "ClassifyQuestion",
             "flowType": "ClassifyQuestion",
             "avatar": "/imgs/module/cq.png",
@@ -686,7 +847,13 @@ export const appTypeTemplate: {[key: string]: any[]} = {
 
 
 /*
-
+    {
+        "templateType": "DatasetSearch",
+        "flowType": "DatasetSearch",
+        "avatar": "/imgs/module/db.png",
+        "name": "Dataset search",
+        "intro": "Dataset search intro",
+    },
     {
         "templateType": "ToolCall",
         "flowType": "ToolCall",

@@ -12,7 +12,6 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 //import FlowContent from 'src/components/core/module/Flow/index'
 import FlowContent from 'src/views/workflow/FlowContent'
 
-
 const AppChat = () => {
 
   // ** Hooks

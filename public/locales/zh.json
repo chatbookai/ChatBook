@@ -306,7 +306,18 @@
   "Add question type": "添加问题类型",
   "Add question item placeholder": "请输入可能的问题",
   "Description":"描述",
-  "Default":"默认"
+  "Default":"默认",
+  "Default value": "默认值",
+  "Default value placeholder": "不填则默认返回空字符",
+  "Edit intro": "编辑描述",
+  "Field Description": "字段描述",
+  "Field Name": "字段名",
+  "Field Type": "字段类型",
+  "Field key": "字段Key",
+  "Http request props": "请求参数",
+  "Http request settings": "请求配置",
+  "Input Type": "输入类型",
+  "Props tip": "可以设置 Http 请求的相关参数\n可通过 {{key}} 来调用全局变量或外部参数输入，当前可使用变量:\n{{variable}}"
 
 
   

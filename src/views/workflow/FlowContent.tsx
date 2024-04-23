@@ -33,6 +33,7 @@ import NodeChatNode from 'src/views/workflow/nodes/NodeChatNode';
 import NodeAssignedReply from 'src/views/workflow/nodes/NodeAssignedReply';
 import NodeClassifyQuestion from 'src/views/workflow/nodes/NodeClassifyQuestion';
 import NodeContentExtract from 'src/views/workflow/nodes/NodeContentExtract';
+import NodeHttpRequest from 'src/views/workflow/nodes/NodeHttpRequest';
 
 import { workflowData } from './data/workflowData'
 import type { FlowModuleItemType } from 'src/functions/workflow/type';
@@ -59,13 +60,13 @@ const nodeTypes = {
   chatNode: NodeChatNode,
   historyNode: NodeSimple,
   datasetSearchNode: NodeSimple,
-  httpRequest: NodeSimple,
   runApp: NodeSimple,
   pluginModule: NodeSimple,
   queryExtension: NodeSimple,
   assignedReply: NodeAssignedReply,
   classifyQuestion: NodeClassifyQuestion,
-  contentExtract: NodeContentExtract
+  contentExtract: NodeContentExtract,
+  httpRequest: NodeHttpRequest
 };
 
 const FlowContent = () => {

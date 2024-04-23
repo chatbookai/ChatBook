@@ -210,7 +210,7 @@ export const workflowData: any = {
                   },
                   {
                       "key": "userChatInput",
-                      "type": "custom",
+                      "type": "systemInput",
                       "label": "",
                       "required": true,
                       "valueType": "string",
@@ -387,17 +387,18 @@ export const workflowData: any = {
                 },
                 {
                 "key": "userChatInput",
-                "type": "custom",
+                "type": "systemInput",
                 "label": "",
                 "required": true,
                 "valueType": "string",
                 "showTargetInApp": true,
                 "showTargetInPlugin": true,
+                "toolDescription": "user question",
                 "connected": true
                 },
                 {
                 "key": "agents",
-                "type": "custom",
+                "type": "systemInput",
                 "valueType": "any",
                 "label": "",
                 "value": [

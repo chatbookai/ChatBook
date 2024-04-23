@@ -16,6 +16,7 @@ import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import Slider from '@mui/material/Slider'
+import Fab from '@mui/material/Fab'
 
 import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
@@ -285,7 +286,7 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
             
             <Grid container spacing={2} pb={5}>
               {data && data.inputs && data.inputs.length>0 && data.inputs.map((item: any, index: number) => {
-
+                  console.log("item.value", item.value)
                   return (<Fragment key={`inputs_${index}`}>
                           {item.type == 'selectLLMModel' ?
                           <Fragment>
@@ -411,7 +412,7 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                           :
                           null}
 
-                          {item.type == 'systemInput' && item.key == 'userChatInput' ?
+                          {item.type == 'systemInput' ?
                           <Fragment>
                             <Grid item sx={{pt:4}} xs={12}>
                               <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
@@ -450,6 +451,52 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                               </Box>
                               </Box>
                             </Grid>
+                          </Fragment>
+                          :
+                          null}
+
+                          {item.type == 'classifyQuestion' ?
+                          <Fragment>
+                            {item.value && item.value.length && item.value.map((item: any, index: number)=>{
+                                return (
+                                    <Grid key={index} item sx={{ display: 'flex', alignItems: 'center', pt: 0, pl: 1 }} xs={12}>
+                                        <Fab color='primary' aria-label='delete' size='small' sx={{width:'46px'}}>
+                                            <Icon icon='mdi:delete' />
+                                        </Fab>
+                                        <Typography sx={{ pl: 1, py: 1, pr: 2 }}>{`${index+1}`}</Typography>
+                                        <TextField
+                                            multiline
+                                            rows={1}
+                                            defaultValue={item.value}
+                                            sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
+                                            placeholder={t(item.placeholder) as string}
+                                            onChange={(e) => {}}
+                                        />
+                                        <Box position={'absolute'} right={'2px'}>
+                                            <Handle
+                                                style={{
+                                                    width: '14px',
+                                                    height: '14px',
+                                                    borderWidth: '3.5px',
+                                                    backgroundColor: 'info.primary',
+                                                    top: '0px',
+                                                    right: '84px'
+                                                }}
+                                                type="source"
+                                                id={`${item.key}_Right`}
+                                                position={Position.Right}
+                                            />
+                                        </Box>
+                                    </Grid>
+                                )
+                            })}
+
+                            <Grid item sx={{ display: 'flex', alignItems: 'center', mt:2, ml: 1 }} xs={12}>
+                                <Button variant='contained' startIcon={<Icon icon='mdi:add' />}>
+                                    {t('Add question type')}
+                                </Button>
+                            </Grid>
+                            
                           </Fragment>
                           :
                           null}

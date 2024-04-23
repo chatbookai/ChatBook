@@ -411,7 +411,7 @@ const NodeAssignedReply = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                           :
                           null}
 
-                          {item.type == 'systemInput' && item.key == 'userChatInput' ?
+                          {item.type == 'systemInput' ?
                           <Fragment>
                             <Grid item sx={{pt:4}} xs={12}>
                               <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">

@@ -398,7 +398,7 @@ export const workflowData: any = {
                 },
                 {
                 "key": "agents",
-                "type": "systemInput",
+                "type": "classifyQuestion",
                 "valueType": "any",
                 "label": "",
                 "value": [

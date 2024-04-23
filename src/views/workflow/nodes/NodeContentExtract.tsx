@@ -193,7 +193,6 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
             });
             nodeInputsOrOutputs[index].value = EditNodeValues
             node.data[type] = nodeInputsOrOutputs
-            console.log("EditNodeValues", nodeInputsOrOutputs, EditNodeValues)
 
             return node;
         }
@@ -262,7 +261,6 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
             });
             nodeInputsOrOutputs[index].value = EditNodeValues
             node.data[type] = nodeInputsOrOutputs
-            console.log("EditNodeValues", nodeInputsOrOutputs, EditNodeValues)
 
             return node;
         }

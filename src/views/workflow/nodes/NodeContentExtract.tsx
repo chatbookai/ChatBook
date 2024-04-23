@@ -332,7 +332,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                               <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
                                 <Box display="flex" alignItems="center">
                                 <Typography sx={{ pl: 2, py: 2 }}>{t(item.label)}</Typography>
-                                {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
+                                {item && item.required && <span style={{ paddingTop: '9px', color: 'red', marginLeft: '3px' }}>*</span>}
                                 </Box>
                                 <Button size="small" onClick={
                                       () => { setLLMModel( (prevState: any) => ({ ...prevState, LLMModelOpen: true }) ) }
@@ -367,7 +367,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                               </Box>
                               <Box display="flex" alignItems="center">
                               <Typography sx={{ pl: 3, py: 2 }}>{t(item.label || item.key)}</Typography>
-                              {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
+                              {item && item.required && <span style={{ paddingTop: '9px', color: 'red', marginLeft: '3px' }}>*</span>}
                               <Tooltip title={t(item.description)}>
                                   <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
                                 </Tooltip>
@@ -426,7 +426,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                             <Grid item sx={{pt:4}} xs={12}>
                               <Box display="flex" mb={1} alignItems="center">
                                 <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
-                                {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
+                                {item && item.required && <span style={{ paddingTop: '9px', color: 'red', marginLeft: '3px' }}>*</span>}
                                 {item.placeholder ?
                                 <Tooltip title={t(item.placeholder)}>
                                   <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
@@ -473,7 +473,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                                 </Box>
                                 <Box display="flex" alignItems="center">
                                   <Typography sx={{ pl: 3, py: 2 }}>{t(item.toolDescription)}</Typography>
-                                  {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
+                                  {item && item.required && <span style={{ paddingTop: '9px', color: 'red', marginLeft: '3px' }}>*</span>}
                                 </Box>
                                 <Typography sx={{ pr: 3, py: 2 }}>{t(item.toolDescription)}</Typography>
                                 <Box position={'absolute'} right={'-2px'}>
@@ -544,6 +544,34 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                                 </Button>
                             </Grid>
                             
+                          </Fragment>
+                          :
+                          null}
+
+                        {item.type == 'extractContent' ?
+                          <Fragment>
+                            <Grid item sx={{pt:4}} xs={12}>
+                              <Box display="flex" mb={1} alignItems="center">
+                                <Box position={'absolute'} left={'-2px'}>
+                                  <Handle
+                                    style={{
+                                      width: '14px',
+                                      height: '14px',
+                                      borderWidth: '3.5px',
+                                      backgroundColor: 'white',
+                                      top: '2px',
+                                      left: '-13px',
+                                      borderColor: '#36ADEF'
+                                    }}
+                                    type="target"
+                                    id={`${item.key}_Left`}
+                                    position={Position.Left}
+                                  />
+                                </Box>
+                                <Typography sx={{pl: 3, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
+                                {item && item.required && <span style={{ paddingTop: '9px', color: 'red', marginLeft: '3px' }}>*</span>}
+                              </Box>
+                            </Grid>
                           </Fragment>
                           :
                           null}
@@ -716,7 +744,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                           <Fragment>
                             <Grid item xs={12}>
                               <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="flex-end">
-                                <Typography sx={{ pr: 3, py: 2 }}>{t(item.label)}00000</Typography>
+                                <Typography sx={{ pr: 3, py: 2 }}>{t(item.label)}</Typography>
                               </Box>
                               <Box position={'absolute'} right={'-2px'}>
                                 <Handle

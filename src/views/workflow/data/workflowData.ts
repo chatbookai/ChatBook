@@ -473,7 +473,7 @@ export const workflowData: any = {
                   "key": "switch",
                   "type": "hidden",
                   "label": "",
-                  "description": "core.module.input.description.Trigger",
+                  "description": "Trigger",
                   "valueType": "any",
                   "showTargetInApp": true,
                   "showTargetInPlugin": true,
@@ -482,7 +482,7 @@ export const workflowData: any = {
                 {
                   "key": "model",
                   "type": "selectLLMModel",
-                  "label": "core.module.input.label.aiModel",
+                  "label": "aiModel",
                   "required": true,
                   "valueType": "string",
                   "showTargetInApp": false,
@@ -506,7 +506,7 @@ export const workflowData: any = {
                 {
                   "key": "history",
                   "type": "numberInput",
-                  "label": "core.module.input.label.chat history",
+                  "label": "chat history",
                   "required": true,
                   "min": 0,
                   "max": 30,
@@ -517,8 +517,8 @@ export const workflowData: any = {
                   "connected": false
                 },
                 {
-                  "key": "content",
-                  "type": "target",
+                  "key": "extractContent",
+                  "type": "extractContent",
                   "label": "需要提取的文本",
                   "required": true,
                   "valueType": "string",
@@ -529,7 +529,7 @@ export const workflowData: any = {
                 },
                 {
                   "key": "extractKeys",
-                  "type": "custom",
+                  "type": "extractKeys",
                   "label": "",
                   "valueType": "any",
                   "description": "由 '描述' 和 'key' 组成一个目标字段，可提取多个目标字段",

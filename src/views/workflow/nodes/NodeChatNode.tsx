@@ -272,7 +272,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                               <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
                                 <Box display="flex" alignItems="center">
                                 <Typography sx={{ pl: 2, py: 2 }}>{t(item.label)}</Typography>
-                                {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
+                                {item && item.required && <span style={{ paddingTop: '9px', color: 'red', marginLeft: '3px' }}>*</span>}
                                 </Box>
                                 <Button size="small" onClick={
                                       () => { setLLMModel( (prevState: any) => ({ ...prevState, LLMModelOpen: true }) ) }
@@ -307,7 +307,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                               </Box>
                               <Box display="flex" alignItems="center">
                               <Typography sx={{ pl: 3, py: 2 }}>{t(item.label || item.key)}</Typography>
-                              {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
+                              {item && item.required && <span style={{ paddingTop: '9px', color: 'red', marginLeft: '3px' }}>*</span>}
                               <Tooltip title={t(item.description)}>
                                   <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
                                 </Tooltip>
@@ -366,7 +366,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                             <Grid item sx={{pt:4}} xs={12}>
                               <Box display="flex" mb={1} alignItems="center">
                                 <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
-                                {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
+                                {item && item.required && <span style={{ paddingTop: '9px', color: 'red', marginLeft: '3px' }}>*</span>}
                                 {item.placeholder ?
                                 <Tooltip title={t(item.placeholder)}>
                                   <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
@@ -413,7 +413,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                                 </Box>
                                 <Box display="flex" alignItems="center">
                                   <Typography sx={{ pl: 3, py: 2 }}>{t(item.toolDescription)}</Typography>
-                                  {item && item.required && <span style={{ color: 'red', marginLeft: '0.5rem' }}>*</span>}
+                                  {item && item.required && <span style={{ paddingTop: '9px', color: 'red', marginLeft: '3px' }}>*</span>}
                                 </Box>
                                 <Typography sx={{ pr: 3, py: 2 }}>{t(item.toolDescription)}</Typography>
                                 <Box position={'absolute'} right={'-2px'}>

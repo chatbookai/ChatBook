@@ -535,7 +535,36 @@ export const workflowData: any = {
                   "description": "由 '描述' 和 'key' 组成一个目标字段，可提取多个目标字段",
                   "showTargetInApp": false,
                   "showTargetInPlugin": false,
-                  "value": [],
+                  "value": [
+                    {
+                    "description": "变量描述",
+                    "key": "变量KEY",
+                    "required": true,
+                    "default": "default",
+                    "enumValue": "A,B,C"
+                    },
+                    {
+                    "description": "关于 xxx 的问题",
+                    "key": "2",
+                    "required": true,
+                    "default": "",
+                    "enumValue": "A,B,C"
+                    },
+                    {
+                    "description": "其他问题",
+                    "key": "3",
+                    "required": true,
+                    "default": "",
+                    "enumValue": "A,B,C"
+                    },
+                    {
+                    "description": "",
+                    "key": "4",
+                    "required": false,
+                    "default": "",
+                    "enumValue": ""
+                    }
+                  ],
                   "connected": false
                 }
             ],

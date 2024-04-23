@@ -215,7 +215,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
   }, [])
   */
   const InputShow = true
-  const OutputShow = false
+  const OutputShow = true
 
   useEffect(()=>{
     if(selected) {
@@ -548,7 +548,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                           :
                           null}
 
-                        {item.type == 'extractContent' ?
+                          {item.type == 'extractContent' ?
                           <Fragment>
                             <Grid item sx={{pt:4}} xs={12}>
                               <Box display="flex" mb={1} alignItems="center">
@@ -572,6 +572,79 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                                 {item && item.required && <span style={{ paddingTop: '9px', color: 'red', marginLeft: '3px' }}>*</span>}
                               </Box>
                             </Grid>
+                          </Fragment>
+                          :
+                          null}
+
+                          {item.type == 'extractKeys' ?
+                          <Fragment>
+                            {item.value && item.value.length && item.value.map((valueItem: any, valueIndex: number)=>{
+                                return (
+                                    <Grid key={valueIndex} item sx={{ display: 'flex', alignItems: 'center', pt: 0, pl: 1 }} xs={12}>
+                                        <Fab color='primary' aria-label='delete' size='small' sx={{width:'46px'}} onClick={()=>{
+                                            handleDeleteNodeContentExtractItem(id, valueItem, index, "inputs")
+                                        }}>
+                                            <Icon icon='mdi:delete' />
+                                        </Fab>
+                                        <Typography sx={{ pl: 1, py: 1, pr: 2 }}>{`${valueIndex+1}`}</Typography>
+                                        <TextField
+                                            multiline
+                                            rows={1}
+                                            defaultValue={valueItem.key}
+                                            sx={{ pr: 2, width: '28%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
+                                            placeholder={t('key') as string}
+                                            onChange={(e) => {}}
+                                        />
+                                        <TextField
+                                            multiline
+                                            rows={1}
+                                            defaultValue={valueItem.description}
+                                            sx={{ pr: 2, width: '28%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
+                                            placeholder={t('Description') as string}
+                                            onChange={(e) => {}}
+                                        />
+                                        <Switch 
+                                            checked={valueItem.required} 
+                                            onChange={(e: any) => {
+                                                //setGlobalVariable((prevState: any) => ({ ...prevState, required: !!e.target.checked }))
+                                            }} 
+                                        />
+                                        <TextField
+                                            multiline
+                                            rows={1}
+                                            defaultValue={valueItem.default}
+                                            sx={{ pr: 2, width: '28%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
+                                            placeholder={t('Default') as string}
+                                            onChange={(e) => {}}
+                                        />
+                                        <Box position={'absolute'} right={'2px'}>
+                                            <Handle
+                                                style={{
+                                                    width: '14px',
+                                                    height: '14px',
+                                                    borderWidth: '3.5px',
+                                                    backgroundColor: 'white',
+                                                    top: '0px',
+                                                    right: '84px',
+                                                    borderColor: '#21ba45'
+                                                }}
+                                                type="source"
+                                                id={`${valueItem.key}_Right`}
+                                                position={Position.Right}
+                                            />
+                                        </Box>
+                                    </Grid>
+                                )
+                            })}
+
+                            <Grid item sx={{ display: 'flex', alignItems: 'center', mt:2, ml: 1 }} xs={12}>
+                                <Button variant='contained' startIcon={<Icon icon='mdi:add' />} onClick={()=>{
+                                    handleNewNodeContentExtractItem(id, index, "inputs")
+                                }}>
+                                    {t('Add question type')}
+                                </Button>
+                            </Grid>
+                            
                           </Fragment>
                           :
                           null}

@@ -404,15 +404,19 @@ export const workflowData: any = {
                 "value": [
                     {
                     "value": "打招呼",
-                    "key": "wqre"
+                    "key": "1"
                     },
                     {
                     "value": "关于 xxx 的问题",
-                    "key": "sdfa"
+                    "key": "2"
                     },
                     {
                     "value": "其他问题",
-                    "key": "agex"
+                    "key": "3"
+                    },
+                    {
+                    "value": "",
+                    "key": "4"
                     }
                 ],
                 "showTargetInApp": false,

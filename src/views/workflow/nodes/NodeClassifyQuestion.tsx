@@ -157,6 +157,42 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
     setNodes(DeletedNodes);
   };
 
+  const handleDeleteNodeClassifyQuestionItem = (nodeId: string, valueItem: any, index: number, type: string) =>{
+    const ModifyNodes = nodes.map((node: any) => {
+        if(node.id == nodeId) {
+            const nodeInputsOrOutputs: any[] = node.data[type];
+            const nodeValues = nodeInputsOrOutputs[index].value;
+            const DeletedNodeValues = nodeValues.filter((nodeValue: any) => {
+                return nodeValue.key != valueItem.key;
+            });
+            nodeInputsOrOutputs[index].value = DeletedNodeValues
+            node.data[type] = nodeInputsOrOutputs
+            return node;
+        }
+        else {
+            return node;
+        }
+      });
+      setNodes(ModifyNodes);
+  }
+
+  const handleNewNodeClassifyQuestionItem = (nodeId: string, index: number, type: string) =>{
+    const ModifyNodes = nodes.map((node: any) => {
+        if(node.id == nodeId) {
+            const nodeInputsOrOutputs: any[] = node.data[type];
+            const nodeValues = nodeInputsOrOutputs[index].value;
+            nodeValues.push({key: getNanoid(6), value: ''})
+            nodeInputsOrOutputs[index].value = nodeValues
+            node.data[type] = nodeInputsOrOutputs
+            return node;
+        }
+        else {
+            return node;
+        }
+      });
+      setNodes(ModifyNodes);
+  }
+
   useEffect(()=>{
     setNodeTitle(t(name) as string)
   }, [t])
@@ -457,19 +493,21 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
 
                           {item.type == 'classifyQuestion' ?
                           <Fragment>
-                            {item.value && item.value.length && item.value.map((item: any, index: number)=>{
+                            {item.value && item.value.length && item.value.map((valueItem: any, valueIndex: number)=>{
                                 return (
-                                    <Grid key={index} item sx={{ display: 'flex', alignItems: 'center', pt: 0, pl: 1 }} xs={12}>
-                                        <Fab color='primary' aria-label='delete' size='small' sx={{width:'46px'}}>
+                                    <Grid key={valueIndex} item sx={{ display: 'flex', alignItems: 'center', pt: 0, pl: 1 }} xs={12}>
+                                        <Fab color='primary' aria-label='delete' size='small' sx={{width:'46px'}} onClick={()=>{
+                                            handleDeleteNodeClassifyQuestionItem(id, valueItem, index, "inputs")
+                                        }}>
                                             <Icon icon='mdi:delete' />
                                         </Fab>
-                                        <Typography sx={{ pl: 1, py: 1, pr: 2 }}>{`${index+1}`}</Typography>
+                                        <Typography sx={{ pl: 1, py: 1, pr: 2 }}>{`${valueIndex+1}`}</Typography>
                                         <TextField
                                             multiline
                                             rows={1}
-                                            defaultValue={item.value}
+                                            defaultValue={valueItem.value}
                                             sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
-                                            placeholder={t(item.placeholder) as string}
+                                            placeholder={t('Add question item placeholder') as string}
                                             onChange={(e) => {}}
                                         />
                                         <Box position={'absolute'} right={'2px'}>
@@ -483,7 +521,7 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                                                     right: '84px'
                                                 }}
                                                 type="source"
-                                                id={`${item.key}_Right`}
+                                                id={`${valueItem.key}_Right`}
                                                 position={Position.Right}
                                             />
                                         </Box>
@@ -492,7 +530,9 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                             })}
 
                             <Grid item sx={{ display: 'flex', alignItems: 'center', mt:2, ml: 1 }} xs={12}>
-                                <Button variant='contained' startIcon={<Icon icon='mdi:add' />}>
+                                <Button variant='contained' startIcon={<Icon icon='mdi:add' />} onClick={()=>{
+                                    handleNewNodeClassifyQuestionItem(id, index, "inputs")
+                                }}>
                                     {t('Add question type')}
                                 </Button>
                             </Grid>

@@ -157,7 +157,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
     setNodes(DeletedNodes);
   };
 
-  const handleDeleteNodeContentExtractItem = (nodeId: string, valueItem: any, index: number, type: string) =>{
+  const handleDeleteNodeClassifyQuestionItem = (nodeId: string, valueItem: any, index: number, type: string) =>{
     const ModifyNodes = nodes.map((node: any) => {
         if(node.id == nodeId) {
             const nodeInputsOrOutputs: any[] = node.data[type];
@@ -176,12 +176,110 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
       setNodes(ModifyNodes);
   }
 
-  const handleNewNodeContentExtractItem = (nodeId: string, index: number, type: string) =>{
+  const handleEditNodeClassifyQuestionItem = (nodeId: string, valueItem: any, index: number, type: string, field: string, value: string | boolean) =>{
+    const ModifyNodes = nodes.map((node: any) => {
+        if(node.id == nodeId) {
+            const nodeInputsOrOutputs: any[] = node.data[type];
+            const nodeValues = nodeInputsOrOutputs[index].value;
+            const EditNodeValues = nodeValues.filter((nodeValue: any) => {
+                if(nodeValue.key == valueItem.key) {
+                    const nodeValueNew = nodeValue
+                    nodeValueNew[field] = value
+                    return nodeValueNew
+                }
+                else {
+                    return nodeValue;
+                }
+            });
+            nodeInputsOrOutputs[index].value = EditNodeValues
+            node.data[type] = nodeInputsOrOutputs
+            console.log("EditNodeValues", nodeInputsOrOutputs, EditNodeValues)
+
+            return node;
+        }
+        else {
+
+            return node;
+        }
+      });
+      setNodes(ModifyNodes);
+  }
+
+  const handleNewNodeClassifyQuestionItem = (nodeId: string, index: number, type: string) =>{
     const ModifyNodes = nodes.map((node: any) => {
         if(node.id == nodeId) {
             const nodeInputsOrOutputs: any[] = node.data[type];
             const nodeValues = nodeInputsOrOutputs[index].value;
             nodeValues.push({key: getNanoid(6), value: ''})
+            nodeInputsOrOutputs[index].value = nodeValues
+            node.data[type] = nodeInputsOrOutputs
+            return node;
+        }
+        else {
+            return node;
+        }
+      });
+      setNodes(ModifyNodes);
+  }
+
+  const handleDeleteNodeContentExtractItem = (nodeId: string, valueItem: any, index: number, type: string) =>{
+    const ModifyNodes = nodes.map((node: any) => {
+        if(node.id == nodeId) {
+            const nodeInputsOrOutputs: any[] = node.data[type];
+            const nodeValues = nodeInputsOrOutputs[index].value;
+            const DeletedNodeValues = nodeValues.filter((nodeValue: any) => {
+
+                return nodeValue.key != valueItem.key;
+            });
+            nodeInputsOrOutputs[index].value = DeletedNodeValues
+            node.data[type] = nodeInputsOrOutputs
+            //console.log("DeletedNodeValues", nodeInputsOrOutputs, node)
+
+            return node;
+        }
+        else {
+
+            return node;
+        }
+      });
+      setNodes(ModifyNodes);
+  }
+
+  const handleEditNodeContentExtractItem = (nodeId: string, valueItem: any, index: number, type: string, field: string, value: string | boolean) =>{
+    const ModifyNodes = nodes.map((node: any) => {
+        if(node.id == nodeId) {
+            const nodeInputsOrOutputs: any[] = node.data[type];
+            const nodeValues = nodeInputsOrOutputs[index].value;
+            const EditNodeValues = nodeValues.filter((nodeValue: any) => {
+                if(nodeValue.key == valueItem.key) {
+                    const nodeValueNew = nodeValue
+                    nodeValueNew[field] = value
+                    return nodeValueNew
+                }
+                else {
+                    return nodeValue;
+                }
+            });
+            nodeInputsOrOutputs[index].value = EditNodeValues
+            node.data[type] = nodeInputsOrOutputs
+            console.log("EditNodeValues", nodeInputsOrOutputs, EditNodeValues)
+
+            return node;
+        }
+        else {
+
+            return node;
+        }
+      });
+      setNodes(ModifyNodes);
+  }
+
+  const handleNewNodeContentExtractItem = (nodeId: string, index: number, type: string) =>{
+    const ModifyNodes = nodes.map((node: any) => {
+        if(node.id == nodeId) {
+            const nodeInputsOrOutputs: any[] = node.data[type];
+            const nodeValues = nodeInputsOrOutputs[index].value;
+            nodeValues.push({key: getNanoid(6), value: '', required: false, default: '', enumValue: ''})
             nodeInputsOrOutputs[index].value = nodeValues
             node.data[type] = nodeInputsOrOutputs
             return node;
@@ -503,7 +601,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                                 return (
                                     <Grid key={valueIndex} item sx={{ display: 'flex', alignItems: 'center', pt: 0, pl: 1 }} xs={12}>
                                         <Fab color='primary' aria-label='delete' size='small' sx={{width:'46px'}} onClick={()=>{
-                                            handleDeleteNodeContentExtractItem(id, valueItem, index, "inputs")
+                                            handleDeleteNodeClassifyQuestionItem(id, valueItem, index, "inputs")
                                         }}>
                                             <Icon icon='mdi:delete' />
                                         </Fab>
@@ -514,7 +612,9 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                                             defaultValue={valueItem.value}
                                             sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                             placeholder={t('Add question item placeholder') as string}
-                                            onChange={(e) => {}}
+                                            onChange={(e: any)=>{
+                                                handleEditNodeClassifyQuestionItem(id, valueItem, index, "inputs", "value", e.target.value as string)
+                                            }}
                                         />
                                         <Box position={'absolute'} right={'2px'}>
                                             <Handle
@@ -538,7 +638,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
 
                             <Grid item sx={{ display: 'flex', alignItems: 'center', mt:2, ml: 1 }} xs={12}>
                                 <Button variant='contained' startIcon={<Icon icon='mdi:add' />} onClick={()=>{
-                                    handleNewNodeContentExtractItem(id, index, "inputs")
+                                    handleNewNodeClassifyQuestionItem(id, index, "inputs")
                                 }}>
                                     {t('Add question type')}
                                 </Button>
@@ -579,6 +679,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                           {item.type == 'extractKeys' ?
                           <Fragment>
                             {item.value && item.value.length && item.value.map((valueItem: any, valueIndex: number)=>{
+
                                 return (
                                     <Grid key={valueIndex} item sx={{ display: 'flex', alignItems: 'center', pt: 0, pl: 1 }} xs={12}>
                                         <Fab color='primary' aria-label='delete' size='small' sx={{width:'46px'}} onClick={()=>{
@@ -590,32 +691,38 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                                         <TextField
                                             multiline
                                             rows={1}
-                                            defaultValue={valueItem.key}
+                                            value={valueItem.key}
                                             sx={{ pr: 2, width: '28%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                             placeholder={t('key') as string}
-                                            onChange={(e) => {}}
+                                            onChange={(e: any)=>{
+                                                handleEditNodeContentExtractItem(id, valueItem, index, "inputs", "key", e.target.value as string)
+                                            }}
                                         />
                                         <TextField
                                             multiline
                                             rows={1}
-                                            defaultValue={valueItem.description}
+                                            value={valueItem.description}
                                             sx={{ pr: 2, width: '28%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                             placeholder={t('Description') as string}
-                                            onChange={(e) => {}}
+                                            onChange={(e: any)=>{
+                                                handleEditNodeContentExtractItem(id, valueItem, index, "inputs", "description", e.target.value as string)
+                                            }}
                                         />
                                         <Switch 
                                             checked={valueItem.required} 
-                                            onChange={(e: any) => {
-                                                //setGlobalVariable((prevState: any) => ({ ...prevState, required: !!e.target.checked }))
-                                            }} 
+                                            onChange={(e: any)=>{
+                                                handleEditNodeContentExtractItem(id, valueItem, index, "inputs", "required", !!e.target.checked)
+                                            }}
                                         />
                                         <TextField
                                             multiline
                                             rows={1}
-                                            defaultValue={valueItem.default}
+                                            value={valueItem.default}
                                             sx={{ pr: 2, width: '28%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                             placeholder={t('Default') as string}
-                                            onChange={(e) => {}}
+                                            onChange={(e: any)=>{
+                                                handleEditNodeContentExtractItem(id, valueItem, index, "inputs", "default", e.target.value as string)
+                                            }}
                                         />
                                         <Box position={'absolute'} right={'2px'}>
                                             <Handle

@@ -176,6 +176,35 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
       setNodes(ModifyNodes);
   }
 
+  const handleEditNodeClassifyQuestionItem = (nodeId: string, valueItem: any, index: number, type: string, field: string, value: string | boolean) =>{
+    const ModifyNodes = nodes.map((node: any) => {
+        if(node.id == nodeId) {
+            const nodeInputsOrOutputs: any[] = node.data[type];
+            const nodeValues = nodeInputsOrOutputs[index].value;
+            const EditNodeValues = nodeValues.filter((nodeValue: any) => {
+                if(nodeValue.key == valueItem.key) {
+                    const nodeValueNew = nodeValue
+                    nodeValueNew[field] = value
+                    return nodeValueNew
+                }
+                else {
+                    return nodeValue;
+                }
+            });
+            nodeInputsOrOutputs[index].value = EditNodeValues
+            node.data[type] = nodeInputsOrOutputs
+            console.log("EditNodeValues", nodeInputsOrOutputs, EditNodeValues)
+
+            return node;
+        }
+        else {
+
+            return node;
+        }
+      });
+      setNodes(ModifyNodes);
+  }
+
   const handleNewNodeClassifyQuestionItem = (nodeId: string, index: number, type: string) =>{
     const ModifyNodes = nodes.map((node: any) => {
         if(node.id == nodeId) {
@@ -511,10 +540,12 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                                         <TextField
                                             multiline
                                             rows={1}
-                                            defaultValue={valueItem.value}
+                                            value={valueItem.value}
                                             sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                             placeholder={t('Add question item placeholder') as string}
-                                            onChange={(e) => {}}
+                                            onChange={(e: any)=>{
+                                              handleEditNodeClassifyQuestionItem(id, valueItem, index, "inputs", "value", e.target.value as string)
+                                            }}
                                         />
                                         <Box position={'absolute'} right={'2px'}>
                                             <Handle

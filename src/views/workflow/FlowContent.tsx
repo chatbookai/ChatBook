@@ -211,7 +211,7 @@ const FlowContent = () => {
   }, [edges])
 
   useEffect(() => {
-    //console.log('Nodes changed:', nodes);
+    console.log('Nodes changed:', nodes);
   }, [nodes]);
 
   return (

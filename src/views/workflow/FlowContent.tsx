@@ -25,7 +25,6 @@ import FlowLeft from './FlowLeft';
 import ButtonEdge from './edges/ButtonEdge';
 import SelfConnectingEdge from './edges/SelfConnectingEdge';
 import BiDirectionalEdge from './edges/BiDirectionalEdge';
-import BiDirectionalNode from './edges/BiDirectionalNode';
 
 import NodeSimple from 'src/views/workflow/nodes/NodeSimple';
 import NodeQuestionInput from 'src/views/workflow/nodes/NodeQuestionInput';
@@ -33,6 +32,7 @@ import NodeUserGuide from 'src/views/workflow/nodes/NodeUserGuide';
 import NodeChatNode from 'src/views/workflow/nodes/NodeChatNode';
 import NodeAssignedReply from 'src/views/workflow/nodes/NodeAssignedReply';
 import NodeClassifyQuestion from 'src/views/workflow/nodes/NodeClassifyQuestion';
+import NodeContentExtract from 'src/views/workflow/nodes/NodeContentExtract';
 
 import { workflowData } from './data/workflowData'
 import type { FlowModuleItemType } from 'src/functions/workflow/type';
@@ -64,7 +64,8 @@ const nodeTypes = {
   pluginModule: NodeSimple,
   queryExtension: NodeSimple,
   assignedReply: NodeAssignedReply,
-  classifyQuestion: NodeClassifyQuestion
+  classifyQuestion: NodeClassifyQuestion,
+  contentExtract: NodeContentExtract
 };
 
 const FlowContent = () => {

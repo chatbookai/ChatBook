@@ -32,6 +32,7 @@ import NodeQuestionInput from 'src/views/workflow/nodes/NodeQuestionInput';
 import NodeUserGuide from 'src/views/workflow/nodes/NodeUserGuide';
 import NodeChatNode from 'src/views/workflow/nodes/NodeChatNode';
 import NodeAssignedReply from 'src/views/workflow/nodes/NodeAssignedReply';
+import NodeClassifyQuestion from 'src/views/workflow/nodes/NodeClassifyQuestion';
 
 import { workflowData } from './data/workflowData'
 import type { FlowModuleItemType } from 'src/functions/workflow/type';
@@ -62,7 +63,8 @@ const nodeTypes = {
   runApp: NodeSimple,
   pluginModule: NodeSimple,
   queryExtension: NodeSimple,
-  assignedReply: NodeAssignedReply
+  assignedReply: NodeAssignedReply,
+  classifyQuestion: NodeClassifyQuestion
 };
 
 const FlowContent = () => {

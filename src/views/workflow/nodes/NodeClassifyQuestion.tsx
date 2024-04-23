@@ -1,5 +1,5 @@
 // ** React Imports
-import React, { ReactElement, Fragment, useTransition, useState, useEffect, useContext } from 'react'
+import React, { Fragment, useTransition, useState, useEffect, useContext } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -9,7 +9,6 @@ import Avatar from '@mui/material/Avatar'
 import Tooltip from '@mui/material/Tooltip'
 import CardHeader from '@mui/material/CardHeader'
 import Typography from '@mui/material/Typography'
-import CardContent from '@mui/material/CardContent'
 import TextField from '@mui/material/TextField'
 import Switch from '@mui/material/Switch'
 import Select from '@mui/material/Select'
@@ -25,7 +24,6 @@ import DialogActions from '@mui/material/DialogActions'
 
 import { useTranslation } from 'react-i18next'
 import Divider from '@mui/material/Divider'
-import toast from 'react-hot-toast'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 
 import { NodeProps, Handle, Position } from 'reactflow'
@@ -42,15 +40,15 @@ import { getNanoid } from 'src/functions/workflow/string.tools';
 
 import LLMModelModel from 'src/views/workflow/components/LLMModel'
 
-const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
+const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const { moduleId, outputs, inputs, name, id } = data;
   const { t } = useTranslation()
   const [, startTst] = useTransition();
 
   const { setNodes, nodes, setEdges, edges } = useContext(FlowContext);
 
-  console.log("NodeChatNode moduleId", selected, id, name, moduleId, inputs, outputs)
-  console.log("NodeChatNode data", data)
+  console.log("NodeClassifyQuestion moduleId", selected, id, name, moduleId, inputs, outputs)
+  console.log("NodeClassifyQuestion data", data)
 
 
   const [TTSOpen, setTTSOpen] = useState<boolean>(false)
@@ -162,6 +160,26 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
     setNodeTitle(t(name) as string)
   }, [t])
 
+  /*
+  const [InputShow, setInputShow] = useState<boolean>(false)
+  const [OutputShow, setOutputShow] = useState<boolean>(false)
+  useEffect(()=>{
+    inputs && inputs.length > 0 && inputs.map((item: any)=>{
+      if(item.type != 'hidden') {
+        setInputShow(true)
+      }
+      console.log("item.type", item.type)
+    })
+    outputs && outputs.length > 0 && outputs.map((item: any)=>{
+      if(item.type != 'hidden') {
+        setOutputShow(true)
+      }
+    })
+  }, [])
+  */
+  const InputShow = true
+  const OutputShow = false
+
   useEffect(()=>{
     if(selected) {
       const updateEdges = edges.map((item: any)=>{
@@ -253,12 +271,17 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
             </Fragment>
 
             <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
-            <Grid item xs={12} sx={{ py: 2, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <Typography variant="body1" sx={{ fontWeight: 'bold', textAlign: 'center' }}>
-                    {t("Inputs")}
-                </Typography>
-            </Grid>
-            <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
+            {InputShow ? 
+            <Fragment>
+              <Grid item xs={12} sx={{ py: 2, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <Typography variant="body1" sx={{ fontWeight: 'bold', textAlign: 'center' }}>
+                      {t("Inputs")}
+                  </Typography>
+              </Grid>
+              <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
+            </Fragment>
+            :
+            null}
             
             <Grid container spacing={2} pb={5}>
               {data && data.inputs && data.inputs.length>0 && data.inputs.map((item: any, index: number) => {
@@ -336,7 +359,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                                   />
                                 </Box>
                                 <Typography sx={{pl: 3, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
-                                <Tooltip title={t(item.placeholder)} >
+                                <Tooltip title={t(item.description)} >
                                   <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1, pt: 1.3 }} />
                                 </Tooltip>
                               </Box>
@@ -578,13 +601,18 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
               }
             </Grid>
 
-            <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
-            <Grid item xs={12} sx={{ py: 2, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                <Typography variant="body1" sx={{ fontWeight: 'bold', textAlign: 'center' }}>
-                    {t("Outputs")}
-                </Typography>
-            </Grid>
-            <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
+            {OutputShow ? 
+            <Fragment>
+              <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
+              <Grid item xs={12} sx={{ py: 2, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                  <Typography variant="body1" sx={{ fontWeight: 'bold', textAlign: 'center' }}>
+                      {t("Outputs")}
+                  </Typography>
+              </Grid>
+              <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
+            </Fragment>
+            :
+            null}
 
             <Grid container spacing={2}>
               {data && data.outputs && data.outputs.length>0 && data.outputs.map((item: any, index: number) => {
@@ -686,4 +714,4 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
 };
 
 
-export default React.memo(NodeChatNode);
+export default React.memo(NodeClassifyQuestion);

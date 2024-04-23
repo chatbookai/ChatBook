@@ -128,7 +128,7 @@ export const workflowData: any = {
                   },
                   {
                       "key": "model",
-                      "type": "settingLLMModel",
+                      "type": "selectLLMModel",
                       "label": "aiModel",
                       "required": true,
                       "valueType": "string",
@@ -320,10 +320,136 @@ export const workflowData: any = {
                 "targets": []
               }
             ],
-            "moduleId": "assignedReply"
+            "moduleId": "assignedReply_1"
         },
         "position": {
             "x": 1800,
+            "y": 721
+        }
+      },
+      {
+        "id": "classifyQuestion_1",
+        "type": "classifyQuestion",
+        "data": {
+            "id": "classifyQuestion_1",
+            "templateType": "classifyQuestion",
+            "flowType": "classifyQuestion",
+            "avatar": "/imgs/module/cq.png",
+            "name": "Classify question",
+            "intro": "Classify question intro",
+            "inputs": [
+                {
+                "key": "switch",
+                "type": "hidden",
+                "label": "",
+                "description": "Trigger",
+                "valueType": "any",
+                "showTargetInApp": true,
+                "showTargetInPlugin": true,
+                "connected": false
+                },
+                {
+                "key": "model",
+                "type": "selectLLMModel",
+                "label": "aiModel",
+                "required": true,
+                "valueType": "string",
+                "showTargetInApp": false,
+                "showTargetInPlugin": false,
+                "llmModelType": "classify",
+                "value": "gpt-3.5-turbo",
+                "connected": false
+                },
+                {
+                "key": "systemPrompt",
+                "type": "textarea",
+                "max": 3000,
+                "valueType": "string",
+                "label": "Background",
+                "description": "Background help",
+                "placeholder": "Classify background",
+                "showTargetInApp": true,
+                "showTargetInPlugin": true,
+                "connected": false
+                },
+                {
+                "key": "history",
+                "type": "numberInput",
+                "label": "chat history",
+                "required": true,
+                "min": 0,
+                "max": 30,
+                "valueType": "chatHistory",
+                "value": 6,
+                "showTargetInApp": true,
+                "showTargetInPlugin": true,
+                "connected": false
+                },
+                {
+                "key": "userChatInput",
+                "type": "custom",
+                "label": "",
+                "required": true,
+                "valueType": "string",
+                "showTargetInApp": true,
+                "showTargetInPlugin": true,
+                "connected": true
+                },
+                {
+                "key": "agents",
+                "type": "custom",
+                "valueType": "any",
+                "label": "",
+                "value": [
+                    {
+                    "value": "打招呼",
+                    "key": "wqre"
+                    },
+                    {
+                    "value": "关于 xxx 的问题",
+                    "key": "sdfa"
+                    },
+                    {
+                    "value": "其他问题",
+                    "key": "agex"
+                    }
+                ],
+                "showTargetInApp": false,
+                "showTargetInPlugin": false,
+                "connected": false
+                }
+            ],
+            "outputs": [
+                {
+                "key": "userChatInput",
+                "label": "user question",
+                "type": "hidden",
+                "valueType": "string",
+                "targets": []
+                },
+                {
+                "key": "wqre",
+                "label": "",
+                "type": "hidden",
+                "targets": []
+                },
+                {
+                "key": "sdfa",
+                "label": "",
+                "type": "hidden",
+                "targets": []
+                },
+                {
+                "key": "agex",
+                "label": "",
+                "type": "hidden",
+                "targets": []
+                }
+            ],
+            "moduleId": "classifyQuestion_1"
+        },
+        "position": {
+            "x": 2000,
             "y": 721
         }
       }
@@ -385,20 +511,6 @@ export const appTypeTemplate: {[key: string]: any[]} = {
             "intro": "Dataset search intro",
         },
         {
-            "templateType": "ToolCall",
-            "flowType": "ToolCall",
-            "avatar": "/imgs/module/userChatInput.svg",
-            "name": "Tool call",
-            "intro": "Tool call tip",
-        },
-        {
-            "templateType": "ToolCallStop",
-            "flowType": "ToolCallStop",
-            "avatar": "/imgs/module/tool.svg",
-            "name": "Tool call stop",
-            "intro": "Tool call stop tip",
-        },
-        {
             "templateType": "ClassifyQuestion",
             "flowType": "ClassifyQuestion",
             "avatar": "/imgs/module/cq.png",
@@ -427,6 +539,22 @@ export const appTypeTemplate: {[key: string]: any[]} = {
 
 
 /*
+
+    {
+        "templateType": "ToolCall",
+        "flowType": "ToolCall",
+        "avatar": "/imgs/module/userChatInput.svg",
+        "name": "Tool call",
+        "intro": "Tool call tip",
+    },
+    {
+        "templateType": "ToolCallStop",
+        "flowType": "ToolCallStop",
+        "avatar": "/imgs/module/tool.svg",
+        "name": "Tool call stop",
+        "intro": "Tool call stop tip",
+    },
+
 "System input module": [
     {
         "templateType": "systemInput",

@@ -238,9 +238,10 @@ const NodeAssignedReply = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                         width: '14px',
                         height: '14px',
                         borderWidth: '3.5px',
-                        backgroundColor: 'info.primary',
+                        backgroundColor: 'white',
                         top: '-3px',
-                        left: '-13px'
+                        left: '-13px',
+                        borderColor: '#36ADEF'
                       }}
                       type="target"
                       id={`Triger_Left`}
@@ -257,9 +258,10 @@ const NodeAssignedReply = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                       width: '14px',
                       height: '14px',
                       borderWidth: '3.5px',
-                      backgroundColor: 'info.primary',
+                      backgroundColor: 'white',
                       top: '-3px',
-                      right: '87px'
+                      right: '87px',
+                      borderColor: '#36ADEF'
                     }}
                     type="source"
                     id={`Triger_Right`}
@@ -317,8 +319,9 @@ const NodeAssignedReply = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                     width: '14px',
                                     height: '14px',
                                     borderWidth: '3.5px',
-                                    backgroundColor: 'info.primary',
-                                    left: '-13px'                                    
+                                    backgroundColor: 'white',
+                                    left: '-13px' ,
+                                    borderColor: '#36ADEF'                                   
                                   }}
                                   type="target"
                                   id={`${item.key}_Left`}
@@ -349,9 +352,10 @@ const NodeAssignedReply = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                       width: '14px',
                                       height: '14px',
                                       borderWidth: '3.5px',
-                                      backgroundColor: 'info.primary',
+                                      backgroundColor: 'white',
                                       top: '2px',
-                                      left: '-13px'
+                                      left: '-13px',
+                                      borderColor: '#36ADEF'
                                     }}
                                     type="target"
                                     id={`${item.key}_Left`}
@@ -421,8 +425,9 @@ const NodeAssignedReply = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                       width: '14px',
                                       height: '14px',
                                       borderWidth: '3.5px',
-                                      backgroundColor: 'info.primary',
-                                      left: '-13px'
+                                      backgroundColor: 'white',
+                                      left: '-13px',
+                                      borderColor: '#36ADEF'
                                     }}
                                     type="target"
                                     id={`${item.key}_Left`}
@@ -440,8 +445,9 @@ const NodeAssignedReply = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                     width: '14px',
                                     height: '14px',
                                     borderWidth: '3.5px',
-                                    backgroundColor: 'info.primary',
-                                    right: '87px'
+                                    backgroundColor: 'white',
+                                    right: '87px',
+                                    borderColor: '#36ADEF'
                                   }}
                                   type="source"
                                   id={`${item.key}_Right`}
@@ -630,9 +636,10 @@ const NodeAssignedReply = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                     width: '14px',
                                     height: '14px',
                                     borderWidth: '3.5px',
-                                    backgroundColor: 'info.primary',
+                                    backgroundColor: 'white',
                                     top: '-22px',
-                                    right: '87px'
+                                    right: '87px',
+                                    borderColor: '#36ADEF'
                                   }}
                                   type="source"
                                   id={`${item.key}_Right`}

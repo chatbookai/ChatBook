@@ -275,9 +275,10 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                         width: '14px',
                         height: '14px',
                         borderWidth: '3.5px',
-                        backgroundColor: 'info.primary',
+                        backgroundColor: 'white',
                         top: '-3px',
-                        left: '-13px'
+                        left: '-13px',
+                        borderColor: '#36ADEF'
                       }}
                       type="target"
                       id={`Triger_Left`}
@@ -294,9 +295,10 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                       width: '14px',
                       height: '14px',
                       borderWidth: '3.5px',
-                      backgroundColor: 'info.primary',
+                      backgroundColor: 'white',
                       top: '-3px',
-                      right: '87px'
+                      right: '87px',
+                      borderColor: '#36ADEF'
                     }}
                     type="source"
                     id={`Triger_Right`}
@@ -322,7 +324,7 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
             
             <Grid container spacing={2} pb={5}>
               {data && data.inputs && data.inputs.length>0 && data.inputs.map((item: any, index: number) => {
-                  console.log("item.value", item.value)
+
                   return (<Fragment key={`inputs_${index}`}>
                           {item.type == 'selectLLMModel' ?
                           <Fragment>
@@ -354,8 +356,9 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                                     width: '14px',
                                     height: '14px',
                                     borderWidth: '3.5px',
-                                    backgroundColor: 'info.primary',
-                                    left: '-13px'                                    
+                                    backgroundColor: 'white',
+                                    left: '-13px',
+                                    borderColor: '#36ADEF'                                    
                                   }}
                                   type="target"
                                   id={`${item.key}_Left`}
@@ -386,9 +389,10 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                                       width: '14px',
                                       height: '14px',
                                       borderWidth: '3.5px',
-                                      backgroundColor: 'info.primary',
+                                      backgroundColor: 'white',
                                       top: '2px',
-                                      left: '-13px'
+                                      left: '-13px',
+                                      borderColor: '#36ADEF'
                                     }}
                                     type="target"
                                     id={`${item.key}_Left`}
@@ -458,8 +462,9 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                                       width: '14px',
                                       height: '14px',
                                       borderWidth: '3.5px',
-                                      backgroundColor: 'info.primary',
-                                      left: '-13px'
+                                      backgroundColor: 'white',
+                                      left: '-13px',
+                                      borderColor: '#36ADEF'
                                     }}
                                     type="target"
                                     id={`${item.key}_Left`}
@@ -477,8 +482,9 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                                     width: '14px',
                                     height: '14px',
                                     borderWidth: '3.5px',
-                                    backgroundColor: 'info.primary',
-                                    right: '87px'
+                                    backgroundColor: 'white',
+                                    right: '87px',
+                                    borderColor: '#36ADEF'
                                   }}
                                   type="source"
                                   id={`${item.key}_Right`}
@@ -516,9 +522,10 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                                                     width: '14px',
                                                     height: '14px',
                                                     borderWidth: '3.5px',
-                                                    backgroundColor: 'info.primary',
+                                                    backgroundColor: 'white',
                                                     top: '0px',
-                                                    right: '84px'
+                                                    right: '84px',
+                                                    borderColor: '#21ba45'
                                                 }}
                                                 type="source"
                                                 id={`${valueItem.key}_Right`}
@@ -709,7 +716,7 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                           <Fragment>
                             <Grid item xs={12}>
                               <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="flex-end">
-                                <Typography sx={{ pr: 3, py: 2 }}>{t(item.label)}</Typography>
+                                <Typography sx={{ pr: 3, py: 2 }}>{t(item.label)}00000</Typography>
                               </Box>
                               <Box position={'absolute'} right={'-2px'}>
                                 <Handle
@@ -717,9 +724,10 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                                     width: '14px',
                                     height: '14px',
                                     borderWidth: '3.5px',
-                                    backgroundColor: 'info.primary',
+                                    backgroundColor: 'white',
                                     top: '-22px',
-                                    right: '87px'
+                                    right: '87px',
+                                    borderColor: '#36ADEF'
                                   }}
                                   type="source"
                                   id={`${item.key}_Right`}

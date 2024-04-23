@@ -819,15 +819,15 @@ export const appTypeTemplate: {[key: string]: any[]} = {
 
     "Function module": [
         {
-            "templateType": "ClassifyQuestion",
-            "flowType": "ClassifyQuestion",
+            "templateType": "classifyQuestion",
+            "flowType": "classifyQuestion",
             "avatar": "/imgs/module/cq.png",
             "name": "Classify question",
             "intro": "Classify question intro",
         },
         {
-            "templateType": "ExtractField",
-            "flowType": "ExtractField",
+            "templateType": "contentExtract",
+            "flowType": "contentExtract",
             "avatar": "/imgs/module/extract.png",
             "name": "Extract field",
             "intro": "Extract field intro",
@@ -836,8 +836,8 @@ export const appTypeTemplate: {[key: string]: any[]} = {
     
     "External module": [
         {
-            "templateType": "Http request",
-            "flowType": "Http request",
+            "templateType": "httpRequest",
+            "flowType": "httpRequest",
             "avatar": "/imgs/module/http.png",
             "name": "Http request",
             "intro": "Http request intro",

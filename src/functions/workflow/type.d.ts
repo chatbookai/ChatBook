@@ -1,6 +1,5 @@
 
 export type AppSimpleEditFormType = {
-  // templateId: string;
   aiSettings: {
     model: string;
     systemPrompt?: string | undefined;

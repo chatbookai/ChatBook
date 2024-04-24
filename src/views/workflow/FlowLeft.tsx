@@ -1,5 +1,5 @@
 // ** MUI Imports
-import React, { Fragment, useState } from 'react';
+import React, { Fragment } from 'react';
 import Drawer from '@mui/material/Drawer'
 import { styled } from '@mui/material/styles'
 import IconButton from '@mui/material/IconButton'

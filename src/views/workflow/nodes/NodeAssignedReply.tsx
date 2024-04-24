@@ -145,7 +145,7 @@ const NodeAssignedReply = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
         };
       }
       else {
-        
+
         return node;
       }
     });
@@ -165,7 +165,7 @@ const NodeAssignedReply = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
 
   useEffect(()=>{
     setNodeTitle(t(name) as string)
-  }, [t])
+  }, [t, name])
 
   /*
   const [InputShow, setInputShow] = useState<boolean>(false)
@@ -211,7 +211,7 @@ const NodeAssignedReply = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
       })
       setEdges(updateEdges)
     }
-  }, [selected])
+  }, [selected, setEdges, edges, id])
   
   return (
         <Grid container spacing={2} onMouseEnter={handlePopoverOpen} onMouseLeave={handlePopoverClose}>

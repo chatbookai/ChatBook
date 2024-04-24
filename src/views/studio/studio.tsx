@@ -128,7 +128,7 @@ const RoomDesign = (props: any) => {
     const router = useRouter()
     useEffect(() => {
         CheckPermission(auth, router, false)
-    }, [])
+    }, [auth, router])
 
     const [expanded, setExpanded] = useState<string | false>('panel1')
     const handleChange = (panel: string) => (event: SyntheticEvent, isExpanded: boolean) => {

@@ -55,7 +55,7 @@ const GlobalVariable = (props: any) => {
     const router = useRouter()
     useEffect(() => {
         CheckPermission(auth, router, false)
-    }, [])
+    }, [auth, router])
 
 
     return (

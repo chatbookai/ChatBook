@@ -166,7 +166,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
 
   useEffect(()=>{
     setNodeTitle(t(name) as string)
-  }, [t])
+  }, [t, name])
 
   useEffect(()=>{
     if(selected) {
@@ -194,7 +194,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
       })
       setEdges(updateEdges)
     }
-  }, [selected])
+  }, [selected, setEdges, edges, id])
   
   return (
         <Grid container spacing={2} onMouseEnter={handlePopoverOpen} onMouseLeave={handlePopoverClose}>

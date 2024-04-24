@@ -38,7 +38,7 @@ const TTS = (props: any) => {
     const router = useRouter()
     useEffect(() => {
         CheckPermission(auth, router, false)
-    }, [])
+    }, [auth, router])
 
     return (
         <Dialog maxWidth='xs' fullWidth open={TTSModel.TTSOpen} onClose={

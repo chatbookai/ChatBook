@@ -247,7 +247,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
             });
             nodeInputsOrOutputs[index].value = DeletedNodeValues
             node.data[type] = nodeInputsOrOutputs
-            
+
             //console.log("DeletedNodeValues", nodeInputsOrOutputs, node)
 
             return node;
@@ -311,7 +311,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
 
   useEffect(()=>{
     setNodeTitle(t(name) as string)
-  }, [t])
+  }, [t, name])
 
   /*
   const [InputShow, setInputShow] = useState<boolean>(false)
@@ -359,7 +359,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
       })
       setEdges(updateEdges)
     }
-  }, [selected])
+  }, [selected, setEdges, edges, id])
   
   return (
         <Grid container spacing={2} onMouseEnter={handlePopoverOpen} onMouseLeave={handlePopoverClose}>

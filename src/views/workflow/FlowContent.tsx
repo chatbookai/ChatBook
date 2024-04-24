@@ -211,6 +211,9 @@ const FlowContent = () => {
       edges: edges
     }
     downloadJson(simpleWorkflowData, simpleWorkflowData.name + "[" + simpleWorkflowData.updateTime.replaceAll(":","") + "]")
+    toast.success(t('Export Ai Workflow success') as string, {
+      duration: 2000
+    })
     console.log('handleExportData:', simpleWorkflowData);
   };
 
@@ -229,6 +232,9 @@ const FlowContent = () => {
       modules: nodes,
       edges: edges
     }
+    toast.success(t('Save Ai Workflow success') as string, {
+      duration: 2000
+    })
     console.log('handleSaveWorkFlow:', simpleWorkflowData);
   };
 

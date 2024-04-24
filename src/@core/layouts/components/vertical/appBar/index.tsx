@@ -79,7 +79,7 @@ const LayoutAppBar = (props: Props) => {
       elevation={0}
       color='default'
       className='layout-navbar'
-      sx={{ ...userAppBarStyle }}
+      sx={{ ...userAppBarStyle, mb: 0 }}
       position={appBar === 'fixed' ? 'sticky' : 'static'}
       {...userAppBarProps}
     >

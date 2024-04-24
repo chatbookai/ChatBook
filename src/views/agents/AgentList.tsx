@@ -20,6 +20,7 @@ import IconButton from '@mui/material/IconButton'
 import Avatar from '@mui/material/Avatar'
 import Container from '@mui/material/Container'
 import CircularProgress from '@mui/material/CircularProgress'
+import { useTheme } from '@mui/material/styles'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -29,6 +30,7 @@ import { useTranslation } from 'react-i18next'
 const AgentList = (props: any) => {
   // ** Hook
   const { t } = useTranslation()
+  const theme = useTheme()
 
   // ** Props
   const {
@@ -80,7 +82,7 @@ const AgentList = (props: any) => {
               {true ? (
                 <Fragment>
                   <Grid container spacing={2} sx={{ pt: 5, pl: 2}}>
-                    <TextField id='color-outlined' label={t('Search Agent') as string} size="small" fullWidth 
+                    <TextField label={t('Search Agent') as string} size="small" fullWidth 
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position='start'>
@@ -101,7 +103,7 @@ const AgentList = (props: any) => {
                     {agentList && agentList.map((item: any, index: number) => (
                       <Grid item key={index} xs={12} sm={6} md={3} lg={3}>
                         <Box position="relative" sx={{mb: 1, mr: 1}}>
-                          <CardMedia image={`${authConfig.backEndApiChatBook}/images/pages/tree-cone-cube-bg-light.png`} sx={{ height: '13.25rem', objectFit: 'contain', borderRadius: 1 }}/>
+                          <CardMedia image={`${authConfig.backEndApiChatBook}/images/pages/tree-cone-cube-bg-${theme.palette.mode}.png`} sx={{ height: '13.25rem', objectFit: 'contain', borderRadius: 1 }}/>
                           <Box position="absolute" top={10} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)} sx={{ cursor: 'pointer' }}>
                             <Avatar src={item.avatar} sx={{ mr: 3, width: 50, height: 50 }} />
                           </Box>

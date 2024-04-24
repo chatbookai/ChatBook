@@ -446,4 +446,8 @@ export function parseMarkdown(markdownText: string): ReportSection[] {
 
     return sections.filter((Item: any) => Item.title != '');
 }
-  
+
+export function generateRandomNumber(min: number, max: number): number {
+    
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}

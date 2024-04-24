@@ -1,25 +1,18 @@
 // ** MUI Imports
 import React, { Fragment, useState } from 'react';
 import Drawer from '@mui/material/Drawer'
-import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
-import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import Box, { BoxProps } from '@mui/material/Box'
-import FormControl from '@mui/material/FormControl'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 import CardContent from '@mui/material/CardContent'
-import Card from '@mui/material/Card'
 import Avatar from '@mui/material/Avatar'
 import { useTranslation } from 'next-i18next'
 
-import { appTypeTemplate } from './data/workflowData'
-
-// ** Custom Components Imports
-import CustomChip from 'src/@core/components/mui/chip'
+import { appTypeTemplate } from './data/appTypeTemplate'
 
 const Header = styled(Box)<BoxProps>(({ theme }) => ({
   display: 'flex',

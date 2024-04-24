@@ -35,9 +35,11 @@ import NodeClassifyQuestion from 'src/views/workflow/nodes/NodeClassifyQuestion'
 import NodeContentExtract from 'src/views/workflow/nodes/NodeContentExtract';
 import NodeHttpRequest from 'src/views/workflow/nodes/NodeHttpRequest';
 
-import { workflowData } from './data/workflowData'
+import { allNodesData } from './data/allNodesData';
+import { simpleWorkflow } from './data/simpleWorkflow';
 import type { FlowModuleItemType } from 'src/functions/workflow/type';
 import { getNanoid } from 'src/functions/workflow/string.tools';
+import { generateRandomNumber } from 'src/functions/ChatBook';
 
 import toast from 'react-hot-toast'
 import { useTranslation } from 'next-i18next';
@@ -105,17 +107,20 @@ const FlowContent = () => {
   }
 
   const handleAddNode = (flowType: string) => {
+    const allNodesDataList = allNodesData.modules;
     const getNanoidValue = getNanoid(6);
-    const copyNodes = nodes.map((node: any) => {
+    const currentNodes = nodes.map((node: any) => {
       return {
         ...node,
         selected: false
       };
     });
-    const currentNode1 = copyNodes.filter((node: any) => {
+    const addNode = allNodesDataList.filter((node: any) => {
       return node.type == flowType
     });
-    const currentNode2 = currentNode1.map((node: any) => {
+    const addNodeFilter = addNode.map((node: any) => {
+      const X = generateRandomNumber(90,100)
+      const Y = generateRandomNumber(50,60)
       if (node.type == flowType) {
         return {
           ...node,
@@ -124,12 +129,12 @@ const FlowContent = () => {
             id: getNanoidValue
           },
           position: {
-            x: node.position.x + 200,
-            y: node.position.y + 80,
+            x: node.position.x + X,
+            y: node.position.y + Y,
           },
           positionAbsolute: {
-            x: node.position.x + 200,
-            y: node.position.y + 80,
+            x: node.position.x + X,
+            y: node.position.y + Y,
           },
           id: getNanoidValue,
           selected: true
@@ -139,7 +144,7 @@ const FlowContent = () => {
         return node;
       }
     });
-    const updatedNodes = copyNodes.concat(currentNode2);
+    const updatedNodes = currentNodes.concat(addNodeFilter);
     setNodes(updatedNodes);
     setLeftOpen(false);
 
@@ -198,8 +203,8 @@ const FlowContent = () => {
   };
   
   useEffect(()=>{
-    const modules: Node<FlowModuleItemType, string | undefined>[] = workflowData.modules
-    const edgesInitial: Edge<any[]>[] = workflowData.edges
+    const modules: Node<FlowModuleItemType, string | undefined>[] = simpleWorkflow.modules
+    const edgesInitial: Edge<any[]>[] = simpleWorkflow.edges
     setEdges(edgesInitial)
     setNodes(modules)
     //console.log("nodes edges", edgesInitial)

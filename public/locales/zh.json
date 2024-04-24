@@ -317,8 +317,10 @@
   "Http request props": "请求参数",
   "Http request settings": "请求配置",
   "Input Type": "输入类型",
-  "Props tip": "可以设置 Http 请求的相关参数\n可通过 {{key}} 来调用全局变量或外部参数输入，当前可使用变量:\n{{variable}}"
-
+  "Props tip": "可以设置 Http 请求的相关参数\n可通过 {{key}} 来调用全局变量或外部参数输入，当前可使用变量:\n{{variable}}",
+  "Export": "导出",
+  "Import": "导入",
+  "Test": "测试"
 
   
 }

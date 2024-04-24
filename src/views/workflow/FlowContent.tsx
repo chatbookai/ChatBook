@@ -35,7 +35,7 @@ import { allNodesData } from './data/allNodesData';
 import { simpleWorkflow } from './data/simpleWorkflow';
 import type { FlowModuleItemType } from 'src/functions/workflow/type';
 import { getNanoid } from 'src/functions/workflow/string.tools';
-import { generateRandomNumber } from 'src/functions/ChatBook';
+import { generateRandomNumber, downloadJson } from 'src/functions/ChatBook';
 
 import toast from 'react-hot-toast'
 import { useTranslation } from 'next-i18next';
@@ -43,7 +43,7 @@ import { useTranslation } from 'next-i18next';
 import Fab from '@mui/material/Fab'
 import Box from '@mui/material/Box'
 import Icon from 'src/@core/components/icon'
-
+import Button from '@mui/material/Button'
 
 const edgeTypes = {
   bidirectional: BiDirectionalEdge,
@@ -203,15 +203,45 @@ const FlowContent = () => {
   const onSelectionChange = (elements: any) => {
     console.log('onSelectionChange changed:', elements);
   };
+
+  const handleExportWorkFlow = () => {
+    const simpleWorkflowData = {
+      ...simpleWorkflow,
+      modules: nodes,
+      edges: edges
+    }
+    downloadJson(simpleWorkflowData, simpleWorkflowData.name + "[" + simpleWorkflowData.updateTime.replaceAll(":","") + "]")
+    console.log('handleExportData:', simpleWorkflowData);
+  };
+
+  const handleTestWorkFlow = () => {
+    const simpleWorkflowData = {
+      ...simpleWorkflow,
+      modules: nodes,
+      edges: edges
+    }
+    console.log('handleTestWorkFlow:', simpleWorkflowData);
+  };
+
+  const handleSaveWorkFlow = () => {
+    const simpleWorkflowData = {
+      ...simpleWorkflow,
+      modules: nodes,
+      edges: edges
+    }
+    console.log('handleSaveWorkFlow:', simpleWorkflowData);
+  };
+
+  
   
   useEffect(()=>{
-    const modules: Node<FlowModuleItemType, string | undefined>[] = simpleWorkflow.modules
+    const nodesInitial: Node<FlowModuleItemType, string | undefined>[] = simpleWorkflow.modules
     const edgesInitial: Edge<any[]>[] = simpleWorkflow.edges
     setEdges(edgesInitial)
-    setNodes(modules)
+    setNodes(nodesInitial)
 
     //console.log("nodes edges", edgesInitial)
-    //console.log("nodes nodes", modules)
+    //console.log("nodes nodes", nodesInitial)
   }, [])
 
   useEffect(()=>{
@@ -257,6 +287,23 @@ const FlowContent = () => {
               <Icon icon='mdi:plus' />
             </Fab>
           </Box>
+          <div style={{ position: 'absolute', top: '8px', right: '5px', zIndex: 999 }}>
+            <Button variant='outlined' sx={{mr: 1}} size="small" startIcon={<Icon icon='mingcute:file-export-fill' />} onClick={()=>{
+              handleExportWorkFlow()
+            }}>
+              {t("Export")}
+            </Button>
+            <Button variant='outlined' sx={{mr: 1}} size="small" startIcon={<Icon icon='material-symbols:chat' />} onClick={()=>{
+              handleTestWorkFlow()
+            }}>
+              {t("Test")}
+            </Button>
+            <Button variant='contained' sx={{mr: 1}} size="small" startIcon={<Icon icon='material-symbols:save' />}onClick={()=>{
+              handleSaveWorkFlow()
+            }}>
+              {t("Save")}
+            </Button>
+          </div>
           <FlowLeft LeftOpen={LeftOpen} setLeftOpen={setLeftOpen} handleAddNode={handleAddNode}/>
         </ReactFlow>
       </ReactFlowProvider>

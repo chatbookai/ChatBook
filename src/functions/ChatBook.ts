@@ -448,6 +448,17 @@ export function parseMarkdown(markdownText: string): ReportSection[] {
 }
 
 export function generateRandomNumber(min: number, max: number): number {
-    
+
     return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export function downloadJson(JsonData: any, FileName: string) {
+    console.log("downloadJson", JsonData);
+    const blob = new Blob([JSON.stringify(JsonData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = FileName + '.json';
+    a.click();
+    URL.revokeObjectURL(url);
 }

@@ -11,6 +11,7 @@ import { useAuth } from 'src/hooks/useAuth'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import { getNanoid } from 'src/functions/workflow/string.tools'
+import { simpleChat } from '../data/simpleChat';
 
 
 const MyWorkflow = () => {
@@ -173,9 +174,25 @@ const MyWorkflow = () => {
   const [NewOpen, setNewOpen] = useState<boolean>(false);
   const [WorkflowNewForm, setWorkflowNewForm] = useState<any>({name: t('My App'), flowType: 'simpleChat', flowGroup: "Default"})
 
-  const handleAddWorkflow = () => {
+  const handleAddWorkflow = async () => {
     console.log("WorkflowNewForm", WorkflowNewForm)
     //Backend Api
+    if (auth && auth.user) {
+      const code = getNanoid(32)
+      let simpleChatNew: any = {}
+      if(WorkflowNewForm.flowType == 'simpleChat')  {
+        simpleChatNew = {
+          ...simpleChat,
+          id: code,
+          _id: code,
+          teamId: code,
+          updateTime: String(new Date(Date.now()).toLocaleString())
+        }
+      }
+      const PostParams = {name: WorkflowNewForm.name, _id: simpleChatNew._id, teamId: simpleChatNew.teamId, intro: simpleChatNew.intro, avatar: simpleChatNew.avatar, type: simpleChatNew.type, flowGroup: WorkflowNewForm.flowGroup, permission: simpleChatNew.permission, data: simpleChatNew}
+      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/addworkflow', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+      console.log("FormSubmit", FormSubmit)
+    }
   }
 
   return (

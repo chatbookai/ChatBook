@@ -32,7 +32,7 @@ import NodeContentExtract from 'src/views/workflow/nodes/NodeContentExtract';
 import NodeHttpRequest from 'src/views/workflow/nodes/NodeHttpRequest';
 
 import { allNodesData } from './data/allNodesData';
-import { simpleWorkflow } from './data/simpleWorkflow';
+import { simpleChat } from './data/simpleChat';
 import type { FlowModuleItemType } from 'src/functions/workflow/type';
 import { getNanoid } from 'src/functions/workflow/string.tools';
 import { generateRandomNumber, downloadJson } from 'src/functions/ChatBook';
@@ -206,7 +206,7 @@ const FlowContent = () => {
 
   const handleExportWorkFlow = () => {
     const simpleWorkflowData = {
-      ...simpleWorkflow,
+      ...simpleChat,
       modules: nodes,
       edges: edges
     }
@@ -219,7 +219,7 @@ const FlowContent = () => {
 
   const handleTestWorkFlow = () => {
     const simpleWorkflowData = {
-      ...simpleWorkflow,
+      ...simpleChat,
       modules: nodes,
       edges: edges
     }
@@ -228,7 +228,7 @@ const FlowContent = () => {
 
   const handleSaveWorkFlow = () => {
     const simpleWorkflowData = {
-      ...simpleWorkflow,
+      ...simpleChat,
       modules: nodes,
       edges: edges
     }
@@ -241,8 +241,8 @@ const FlowContent = () => {
   
   
   useEffect(()=>{
-    const nodesInitial: Node<FlowModuleItemType, string | undefined>[] = simpleWorkflow.modules
-    const edgesInitial: Edge<any[]>[] = simpleWorkflow.edges
+    const nodesInitial: Node<FlowModuleItemType, string | undefined>[] = simpleChat.modules
+    const edgesInitial: Edge<any[]>[] = simpleChat.edges
     setEdges(edgesInitial)
     setNodes(nodesInitial)
 

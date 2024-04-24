@@ -248,6 +248,31 @@ export async function initChatBookDb() {
                 UNIQUE(userId, agentId)
             );
         `);
+        db.run(`
+            CREATE TABLE IF NOT EXISTS workflow (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                _id TEXT KEY not null,
+                teamId TEXT not null,
+                name TEXT not null,
+                intro TEXT not null,
+                avatar TEXT not null,
+                type TEXT not null,
+                flowGroup TEXT not null,
+                permission TEXT not null,
+                data TEXT not null,
+                status INTEGER not null default 1,
+                userId INTEGER not null default 0
+            );
+        `);
+        db.run(`
+            CREATE TABLE IF NOT EXISTS userworkflow (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                userId INTEGER not null default 0,
+                workflowId INTEGER not null default 0,
+                createtime INTEGER not null default 0,
+                UNIQUE(userId, workflowId)
+            );
+        `);
     });
 }
 

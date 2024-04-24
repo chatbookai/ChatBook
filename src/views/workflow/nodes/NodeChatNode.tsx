@@ -1,5 +1,5 @@
 // ** React Imports
-import React, { ReactElement, Fragment, useTransition, useState, useEffect, useContext } from 'react'
+import React, { Fragment, useState, useEffect, useContext } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -9,7 +9,6 @@ import Avatar from '@mui/material/Avatar'
 import Tooltip from '@mui/material/Tooltip'
 import CardHeader from '@mui/material/CardHeader'
 import Typography from '@mui/material/Typography'
-import CardContent from '@mui/material/CardContent'
 import TextField from '@mui/material/TextField'
 import Switch from '@mui/material/Switch'
 import Select from '@mui/material/Select'
@@ -25,7 +24,6 @@ import DialogActions from '@mui/material/DialogActions'
 
 import { useTranslation } from 'react-i18next'
 import Divider from '@mui/material/Divider'
-import toast from 'react-hot-toast'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 
 import { NodeProps, Handle, Position } from 'reactflow'
@@ -45,7 +43,7 @@ import LLMModelModel from 'src/views/workflow/components/LLMModel'
 const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const { moduleId, outputs, inputs, name, id } = data;
   const { t } = useTranslation()
-  const [, startTst] = useTransition();
+  
 
   const { setNodes, nodes, setEdges, edges } = useContext(FlowContext);
 
@@ -59,7 +57,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const [TTSSpeed, setTTSSpeed] = useState<number>(1)
   const [NodeTitle, setNodeTitle] = useState<string>("")
 
-  const [TTSModel,setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
+  //const [TTSModel,setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
   const [LLMModel,setLLMModel] = useState<any>({LLMModelOpen: false, 
                                                 model: 'gpt-3.5-turbo', 
                                                 quoteMaxToken: 2, 
@@ -92,6 +90,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const handleRenameNode = (nodeId: string) => {
     const updatedNodes = nodes.map((node: any) => {
       if (node.id == nodeId) {
+
         return {
           ...node,
           data: {
@@ -100,6 +99,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
           }
         };
       }
+
       return node;
     });
     setNodes(updatedNodes);
@@ -110,18 +110,22 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
     const getNanoidValue = getNanoid(6);
     const copyNodes = nodes.map((node: any) => {
       if (node.id == nodeId) {
+
         return {
           ...node,
           selected: false
         };
       }
+
       return node;
     });
     const currentNode1 = copyNodes.filter((node: any) => {
+
       return node.id == nodeId
     });
     const currentNode2 = currentNode1.map((node: any) => {
       if (node.id == nodeId) {
+
         return {
           ...node,
           data: {
@@ -141,6 +145,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
         };
       }
       else {
+
         return node;
       }
     });
@@ -153,6 +158,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
 
   const handleDeleteNode = (nodeId: string) => {
     const DeletedNodes = nodes.filter((node: any) => {
+
       return node.id != nodeId;
     });
     setNodes(DeletedNodes);
@@ -166,6 +172,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
     if(selected) {
       const updateEdges = edges.map((item: any)=>{
         if(item.target == id) {
+
           return {
             ...item,
             style: {
@@ -175,6 +182,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
           };
         }
         else {
+
           return {
             ...item,
             style: {
@@ -347,13 +355,11 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                               <TextField
                                 multiline
                                 rows={6}
-                                defaultValue={item.value}
+                                value={item.value}
                                 sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                 placeholder={t(item.placeholder) as string}
                                 onChange={(e) => {
-                                  startTst(() => {
-                                    //Action
-                                  });
+                                  console.log("e.target.value", e.target.value);
                                 }}
                               />
                             </Grid>
@@ -378,13 +384,11 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                                 type='number'
                                 size='small'
                                 InputProps={{ inputProps: { min: 0, max: 100 } }}
-                                defaultValue={item.value}
+                                value={item.value}
                                 sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                 placeholder={t(item.placeholder) as string}
                                 onChange={(e) => {
-                                  startTst(() => {
-                                    //Action
-                                  });
+                                  console.log("e.target.value", e.target.value);
                                 }}
                               />
                             </Grid>

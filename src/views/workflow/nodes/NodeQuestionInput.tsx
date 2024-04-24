@@ -1,5 +1,3 @@
-// ** React Imports
-import { ReactElement } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -11,7 +9,6 @@ import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 
 import { useTranslation } from 'react-i18next'
-import toast from 'react-hot-toast'
 
 import React from 'react';
 import { NodeProps, Handle, Position } from 'reactflow';
@@ -21,8 +18,9 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
   const { outputs } = data;
   const { t } = useTranslation()
 
-  console.log("outputs", outputs)
-  console.log("data", data)
+  console.log("QuestionInputNode outputs", outputs)
+  console.log("QuestionInputNode data", data)
+  console.log("QuestionInputNode selected", selected)
 
   return (
     <Card sx={{ border: theme => `1px solid ${theme.palette.divider}`, width: '500px' }}>
@@ -48,9 +46,10 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
         />
         <CardContent sx={{ pt: theme => `${theme.spacing(3)} !important` }}>
           <Grid container spacing={[5, 0]}>
-            {outputs && outputs.map((output: any)=>{
+            {outputs && outputs.map((output: any, outputIndex: number)=>{
               return (
                 <Box
+                  key={outputIndex}
                   sx={{
                     display: 'flex',
                     justifyContent: 'flex-end',

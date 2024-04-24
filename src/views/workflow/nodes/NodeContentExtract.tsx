@@ -1,5 +1,5 @@
 // ** React Imports
-import React, { Fragment, useTransition, useState, useEffect, useContext } from 'react'
+import React, { Fragment, useState, useEffect, useContext } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -44,7 +44,7 @@ import LLMModelModel from 'src/views/workflow/components/LLMModel'
 const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const { moduleId, outputs, inputs, name, id } = data;
   const { t } = useTranslation()
-  const [, startTst] = useTransition();
+  
 
   const { setNodes, nodes, setEdges, edges } = useContext(FlowContext);
 
@@ -58,7 +58,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
   const [TTSSpeed, setTTSSpeed] = useState<number>(1)
   const [NodeTitle, setNodeTitle] = useState<string>("")
 
-  const [TTSModel,setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
+  //const [TTSModel,setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
   const [LLMModel,setLLMModel] = useState<any>({LLMModelOpen: false, 
                                                 model: 'gpt-3.5-turbo', 
                                                 quoteMaxToken: 2, 
@@ -91,6 +91,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
   const handleRenameNode = (nodeId: string) => {
     const updatedNodes = nodes.map((node: any) => {
       if (node.id == nodeId) {
+
         return {
           ...node,
           data: {
@@ -99,6 +100,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
           }
         };
       }
+
       return node;
     });
     setNodes(updatedNodes);
@@ -109,18 +111,22 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
     const getNanoidValue = getNanoid(6);
     const copyNodes = nodes.map((node: any) => {
       if (node.id == nodeId) {
+
         return {
           ...node,
           selected: false
         };
       }
+
       return node;
     });
     const currentNode1 = copyNodes.filter((node: any) => {
+
       return node.id == nodeId
     });
     const currentNode2 = currentNode1.map((node: any) => {
       if (node.id == nodeId) {
+
         return {
           ...node,
           data: {
@@ -140,6 +146,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
         };
       }
       else {
+
         return node;
       }
     });
@@ -152,6 +159,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
 
   const handleDeleteNode = (nodeId: string) => {
     const DeletedNodes = nodes.filter((node: any) => {
+
       return node.id != nodeId;
     });
     setNodes(DeletedNodes);
@@ -163,13 +171,16 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
             const nodeInputsOrOutputs: any[] = node.data[type];
             const nodeValues = nodeInputsOrOutputs[index].value;
             const DeletedNodeValues = nodeValues.filter((nodeValue: any) => {
+
                 return nodeValue.key != valueItem.key;
             });
             nodeInputsOrOutputs[index].value = DeletedNodeValues
             node.data[type] = nodeInputsOrOutputs
+
             return node;
         }
         else {
+
             return node;
         }
       });
@@ -185,9 +196,11 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                 if(nodeValue.key == valueItem.key) {
                     const nodeValueNew = nodeValue
                     nodeValueNew[field] = value
+
                     return nodeValueNew
                 }
                 else {
+
                     return nodeValue;
                 }
             });
@@ -212,9 +225,11 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
             nodeValues.push({key: getNanoid(6), value: ''})
             nodeInputsOrOutputs[index].value = nodeValues
             node.data[type] = nodeInputsOrOutputs
+
             return node;
         }
         else {
+
             return node;
         }
       });
@@ -232,6 +247,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
             });
             nodeInputsOrOutputs[index].value = DeletedNodeValues
             node.data[type] = nodeInputsOrOutputs
+            
             //console.log("DeletedNodeValues", nodeInputsOrOutputs, node)
 
             return node;
@@ -253,9 +269,11 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                 if(nodeValue.key == valueItem.key) {
                     const nodeValueNew = nodeValue
                     nodeValueNew[field] = value
+
                     return nodeValueNew
                 }
                 else {
+
                     return nodeValue;
                 }
             });
@@ -280,9 +298,11 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
             nodeValues.push({key: getNanoid(6), value: '', required: false, default: '', enumValue: ''})
             nodeInputsOrOutputs[index].value = nodeValues
             node.data[type] = nodeInputsOrOutputs
+
             return node;
         }
         else {
+
             return node;
         }
       });
@@ -317,6 +337,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
     if(selected) {
       const updateEdges = edges.map((item: any)=>{
         if(item.target == id) {
+
           return {
             ...item,
             style: {
@@ -326,6 +347,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
           };
         }
         else {
+
           return {
             ...item,
             style: {
@@ -503,13 +525,11 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                               <TextField
                                 multiline
                                 rows={6}
-                                defaultValue={item.value}
+                                value={item.value}
                                 sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                 placeholder={t(item.placeholder) as string}
                                 onChange={(e) => {
-                                  startTst(() => {
-                                    //Action
-                                  });
+                                  console.log("e.target.value", e.target.value);
                                 }}
                               />
                             </Grid>
@@ -534,13 +554,11 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                                 type='number'
                                 size='small'
                                 InputProps={{ inputProps: { min: 0, max: 100 } }}
-                                defaultValue={item.value}
+                                value={item.value}
                                 sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                 placeholder={t(item.placeholder) as string}
                                 onChange={(e) => {
-                                  startTst(() => {
-                                    //Action
-                                  });
+                                  console.log("e.target.value", e.target.value);
                                 }}
                               />
                             </Grid>

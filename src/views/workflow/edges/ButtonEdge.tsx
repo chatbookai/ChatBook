@@ -30,8 +30,10 @@ export default function CustomEdge({
 
     const active = (() => {
       const connectNode = nodes.find((node: any) => {
+        
         return (node.id === source || node.id === target) && node.selected;
       });
+
       return !!(connectNode || selected);
     })();
     
@@ -47,7 +49,7 @@ export default function CustomEdge({
 
     const onDeleteClick = (event: any) => {
       event.stopPropagation()
-      console.log("onDeleteClick", onDeleteClick)
+      console.log("onDeleteClick", onDeleteClick, "active", active)
       setEdges((edges) => edges.filter((edge) => edge.id !== id));
     };
 

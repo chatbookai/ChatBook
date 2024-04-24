@@ -1,5 +1,5 @@
 // ** React Imports
-import React, { Fragment, useTransition, useState, useEffect, useContext } from 'react'
+import React, { Fragment, useState, useEffect, useContext } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -44,7 +44,7 @@ import LLMModelModel from 'src/views/workflow/components/LLMModel'
 const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const { moduleId, outputs, inputs, name, id } = data;
   const { t } = useTranslation()
-  const [, startTst] = useTransition();
+  
 
   const { setNodes, nodes, setEdges, edges } = useContext(FlowContext);
 
@@ -58,7 +58,7 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
   const [TTSSpeed, setTTSSpeed] = useState<number>(1)
   const [NodeTitle, setNodeTitle] = useState<string>("")
 
-  const [TTSModel,setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
+  //const [TTSModel,setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
   const [LLMModel,setLLMModel] = useState<any>({LLMModelOpen: false, 
                                                 model: 'gpt-3.5-turbo', 
                                                 quoteMaxToken: 2, 
@@ -91,6 +91,7 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
   const handleRenameNode = (nodeId: string) => {
     const updatedNodes = nodes.map((node: any) => {
       if (node.id == nodeId) {
+
         return {
           ...node,
           data: {
@@ -99,6 +100,7 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
           }
         };
       }
+
       return node;
     });
     setNodes(updatedNodes);
@@ -109,11 +111,13 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
     const getNanoidValue = getNanoid(6);
     const copyNodes = nodes.map((node: any) => {
       if (node.id == nodeId) {
+
         return {
           ...node,
           selected: false
         };
       }
+
       return node;
     });
     const currentNode1 = copyNodes.filter((node: any) => {
@@ -167,9 +171,11 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
             });
             nodeInputsOrOutputs[index].value = DeletedNodeValues
             node.data[type] = nodeInputsOrOutputs
+            
             return node;
         }
         else {
+
             return node;
         }
       });
@@ -185,16 +191,18 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                 if(nodeValue.key == valueItem.key) {
                     const nodeValueNew = nodeValue
                     nodeValueNew[field] = value
+
                     return nodeValueNew
                 }
                 else {
-                    return nodeValue;
+
+                    return nodeValue
                 }
             });
             nodeInputsOrOutputs[index].value = EditNodeValues
             node.data[type] = nodeInputsOrOutputs
 
-            return node;
+            return node
         }
         else {
 
@@ -212,9 +220,11 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
             nodeValues.push({key: getNanoid(6), value: ''})
             nodeInputsOrOutputs[index].value = nodeValues
             node.data[type] = nodeInputsOrOutputs
+
             return node;
         }
         else {
+
             return node;
         }
       });
@@ -435,13 +445,11 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                               <TextField
                                 multiline
                                 rows={6}
-                                defaultValue={item.value}
+                                value={item.value}
                                 sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                 placeholder={t(item.placeholder) as string}
                                 onChange={(e) => {
-                                  startTst(() => {
-                                    //Action
-                                  });
+                                  console.log("e.target.value", e.target.value);
                                 }}
                               />
                             </Grid>
@@ -466,13 +474,11 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                                 type='number'
                                 size='small'
                                 InputProps={{ inputProps: { min: 0, max: 100 } }}
-                                defaultValue={item.value}
+                                value={item.value}
                                 sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                 placeholder={t(item.placeholder) as string}
                                 onChange={(e) => {
-                                  startTst(() => {
-                                    //Action
-                                  });
+                                  console.log("e.target.value", e.target.value);
                                 }}
                               />
                             </Grid>

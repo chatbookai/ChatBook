@@ -5,6 +5,7 @@ import { customAlphabet } from 'nanoid';
 export function strIsLink(str?: string) {
   if (!str) return false;
   if (/^((http|https)?:\/\/|www\.|\/)[^\s/$.?#].[^\s]*$/i.test(str)) return true;
+
   return false;
 }
 
@@ -35,13 +36,16 @@ export function replaceVariable(text: string, obj: Record<string, string | numbe
 
     text = text.replace(new RegExp(`{{(${key})}}`, 'g'), String(val));
   }
+
   return text || '';
 }
 
 /* replace sensitive text */
 export const replaceSensitiveText = (text: string) => {
+
   // 1. http link
   text = text.replace(/(?<=https?:\/\/)[^\s]+/g, 'xxx');
+  
   // 2. nx-xxx 全部替换成xxx
   text = text.replace(/ns-[\w-]+/g, 'xxx');
 

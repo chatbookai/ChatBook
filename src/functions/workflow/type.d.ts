@@ -97,6 +97,7 @@ export type VariableItemType = {
   maxLen: number;
   enums: { value: string }[];
 };
+
 // tts
 export type AppTTSConfigType = {
   type: 'none' | 'web' | 'model';
@@ -254,6 +255,7 @@ export type SettingAIDataType = {
   isResponseAnswerText?: boolean;
   maxHistories?: number;
 };
+
 /* ai chat modules props */
 export type AIChatModuleProps = {
   [ModuleInputKeyEnum.aiModel]: string;

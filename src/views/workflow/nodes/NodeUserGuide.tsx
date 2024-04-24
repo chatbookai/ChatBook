@@ -1,5 +1,5 @@
 // ** React Imports
-import React, { Fragment, useTransition, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -15,7 +15,6 @@ import Switch from '@mui/material/Switch'
 
 import { useTranslation } from 'react-i18next'
 import Divider from '@mui/material/Divider'
-import toast from 'react-hot-toast'
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 
 import { NodeProps } from 'reactflow'
@@ -30,11 +29,11 @@ import GlobalVariableModel from 'src/views/workflow/components/GlobalVariable'
 const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const { moduleId, outputs } = data;
   const { t } = useTranslation()
-  const [, startTst] = useTransition();
 
   console.log("QuestionInputNode moduleId", moduleId)
   console.log("QuestionInputNode outputs", outputs)
   console.log("QuestionInputNode data", data)
+  console.log("QuestionInputNode selected", selected)
 
   const [TTSModel,setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
   const [GlobalVariable,setGlobalVariable] = useState<any>({GlobalVariableOpen: false, 
@@ -94,9 +93,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                               value={t(item.value) as string}
                               style={{ width: '100%', resize: 'both'}}
                               onChange={(e) => {
-                                startTst(() => {
-                                  //Action
-                                });
+                                console.log("e", e)
                               }}
                             />
                           </Grid>

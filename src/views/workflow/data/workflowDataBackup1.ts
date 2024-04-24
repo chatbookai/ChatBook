@@ -1,4 +1,3 @@
-import { Node, Edge, Position, MarkerType } from 'reactflow';
 
 export const workflowData: any = {
     "_id": "660d13ad361cf48ed91321fb",

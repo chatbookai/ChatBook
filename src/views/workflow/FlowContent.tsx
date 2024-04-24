@@ -3,16 +3,12 @@ import ReactFlow, {
   useNodesState,
   useEdgesState,
   addEdge,
-  MiniMap,
   Controls,
   Background,
   Node,
   Edge,
-  Position,
   ConnectionMode,
   Connection,
-  MarkerType,
-  NodeProps,
   ReactFlowProvider,
   getIncomers,
   getOutgoers,
@@ -81,18 +77,20 @@ const FlowContent = () => {
   
   const onConnect = useCallback((params: any) => setEdges((eds) => addEdge(params, eds)), []);
 
-  const customOnConnect = (connect: Connection) => {
+  const customOnConnect = (connect: Connection) =>        {
     if (!connect.sourceHandle || !connect.targetHandle) {
+
       return;
     }
-    //console.log("customOnConnect", connect)
     if (connect.source === connect.target)      {
+
       // can not connect
       toast.error(t('Can not connect self') as string, {
         duration: 2000
       })
     }
     else {
+
       // allow connect
       //console.log("edgesedges", edges, connect)
       const newEdge: any = {
@@ -101,7 +99,6 @@ const FlowContent = () => {
         type: 'buttonedge',
         style: { stroke: '#00BFFF', strokeWidth: 4 }
       }
-      //console.log("edgesedges", newEdge)
       onConnect(newEdge);
     }
   }
@@ -110,18 +107,21 @@ const FlowContent = () => {
     const allNodesDataList = allNodesData.modules;
     const getNanoidValue = getNanoid(6);
     const currentNodes = nodes.map((node: any) => {
+
       return {
         ...node,
         selected: false
       };
     });
     const addNode = allNodesDataList.filter((node: any) => {
+
       return node.type == flowType
     });
     const addNodeFilter = addNode.map((node: any) => {
       const X = generateRandomNumber(90,100)
       const Y = generateRandomNumber(50,60)
       if (node.type == flowType) {
+
         return {
           ...node,
           data: {
@@ -141,6 +141,7 @@ const FlowContent = () => {
         };
       }
       else {
+
         return node;
       }
     });
@@ -176,6 +177,7 @@ const FlowContent = () => {
   const onEdgeClick = (event: any, edge: any) => {
     const updateEdges: Edge<any[]>[] = edges.map((item: any)=>{
       if(item.id == edge.id) {
+
         return {
           ...item,
           style: {
@@ -185,6 +187,7 @@ const FlowContent = () => {
         };
       }
       else {
+        
         return {
           ...item,
           style: {
@@ -195,11 +198,10 @@ const FlowContent = () => {
       }
     })
     setEdges(updateEdges)
-    //console.log('onEdgeClick onDeleteClick', event);
   };
 
   const onSelectionChange = (elements: any) => {
-    //console.log('Selection changed:', elements);
+    console.log('onSelectionChange changed:', elements);
   };
   
   useEffect(()=>{
@@ -207,11 +209,13 @@ const FlowContent = () => {
     const edgesInitial: Edge<any[]>[] = simpleWorkflow.edges
     setEdges(edgesInitial)
     setNodes(modules)
+
     //console.log("nodes edges", edgesInitial)
     //console.log("nodes nodes", modules)
   }, [])
 
   useEffect(()=>{
+
     //console.log("nodes edges useEffect", edges)
     //console.log("nodes nodes useEffect", nodes)
   }, [edges])

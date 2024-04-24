@@ -92,7 +92,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                               rows={4}
                               value={t(item.value) as string}
                               style={{ width: '100%', resize: 'both'}}
-                              onChange={(e) => {
+                              onChange={(e: any) => {
                                 console.log("e", e)
                               }}
                             />

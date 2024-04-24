@@ -26,7 +26,7 @@ import { llms } from 'src/functions/llms'
 import Button from '@mui/material/Button'
 import Icon from 'src/@core/components/icon'
 import IconButton from '@mui/material/IconButton'
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from '@mui/icons-material/Close'
 
 const TTS = (props: any) => {
     // ** Props

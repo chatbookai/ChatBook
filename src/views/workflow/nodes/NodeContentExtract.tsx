@@ -528,7 +528,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                                 value={item.value}
                                 sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                 placeholder={t(item.placeholder) as string}
-                                onChange={(e) => {
+                                onChange={(e: any) => {
                                   console.log("e.target.value", e.target.value);
                                 }}
                               />
@@ -557,7 +557,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                                 value={item.value}
                                 sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                 placeholder={t(item.placeholder) as string}
-                                onChange={(e) => {
+                                onChange={(e: any) => {
                                   console.log("e.target.value", e.target.value);
                                 }}
                               />
@@ -990,7 +990,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                     defaultValue={NodeTitle}
                     sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                     placeholder={t(NodeTitle) as string}
-                    onChange={(e) => { setNodeTitle(e.target.value) }}
+                    onChange={(e: any) => { setNodeTitle(e.target.value) }}
                   />
               </Grid>
             </DialogContent>

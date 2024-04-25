@@ -7,7 +7,6 @@ import Grid from '@mui/material/Grid'
 import Card from '@mui/material/Card'
 import Avatar from '@mui/material/Avatar'
 import Tooltip from '@mui/material/Tooltip'
-import CardHeader from '@mui/material/CardHeader'
 import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Switch from '@mui/material/Switch'
@@ -35,19 +34,16 @@ import CloseIcon from '@mui/icons-material/Close'
 import TTS from 'src/views/workflow/components/TTS'
 import GlobalVariableModel from 'src/views/workflow/components/GlobalVariable'
 
-import { FlowContext } from '../FlowContext';
-import { getNanoid } from 'src/functions/workflow/string.tools';
-
 import LLMModelModel from 'src/views/workflow/components/LLMModel'
 
-const ApplicationEdit = ({ workflow, setWorkflow }: any) => {
-  console.log("ApplicationEdit workflow", workflow)
-
+const ApplicationEdit = ({ workflow, setWorkflow, isDisabledButton, handleEditWorkflow }: any) => {
+  
   const { t } = useTranslation()
 
   const [chatNodeData, setChatNodeData] = useState<any>(workflow.modules[2].data)
   const [userGuideData, setUserGuideData] = useState<any>(workflow.modules[0].data)
 
+  console.log("ApplicationEdit workflow", workflow)
   console.log("ApplicationEdit chatNodeData", chatNodeData)
   console.log("ApplicationEdit userGuideData", userGuideData)
 
@@ -65,7 +61,7 @@ const ApplicationEdit = ({ workflow, setWorkflow }: any) => {
                                                 maxChatHistories: 6,
                                                 charsPointsPrice: 2
                                               })
-  const [TTSModel, setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
+  const [TTSModel, setTTSModel] = useState<any>({TTSOpen: false, TTSValue: undefined, TTSSpeed: 1})
   const [GlobalVariable, setGlobalVariable] = useState<any>({GlobalVariableOpen: false, 
                                                 required: true, 
                                                 VariableName: 'Label', 
@@ -77,9 +73,20 @@ const ApplicationEdit = ({ workflow, setWorkflow }: any) => {
                                                 })
   
   useEffect(() => {
-    console.log("ApplicationEdit chatNodeData", chatNodeData)
-    console.log("ApplicationEdit userGuideData", userGuideData)
-  }, [chatNodeData, userGuideData])
+    if(userGuideData) {
+      const workflowNew = {...workflow}
+      workflowNew.modules[0].data = userGuideData
+      setWorkflow(workflowNew)
+    }
+  }, [userGuideData])
+
+  useEffect(() => {
+    if(chatNodeData) {
+      const workflowNew = {...workflow}
+      workflowNew.modules[2].data = chatNodeData
+      setWorkflow(workflowNew)
+    }
+  }, [chatNodeData])
 
   useEffect(() => {
     if(TTSModel && TTSModel.index) {
@@ -162,7 +169,7 @@ const ApplicationEdit = ({ workflow, setWorkflow }: any) => {
                               <TextField
                                 multiline
                                 rows={6}
-                                value={item.value}
+                                value={item.value || ''}
                                 sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                 placeholder={t(item.placeholder) as string}
                                 onChange={(e: any) => {
@@ -199,7 +206,7 @@ const ApplicationEdit = ({ workflow, setWorkflow }: any) => {
                                 type='number'
                                 size='small'
                                 InputProps={{ inputProps: { min: item.min, max: item.max } }}
-                                value={item.value}
+                                value={item.value || 6}
                                 sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                 placeholder={t(item.placeholder) as string}
                                 onChange={(e: any) => {
@@ -506,6 +513,11 @@ const ApplicationEdit = ({ workflow, setWorkflow }: any) => {
                         </Fragment>)
                 })
                 }
+                <Grid item xs={12} container justifyContent="flex-end" sx={{mt: 2}}>
+                    <Button type='submit' variant='contained' size='small' onClick={()=>{handleEditWorkflow()}} disabled={isDisabledButton} >
+                      {t('Submit')}
+                    </Button>
+                </Grid>
             </Grid>
           </Card>
 

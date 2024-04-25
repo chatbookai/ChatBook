@@ -37,7 +37,7 @@ const WorkFlowPermissionList = ['private','team','public']
 
 const ContentWorkflow = (props: any) => {
   // ** Props
-  const { workflow, setWorkflow } = props
+  const { workflow, setWorkflow, handleEditWorkflow, isDisabledButton } = props
   
   // ** Hook
   const { t } = useTranslation()
@@ -52,28 +52,7 @@ const ContentWorkflow = (props: any) => {
   }, [workflow])
 
   // ** State
-  const [uploadingButton, setUploadingButton] = useState<string>(`${t('Submit')}`)
-  const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
   
-  const handleInfoSubmit = async () => {
-    if(auth.user)   {
-        const PostParams = { }
-        const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/setopenai', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
-        console.log("FormSubmit:", FormSubmit)
-        if(FormSubmit?.status == "ok") {
-            toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
-        }
-        else {
-            toast.error(t(FormSubmit.msg) as string, { duration: 4000 })
-            
-            if(FormSubmit && FormSubmit.msg=='Token is invalid') {
-                CheckPermission(auth, router, true)
-            }
-        }
-    }
-
-  }
-
   return (
     <Fragment>
         {auth.user && auth.user.id ?
@@ -141,8 +120,7 @@ const ContentWorkflow = (props: any) => {
                                     <Select 
                                         size="small" 
                                         label={t("Permission")}
-                                        defaultValue={workflow?.permission || 'private'} 
-                                        value={workflow?.permission}
+                                        value={workflow?.permission || 'private'} 
                                         fullWidth
                                         onChange={(e: any) => {
                                             setWorkflow((prevState: any)=>({
@@ -178,8 +156,8 @@ const ContentWorkflow = (props: any) => {
                             </Grid>
                             
                             <Grid item xs={12} container justifyContent="flex-end">
-                                <Button type='submit' variant='contained' size='small' onClick={handleInfoSubmit} disabled={isDisabledButton} >
-                                    {uploadingButton}
+                                <Button type='submit' variant='contained' size='small' onClick={()=>{handleEditWorkflow()}} disabled={isDisabledButton} >
+                                    {t('Submit')}
                                 </Button>
                             </Grid>
 
@@ -188,7 +166,7 @@ const ContentWorkflow = (props: any) => {
                 </Card>
             </Grid>
             { workflow ? 
-            <ApplicationEdit workflow={workflow} setWorkflow={setWorkflow} />
+            <ApplicationEdit workflow={workflow} setWorkflow={setWorkflow} handleEditWorkflow={handleEditWorkflow} isDisabledButton={isDisabledButton} />
             :
             null
             }

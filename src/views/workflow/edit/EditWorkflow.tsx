@@ -26,8 +26,7 @@ const EditWorkflow = () => {
   // ** States
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
   const [workflow, setWorkflow] = useState<any>(null)
-  const [workflowId, setWorkflowId] = useState<string>("")
-  const [workflowName, setWorkflowName] = useState<string>("")
+  const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
 
   // ** Hooks
   const { t } = useTranslation()
@@ -48,8 +47,8 @@ const EditWorkflow = () => {
   }
 
   const handleEditWorkflow = async () => {
-    console.log("workflow", workflow)
-    //Backend Api
+    console.log("handleEditWorkflow workflow", workflow)
+    setIsDisabledButton(true)
     if (auth && auth.user) {
       const workflowNew = {
         ...workflow,
@@ -58,6 +57,7 @@ const EditWorkflow = () => {
       const PostParams = {name: workflow.name, _id: workflowNew._id, teamId: workflowNew.teamId, intro: workflowNew.intro, avatar: workflowNew.avatar, type: workflowNew.type, flowGroup: workflow.flowGroup, permission: workflowNew.permission, data: workflowNew}
       const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/editworkflow', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit", FormSubmit)
+      setIsDisabledButton(false)
     }
   }
 
@@ -88,7 +88,7 @@ const EditWorkflow = () => {
         }}
       >
         <LeftWorkflow workflow={workflow} hidden={false} />
-        <ContentWorkflow workflow={workflow} setWorkflow={setWorkflow} />
+        <ContentWorkflow workflow={workflow} setWorkflow={setWorkflow} handleEditWorkflow={handleEditWorkflow} isDisabledButton={isDisabledButton} />
         <PreviewWorkflow workflow={workflow} hidden={false} />
       </Box>
       :

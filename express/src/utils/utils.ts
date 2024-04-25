@@ -766,11 +766,10 @@ export async function addWorkflow(Params: any) {
     Params.type = filterString(Params.type)
     Params.flowGroup = filterString(Params.flowGroup)
     Params.permission = filterString(Params.permission)
-    Params.data = filterString(Params.data)
+    Params.data = filterString(JSON.stringify(Params.data))
 
-    const formatDateValue = formatDate(Date.now())
     const insertSetting = db.prepare('INSERT OR IGNORE INTO workflow (_id, teamId, name, intro, avatar, type, flowGroup, permission, data, status, userId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');formatDate
-    insertSetting.run(Params._id, Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.flowGroup, Params.permission, JSON.stringify(Params.data), 1, Params.userId);
+    insertSetting.run(Params._id, Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.flowGroup, Params.permission, Params.data, 1, Params.userId);
     insertSetting.finalize();
     return {"status":"ok", "msg":"Add Success"}
   }
@@ -782,12 +781,17 @@ export async function addWorkflow(Params: any) {
 
 export async function editWorkflow(Params: any) {
   try{
-    Params.id = Number(Params.id)
+    Params._id = filterString(Params._id)
+    Params.teamId = filterString(Params.teamId)
     Params.name = filterString(Params.name)
-    Params.summary = filterString(Params.summary)
-    const formatDateValue = formatDate(Date.now())
-    const updateSetting = db.prepare('update workflow set title = ?, description = ?, tags = ?, config = ?, avatar = ?, author = ?, createDate = ?, status = ?, model = ?, type = ? where id = ?');
-    updateSetting.run(Params.title, Params.description, Params.tags, Params.config, Params.avatar, Params.author, formatDateValue, Params.status, Params.model, Params.type, Params.id);
+    Params.intro = filterString(Params.intro)
+    Params.avatar = filterString(Params.avatar)
+    Params.type = filterString(Params.type)
+    Params.flowGroup = filterString(Params.flowGroup || '')
+    Params.permission = filterString(Params.permission)
+    Params.data = filterString(JSON.stringify(Params.data))
+    const updateSetting = db.prepare('update workflow set teamId = ?, name = ?, intro = ?, avatar = ?, type = ?, flowGroup = ?, permission = ?, data = ?where _id = ?');
+    updateSetting.run(Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.flowGroup, Params.permission, Params.data, Params._id);
     updateSetting.finalize();
   }
   catch (error: any) {

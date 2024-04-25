@@ -11,7 +11,8 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 // ** Chat App Components Imports
 import LeftWorkflow from 'src/views/workflow/edit/LeftWorkflow'
 
-import ContentWorkflow from 'src/views/workflow/edit/ContentWorkflow';
+import ContentWorkflow from 'src/views/workflow/edit/ContentWorkflow'
+import PreviewWorkflow from 'src/views/workflow/edit/PreviewWorkflow'
 
 // ** Axios Imports
 import axios from 'axios'
@@ -46,14 +47,24 @@ const EditWorkflow = () => {
     }
   }
 
-  const setActiveId = function (Id: number, Name: string) {
-    setWorkflowId(Id)
-    setWorkflowName(Name)
-    setRefreshChatCounter(0)
+  const handleEditWorkflow = async () => {
+    console.log("workflow", workflow)
+    //Backend Api
+    if (auth && auth.user) {
+      const workflowNew = {
+        ...workflow,
+        updateTime: String(new Date(Date.now()).toLocaleString())
+      }
+      const PostParams = {name: workflow.name, _id: workflowNew._id, teamId: workflowNew.teamId, intro: workflowNew.intro, avatar: workflowNew.avatar, type: workflowNew.type, flowGroup: workflow.flowGroup, permission: workflowNew.permission, data: workflowNew}
+      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/editworkflow', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+      console.log("FormSubmit", FormSubmit)
+    }
   }
 
   useEffect(() => {
-    fetchData(id)  
+    if(id) {
+      fetchData(String(id))  
+    }
   }, [refreshChatCounter, id])
 
   // ** Vars
@@ -76,12 +87,9 @@ const EditWorkflow = () => {
           ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
         }}
       >
-        <LeftWorkflow
-          workflow={workflow}
-          hidden={false}
-        />
-        <ContentWorkflow workflowId={workflowId} workflowName={workflowName} userId={'1'}/>
-        <ContentWorkflow workflowId={workflowId} workflowName={workflowName} userId={'1'}/>
+        <LeftWorkflow workflow={workflow} hidden={false} />
+        <ContentWorkflow workflow={workflow} setWorkflow={setWorkflow} />
+        <PreviewWorkflow workflow={workflow} hidden={false} />
       </Box>
       :
       null

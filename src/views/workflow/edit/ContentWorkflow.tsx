@@ -5,10 +5,16 @@ import { Fragment, useState, useEffect } from 'react'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
+import Avatar from '@mui/material/Avatar'
 import TextField from '@mui/material/TextField'
 import CardHeader from '@mui/material/CardHeader'
+import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
 import InputAdornment from '@mui/material/InputAdornment'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
+import InputLabel from '@mui/material/InputLabel'
+import FormControl from '@mui/material/FormControl'
 
 // ** Axios Imports
 import axios from 'axios'
@@ -25,11 +31,13 @@ import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from 'src/hooks/useAuth'
 import { CheckPermission } from 'src/functions/ChatBook'
+import ApplicationEdit from 'src/views/workflow/edit/ApplicationEdit'
 
+const WorkFlowPermissionList = ['Private','Team','Public']
 
 const ContentWorkflow = (props: any) => {
   // ** Props
-  const { knowledgeId, knowledgeName, userId } = props
+  const { workflow, setWorkflow } = props
   
   // ** Hook
   const { t } = useTranslation()
@@ -39,96 +47,22 @@ const ContentWorkflow = (props: any) => {
     CheckPermission(auth, router, false)
   }, [])
 
-  const openApiBaseText = "Example: https://api.openai.com/v1";
-    
   // ** State
   const [uploadingButton, setUploadingButton] = useState<string>(`${t('Submit')}`)
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
   
   const [openApiBase, setOpenApiBase] = useState<string>("")
-  const [openApiBaseError, setOpenApiBaseError] = useState<string | null>(null)
   const handleopenApiBaseChange = (event: any) => {
-    setOpenApiBase(event.target.value);
-    setOpenApiBaseError("")
-  };
-
-  const [openApiKey, setOpenApiKey] = useState<string>("")
-  const [openApiKeyError, setOpenApiKeyError] = useState<string | null>(null)
-  const handleOpenApiKeyChange = (event: any) => {
-    setOpenApiKey(event.target.value);
-    if(event.target.value == "") {
-        setOpenApiKeyError(`${t('This field cannot be empty')}`)
-    }
-    else {
-        setOpenApiKeyError("")
-    }
-  };
-  
-  const [inputTemperature, setInputTemperature] = useState<number>(0.5)
-  const [inputTemperatureError, setInputTemperatureError] = useState<string | null>(null)
-  const handleInputTemperatureChange = (event: any) => {
-    setInputTemperature(Number(event.target.value));
-    if(Number(event.target.value) < 0) {
-        setInputTemperatureError(`${t('The number entered must be more greater or equal to 0')}`)
-    }
-    else if(Number(event.target.value) >= 1) {
-        setInputTemperatureError(`${t('The number entered must be less than or equal to 1')}`)
-    }
-    else {
-        setInputTemperatureError("")
-    }
-  };
-
-  const [inputModelName, setInputModelName] = useState<string>("gpt-3.5-turbo")
-  const [inputModelNameError, setInputModelNameError] = useState<string | null>(null)
-  const handleInputModelNameChange = (event: any) => {
-    setInputModelName(event.target.value);
-    if(event.target.value == "") {
-        setInputModelNameError(`${t('This field cannot be empty')}`)
-    }
-    else {
-        setInputModelNameError("")
-    }
   };
 
   const handleGetData = async () => {
     if(auth.user)   {
         const GetData: any = await axios.get(authConfig.backEndApiChatBook + '/api/getopenai/' + knowledgeId, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
         console.log("GetData:", GetData)
-        setOpenApiBase(GetData?.OPENAI_API_BASE ?? '')
-        setOpenApiKey(GetData?.OPENAI_API_KEY ?? '')
-        setInputTemperature(GetData.Temperature ?? '0')
-        setInputModelName(GetData.ModelName || 'gpt-3.5-turbo')
     }
   }
 
-  useEffect(()=>{
-    handleGetData()
-  }, [knowledgeId])
-  
   const handleSubmit = async () => {
-    if(openApiKey == "") {
-        toast.error(t("Open AI Api cannot be empty") as string, { duration: 4000 })
-        setIsDisabledButton(false)
-        setUploadingButton(`${t('Submit')}`)
-
-        return
-    }
-    if(inputModelName == "") {
-        toast.error(t("Model Name Api cannot be empty") as string, { duration: 4000 })
-        setIsDisabledButton(false)
-        setUploadingButton(`${t('Submit')}`)
-
-        return
-    }
-    if(inputTemperature < 0 || inputTemperature > 1) {
-        toast.error(t("Temperature must in the range 0~1") as string, { duration: 4000 })
-        setIsDisabledButton(false)
-        setUploadingButton(`${t('Submit')}`)
-
-        return
-    }
-
     if(auth.user)   {
         const PostParams = {OPENAI_API_BASE: openApiBase, OPENAI_API_KEY: openApiKey, ModelName: inputModelName, Temperature: inputTemperature, userId: userId, knowledgeId: knowledgeId }
         const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/setopenai', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
@@ -149,92 +83,118 @@ const ContentWorkflow = (props: any) => {
 
   return (
     <Fragment>
-        {auth.user && auth.user.email ?
+        {auth.user && auth.user.id ?
         <Card>
-        <CardHeader title={`${knowledgeName}`} />
-        <CardContent>
-            <Grid container spacing={5}>
-                <Grid item xs={12}>
-                    <TextField
-                        fullWidth
-                        label={`${t('OPENAI_API_BASE')}`}
-                        placeholder={`${t('OPENAI_API_BASE')}`}
-                        value={openApiBase}
-                        onChange={handleopenApiBaseChange}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position='start'>
-                                <Icon icon='mdi:account-outline' />
-                                </InputAdornment>
-                            )
-                        }}
-                        error={!!openApiBaseError}
-                        helperText={openApiBaseText}
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        fullWidth
-                        label={`${t('OPENAI_API_KEY')}`}
-                        placeholder={`${t('OPENAI_API_KEY')}`}
-                        value={openApiKey}
-                        onChange={handleOpenApiKeyChange}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position='start'>
-                                <Icon icon='mdi:account-outline' />
-                                </InputAdornment>
-                            )
-                        }}
-                        error={!!openApiKeyError}
-                        helperText={openApiKeyError}
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        fullWidth
-                        type='number'
-                        label={`${t('Temperature')}`}
-                        placeholder={`${t('Temperature')}`}
-                        value={inputTemperature}
-                        onChange={handleInputTemperatureChange}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position='start'>
-                                <Icon icon='mdi:account-outline' />
-                                </InputAdornment>
-                            )
-                        }}
-                        error={!!inputTemperatureError}
-                        helperText={inputTemperatureError}
-                    />
-                </Grid>
-                <Grid item xs={6}>
-                    <TextField
-                        fullWidth
-                        label={`${t('ModelName')}`}
-                        placeholder={`${t('ModelName')}`}
-                        value={inputModelName}
-                        onChange={handleInputModelNameChange}
-                        InputProps={{
-                            startAdornment: (
-                                <InputAdornment position='start'>
-                                <Icon icon='mdi:account-outline' />
-                                </InputAdornment>
-                            )
-                        }}
-                        error={!!inputModelNameError}
-                        helperText={inputModelNameError}
-                    />
-                </Grid>
+            <CardContent>
+                <Grid container spacing={5}>
+                    <Grid container item xs={12}>
+                        <Grid item xs={5}>
+                            <Typography variant='h6' sx={{ ml: 3, mb: 1 }}>
+                            {`${t(workflow?.name)}`}
+                            </Typography>
+                        </Grid>
+                        <Grid item xs={7} textAlign='right'>
+                            <Typography sx={{ mr: 3, mb: 1, mt: 2, fontSize: '0.62rem' }}>
+                            Id:{`${t(workflow?._id)}`}
+                            </Typography>
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <Button variant='outlined' sx={{mr: 1}} size="small" startIcon={<Icon icon='mingcute:file-export-fill' />} onClick={()=>{
+                        }}>
+                        {t("Chat")}
+                        </Button>
+                        <Button variant='outlined' sx={{mr: 1}} size="small" startIcon={<Icon icon='material-symbols:chat' />} onClick={()=>{
+                        }}>
+                        {t("Publish")}
+                        </Button>
+                        <Button variant='contained' sx={{mr: 1}} size="small" startIcon={<Icon icon='material-symbols:save' />}onClick={()=>{
+                        }}>
+                        {t("Delete")}
+                        </Button>
+                    </Grid>
+                    <Grid item xs={2}>
+                        <Avatar
+                            src={'Item.avatar'}
+                            alt={'Item.name'}
+                            sx={{
+                            width: 38,
+                            height: 38,
+                            mr: 2
+                            }}
+                        />
+                    </Grid>
+                    <Grid item xs={6}>
+                        <TextField
+                            fullWidth
+                            size="small"
+                            label={`${t('Name')}`}
+                            placeholder={`${t('Name')}`}
+                            value={workflow?.name}
+                            onChange={(e: any) => {
+                                setWorkflow((prevState: any)=>({
+                                    ...prevState,
+                                    name: e.target.value as string
+                                }))
+                                console.log("e.target.value", e.target.value);
+                            }}
+                        />
+                    </Grid>
+                    <Grid container item xs={4} alignItems="center">
+                        <FormControl sx={{ mr: 0 }}>
+                            <InputLabel >{t("Permission")}</InputLabel>
+                            <Select 
+                                size="small" 
+                                label={t("Permission")}
+                                defaultValue={workflow?.permission} 
+                                value={workflow?.permission}
+                                fullWidth
+                                onChange={(e: any) => {
+                                    setWorkflow((prevState: any)=>({
+                                        ...prevState,
+                                        permission: e.target.value as string
+                                    }))
+                                    console.log("e.target.value", e.target.value);
+                                }}
+                                >
+                                {WorkFlowPermissionList.map((item: any, indexItem: number)=>{
+                                    return <MenuItem value={item} key={`${indexItem}`}>{item}</MenuItem>
+                                })}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid container item xs={12} alignItems="center">
+                        <TextField
+                            fullWidth
+                            multiline
+                            rows={4}
+                            size="small"
+                            label={`${t('Intro')}`}
+                            placeholder={`${t('Intro')}`}
+                            value={workflow?.intro}
+                            onChange={(e: any) => {
+                                setWorkflow((prevState: any)=>({
+                                    ...prevState,
+                                    intro: e.target.value as string
+                                }))
+                                console.log("e.target.value", e.target.value);
+                            }}
+                        />
+                    </Grid>
+                    
+                    <Grid item xs={12} container justifyContent="flex-end">
+                        <Button type='submit' variant='contained' size='small' onClick={handleSubmit} disabled={isDisabledButton} >
+                            {uploadingButton}
+                        </Button>
+                    </Grid>
 
-                <Grid item xs={12} container justifyContent="flex-end">
-                    <Button type='submit' variant='contained' size='large' onClick={handleSubmit} disabled={isDisabledButton} >
-                        {uploadingButton}
-                    </Button>
                 </Grid>
-            </Grid>
-        </CardContent>
+            </CardContent>
+            { workflow ? 
+            <ApplicationEdit workflow={workflow} setWorkflow={setWorkflow} />
+            :
+            null
+            }
         </Card>
         :
         null

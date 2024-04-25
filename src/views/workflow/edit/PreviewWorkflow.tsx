@@ -42,7 +42,7 @@ const WorkflowMenuList = [
           {id: 5, name: '立即对话', avatar: '/icons/core/chat/chatLight.svg'}
           ]
 
-const LeftWorkflow = (props: any) => {
+const PreviewWorkflow = (props: any) => {
   // ** Hook
   const { t } = useTranslation()
 
@@ -151,7 +151,7 @@ const LeftWorkflow = (props: any) => {
           position: 'static',
           '& .MuiDrawer-paper': {
             boxShadow: 'none',
-            width: 190,
+            width: 300,
             position:'static',
             borderTopLeftRadius: theme => theme.shape.borderRadius,
             borderBottomLeftRadius: theme => theme.shape.borderRadius
@@ -178,11 +178,6 @@ const LeftWorkflow = (props: any) => {
         </Box>
 
         <Box sx={{ height: `calc(100% - 4.125rem)` }}>
-          <ScrollWrapper hidden={hidden}>
-            <Box sx={{ p: theme => theme.spacing(7, 3, 3) }}>
-              <List sx={{ mb: 4, p: 0 }}>{renderChats()}</List>
-            </Box>
-          </ScrollWrapper>
         </Box>
       </Drawer>
 
@@ -190,4 +185,4 @@ const LeftWorkflow = (props: any) => {
   )
 }
 
-export default LeftWorkflow
+export default PreviewWorkflow

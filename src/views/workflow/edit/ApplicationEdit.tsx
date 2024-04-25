@@ -42,25 +42,20 @@ import LLMModelModel from 'src/views/workflow/components/LLMModel'
 
 const ApplicationEdit = ({ workflow, setWorkflow }: any) => {
   console.log("ApplicationEdit workflow", workflow)
-  const selected = false;
-  const chatNodeData = workflow.modules[2].data
-  const userGuideData = workflow.modules[0].data
 
   const { t } = useTranslation()
-  
-  const [nodes, setNodes] = useState<any>()
-  const [edges, setEdges] = useState<any>()
+
+  const [chatNodeData, setChatNodeData] = useState<any>(workflow.modules[2].data)
+  const [userGuideData, setUserGuideData] = useState<any>(workflow.modules[0].data)
 
   console.log("ApplicationEdit chatNodeData", chatNodeData)
   console.log("ApplicationEdit userGuideData", userGuideData)
 
   const [TTSOpen, setTTSOpen] = useState<boolean>(false)
-  const [RenameOpen, setRenameOpen] = useState<boolean>(false)
   const [TTSValue, setTTSValue] = useState<string>("Disabled")
   const [TTSSpeed, setTTSSpeed] = useState<number>(1)
-  const [NodeTitle, setNodeTitle] = useState<string>("")
 
-    const [LLMModel,setLLMModel] = useState<any>({LLMModelOpen: false, 
+  const [LLMModel, setLLMModel] = useState<any>({LLMModelOpen: false, 
                                                 model: 'gpt-3.5-turbo', 
                                                 quoteMaxToken: 2, 
                                                 maxContext: 16000,
@@ -70,8 +65,8 @@ const ApplicationEdit = ({ workflow, setWorkflow }: any) => {
                                                 maxChatHistories: 6,
                                                 charsPointsPrice: 2
                                               })
-    const [TTSModel,setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
-    const [GlobalVariable,setGlobalVariable] = useState<any>({GlobalVariableOpen: false, 
+  const [TTSModel, setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
+  const [GlobalVariable, setGlobalVariable] = useState<any>({GlobalVariableOpen: false, 
                                                 required: true, 
                                                 VariableName: 'Label', 
                                                 VariableValue: '',
@@ -81,6 +76,25 @@ const ApplicationEdit = ({ workflow, setWorkflow }: any) => {
                                                 SelectOptions: ''
                                                 })
   
+  useEffect(() => {
+    console.log("ApplicationEdit chatNodeData", chatNodeData)
+    console.log("ApplicationEdit userGuideData", userGuideData)
+  }, [chatNodeData, userGuideData])
+
+  useEffect(() => {
+    if(TTSModel && TTSModel.index) {
+        setUserGuideData((prevState: any)=>{
+            const updatedInputs = [...prevState.inputs]; 
+            const ItemData: any = updatedInputs[TTSModel.index];
+            const updatedItemData: any = { ...ItemData, value: TTSModel.TTSValue, speed: TTSModel.TTSSpeed };
+            updatedInputs[TTSModel.index] = updatedItemData;
+            const newState = { ...prevState, inputs: updatedInputs };
+
+            return newState;
+        })
+    }
+  }, [TTSModel])
+
   const handleClickTTSOpen = () => {
     setTTSOpen(true)
   }
@@ -91,7 +105,7 @@ const ApplicationEdit = ({ workflow, setWorkflow }: any) => {
 
   return (
         <Grid container spacing={2}>
-          <Card sx={{ border: theme => `1px solid ${theme.palette.divider}`, ml: 5, mr: 3, p: 2 }}>
+          <Card sx={{ border: theme => `1px solid ${theme.palette.divider}`, mt: 2, ml: 3, mr: 3, p: 2 }}>
             <Grid container spacing={2} pb={5}>
               {chatNodeData && chatNodeData.inputs && chatNodeData.inputs.length>0 && chatNodeData.inputs.map((item: any, index: number) => {
 
@@ -152,7 +166,15 @@ const ApplicationEdit = ({ workflow, setWorkflow }: any) => {
                                 sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                 placeholder={t(item.placeholder) as string}
                                 onChange={(e: any) => {
-                                  console.log("e.target.value", e.target.value);
+                                    setChatNodeData((prevState: any)=>{
+                                        const updatedInputs = [...prevState.inputs]; 
+                                        const ItemData: any = updatedInputs[index];
+                                        const updatedItemData: any = { ...ItemData, value: e.target.value as string };
+                                        updatedInputs[index] = updatedItemData;
+                                        const newState = { ...prevState, inputs: updatedInputs };
+
+                                        return newState;
+                                    })
                                 }}
                               />
                             </Grid>
@@ -176,12 +198,20 @@ const ApplicationEdit = ({ workflow, setWorkflow }: any) => {
                               <TextField
                                 type='number'
                                 size='small'
-                                InputProps={{ inputProps: { min: 0, max: 100 } }}
+                                InputProps={{ inputProps: { min: item.min, max: item.max } }}
                                 value={item.value}
                                 sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                 placeholder={t(item.placeholder) as string}
                                 onChange={(e: any) => {
-                                  console.log("e.target.value", e.target.value);
+                                    setChatNodeData((prevState: any)=>{
+                                        const updatedInputs = [...prevState.inputs]; 
+                                        const ItemData: any = updatedInputs[index];
+                                        const updatedItemData: any = { ...ItemData, value: e.target.value as string };
+                                        updatedInputs[index] = updatedItemData;
+                                        const newState = { ...prevState, inputs: updatedInputs };
+
+                                        return newState;
+                                    })
                                 }}
                               />
                             </Grid>
@@ -189,7 +219,7 @@ const ApplicationEdit = ({ workflow, setWorkflow }: any) => {
                           :
                           null}
 
-                          {item.key == 'variables' ?
+                          {item.key == 'variables___' ?
                           <Fragment>
                             <Grid item sx={{pt: 7, pb: 1}} xs={12}>
                               <Box display="flex" mb={1} alignItems="center">
@@ -212,7 +242,7 @@ const ApplicationEdit = ({ workflow, setWorkflow }: any) => {
                           :
                           null}
 
-                          {item.key == 'questionGuide' ?
+                          {item.key == 'questionGuide___' ?
                           <Fragment>
                             <Grid item xs={12}>
                               <Box display="flex" mb={1} alignItems="center">
@@ -233,7 +263,7 @@ const ApplicationEdit = ({ workflow, setWorkflow }: any) => {
                           :
                           null}
 
-                          {item.key == 'tts' ?
+                          {item.key == 'tts___' ?
                           <Fragment>
                             <Grid item xs={12}>
                               <Box display="flex" mb={1} alignItems="center">
@@ -352,13 +382,21 @@ const ApplicationEdit = ({ workflow, setWorkflow }: any) => {
                             </Tooltip>
                             </Box>
                             <TextField
-                            multiline
-                            rows={4}
-                            value={t(item.value) as string}
-                            style={{ width: '100%', resize: 'both'}}
-                            onChange={(e: any) => {
-                                console.log("e", e)
-                            }}
+                                multiline
+                                rows={4}
+                                value={t(item.value) as string}
+                                style={{ width: '100%', resize: 'both'}}
+                                onChange={(e: any) => {
+                                    setUserGuideData((prevState: any)=>{
+                                        const updatedInputs = [...prevState.inputs]; 
+                                        const ItemData: any = updatedInputs[index];
+                                        const updatedItemData: any = { ...ItemData, value: e.target.value as string };
+                                        updatedInputs[index] = updatedItemData;
+                                        const newState = { ...prevState, inputs: updatedInputs };
+
+                                        return newState;
+                                    })
+                                }}
                             />
                         </Grid>
                         </Fragment>
@@ -409,7 +447,20 @@ const ApplicationEdit = ({ workflow, setWorkflow }: any) => {
                         <Grid item xs={4}>
                             <Box display="flex" mb={1} justifyContent="flex-end">
                                 <Box right={'10px'}>
-                                    <Switch defaultChecked />
+                                    <Switch 
+                                        checked={!!item.value} 
+                                        onChange={(e: any) => {
+                                            setUserGuideData((prevState: any)=>{
+                                                const updatedInputs = [...prevState.inputs]; 
+                                                const ItemData: any = updatedInputs[index];
+                                                const updatedItemData: any = { ...ItemData, value: !!e.target.checked };
+                                                updatedInputs[index] = updatedItemData;        
+                                                const newState = { ...prevState, inputs: updatedInputs };
+
+                                                return newState;
+                                            })
+                                        }}
+                                    />
                                 </Box>
                             </Box>
                         </Grid>
@@ -435,7 +486,9 @@ const ApplicationEdit = ({ workflow, setWorkflow }: any) => {
                             <Box display="flex" mb={1} justifyContent="flex-end">
                                 <Box right={'10px'}>
                                     <Button variant='outlined' size="small" onClick={
-                                    () => { setTTSModel( (prevState: any) => ({ ...prevState, TTSOpen: true }) ) }
+                                        () => { 
+                                            setTTSModel( (prevState: any) => ({ ...prevState, TTSOpen: true, index: index }) ) 
+                                        }
                                     }>
                                     {t(TTSModel.TTSValue) as string}
                                     </Button>

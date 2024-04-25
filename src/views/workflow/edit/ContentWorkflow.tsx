@@ -33,7 +33,7 @@ import { useAuth } from 'src/hooks/useAuth'
 import { CheckPermission } from 'src/functions/ChatBook'
 import ApplicationEdit from 'src/views/workflow/edit/ApplicationEdit'
 
-const WorkFlowPermissionList = ['Private','Team','Public']
+const WorkFlowPermissionList = ['private','team','public']
 
 const ContentWorkflow = (props: any) => {
   // ** Props
@@ -47,24 +47,17 @@ const ContentWorkflow = (props: any) => {
     CheckPermission(auth, router, false)
   }, [])
 
+  useEffect(() => {
+    console.log("workflow", workflow)
+  }, [workflow])
+
   // ** State
   const [uploadingButton, setUploadingButton] = useState<string>(`${t('Submit')}`)
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
   
-  const [openApiBase, setOpenApiBase] = useState<string>("")
-  const handleopenApiBaseChange = (event: any) => {
-  };
-
-  const handleGetData = async () => {
+  const handleInfoSubmit = async () => {
     if(auth.user)   {
-        const GetData: any = await axios.get(authConfig.backEndApiChatBook + '/api/getopenai/' + knowledgeId, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
-        console.log("GetData:", GetData)
-    }
-  }
-
-  const handleSubmit = async () => {
-    if(auth.user)   {
-        const PostParams = {OPENAI_API_BASE: openApiBase, OPENAI_API_KEY: openApiKey, ModelName: inputModelName, Temperature: inputTemperature, userId: userId, knowledgeId: knowledgeId }
+        const PostParams = { }
         const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/setopenai', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
         console.log("FormSubmit:", FormSubmit)
         if(FormSubmit?.status == "ok") {
@@ -84,121 +77,125 @@ const ContentWorkflow = (props: any) => {
   return (
     <Fragment>
         {auth.user && auth.user.id ?
-        <Card>
-            <CardContent>
-                <Grid container spacing={5}>
-                    <Grid container item xs={12}>
-                        <Grid item xs={5}>
-                            <Typography variant='h6' sx={{ ml: 3, mb: 1 }}>
-                            {`${t(workflow?.name)}`}
-                            </Typography>
-                        </Grid>
-                        <Grid item xs={7} textAlign='right'>
-                            <Typography sx={{ mr: 3, mb: 1, mt: 2, fontSize: '0.62rem' }}>
-                            Id:{`${t(workflow?._id)}`}
-                            </Typography>
-                        </Grid>
-                    </Grid>
-                    <Grid item xs={12}>
-                        <Button variant='outlined' sx={{mr: 1}} size="small" startIcon={<Icon icon='mingcute:file-export-fill' />} onClick={()=>{
-                        }}>
-                        {t("Chat")}
-                        </Button>
-                        <Button variant='outlined' sx={{mr: 1}} size="small" startIcon={<Icon icon='material-symbols:chat' />} onClick={()=>{
-                        }}>
-                        {t("Publish")}
-                        </Button>
-                        <Button variant='contained' sx={{mr: 1}} size="small" startIcon={<Icon icon='material-symbols:save' />}onClick={()=>{
-                        }}>
-                        {t("Delete")}
-                        </Button>
-                    </Grid>
-                    <Grid item xs={2}>
-                        <Avatar
-                            src={'Item.avatar'}
-                            alt={'Item.name'}
-                            sx={{
-                            width: 38,
-                            height: 38,
-                            mr: 2
-                            }}
-                        />
-                    </Grid>
-                    <Grid item xs={6}>
-                        <TextField
-                            fullWidth
-                            size="small"
-                            label={`${t('Name')}`}
-                            placeholder={`${t('Name')}`}
-                            value={workflow?.name}
-                            onChange={(e: any) => {
-                                setWorkflow((prevState: any)=>({
-                                    ...prevState,
-                                    name: e.target.value as string
-                                }))
-                                console.log("e.target.value", e.target.value);
-                            }}
-                        />
-                    </Grid>
-                    <Grid container item xs={4} alignItems="center">
-                        <FormControl sx={{ mr: 0 }}>
-                            <InputLabel >{t("Permission")}</InputLabel>
-                            <Select 
-                                size="small" 
-                                label={t("Permission")}
-                                defaultValue={workflow?.permission} 
-                                value={workflow?.permission}
-                                fullWidth
-                                onChange={(e: any) => {
-                                    setWorkflow((prevState: any)=>({
-                                        ...prevState,
-                                        permission: e.target.value as string
-                                    }))
-                                    console.log("e.target.value", e.target.value);
-                                }}
-                                >
-                                {WorkFlowPermissionList.map((item: any, indexItem: number)=>{
-                                    return <MenuItem value={item} key={`${indexItem}`}>{item}</MenuItem>
-                                })}
-                            </Select>
-                        </FormControl>
-                    </Grid>
-                    <Grid container item xs={12} alignItems="center">
-                        <TextField
-                            fullWidth
-                            multiline
-                            rows={4}
-                            size="small"
-                            label={`${t('Intro')}`}
-                            placeholder={`${t('Intro')}`}
-                            value={workflow?.intro}
-                            onChange={(e: any) => {
-                                setWorkflow((prevState: any)=>({
-                                    ...prevState,
-                                    intro: e.target.value as string
-                                }))
-                                console.log("e.target.value", e.target.value);
-                            }}
-                        />
-                    </Grid>
-                    
-                    <Grid item xs={12} container justifyContent="flex-end">
-                        <Button type='submit' variant='contained' size='small' onClick={handleSubmit} disabled={isDisabledButton} >
-                            {uploadingButton}
-                        </Button>
-                    </Grid>
+        <Grid display="flex" flexDirection="column" sx={{py: 2}}>
+            <Grid container spacing={2}>
+                <Card sx={{ border: theme => `1px solid ${theme.palette.divider}`, my: 1, ml: 3, mr: 3, p: 2 }}>
+                    <CardContent>
+                        <Grid container spacing={5}>
+                            <Grid container item xs={12}>
+                                <Grid item xs={5}>
+                                    <Typography variant='h6' sx={{ ml: 3, mb: 1 }}>
+                                    {`${t(workflow?.name || '')}`}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={7} textAlign='right'>
+                                    <Typography sx={{ mr: 3, mb: 1, mt: 2, fontSize: '0.62rem' }}>
+                                    Id:{`${t(workflow?._id || '')}`}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+                            <Grid item xs={12}>
+                                <Button variant='outlined' sx={{mr: 1}} size="small" startIcon={<Icon icon='mingcute:file-export-fill' />} onClick={()=>{
+                                }}>
+                                {t("Chat")}
+                                </Button>
+                                <Button variant='outlined' sx={{mr: 1}} size="small" startIcon={<Icon icon='material-symbols:chat' />} onClick={()=>{
+                                }}>
+                                {t("Publish")}
+                                </Button>
+                                <Button variant='contained' sx={{mr: 1}} size="small" startIcon={<Icon icon='material-symbols:save' />}onClick={()=>{
+                                }}>
+                                {t("Delete")}
+                                </Button>
+                            </Grid>
+                            <Grid item xs={2}>
+                                <Avatar
+                                    src={'Item.avatar'}
+                                    alt={'Item.name'}
+                                    sx={{
+                                    width: 38,
+                                    height: 38,
+                                    mr: 2
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label={`${t('Name')}`}
+                                    placeholder={`${t('Name')}`}
+                                    value={workflow?.name || ''}
+                                    onChange={(e: any) => {
+                                        setWorkflow((prevState: any)=>({
+                                            ...prevState,
+                                            name: e.target.value as string
+                                        }))
+                                        console.log("e.target.value", e.target.value);
+                                    }}
+                                />
+                            </Grid>
+                            <Grid container item xs={4} alignItems="center">
+                                <FormControl sx={{ mr: 0 }}>
+                                    <InputLabel >{t("Permission")}</InputLabel>
+                                    <Select 
+                                        size="small" 
+                                        label={t("Permission")}
+                                        defaultValue={workflow?.permission || 'private'} 
+                                        value={workflow?.permission}
+                                        fullWidth
+                                        onChange={(e: any) => {
+                                            setWorkflow((prevState: any)=>({
+                                                ...prevState,
+                                                permission: e.target.value as string
+                                            }))
+                                            console.log("e.target.value", e.target.value);
+                                        }}
+                                        >
+                                        {WorkFlowPermissionList.map((item: any, indexItem: number)=>{
+                                            return <MenuItem value={item} key={`${indexItem}`}>{item}</MenuItem>
+                                        })}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                            <Grid container item xs={12} alignItems="center">
+                                <TextField
+                                    fullWidth
+                                    multiline
+                                    rows={4}
+                                    size="small"
+                                    label={`${t('Intro')}`}
+                                    placeholder={`${t('Intro')}`}
+                                    value={workflow?.intro || ''}
+                                    onChange={(e: any) => {
+                                        setWorkflow((prevState: any)=>({
+                                            ...prevState,
+                                            intro: e.target.value as string
+                                        }))
+                                        console.log("e.target.value", e.target.value);
+                                    }}
+                                />
+                            </Grid>
+                            
+                            <Grid item xs={12} container justifyContent="flex-end">
+                                <Button type='submit' variant='contained' size='small' onClick={handleInfoSubmit} disabled={isDisabledButton} >
+                                    {uploadingButton}
+                                </Button>
+                            </Grid>
 
-                </Grid>
-            </CardContent>
+                        </Grid>
+                    </CardContent>
+                </Card>
+            </Grid>
             { workflow ? 
             <ApplicationEdit workflow={workflow} setWorkflow={setWorkflow} />
             :
             null
             }
-        </Card>
+        </Grid> 
         :
         null
-        }        
+        }   
     </Fragment>
   )
 }

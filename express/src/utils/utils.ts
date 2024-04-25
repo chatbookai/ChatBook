@@ -813,3 +813,19 @@ export async function deleteWorkflow(Params: any) {
 
   return {"status":"ok", "msg":"Updated Success"}
 }
+
+export async function getWorkflow(id: string, userId: string) {
+  const idFilter = filterString(id)
+  const userIdFilter = Number(userId)
+  
+  const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT data from workflow where _id = ? and userId = ? `, [idFilter, userIdFilter]) as any[];
+  
+  let Template: any = {}
+  if(SettingRS)  {
+    SettingRS.map((Item: any)=>{
+      Template = JSON.parse(Item.data)
+    })
+  }
+
+  return Template
+}

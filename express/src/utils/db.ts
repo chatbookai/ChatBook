@@ -261,7 +261,8 @@ export async function initChatBookDb() {
                 permission TEXT not null,
                 data TEXT not null,
                 status INTEGER not null default 1,
-                userId INTEGER not null default 0
+                userId INTEGER not null default 0,
+                UNIQUE(_id)
             );
         `);
         db.run(`

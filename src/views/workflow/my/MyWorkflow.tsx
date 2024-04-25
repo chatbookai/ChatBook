@@ -174,6 +174,13 @@ const MyWorkflow = () => {
   const [NewOpen, setNewOpen] = useState<boolean>(false);
   const [WorkflowNewForm, setWorkflowNewForm] = useState<any>({name: t('My App'), flowType: 'simpleChat', flowGroup: "Default"})
 
+  useEffect(() => {
+    setWorkflowNewForm((prevState: any)=>({
+      ...prevState,
+      name: t('My App') as string
+  }))
+  }, [t]); 
+
   const handleAddWorkflow = async () => {
     console.log("WorkflowNewForm", WorkflowNewForm)
     //Backend Api

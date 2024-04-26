@@ -90,7 +90,7 @@ const EditWorkflow = (props: any) => {
           ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
         }}
       >
-        <LeftWorkflow workflow={workflow} hidden={false} menuid={menuid} />
+        <LeftWorkflow workflow={workflow} hidden={false} menuid={menuid}/>
         <SimpleEdit workflow={workflow} setWorkflow={setWorkflow} handleEditWorkflow={handleEditWorkflow} isDisabledButton={isDisabledButton} />
         <PreviewWorkflow workflow={workflow} hidden={false} />
       </Box>

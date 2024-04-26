@@ -15,6 +15,7 @@ import ListItemButton from '@mui/material/ListItemButton'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
+import { useRouter } from 'next/router'
 
 // ** Third Party Components
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -35,24 +36,25 @@ const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: bool
         "Simple mode": "简易配置"
         */
 const WorkflowMenuList = [
-          {id: 1, name: '简易配置', avatar: '/icons/core/modules/basicNode.svg'},
-          {id: 2, name: '高级编排', avatar: '/icons/core/modules/systemPlugin.svg'},
-          {id: 3, name: '发布应用', avatar: '/icons/support/outlink/shareLight.svg'},
-          {id: 4, name: '对话日志', avatar: '/icons/core/app/logsLight.svg'},
-          {id: 5, name: '立即对话', avatar: '/icons/core/chat/chatLight.svg'}
+          {id: 1, path: 'edit', name: '简易配置', avatar: '/icons/core/modules/basicNode.svg'},
+          {id: 2, path: 'advanced', name: '高级编排', avatar: '/icons/core/modules/systemPlugin.svg'},
+          {id: 3, path: 'publish', name: '发布应用', avatar: '/icons/support/outlink/shareLight.svg'},
+          {id: 4, path: 'chatlog', name: '对话日志', avatar: '/icons/core/app/logsLight.svg'},
+          {id: 5, path: 'chat', name: '立即对话', avatar: '/icons/core/chat/chatLight.svg'}
           ]
 
 const LeftWorkflow = (props: any) => {
   // ** Hook
   const { t } = useTranslation()
+  const router = useRouter()
 
   // ** Props
   const { workflow, hidden, menuid } = props
 
-  const [active, setActive] = useState<number | null>(menuid)
+  const active = menuid
 
-  const handleChatClick = (id: number, name: string) => {
-    setActive(id)
+  const handleChatClick = (id: string, path: string) => {
+    router.push(`/workflow/${path}/${workflow.id}`)
   }
 
   const renderChats = () => {
@@ -66,7 +68,7 @@ const LeftWorkflow = (props: any) => {
           <ListItem key={index} disablePadding sx={{ '&:not(:last-child)': { mb: 1.5 } }}>
             <ListItemButton
               disableRipple
-              onClick={() => handleChatClick(Item.id, Item.name)}
+              onClick={() => handleChatClick(Item.id, Item.path)}
               sx={{
                 px: 3,
                 py: 2.5,

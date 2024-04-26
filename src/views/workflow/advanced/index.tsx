@@ -44,6 +44,7 @@ import Fab from '@mui/material/Fab'
 import Box from '@mui/material/Box'
 import Icon from 'src/@core/components/icon'
 import Button from '@mui/material/Button'
+import { useRouter } from 'next/router'
 
 const edgeTypes = {
   bidirectional: BiDirectionalEdge,
@@ -67,8 +68,10 @@ const nodeTypes = {
   httpRequest: NodeHttpRequest
 };
 
-const FlowContent = () => {
+const AdvancedWorkflow = () => {
   const { t } = useTranslation();
+  const router = useRouter()
+  const { id } = router.query
 
   const [LeftOpen, setLeftOpen] = useState<boolean>(false);
 
@@ -288,10 +291,21 @@ const FlowContent = () => {
         >
           <Controls />
           <Background />
-          <Box sx={{pt: 2, pl: 2}}>
-            <Fab color='primary' aria-label='add' size='small' onClick={()=>{setLeftOpen(true)}}>
-              <Icon icon='mdi:plus' />
-            </Fab>
+          <Box sx={{ display: 'flex', flexDirection: 'column', pt: 2, pl: 2 }}>
+            <Box sx={{mt: 1}}>
+              <Fab color='primary' aria-label='add' size='small' onClick={() => { 
+                setLeftOpen(true) 
+                }}>
+                <Icon icon='mdi:plus' />
+              </Fab>
+            </Box>
+            <Box sx={{mt: 3}}>
+              <Fab color='primary' aria-label='add' size='small' onClick={() => { 
+                router.push(`/workflow/edit/${id}`)
+                }}>
+                <Icon icon='mdi:keyboard-return' />
+              </Fab>
+            </Box>
           </Box>
           <div style={{ position: 'absolute', top: '8px', right: '5px', zIndex: 999 }}>
             <Button variant='outlined' sx={{mr: 1}} size="small" startIcon={<Icon icon='mingcute:file-export-fill' />} onClick={()=>{
@@ -317,4 +331,4 @@ const FlowContent = () => {
   );
 };
 
-export default FlowContent;
+export default AdvancedWorkflow;

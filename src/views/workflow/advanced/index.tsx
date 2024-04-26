@@ -18,9 +18,9 @@ import 'reactflow/dist/style.css';
 
 import { FlowContext } from './FlowContext';
 import FlowLeft from './FlowLeft';
-import ButtonEdge from './edges/ButtonEdge';
-import SelfConnectingEdge from './edges/SelfConnectingEdge';
-import BiDirectionalEdge from './edges/BiDirectionalEdge';
+import ButtonEdge from '../edges/ButtonEdge';
+import SelfConnectingEdge from '../edges/SelfConnectingEdge';
+import BiDirectionalEdge from '../edges/BiDirectionalEdge';
 
 import NodeSimple from 'src/views/workflow/nodes/NodeSimple';
 import NodeQuestionInput from 'src/views/workflow/nodes/NodeQuestionInput';
@@ -31,8 +31,8 @@ import NodeClassifyQuestion from 'src/views/workflow/nodes/NodeClassifyQuestion'
 import NodeContentExtract from 'src/views/workflow/nodes/NodeContentExtract';
 import NodeHttpRequest from 'src/views/workflow/nodes/NodeHttpRequest';
 
-import { allNodesData } from './data/allNodesData';
-import { simpleChat } from './data/simpleChat';
+import { allNodesData } from '../data/allNodesData';
+import { simpleChat } from '../data/simpleChat';
 import type { FlowModuleItemType } from 'src/functions/workflow/type';
 import { getNanoid } from 'src/functions/workflow/string.tools';
 import { generateRandomNumber, downloadJson } from 'src/functions/ChatBook';

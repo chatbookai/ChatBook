@@ -35,7 +35,7 @@ import Icon from 'src/@core/components/icon'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 
-import { FlowContext } from '../FlowContext';
+import { FlowContext } from '../advanced/FlowContext';
 import { getNanoid } from 'src/functions/workflow/string.tools';
 
 import LLMModelModel from 'src/views/workflow/components/LLMModel'

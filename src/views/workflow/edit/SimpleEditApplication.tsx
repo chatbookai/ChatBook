@@ -36,16 +36,16 @@ import GlobalVariableModel from 'src/views/workflow/components/GlobalVariable'
 
 import LLMModelModel from 'src/views/workflow/components/LLMModel'
 
-const ApplicationEdit = ({ workflow, setWorkflow, isDisabledButton, handleEditWorkflow }: any) => {
+const SimpleEditApplication = ({ workflow, setWorkflow, isDisabledButton, handleEditWorkflow }: any) => {
   
   const { t } = useTranslation()
 
   const [chatNodeData, setChatNodeData] = useState<any>(workflow.modules[2].data)
   const [userGuideData, setUserGuideData] = useState<any>(workflow.modules[0].data)
 
-  console.log("ApplicationEdit workflow", workflow)
-  console.log("ApplicationEdit chatNodeData", chatNodeData)
-  console.log("ApplicationEdit userGuideData", userGuideData)
+  console.log("SimpleEditApplication workflow", workflow)
+  console.log("SimpleEditApplication chatNodeData", chatNodeData)
+  console.log("SimpleEditApplication userGuideData", userGuideData)
 
   const [TTSOpen, setTTSOpen] = useState<boolean>(false)
   const [TTSValue, setTTSValue] = useState<string>("Disabled")
@@ -494,7 +494,7 @@ const ApplicationEdit = ({ workflow, setWorkflow, isDisabledButton, handleEditWo
                                 <Box right={'10px'}>
                                     <Button variant='outlined' size="small" onClick={
                                         () => { 
-                                            setTTSModel( (prevState: any) => ({ ...prevState, TTSOpen: true, index: index }) ) 
+                                            setTTSModel( (prevState: any) => ({ ...prevState, TTSOpen: true, index: index }) )
                                         }
                                     }>
                                     {t(TTSModel.TTSValue) as string}
@@ -526,4 +526,4 @@ const ApplicationEdit = ({ workflow, setWorkflow, isDisabledButton, handleEditWo
 };
 
 
-export default React.memo(ApplicationEdit);
+export default React.memo(SimpleEditApplication);

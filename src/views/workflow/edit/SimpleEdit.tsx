@@ -31,11 +31,11 @@ import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from 'src/hooks/useAuth'
 import { CheckPermission } from 'src/functions/ChatBook'
-import ApplicationEdit from 'src/views/workflow/edit/ApplicationEdit'
+import SimpleEditApplication from 'src/views/workflow/edit/SimpleEditApplication'
 
 const WorkFlowPermissionList = ['private','team','public']
 
-const ContentWorkflow = (props: any) => {
+const SimpleEdit = (props: any) => {
   // ** Props
   const { workflow, setWorkflow, handleEditWorkflow, isDisabledButton } = props
   
@@ -166,7 +166,7 @@ const ContentWorkflow = (props: any) => {
                 </Card>
             </Grid>
             { workflow ? 
-            <ApplicationEdit workflow={workflow} setWorkflow={setWorkflow} handleEditWorkflow={handleEditWorkflow} isDisabledButton={isDisabledButton} />
+            <SimpleEditApplication workflow={workflow} setWorkflow={setWorkflow} handleEditWorkflow={handleEditWorkflow} isDisabledButton={isDisabledButton} />
             :
             null
             }
@@ -179,4 +179,4 @@ const ContentWorkflow = (props: any) => {
 }
 
 
-export default ContentWorkflow
+export default SimpleEdit

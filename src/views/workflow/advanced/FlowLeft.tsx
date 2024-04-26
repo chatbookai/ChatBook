@@ -12,7 +12,7 @@ import CardContent from '@mui/material/CardContent'
 import Avatar from '@mui/material/Avatar'
 import { useTranslation } from 'next-i18next'
 
-import { appTypeTemplate } from './data/appTypeTemplate'
+import { appTypeTemplate } from '../data/appTypeTemplate'
 
 const Header = styled(Box)<BoxProps>(({ theme }) => ({
   display: 'flex',

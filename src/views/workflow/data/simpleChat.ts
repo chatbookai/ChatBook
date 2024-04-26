@@ -7,6 +7,7 @@ export const simpleChat: any = {
     "avatar": "/icon/logo.svg",
     "intro": "一个极其简单的 AI 应用，你可以绑定知识库或工具。",
     "type": "simpleChat",
+    "mode": 'simple',
     "modules": [
       {
           "id": "userGuideNodeInitial_1",

@@ -47,12 +47,9 @@ const LeftWorkflow = (props: any) => {
   const { t } = useTranslation()
 
   // ** Props
-  const {
-    workflow,
-    hidden
-  } = props
+  const { workflow, hidden, menuid } = props
 
-  const [active, setActive] = useState<number | null>(1)
+  const [active, setActive] = useState<number | null>(menuid)
 
   const handleChatClick = (id: number, name: string) => {
     setActive(id)

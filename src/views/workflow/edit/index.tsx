@@ -22,11 +22,13 @@ import { useAuth } from 'src/hooks/useAuth'
 import { CheckPermission } from 'src/functions/ChatBook'
 import { useTranslation } from 'react-i18next'
 
-const EditWorkflow = () => {
+const EditWorkflow = (props: any) => {
   // ** States
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
   const [workflow, setWorkflow] = useState<any>(null)
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
+
+  const { menuid } = props
 
   // ** Hooks
   const { t } = useTranslation()
@@ -88,7 +90,7 @@ const EditWorkflow = () => {
           ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
         }}
       >
-        <LeftWorkflow workflow={workflow} hidden={false} />
+        <LeftWorkflow workflow={workflow} hidden={false} menuid={menuid} />
         <SimpleEdit workflow={workflow} setWorkflow={setWorkflow} handleEditWorkflow={handleEditWorkflow} isDisabledButton={isDisabledButton} />
         <PreviewWorkflow workflow={workflow} hidden={false} />
       </Box>

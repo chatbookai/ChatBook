@@ -2,7 +2,7 @@ import EditWorkflow from 'src/views/workflow/edit';
 
 const EditWorkflowApp = () => {
 
-  return <EditWorkflow menuid={1}/>
+  return <EditWorkflow menuid={'edit'}/>
 
 }
 

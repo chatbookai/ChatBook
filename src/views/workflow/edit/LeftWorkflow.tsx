@@ -62,7 +62,7 @@ const LeftWorkflow = (props: any) => {
       const arrToMap = WorkflowMenuList
 
       return arrToMap.map((Item: any, index: number) => {
-        const activeCondition = active === Item.id
+        const activeCondition = active === Item.path
 
         return (
           <ListItem key={index} disablePadding sx={{ '&:not(:last-child)': { mb: 1.5 } }}>
@@ -71,7 +71,7 @@ const LeftWorkflow = (props: any) => {
               onClick={() => handleChatClick(Item.id, Item.path)}
               sx={{
                 px: 3,
-                py: 2.5,
+                pb: 2.5,
                 width: '100%',
                 borderRadius: 1,
                 alignItems: 'flex-start',
@@ -162,23 +162,9 @@ const LeftWorkflow = (props: any) => {
           }
         }}
       >
-        <Box
-          sx={{
-            px: 5,
-            py: 3.6,
-            display: 'flex',
-            alignItems: 'center',
-            borderBottom: theme => `1px solid ${theme.palette.divider}`
-          }}
-        >
-          <Typography variant='h6' sx={{ ml: 3, mb: 1}}>
-            {`${t(workflow?.name)}`}
-          </Typography>
-        </Box>
-
         <Box sx={{ height: `calc(100% - 4.125rem)` }}>
           <ScrollWrapper hidden={hidden}>
-            <Box sx={{ p: theme => theme.spacing(7, 3, 3) }}>
+            <Box sx={{ p: theme => theme.spacing(3, 3, 3) }}>
               <List sx={{ mb: 4, p: 0 }}>{renderChats()}</List>
             </Box>
           </ScrollWrapper>

@@ -8,7 +8,8 @@ import { promisify } from 'util';
 import { DataDir, CONDENSE_TEMPLATE_INIT, QA_TEMPLATE_INIT } from './const';
 
 import { db, getDbRecord, getDbRecordALL } from './db'
-import { filterString } from './utils'
+import { filterString, log, formatDate } from './utils'
+
 
 type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
@@ -26,7 +27,7 @@ export async function addWorkflow(Params: any) {
       Params.permission = filterString(Params.permission)
       Params.data = filterString(JSON.stringify(Params.data))
   
-      const insertSetting = db.prepare('INSERT OR IGNORE INTO workflow (_id, teamId, name, intro, avatar, type, flowGroup, permission, data, status, userId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');formatDate
+      const insertSetting = db.prepare('INSERT OR IGNORE INTO workflow (_id, teamId, name, intro, avatar, type, flowGroup, permission, data, status, userId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
       insertSetting.run(Params._id, Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.flowGroup, Params.permission, Params.data, 1, Params.userId);
       insertSetting.finalize();
       return {"status":"ok", "msg":"Add Success"}

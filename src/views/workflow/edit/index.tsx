@@ -95,8 +95,40 @@ const EditWorkflow = (props: any) => {
         }}
       >
         <LeftWorkflow workflow={workflow} hidden={false} menuid={menuid}/>
-        <SimpleEdit workflow={workflow} setWorkflow={setWorkflow} handleEditWorkflow={handleEditWorkflow} isDisabledButton={isDisabledButton} />
-        <PreviewWorkflow workflow={workflow} hidden={false} />
+        {menuid == 'edit' ?
+        <Fragment>
+          <SimpleEdit workflow={workflow} setWorkflow={setWorkflow} handleEditWorkflow={handleEditWorkflow} isDisabledButton={isDisabledButton} />
+          <PreviewWorkflow workflow={workflow} hidden={false} />
+        </Fragment>
+        :
+        null
+        }
+
+        {menuid == 'publish' ?
+        <Fragment>
+          <SimpleEdit workflow={workflow} setWorkflow={setWorkflow} handleEditWorkflow={handleEditWorkflow} isDisabledButton={isDisabledButton} />
+        </Fragment>
+        :
+        null
+        }
+
+        {menuid == 'chatlog' ?
+        <Fragment>
+          <SimpleEdit workflow={workflow} setWorkflow={setWorkflow} handleEditWorkflow={handleEditWorkflow} isDisabledButton={isDisabledButton} />
+        </Fragment>
+        :
+        null
+        }
+
+        {menuid == 'chat' ?
+        <Fragment>
+          <SimpleEdit workflow={workflow} setWorkflow={setWorkflow} handleEditWorkflow={handleEditWorkflow} isDisabledButton={isDisabledButton} />
+          <PreviewWorkflow workflow={workflow} hidden={false} />
+        </Fragment>
+        :
+        null
+        }
+
       </Box>
       :
       null

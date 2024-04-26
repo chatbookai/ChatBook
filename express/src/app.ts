@@ -15,6 +15,7 @@ import llmsRouter from './router/llms'
 import utilsRouter from './router/utils'
 import stabilityRouter from './router/stability'
 import getimgRouter from './router/getimg'
+import workflowRouter from './router/workflow'
 
 //import seaartRouter from './router/seaart'
 
@@ -37,12 +38,12 @@ cron.schedule('*/1 * * * *', () => {
   console.log('Task End !');
 });
 
-
 app.use('/', userRouter);
 app.use('/', llmsRouter);
 app.use('/', utilsRouter);
 app.use('/', getimgRouter);
 app.use('/', stabilityRouter);
+app.use('/', workflowRouter);
 
 //app.use('/', seaartRouter);
 

@@ -3,7 +3,7 @@
   import express, { Request, Response } from 'express';
 
   import { checkUserToken } from '../utils/user';
-  import { addWorkflow, editWorkflow, deleteWorkflow, getWorkflow } from '../utils/utils';
+  import { addWorkflow, editWorkflow, deleteWorkflow, getWorkflow } from '../utils/workflow';
 
   const app = express();
 

@@ -496,7 +496,26 @@ const NodeAssignedReply = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                   <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
                                 </Tooltip>
                                 <Box position={'absolute'} right={'10px'}>
-                                  <Switch defaultChecked />
+                                  <Switch 
+                                        checked={!!item.value} 
+                                        onChange={(e: any) => {
+                                            setNodes((prevState: any)=>{
+                                                const nodesNew = prevState.map((itemNode: any)=>{
+                                                  if(itemNode.data.id == data.id) {
+                                                    const targetNode = { ...itemNode }
+                                                    const ItemData = targetNode.data.inputs[index]
+                                                    targetNode.data.inputs[index] = { ...ItemData, value: !!e.target.checked }
+                                                    console.log("targetNode", targetNode)
+                                                    return targetNode
+                                                  }
+                                                  else {
+                                                    return itemNode
+                                                  }
+                                                })
+                                                return nodesNew;
+                                            })
+                                        }}
+                                    />
                                 </Box>
                               </Box>
                             </Grid>

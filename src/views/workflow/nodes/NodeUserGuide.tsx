@@ -1,5 +1,5 @@
 // ** React Imports
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState, useContext } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -25,15 +25,18 @@ import Icon from 'src/@core/components/icon'
 
 import TTS from 'src/views/workflow/components/TTS'
 import GlobalVariableModel from 'src/views/workflow/components/GlobalVariable'
+import { FlowContext } from '../advanced/FlowContext'
 
 const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const { moduleId, outputs } = data;
   const { t } = useTranslation()
 
+  const { setNodes, nodes, setEdges, edges } = useContext(FlowContext);
+
   console.log("QuestionInputNode moduleId", moduleId)
   console.log("QuestionInputNode outputs", outputs)
   console.log("QuestionInputNode data", data)
-  console.log("QuestionInputNode selected", selected)
+  console.log("QuestionInputNode nodes", nodes)
 
   const [TTSModel,setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
   const [GlobalVariable,setGlobalVariable] = useState<any>({GlobalVariableOpen: false, 
@@ -137,7 +140,26 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                 <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
                               </Tooltip>
                               <Box position={'absolute'} right={'10px'}>
-                                <Switch defaultChecked />
+                                    <Switch 
+                                        checked={!!item.value} 
+                                        onChange={(e: any) => {
+                                            setNodes((prevState: any)=>{
+                                                const nodesNew = prevState.map((itemNode: any)=>{
+                                                  if(itemNode.data.id == data.id) {
+                                                    const targetNode = { ...itemNode }
+                                                    const ItemData = targetNode.data.inputs[index]
+                                                    targetNode.data.inputs[index] = { ...ItemData, value: !!e.target.checked }
+                                                    console.log("targetNode", targetNode)
+                                                    return targetNode
+                                                  }
+                                                  else {
+                                                    return itemNode
+                                                  }
+                                                })
+                                                return nodesNew;
+                                            })
+                                        }}
+                                    />
                               </Box>
                             </Box>
                           </Grid>

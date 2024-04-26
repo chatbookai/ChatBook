@@ -10,7 +10,7 @@ const NodeSimple = ({ data }: NodeProps) => {
   return (
     <div style={style}>
       <Handle type="source" position={Position.Left} id="left" />
-      {data?.label}111111
+      {data?.label}
       <Handle type="source" position={Position.Right} id="right" />
     </div>
   );

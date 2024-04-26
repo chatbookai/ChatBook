@@ -1,5 +1,5 @@
 // ** React Imports
-import React, { Fragment, useState, useContext } from 'react'
+import React, { Fragment, useState, useContext, useEffect } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -48,6 +48,35 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                                 TextMaxLength: 50,
                                                 SelectOptions: ''
                                               })
+  const handleTTSChange = (index: number, value: string, speed: number) => {
+    setNodes((prevState: any)=>{
+        const nodesNew = prevState.map((itemNode: any)=>{
+          if(itemNode.data.id == data.id) {
+            const targetNode = { ...itemNode }
+            const ItemData = targetNode.data.inputs[index]
+            targetNode.data.inputs[index] = { ...ItemData, value, speed }
+            console.log("targetNode", targetNode)
+            return targetNode
+          }
+          else {
+            return itemNode
+          }
+        })
+        return nodesNew;
+    })
+  }
+
+  useEffect(() => {
+    const TTSNode: any = data.inputs
+    if(TTSNode) {
+      TTSNode.map((itemNode: any)=>{
+        if(itemNode.key == 'tts') {
+          console.log("setTTSModel NodeUserGuide", itemNode)
+          setTTSModel( (prevState: any) => ({ TTSOpen: false, TTSValue: itemNode.value, TTSSpeed: itemNode.speed }) );
+        }
+      })
+    }
+  }, [])
   
   return (
     <Card sx={{ border: theme => `1px solid ${theme.palette.divider}`, width: '500px' }}>
@@ -181,7 +210,9 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                               </Tooltip>
                               <Box position={'absolute'} right={'10px'}>
                                 <Button variant='outlined' size="small" onClick={
-                                  () => { setTTSModel( (prevState: any) => ({ ...prevState, TTSOpen: true }) ) }
+                                  () => { 
+                                    setTTSModel( (prevState: any) => ({ ...prevState, TTSOpen: true, index: index }) )
+                                   }
                                 }>
                                   {t(TTSModel.TTSValue) as string}
                                 </Button>
@@ -191,7 +222,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                           <Grid item xs={12}>
                             <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
                           </Grid>
-                          <TTS TTSModel={TTSModel} setTTSModel={setTTSModel} ModelData={item} />
+                          <TTS TTSModel={TTSModel} setTTSModel={setTTSModel} ModelData={item} handleTTSChange={handleTTSChange} index={index}/>
                         </Fragment>
                         :
                         null}

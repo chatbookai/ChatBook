@@ -47,10 +47,6 @@ const SimpleEditApplication = ({ workflow, setWorkflow, isDisabledButton, handle
   console.log("SimpleEditApplication chatNodeData", chatNodeData)
   console.log("SimpleEditApplication userGuideData", userGuideData)
 
-  const [TTSOpen, setTTSOpen] = useState<boolean>(false)
-  const [TTSValue, setTTSValue] = useState<string>("Disabled")
-  const [TTSSpeed, setTTSSpeed] = useState<number>(1)
-
   const [LLMModel, setLLMModel] = useState<any>({LLMModelOpen: false, 
                                                 model: 'gpt-3.5-turbo', 
                                                 quoteMaxToken: 2, 
@@ -61,7 +57,7 @@ const SimpleEditApplication = ({ workflow, setWorkflow, isDisabledButton, handle
                                                 maxChatHistories: 6,
                                                 charsPointsPrice: 2
                                               })
-  const [TTSModel, setTTSModel] = useState<any>({TTSOpen: false, TTSValue: undefined, TTSSpeed: 1})
+  const [TTSModel, setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
   const [GlobalVariable, setGlobalVariable] = useState<any>({GlobalVariableOpen: false, 
                                                 required: true, 
                                                 VariableName: 'Label', 
@@ -71,7 +67,18 @@ const SimpleEditApplication = ({ workflow, setWorkflow, isDisabledButton, handle
                                                 TextMaxLength: 50,
                                                 SelectOptions: ''
                                                 })
-  
+  useEffect(() => {
+    const TTSNode: any = workflow.modules[0].data.inputs
+    if(TTSNode) {
+      TTSNode.map((itemNode: any)=>{
+        if(itemNode.key == 'tts') {
+          console.log("setTTSModel Default", itemNode)
+          setTTSModel( (prevState: any) => ({ TTSOpen: false, TTSValue: itemNode.value, TTSSpeed: itemNode.speed }) );
+        }
+      })
+    }
+  }, [])
+
   useEffect(() => {
     if(userGuideData) {
       const workflowNew = {...workflow}
@@ -88,26 +95,16 @@ const SimpleEditApplication = ({ workflow, setWorkflow, isDisabledButton, handle
     }
   }, [chatNodeData])
 
-  useEffect(() => {
-    if(TTSModel && TTSModel.index) {
-        setUserGuideData((prevState: any)=>{
-            const updatedInputs = [...prevState.inputs]; 
-            const ItemData: any = updatedInputs[TTSModel.index];
-            const updatedItemData: any = { ...ItemData, value: TTSModel.TTSValue, speed: TTSModel.TTSSpeed };
-            updatedInputs[TTSModel.index] = updatedItemData;
-            const newState = { ...prevState, inputs: updatedInputs };
+  const handleTTSChange = (index: number, value: string, speed: number) => {
+    setUserGuideData((prevState: any)=>{
+      const updatedInputs = [...prevState.inputs]; 
+      const ItemData: any = updatedInputs[index];
+      const updatedItemData: any = { ...ItemData, value, speed };
+      updatedInputs[index] = updatedItemData;
+      const newState = { ...prevState, inputs: updatedInputs };
 
-            return newState;
-        })
-    }
-  }, [TTSModel])
-
-  const handleClickTTSOpen = () => {
-    setTTSOpen(true)
-  }
-
-  const handleTTSClose = () => {
-    setTTSOpen(false)
+      return newState;
+    })
   }
 
   return (
@@ -352,7 +349,7 @@ const SimpleEditApplication = ({ workflow, setWorkflow, isDisabledButton, handle
                                 <Box right={'10px'}>
                                     <Button variant='outlined' size="small" onClick={
                                         () => { 
-                                            setTTSModel( (prevState: any) => ({ ...prevState, TTSOpen: true, index: index }) )
+                                            setTTSModel( (prevState: any) => ({ ...prevState, TTSOpen: true, index: index }) );
                                         }
                                     }>
                                     {t(TTSModel.TTSValue) as string}
@@ -363,7 +360,7 @@ const SimpleEditApplication = ({ workflow, setWorkflow, isDisabledButton, handle
                         <Grid item xs={12}>
                             <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
                         </Grid>
-                        <TTS TTSModel={TTSModel} setTTSModel={setTTSModel} ModelData={item} />
+                        <TTS TTSModel={TTSModel} setTTSModel={setTTSModel} ModelData={item} handleTTSChange={handleTTSChange} index={index}/>
                         </Fragment>
                         :
                         null}

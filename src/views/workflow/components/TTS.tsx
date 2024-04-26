@@ -30,7 +30,7 @@ import CloseIcon from '@mui/icons-material/Close'
 
 const TTS = (props: any) => {
     // ** Props
-    const {TTSModel, setTTSModel, ModelData } = props
+    const {TTSModel, setTTSModel, ModelData, handleTTSChange, index } = props
 
     // ** Hook
     const { t } = useTranslation()
@@ -71,7 +71,8 @@ const TTS = (props: any) => {
                     fullWidth
                     onChange={(e: any) => {
                         if(e.target.value != null) {
-                            setTTSModel( (prevState: any) => ({ ...prevState, TTSValue: String(e.target.value) }) )
+                            setTTSModel( (prevState: any) => ({ ...prevState, TTSValue: String(e.target.value) }) );
+                            handleTTSChange(index, String(e.target.value), TTSModel.TTSSpeed);
                         }
                     }}
                     >
@@ -92,7 +93,8 @@ const TTS = (props: any) => {
                     step={0.1}
                     onChange={(e: any) => {
                         if(e.target.value != null) {
-                            setTTSModel( (prevState: any) => ({ ...prevState, TTSSpeed: Number(e.target.value as string) }) )
+                            setTTSModel( (prevState: any) => ({ ...prevState, TTSSpeed: Number(e.target.value as string) }) );
+                            handleTTSChange(index, TTSModel.TTSValue, Number(e.target.value as string));
                         }
                     }}
                     value={TTSModel.TTSSpeed}

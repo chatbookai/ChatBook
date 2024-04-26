@@ -15,6 +15,7 @@ import SimpleEdit from 'src/views/workflow/edit/SimpleEdit'
 import PreviewWorkflow from 'src/views/workflow/edit/PreviewWorkflow'
 
 // ** Axios Imports
+import toast from 'react-hot-toast'
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useRouter } from 'next/router'
@@ -57,10 +58,13 @@ const EditWorkflow = (props: any) => {
         updateTime: String(new Date(Date.now()).toLocaleString()),
         mode: 'simple'
       }
-      const PostParams = {name: workflow.name, _id: workflowNew._id, teamId: workflowNew.teamId, intro: workflowNew.intro, avatar: workflowNew.avatar, type: workflowNew.type, flowGroup: workflow.flowGroup, permission: workflowNew.permission, data: workflowNew}
+      const PostParams = {name: workflowNew.name, _id: workflowNew._id, teamId: workflowNew.teamId, intro: workflowNew.intro, avatar: workflowNew.avatar, type: workflowNew.type, flowGroup: workflowNew.flowGroup, permission: workflowNew.permission, data: workflowNew}
       const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/editworkflow', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit", FormSubmit)
       setIsDisabledButton(false)
+      toast.success(t('Save Ai Workflow success') as string, {
+        duration: 2000
+      })
     }
   }
 

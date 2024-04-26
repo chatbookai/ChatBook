@@ -40,11 +40,16 @@ import { generateRandomNumber, downloadJson } from 'src/functions/ChatBook';
 import toast from 'react-hot-toast'
 import { useTranslation } from 'next-i18next';
 
+import axios from 'axios'
+import authConfig from 'src/configs/auth'
+import { useRouter } from 'next/router'
+import { useAuth } from 'src/hooks/useAuth'
+import { CheckPermission } from 'src/functions/ChatBook'
+
 import Fab from '@mui/material/Fab'
 import Box from '@mui/material/Box'
 import Icon from 'src/@core/components/icon'
 import Button from '@mui/material/Button'
-import { useRouter } from 'next/router'
 
 const edgeTypes = {
   bidirectional: BiDirectionalEdge,
@@ -72,12 +77,18 @@ const AdvancedWorkflow = () => {
   const { t } = useTranslation();
   const router = useRouter()
   const { id } = router.query
+  const auth = useAuth()
 
   const [LeftOpen, setLeftOpen] = useState<boolean>(false);
 
   const [nodes, setNodes, onNodesChange] = useNodesState<FlowModuleItemType>([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState<any[]>([]);
-  
+  const [currentWorkflowData, setCurrentWorkflowData] = useState<any>();
+
+  useEffect(() => {
+    CheckPermission(auth, router, false)
+  }, [])
+
   const onConnect = useCallback((params: any) => setEdges((eds) => addEdge(params, eds)), []);
 
   const customOnConnect = (connect: Connection) =>        {
@@ -229,35 +240,40 @@ const AdvancedWorkflow = () => {
     console.log('handleTestWorkFlow:', simpleWorkflowData);
   };
 
-  const handleSaveWorkFlow = () => {
-    const simpleWorkflowData = {
-      ...simpleChat,
-      modules: nodes,
-      edges: edges
+  const handleSaveWorkFlow = async () => {
+    if (auth && auth.user) {
+      const workflowNew = {
+        ...currentWorkflowData,
+        updateTime: String(new Date(Date.now()).toLocaleString()),
+        mode: 'advanced',
+        modules: nodes,
+        edges: edges
+      }
+      const PostParams = {name: workflowNew.name, _id: workflowNew._id, teamId: workflowNew.teamId, intro: workflowNew.intro, avatar: workflowNew.avatar, type: workflowNew.type, flowGroup: workflowNew.flowGroup, permission: workflowNew.permission, data: workflowNew}
+      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/editworkflow', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+      console.log("FormSubmit", FormSubmit)
+      toast.success(t('Save Ai Workflow success') as string, {
+        duration: 2000
+      })
     }
-    toast.success(t('Save Ai Workflow success') as string, {
-      duration: 2000
-    })
-    console.log('handleSaveWorkFlow:', simpleWorkflowData);
-  };
+  }
 
-  
-  
-  useEffect(()=>{
-    const nodesInitial: Node<FlowModuleItemType, string | undefined>[] = simpleChat.modules
-    const edgesInitial: Edge<any[]>[] = simpleChat.edges
-    setEdges(edgesInitial)
-    setNodes(nodesInitial)
+  const fetchData = async function (id: string) {
+    if (auth && auth.user && id) {
+      const CurrentWorkflowDataTemp = await axios.get(authConfig.backEndApiChatBook + '/api/getworkflow/' + id, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      const nodesInitial: Node<FlowModuleItemType, string | undefined>[] = CurrentWorkflowDataTemp.modules
+      const edgesInitial: Edge<any[]>[] = CurrentWorkflowDataTemp.edges
+      setEdges(edgesInitial)
+      setNodes(nodesInitial)
+      setCurrentWorkflowData(CurrentWorkflowDataTemp)
+    }
+  }
 
-    //console.log("nodes edges", edgesInitial)
-    //console.log("nodes nodes", nodesInitial)
-  }, [])
-
-  useEffect(()=>{
-
-    //console.log("nodes edges useEffect", edges)
-    //console.log("nodes nodes useEffect", nodes)
-  }, [edges])
+  useEffect(() => {
+    if(id) {
+      fetchData(String(id))  
+    }
+  }, [id])
 
   useEffect(() => {
     console.log('Nodes changed:', nodes);

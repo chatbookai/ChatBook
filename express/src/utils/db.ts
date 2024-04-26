@@ -274,6 +274,20 @@ export async function initChatBookDb() {
                 UNIQUE(userId, workflowId)
             );
         `);
+        db.run(`
+            CREATE TABLE IF NOT EXISTS publish (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                _id TEXT KEY not null,
+                appId TEXT not null,
+                appName TEXT not null,
+                maxToken TEXT not null,
+                returnReference INTEGER not null default 0,
+                ipLimitPerMinute INTEGER not null default 100,
+                expiredTime TEXT not null,
+                authCheck TEXT not null,
+                lastAccessTime TEXT not null
+            );
+        `);
     });
 }
 

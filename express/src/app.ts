@@ -15,7 +15,7 @@ import llmsRouter from './router/llms'
 import utilsRouter from './router/utils'
 import stabilityRouter from './router/stability'
 import getimgRouter from './router/getimg'
-import workflowRouter from './router/workflow'
+import appRouter from './router/app'
 
 //import seaartRouter from './router/seaart'
 
@@ -43,7 +43,7 @@ app.use('/', llmsRouter);
 app.use('/', utilsRouter);
 app.use('/', getimgRouter);
 app.use('/', stabilityRouter);
-app.use('/', workflowRouter);
+app.use('/', appRouter);
 
 //app.use('/', seaartRouter);
 

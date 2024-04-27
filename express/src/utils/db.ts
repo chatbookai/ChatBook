@@ -249,7 +249,7 @@ export async function initChatBookDb() {
             );
         `);
         db.run(`
-            CREATE TABLE IF NOT EXISTS workflow (
+            CREATE TABLE IF NOT EXISTS app (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 _id TEXT KEY not null,
                 teamId TEXT not null,
@@ -266,12 +266,12 @@ export async function initChatBookDb() {
             );
         `);
         db.run(`
-            CREATE TABLE IF NOT EXISTS userworkflow (
+            CREATE TABLE IF NOT EXISTS userapp (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 userId INTEGER not null default 0,
-                workflowId INTEGER not null default 0,
+                appId INTEGER not null default 0,
                 createtime INTEGER not null default 0,
-                UNIQUE(userId, workflowId)
+                UNIQUE(userId, appId)
             );
         `);
         db.run(`

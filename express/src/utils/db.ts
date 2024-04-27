@@ -73,7 +73,6 @@ export async function initChatBookDb() {
                 UNIQUE(name, userId)
             );
         `);
-        db.run(`insert or ignore into knowledge (id, name, summary, timestamp, userId) values(1, 'Default','Default','`+Date.now()+`', 1);`);
         db.run(`
             CREATE TABLE IF NOT EXISTS chatlog (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -302,6 +301,24 @@ export async function initChatBookDb() {
                 defineFeedback TEXT not null default '',
                 answerAmount INTEGER not null default 0,
                 userId INTEGER not null default 0
+            );
+        `);
+        
+        db.run(`
+            CREATE TABLE IF NOT EXISTS dataset (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                _id TEXT not null,
+                name TEXT not null,
+                avatar TEXT not null default '',
+                type TEXT not null default '',
+                indexModel TEXT not null default '',
+                singleDataUpLimit INTEGER not null default 0,
+                fileDealModel TEXT not null default '',
+                intro TEXT not null default '',
+                permission TEXT not null default '',
+                createTime TEXT not null default '',
+                folder TEXT not null default '',
+                userId INTEGER not null
             );
         `);
     });

@@ -144,7 +144,6 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
   export async function addPublish(Params: any) {
     try{
-      //{open: false, name: '', maxToken: 16000, returnReference: 0, ipLimitPerMinute: 100, expiredTime: '', authCheck: '',}
       Params._id = getNanoid(32)
       Params.name = filterString(Params.name)
       Params.maxToken = filterString(Params.maxToken)
@@ -181,10 +180,15 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     try{
       Params._id = filterString(Params._id)
       Params.name = filterString(Params.name)
-      Params.summary = filterString(Params.summary)
-      const formatDateValue = formatDate(Date.now())
-      const updateSetting = db.prepare('update publish set title = ?, description = ?, tags = ?, config = ?, avatar = ?, author = ?, createDate = ?, status = ?, model = ?, type = ? where _id = ? and appId = ?');
-      updateSetting.run(Params.name, Params.description, Params.tags, Params.config, Params.avatar, Params.author, formatDateValue, Params.status, Params.model, Params.type, Params._id, Params.appId);
+      Params.maxToken = filterString(Params.maxToken)
+      Params.returnReference = filterString(Params.returnReference)
+      Params.ipLimitPerMinute = filterString(Params.ipLimitPerMinute)
+      Params.expiredTime = filterString(Params.expiredTime)
+      Params.authCheck = filterString(Params.authCheck)
+      Params.userId = filterString(Params.userId)
+      Params.appId = filterString(Params.appId)
+      const updateSetting = db.prepare('update publish set name = ?, maxToken = ?, returnReference = ?, ipLimitPerMinute = ?, expiredTime = ? where _id = ? and appId = ? and userId = ?');
+      updateSetting.run(Params.name, Params.maxToken, Params.returnReference, Params.ipLimitPerMinute, Params.expiredTime, Params._id, Params.appId, Params.userId);
       updateSetting.finalize();
     }
     catch (error: any) {
@@ -198,8 +202,9 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     try{
       Params._id = filterString(Params._id)
       Params.appId = filterString(Params.appId)
-      const updateSetting = db.prepare('delete from publish where _id = ? and appId = ? ');
-      updateSetting.run(Params._id, Params.appId);
+      Params.userId = filterString(Params.userId)
+      const updateSetting = db.prepare('delete from publish where _id = ? and appId = ? and userId = ?');
+      updateSetting.run(Params._id, Params.appId, Params.userId);
       updateSetting.finalize();
     }
     catch (error: any) {

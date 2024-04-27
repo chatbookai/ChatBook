@@ -336,7 +336,8 @@
   "ipLimitPerMinute": "IP限流",
   "expiredTime": "过期时间",
   "authCheck": "身份校验",
-  "lastAccessTime": "最近访问时间"
+  "lastAccessTime": "最近访问时间",
+  "BeginUsing":"开始使用"
 
   
   

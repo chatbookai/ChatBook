@@ -47,8 +47,8 @@ const PublishAppNewEdit = (props: any) => {
         }>
             <DialogTitle>
                 <Box display="flex" alignItems="center">
-                <Avatar src={'/imgs/modal/shareFill.svg'} variant="rounded" sx={{ width: '25px', height: '25px', pl: 1}} />
-                <Typography sx={{pl: 2}}>{t("Create Link") as string}</Typography>
+                <Avatar src={pageData.FormTitleIcon} variant="rounded" sx={{ width: '25px', height: '25px', pl: 1}} />
+                <Typography sx={{pl: 2}}>{t(pageData.FormTitle) as string}</Typography>
                 <Box position={'absolute'} right={'5px'} top={'1px'}>
                     <IconButton size="small" edge="end" onClick={
                         () => { setPageData( (prevState: any) => ({ ...prevState, open: false }) ) }
@@ -161,7 +161,7 @@ const PublishAppNewEdit = (props: any) => {
                 <Button size="small" variant='contained' onClick={
                     () => { handleSubmit() }
                 }>
-                {t("Add")}
+                {t(pageData.FormSubmit)}
                 </Button>
             </DialogActions>
         </Dialog>

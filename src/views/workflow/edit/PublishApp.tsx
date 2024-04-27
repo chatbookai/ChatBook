@@ -8,10 +8,14 @@ import Button from '@mui/material/Button'
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
 
+import Link from 'next/link'
+
 // ** MUI Imports
+import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
-import Divider from '@mui/material/Divider'
+import Tooltip from '@mui/material/Tooltip'
+import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import CardHeader from '@mui/material/CardHeader'
 import CardContent from '@mui/material/CardContent'
@@ -59,7 +63,7 @@ const PublishApp = (props: any) => {
     CheckPermission(auth, router, false)
   }, [])
 
-  const [pageData, setPageData] = useState<any>({open: false, name: '', maxToken: 16000, returnReference: 0, ipLimitPerMinute: 100, expiredTime: '', authCheck: '', appId: appId })
+  const [pageData, setPageData] = useState<any>({open: false, name: '', maxToken: 16000, returnReference: 0, ipLimitPerMinute: 100, expiredTime: '', authCheck: '', appId: appId, FormAction: 'addpublish', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg' })
 
   const isMobileData = isMobile()
   
@@ -160,46 +164,45 @@ const PublishApp = (props: any) => {
         return (
           <Typography noWrap variant='body2' >
             {row.expiredTime}
-          </Typography>
-        )
-      }
-    },
-    {
-      flex: 0.1,
-      minWidth: 100,
-      field: 'authCheck',
-      headerName: `${t(`authCheck`)}`,
-      sortable: false,
-      filterable: false,
-      renderCell: ({ row }: any) => {
-        return (
-          <Typography noWrap variant='body2' >
-            {row.authCheck}
-          </Typography>
-        )
-      }
-    },
-    {
-      flex: 0.1,
-      minWidth: 100,
-      field: 'lastAccessTime',
-      headerName: `${t(`lastAccessTime`)}`,
-      sortable: false,
-      filterable: false,
-      renderCell: ({ row }: any) => {
-        return (
-          <Typography noWrap variant='body2' >
             {row.lastAccessTime}
           </Typography>
         )
       }
+    },
+    {
+      flex: 0.16,
+      minWidth: 130,
+      sortable: false,
+      field: 'actions',
+      headerName: 'Actions',
+      renderCell: ({ row }: any) => (
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+          <Button sx={{ my: 3, mr: 5 }} size="small" variant='outlined' onClick={
+                        () => {  }
+                    }>
+            {t("BeginUsing")}
+          </Button>
+          <Tooltip title={t('Edit')}>
+            <IconButton size='small' onClick={
+                        () => { setPageData( () => ({ ...row, open: true, FormAction: 'editpublish', FormTitle: 'Edit', FormSubmit: 'Save', FormTitleIcon: '/imgs/modal/shareFill.svg' }) ) }
+                    }>
+              <Icon icon='mdi:edit-outline' fontSize={20} />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title={t('Delete')}>
+            <IconButton size='small' onClick={() => {}}>
+              <Icon icon='mdi:delete-outline' fontSize={20} />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      )
     }
   ]
 
   const handleSubmit = async () => {
 
     if (auth && auth.user) {
-      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/addpublish', pageData, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/' + pageData.FormAction, pageData, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit:", FormSubmit)
       if(FormSubmit?.status == "ok") {
           toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
@@ -227,7 +230,7 @@ const PublishApp = (props: any) => {
                 <Grid item xs={12} lg={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography sx={{ my: 3, ml: 5 }}>{t('NotNeedLoginWindow')}</Typography>
                     <Button sx={{ my: 3, mr: 5 }} size="small" variant='outlined' onClick={
-                        () => { setPageData( (prevState: any) => ({ ...prevState, open: true }) ) }
+                        () => { setPageData( (prevState: any) => ({ ...prevState, open: true, FormAction: 'addpublish', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg' }) ) }
                     }>
                     {t("Add")}
                     </Button>

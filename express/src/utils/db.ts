@@ -289,6 +289,21 @@ export async function initChatBookDb() {
                 userId INTEGER not null default 0
             );
         `);
+        db.run(`
+            CREATE TABLE IF NOT EXISTS appchatlog (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                _id TEXT KEY not null,
+                appId TEXT not null,
+                name TEXT not null default '',
+                source TEXT not null default '',
+                time TEXT not null default '',
+                totalMsg INTEGER not null default 0,
+                userFeedback TEXT not null default '',
+                defineFeedback TEXT not null default '',
+                answerAmount INTEGER not null default 0,
+                userId INTEGER not null default 0
+            );
+        `);
     });
 }
 

@@ -16,6 +16,7 @@ import utilsRouter from './router/utils'
 import stabilityRouter from './router/stability'
 import getimgRouter from './router/getimg'
 import appRouter from './router/app'
+import datasetRouter from './router/dataset'
 
 //import seaartRouter from './router/seaart'
 
@@ -44,6 +45,7 @@ app.use('/', utilsRouter);
 app.use('/', getimgRouter);
 app.use('/', stabilityRouter);
 app.use('/', appRouter);
+app.use('/', datasetRouter);
 
 //app.use('/', seaartRouter);
 

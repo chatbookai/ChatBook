@@ -188,22 +188,17 @@ const MyApp = () => {
     if (auth && auth.user) {
       setNewOpen(false)
       const code = getNanoid(32)
-      let simpleChatNew: any = {}
-      if(AppNewForm.flowType == 'simpleChat')  {
-        simpleChatNew = {
-          ...simpleChat,
-          id: code,
-          _id: code,
-          teamId: code,
-          updateTime: String(new Date(Date.now()).toLocaleString())
-        }
+      let simpleAppNewForm: any = {}
+      simpleAppNewForm = {
+        ...AppNewForm,
+        _id: code,
       }
-      const PostParams = {name: AppNewForm.name, _id: simpleChatNew._id, teamId: simpleChatNew.teamId, intro: simpleChatNew.intro, avatar: simpleChatNew.avatar, type: simpleChatNew.type, flowGroup: AppNewForm.flowGroup, permission: simpleChatNew.permission, data: simpleChatNew}
-      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/addapp', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+      const PostParams = {name: simpleAppNewForm.name, _id: simpleAppNewForm._id, intro: simpleAppNewForm.intro, avatar: simpleAppNewForm.avatar, type: simpleAppNewForm.type, vectorModel: simpleAppNewForm.vectorModel, fileDealModel: simpleAppNewForm.fileDealModel}
+      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/adddataset', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit", FormSubmit)
       if(FormSubmit && FormSubmit.status == 'ok' && code)  {
         toast.success(t(FormSubmit.msg) as string, { duration: 2500 })
-        router.push('/app/edit/' + code)
+        router.push('/dataset/edit/' + code)
       }
     }
   }

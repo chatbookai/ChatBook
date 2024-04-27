@@ -476,9 +476,13 @@ export function writeFile(Dir: string, FileName: string, FileContent: string, Ma
   }
 }
 
-export function filterString(input: number | string) {
+export function filterString(input: number | string | undefined) {
   log("filterString input:", input)
-  if (typeof input === 'number') {
+  if(input == undefined)              {
+
+    return '';
+  }
+  else if (typeof input === 'number') {
 
     return input;
   } 

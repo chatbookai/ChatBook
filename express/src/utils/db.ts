@@ -311,7 +311,7 @@ export async function initChatBookDb() {
                 name TEXT not null,
                 avatar TEXT not null default '',
                 type TEXT not null default '',
-                indexModel TEXT not null default '',
+                vectorModel TEXT not null default '',
                 singleDataUpLimit INTEGER not null default 0,
                 fileDealModel TEXT not null default '',
                 intro TEXT not null default '',

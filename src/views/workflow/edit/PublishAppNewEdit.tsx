@@ -17,13 +17,7 @@ import Avatar from '@mui/material/Avatar'
 import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
 import InputLabel from '@mui/material/InputLabel'
-import Slider from '@mui/material/Slider'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
-
-import { llms } from 'src/functions/llms'
-
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close';
@@ -42,20 +36,20 @@ const PublishAppNewEdit = (props: any) => {
 
 
     return (
-        <Dialog fullWidth open={pageData.open} onClose={
-            () => { setPageData( (prevState: any) => ({ ...prevState, open: false }) ) }
+        <Dialog fullWidth open={pageData.openEdit} onClose={
+            () => { setPageData( (prevState: any) => ({ ...prevState, openEdit: false }) ) }
         }>
             <DialogTitle>
                 <Box display="flex" alignItems="center">
-                <Avatar src={pageData.FormTitleIcon} variant="rounded" sx={{ width: '25px', height: '25px', pl: 1}} />
-                <Typography sx={{pl: 2}}>{t(pageData.FormTitle) as string}</Typography>
-                <Box position={'absolute'} right={'5px'} top={'1px'}>
-                    <IconButton size="small" edge="end" onClick={
-                        () => { setPageData( (prevState: any) => ({ ...prevState, open: false }) ) }
-                    } aria-label="close">
-                    <CloseIcon />
-                    </IconButton>
-                </Box>
+                    <Avatar src={pageData.FormTitleIcon} variant="rounded" sx={{ width: '25px', height: '25px', pl: 1}} />
+                    <Typography sx={{pl: 2}}>{t(pageData.FormTitle) as string}</Typography>
+                    <Box position={'absolute'} right={'5px'} top={'1px'}>
+                        <IconButton size="small" edge="end" onClick={
+                            () => { setPageData( (prevState: any) => ({ ...prevState, openEdit: false }) ) }
+                        } aria-label="close">
+                        <CloseIcon />
+                        </IconButton>
+                    </Box>
                 </Box>
             </DialogTitle>
             <DialogContent sx={{  }}>
@@ -154,7 +148,7 @@ const PublishAppNewEdit = (props: any) => {
             </DialogContent>
             <DialogActions>
                 <Button size="small" variant='outlined' onClick={
-                    () => { setPageData( (prevState: any) => ({ ...prevState, open: false }) ) }
+                    () => { setPageData( (prevState: any) => ({ ...prevState, openEdit: false }) ) }
                 }>
                 {t("Close")}
                 </Button>

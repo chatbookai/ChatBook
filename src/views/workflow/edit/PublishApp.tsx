@@ -8,8 +8,6 @@ import Button from '@mui/material/Button'
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
 
-import Link from 'next/link'
-
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
@@ -17,22 +15,7 @@ import Grid from '@mui/material/Grid'
 import Tooltip from '@mui/material/Tooltip'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import CardHeader from '@mui/material/CardHeader'
-import CardContent from '@mui/material/CardContent'
-import Table from '@mui/material/Table'
-import TableRow from '@mui/material/TableRow'
-import TableCell from '@mui/material/TableCell'
-import TableBody from '@mui/material/TableBody'
-import TableContainer from '@mui/material/TableContainer'
-
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
-import InputLabel from '@mui/material/InputLabel'
-import FormControl from '@mui/material/FormControl'
-
-import InputAdornment from '@mui/material/InputAdornment'
-import TextField from '@mui/material/TextField'
 
 // ** Next Import
 import { useRouter } from 'next/router'
@@ -50,6 +33,7 @@ import { isMobile } from 'src/configs/functions'
 import { CheckPermission, GetAllLLMS } from 'src/functions/ChatBook'
 
 import PublishAppNewEdit from './PublishAppNewEdit'
+import PublishAppDelete from './PublishAppDelete'
 
 
 const PublishApp = (props: any) => {
@@ -63,7 +47,7 @@ const PublishApp = (props: any) => {
     CheckPermission(auth, router, false)
   }, [])
 
-  const [pageData, setPageData] = useState<any>({open: false, name: '', maxToken: 16000, returnReference: 0, ipLimitPerMinute: 100, expiredTime: '', authCheck: '', appId: appId, FormAction: 'addpublish', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg' })
+  const [pageData, setPageData] = useState<any>({name: '', maxToken: 16000, returnReference: 0, ipLimitPerMinute: 100, expiredTime: '', authCheck: '', appId: appId, FormAction: 'addpublish', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg', openEdit: false, openDelete: false })
 
   const isMobileData = isMobile()
   
@@ -184,13 +168,15 @@ const PublishApp = (props: any) => {
           </Button>
           <Tooltip title={t('Edit')}>
             <IconButton size='small' onClick={
-                        () => { setPageData( () => ({ ...row, open: true, FormAction: 'editpublish', FormTitle: 'Edit', FormSubmit: 'Save', FormTitleIcon: '/imgs/modal/shareFill.svg' }) ) }
+                        () => { setPageData( () => ({ ...row, openEdit: true, FormAction: 'editpublish', FormTitle: 'Edit', FormSubmit: 'Save', FormTitleIcon: '/imgs/modal/shareFill.svg' }) ) }
                     }>
               <Icon icon='mdi:edit-outline' fontSize={20} />
             </IconButton>
           </Tooltip>
           <Tooltip title={t('Delete')}>
-            <IconButton size='small' onClick={() => {}}>
+            <IconButton size='small' onClick={
+                        () => { setPageData( () => ({ ...row, openDelete: true, FormAction: 'deletepublish', FormTitle: 'Delete', FormSubmit: 'Confirm', FormTitleIcon: '/imgs/modal/shareFill.svg' }) ) }
+                    }>
               <Icon icon='mdi:delete-outline' fontSize={20} />
             </IconButton>
           </Tooltip>
@@ -206,7 +192,7 @@ const PublishApp = (props: any) => {
       console.log("FormSubmit:", FormSubmit)
       if(FormSubmit?.status == "ok") {
           toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
-          setPageData({open: false, name: '', maxToken: 16000, returnReference: 0, ipLimitPerMinute: 100, expiredTime: '', authCheck: '', appId: appId})
+          setPageData({openEdit: false, name: '', maxToken: 16000, returnReference: 0, ipLimitPerMinute: 100, expiredTime: '', authCheck: '', appId: appId})
       }
       else {
           toast.error(t(FormSubmit.msg) as string, { duration: 4000 })
@@ -230,7 +216,7 @@ const PublishApp = (props: any) => {
                 <Grid item xs={12} lg={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Typography sx={{ my: 3, ml: 5 }}>{t('NotNeedLoginWindow')}</Typography>
                     <Button sx={{ my: 3, mr: 5 }} size="small" variant='outlined' onClick={
-                        () => { setPageData( (prevState: any) => ({ ...prevState, open: true, FormAction: 'addpublish', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg' }) ) }
+                        () => { setPageData( (prevState: any) => ({ ...prevState, openEdit: true, FormAction: 'addpublish', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg' }) ) }
                     }>
                     {t("Add")}
                     </Button>
@@ -251,6 +237,8 @@ const PublishApp = (props: any) => {
                     disableColumnMenu={true}
                 />
                 <PublishAppNewEdit pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit}/>
+                <PublishAppDelete pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit}/>
+                
             </Grid>
           </Card>
         </Grid>

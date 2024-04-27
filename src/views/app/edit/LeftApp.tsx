@@ -5,6 +5,7 @@ import { useState, useEffect, ReactNode } from 'react'
 import Box from '@mui/material/Box'
 import List from '@mui/material/List'
 import Badge from '@mui/material/Badge'
+import Button from '@mui/material/Button'
 import Drawer from '@mui/material/Drawer'
 import Avatar from '@mui/material/Avatar'
 import ListItem from '@mui/material/ListItem'
@@ -28,13 +29,7 @@ const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: bool
   }
 }
 
-/*
-"External": "外部使用",
-        "Flow mode": "高级编排",
-        "Publish": "发布",
-        "Publish app": "发布应用",
-        "Simple mode": "简易配置"
-        */
+
 const AppMenuList = [
           {id: 1, path: 'edit', name: '简易配置', avatar: '/icons/core/modules/basicNode.svg'},
           {id: 2, path: 'advanced', name: '高级编排', avatar: '/icons/core/modules/systemPlugin.svg'},
@@ -135,43 +130,16 @@ const LeftApp = (props: any) => {
   }
 
   return (
-    <div>
-      <Drawer
-        open={true}
-        variant={'permanent'}
-        ModalProps={{
-          disablePortal: true,
-          keepMounted: true // Better open performance on mobile.
-        }}
-        sx={{
-          zIndex: 7,
-          height: '100%',
-          display: 'block',
-          position: 'static',
-          '& .MuiDrawer-paper': {
-            boxShadow: 'none',
-            width: 190,
-            position:'static',
-            borderTopLeftRadius: theme => theme.shape.borderRadius,
-            borderBottomLeftRadius: theme => theme.shape.borderRadius
-          },
-          '& > .MuiBackdrop-root': {
-            borderRadius: 1,
-            position: 'absolute',
-            zIndex: theme => theme.zIndex.drawer - 1
-          }
-        }}
-      >
-        <Box sx={{ height: `calc(100% - 4.125rem)` }}>
-          <ScrollWrapper hidden={hidden}>
-            <Box sx={{ p: theme => theme.spacing(3, 3, 3) }}>
-              <List sx={{ mb: 4, p: 0 }}>{renderChats()}</List>
-            </Box>
-          </ScrollWrapper>
+    <Box sx={{ height: `calc(100% - 4.125rem)`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+      <ScrollWrapper hidden={hidden} style={{ flexGrow: 1 }}>
+        <Box sx={{ p: theme => theme.spacing(3, 3, 3) }}>
+          <List sx={{ mb: 4, p: 0 }}>{renderChats()}</List>
         </Box>
-      </Drawer>
-
-    </div>
+      </ScrollWrapper>
+      <Button variant="contained" color="primary" sx={{ m: 2 }}>
+        {t('My App')}
+      </Button>
+    </Box>
   )
 }
 

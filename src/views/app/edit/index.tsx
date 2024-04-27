@@ -14,6 +14,7 @@ import LeftApp from 'src/views/app/edit/LeftApp'
 import SimpleEdit from 'src/views/app/edit/SimpleEdit'
 import PreviewApp from 'src/views/app/edit/PreviewApp'
 import PublishApp from 'src/views/app/edit/PublishApp'
+import ChatlogApp from 'src/views/app/edit/ChatlogApp'
 
 // ** Axios Imports
 import toast from 'react-hot-toast'
@@ -115,7 +116,7 @@ const EditApp = (props: any) => {
 
         {menuid == 'chatlog' ?
         <Fragment>
-          <SimpleEdit app={app} setApp={setApp} handleEditApp={handleEditApp} isDisabledButton={isDisabledButton} />
+          <ChatlogApp appId={app?._id} />
         </Fragment>
         :
         null
@@ -123,8 +124,7 @@ const EditApp = (props: any) => {
 
         {menuid == 'chat' ?
         <Fragment>
-          <SimpleEdit app={app} setApp={setApp} handleEditApp={handleEditApp} isDisabledButton={isDisabledButton} />
-          <PreviewApp app={app} hidden={false} />
+          <ChatlogApp appId={app?._id} />
         </Fragment>
         :
         null

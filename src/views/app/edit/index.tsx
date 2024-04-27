@@ -63,7 +63,7 @@ const EditApp = (props: any) => {
       const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/editapp', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit", FormSubmit)
       setIsDisabledButton(false)
-      toast.success(t('Save Ai App success') as string, {
+      toast.success(t('Update success') as string, {
         duration: 2000
       })
     }

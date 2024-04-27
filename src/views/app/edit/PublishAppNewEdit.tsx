@@ -24,7 +24,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 const PublishAppNewEdit = (props: any) => {
     // ** Props
-    const {pageData, setPageData, handleSubmit } = props
+    const {pageData, setPageData, handleSubmit, isDisabledButton } = props
 
     // ** Hook
     const { t } = useTranslation()
@@ -147,12 +147,12 @@ const PublishAppNewEdit = (props: any) => {
 
             </DialogContent>
             <DialogActions>
-                <Button size="small" variant='outlined' onClick={
+                <Button size="small" variant='outlined' disabled={isDisabledButton} onClick={
                     () => { setPageData( (prevState: any) => ({ ...prevState, openEdit: false }) ) }
                 }>
                 {t("Close")}
                 </Button>
-                <Button size="small" variant='contained' onClick={
+                <Button size="small" variant='contained' disabled={isDisabledButton} onClick={
                     () => { handleSubmit() }
                 }>
                 {t(pageData.FormSubmit)}

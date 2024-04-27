@@ -173,7 +173,10 @@ const NewApp = ({ NewOpen, setNewOpen, handleAddApp, AppNewForm, setAppNewForm }
             {t("Cancel")}
             </Button>
             <Button size="small" variant='contained' onClick={
-                () => { handleAddApp() }
+                () => { 
+                    setNewOpen(false)
+                    handleAddApp() 
+                }
             }>
             {t("Confirm")}
             </Button>

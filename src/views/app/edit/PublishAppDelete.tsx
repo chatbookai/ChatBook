@@ -27,7 +27,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 const PublishAppDelete = (props: any) => {
     // ** Props
-    const {pageData, setPageData, handleSubmit } = props
+    const {pageData, setPageData, handleSubmit, isDisabledButton } = props
 
     // ** Hook
     const { t } = useTranslation()
@@ -66,12 +66,12 @@ const PublishAppDelete = (props: any) => {
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-            <Button size="small" variant='outlined' onClick={
+            <Button size="small" variant='outlined' disabled={isDisabledButton} onClick={
                 () => { setPageData( (prevState: any) => ({ ...prevState, openDelete: false }) ) }
             }>
             {t("Cancel")}
             </Button>
-            <Button size="small" variant='contained' onClick={
+            <Button size="small" variant='contained' disabled={isDisabledButton} onClick={
                 () => { 
                     setPageData( (prevState: any) => ({ ...prevState, FormAction: 'deletepublish' }) )
                     handleSubmit()

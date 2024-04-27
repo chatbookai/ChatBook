@@ -11,7 +11,8 @@ import { useAuth } from 'src/hooks/useAuth'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import { getNanoid } from 'src/functions/app/string.tools'
-import { simpleChat } from '../data/simpleChat';
+import { simpleChat } from '../data/simpleChat'
+import { useRouter } from 'next/router'
 
 
 const MyApp = () => {
@@ -19,6 +20,7 @@ const MyApp = () => {
   // ** Hook
   const auth = useAuth()
   const { t } = useTranslation()
+  const router = useRouter()
   
   const [pageid, setPageid] = useState<number>(0)
   const [show, setShow] = useState<boolean>(false)
@@ -183,8 +185,9 @@ const MyApp = () => {
 
   const handleAddApp = async () => {
     console.log("AppNewForm", AppNewForm)
-    //Backend Api
+    
     if (auth && auth.user) {
+      setNewOpen(false)
       const code = getNanoid(32)
       let simpleChatNew: any = {}
       if(AppNewForm.flowType == 'simpleChat')  {
@@ -199,6 +202,10 @@ const MyApp = () => {
       const PostParams = {name: AppNewForm.name, _id: simpleChatNew._id, teamId: simpleChatNew.teamId, intro: simpleChatNew.intro, avatar: simpleChatNew.avatar, type: simpleChatNew.type, flowGroup: AppNewForm.flowGroup, permission: simpleChatNew.permission, data: simpleChatNew}
       const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/addapp', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit", FormSubmit)
+      if(FormSubmit && FormSubmit.status == 'ok' && code)  {
+        toast.success(t(FormSubmit.msg) as string, { duration: 2500 })
+        router.push('/app/edit/' + code)
+      }
     }
   }
 

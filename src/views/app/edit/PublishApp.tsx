@@ -47,6 +47,7 @@ const PublishApp = (props: any) => {
     CheckPermission(auth, router, false)
   }, [])
 
+  const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
   const [pageData, setPageData] = useState<any>({name: '', maxToken: 16000, returnReference: 0, ipLimitPerMinute: 100, expiredTime: '', authCheck: '', appId: appId, FormAction: 'addpublish', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg', openEdit: false, openDelete: false })
 
   const isMobileData = isMobile()
@@ -187,7 +188,8 @@ const PublishApp = (props: any) => {
 
   const handleSubmit = async () => {
 
-    if (auth && auth.user) {
+    if (auth && auth.user && pageData && pageData.FormAction) {
+      setIsDisabledButton(true)
       const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/' + pageData.FormAction, pageData, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit:", FormSubmit)
       if(FormSubmit?.status == "ok") {
@@ -201,6 +203,7 @@ const PublishApp = (props: any) => {
           }
       }
       setCounter(counter + 1)
+      setIsDisabledButton(false)
     }
 
   }
@@ -236,8 +239,8 @@ const PublishApp = (props: any) => {
                     onPaginationModelChange={setPaginationModel}
                     disableColumnMenu={true}
                 />
-                <PublishAppNewEdit pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit}/>
-                <PublishAppDelete pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit}/>
+                <PublishAppNewEdit pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit} isDisabledButton={isDisabledButton}/>
+                <PublishAppDelete pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit} isDisabledButton={isDisabledButton}/>
                 
             </Grid>
           </Card>

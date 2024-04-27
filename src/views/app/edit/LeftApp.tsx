@@ -130,13 +130,13 @@ const LeftApp = (props: any) => {
   }
 
   return (
-    <Box sx={{ height: `calc(100% - 4.125rem)`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-      <ScrollWrapper hidden={hidden} style={{ flexGrow: 1 }}>
+    <Box sx={{ height: `calc(100% - 1.125rem)`, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+      <ScrollWrapper hidden={hidden}>
         <Box sx={{ p: theme => theme.spacing(3, 3, 3) }}>
           <List sx={{ mb: 4, p: 0 }}>{renderChats()}</List>
         </Box>
       </ScrollWrapper>
-      <Button variant="contained" color="primary" sx={{ m: 2 }}>
+      <Button variant="contained" color="primary" sx={{ m: 0 }}>
         {t('My App')}
       </Button>
     </Box>

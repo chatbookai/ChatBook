@@ -2,6 +2,7 @@
 import { Fragment, useState, useEffect } from 'react'
 
 // ** MUI Imports
+import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
@@ -28,6 +29,7 @@ import Icon from 'src/@core/components/icon'
 import toast from 'react-hot-toast'
 
 // ** Third Party Import
+import PerfectScrollbar from 'react-perfect-scrollbar'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from 'src/hooks/useAuth'
 import { CheckPermission } from 'src/functions/ChatBook'

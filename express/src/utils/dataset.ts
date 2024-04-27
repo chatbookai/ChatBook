@@ -79,19 +79,19 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     const idFilter = filterString(id)
     const userIdFilter = Number(userId)
     
-    const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT data from dataset where _id = ? and userId = ? `, [idFilter, userIdFilter]) as any[];
+    const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from dataset where _id = ? and userId = ? `, [idFilter, userIdFilter]) as any[];
     
     let Template: any = {}
     if(SettingRS)  {
       SettingRS.map((Item: any)=>{
-        Template = JSON.parse(Item.data)
+        Template = Item
       })
     }
   
     return Template
   }
 
-  export async function getCollectionPageByApp(appId: string, pageid: number, pagesize: number, userId: number) {
+  export async function getCollectionPageByCollection(appId: string, pageid: number, pagesize: number, userId: number) {
     const appIdFileter = filterString(appId)
     const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;

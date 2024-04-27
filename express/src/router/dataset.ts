@@ -3,7 +3,7 @@
   import express, { Request, Response } from 'express';
 
   import { checkUserToken } from '../utils/user';
-  import { addDataset, editDataset, deleteDataset, getDataset, addPublish, editPublish, deletePublish, getPublish, getCollectionPageByApp, getCollectionAll } from '../utils/dataset';
+  import { addDataset, editDataset, deleteDataset, getDataset, addPublish, editPublish, deletePublish, getPublish, getCollectionPageByCollection, getCollectionAll } from '../utils/dataset';
  
   const app = express();
 
@@ -69,7 +69,7 @@
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
-        const getCollectionPageData: any = await getCollectionPageByApp(appId, Number(pageid), Number(pagesize), checkUserTokenData.data.id);
+        const getCollectionPageData: any = await getCollectionPageByCollection(appId, Number(pageid), Number(pagesize), checkUserTokenData.data.id);
         res.status(200).json(getCollectionPageData);
     }
     else {

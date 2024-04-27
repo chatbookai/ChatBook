@@ -35,7 +35,7 @@ const MyApp = () => {
   const [search, setSearch] = useState<string>("ALL")
 
   useEffect(() => {
-    getApp(type, search)
+    getDataset(type, search)
     getUserAgents()    
   }, [type, search])
 
@@ -47,7 +47,7 @@ const MyApp = () => {
     setSearch(Item)
   }
 
-  const getApp = async function (type: string, search: string) {
+  const getDataset = async function (type: string, search: string) {
     console.log("loadingAllData", loadingAllData)
     if(loadingAllData == false)  {
       const pagesize = 20
@@ -162,7 +162,7 @@ const MyApp = () => {
     const handleScroll = () => {
       if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight) return;
       setPageid(pageid + 1)
-      getApp(type, search);
+      getDataset(type, search);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -198,7 +198,7 @@ const MyApp = () => {
       console.log("FormSubmit", FormSubmit)
       if(FormSubmit && FormSubmit.status == 'ok' && code)  {
         toast.success(t(FormSubmit.msg) as string, { duration: 2500 })
-        router.push('/dataset/edit/' + code)
+        router.push('/dataset/collection/' + code)
       }
     }
   }

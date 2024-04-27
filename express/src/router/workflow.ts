@@ -126,8 +126,8 @@
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         console.log("checkUserTokenData deletepublish", checkUserTokenData)
-        const editPublishData: any = await editPublish({...req.body, userId: checkUserTokenData.data.id});
-        res.status(200).json(editPublishData);
+        const deletePublishData: any = await deletePublish({...req.body, userId: checkUserTokenData.data.id});
+        res.status(200).json(deletePublishData);
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});

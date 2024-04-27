@@ -62,7 +62,7 @@ const PublishAppDelete = (props: any) => {
         </DialogTitle>
         <DialogContent>
           <DialogContentText id='alert-dialog-description'>
-            {t('Do you want to delete this record ?')}
+            {t('Do you want to delete this record')}
           </DialogContentText>
         </DialogContent>
         <DialogActions>
@@ -72,7 +72,10 @@ const PublishAppDelete = (props: any) => {
             {t("Cancel")}
             </Button>
             <Button size="small" variant='contained' onClick={
-                () => { handleSubmit() }
+                () => { 
+                    setPageData( (prevState: any) => ({ ...prevState, FormAction: 'deletepublish' }) )
+                    handleSubmit()
+                    }
             }>
             {t(pageData.FormSubmit)}
             </Button>

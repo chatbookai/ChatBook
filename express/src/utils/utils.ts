@@ -57,7 +57,7 @@ export async function setOpenAISetting(Params: any) {
     log('Error setOpenAISetting:', error.message);
   }
 
-  return {"status":"ok", "msg":"Updated Success"}
+  return {"status":"ok", "msg":"Update Success"}
 }
 
 export async function getTemplate(knowledgeId: number | string, userId: string) {
@@ -90,7 +90,7 @@ export async function setTemplate(Params: any) {
     log('Error setOpenAISetting:', error.message);
   }
 
-  return {"status":"ok", "msg":"Updated Success"}
+  return {"status":"ok", "msg":"Update Success"}
 }
 
 export async function addKnowledge(Params: any) {
@@ -135,7 +135,7 @@ export async function addKnowledge(Params: any) {
     log('Error setOpenAISetting:', error.message);
   }
 
-  return {"status":"ok", "msg":"Updated Success"}
+  return {"status":"ok", "msg":"Update Success"}
 }
 
 export async function setKnowledge(Params: any) {
@@ -151,7 +151,7 @@ export async function setKnowledge(Params: any) {
     log('Error setOpenAISetting:', error.message);
   }
 
-  return {"status":"ok", "msg":"Updated Success"}
+  return {"status":"ok", "msg":"Update Success"}
 }
 
 export function uploadfiles() {
@@ -721,7 +721,7 @@ export async function addAgent(Params: any) {
     if(RecordId > 0) {
       Params.id = RecordId
       editAgent(Params)
-      return {"status":"ok", "msg":"Updated Success"}
+      return {"status":"ok", "msg":"Update Success"}
     }
     else {
       const formatDateValue = formatDate(Date.now())
@@ -751,7 +751,7 @@ export async function editAgent(Params: any) {
     log('Error setOpenAISetting:', error.message);
   }
 
-  return {"status":"ok", "msg":"Updated Success"}
+  return {"status":"ok", "msg":"Update Success"}
 }
 
 export const getNanoid = (size = 12) => {

@@ -57,24 +57,22 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       log('Error setOpenAISetting:', error.message);
     }
   
-    return {"status":"ok", "msg":"Updated Success"}
+    return {"status":"ok", "msg":"Update Success"}
   }
   
   export async function deleteWorkflow(Params: any) {
     try{
-      Params.id = Number(Params.id)
-      Params.name = filterString(Params.name)
-      Params.summary = filterString(Params.summary)
-      const formatDateValue = formatDate(Date.now())
-      const updateSetting = db.prepare('update workflow set title = ?, description = ?, tags = ?, config = ?, avatar = ?, author = ?, createDate = ?, status = ?, model = ?, type = ? where id = ?');
-      updateSetting.run(Params.title, Params.description, Params.tags, Params.config, Params.avatar, Params.author, formatDateValue, Params.status, Params.model, Params.type, Params.id);
-      updateSetting.finalize();
+      Params._id = filterString(Params._id)
+      Params.userId = filterString(Params.userId)
+      const deleteSetting = db.prepare('delete from workflow where _id = ? and userId = ?');
+      deleteSetting.run(Params._id, Params.userId);
+      deleteSetting.finalize();
     }
     catch (error: any) {
       log('Error setOpenAISetting:', error.message);
     }
   
-    return {"status":"ok", "msg":"Updated Success"}
+    return {"status":"ok", "msg":"Update Success"}
   }
   
   export async function getWorkflow(id: string, userId: string) {
@@ -161,7 +159,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       if(RecordId > 0) {
         Params.id = RecordId
         editPublish(Params)
-        return {"status":"ok", "msg":"Updated Success"}
+        return {"status":"ok", "msg":"Update Success"}
       }
       else {
         const insertSetting = db.prepare('INSERT OR IGNORE INTO publish (_id, appId, name, maxToken, returnReference, ipLimitPerMinute, expiredTime, authCheck, userId, lastAccessTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
@@ -195,7 +193,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       log('Error setOpenAISetting:', error.message);
     }
 
-    return {"status":"ok", "msg":"Updated Success"}
+    return {"status":"ok", "msg":"Update Success"}
   }
 
   export async function deletePublish(Params: any) {
@@ -206,12 +204,13 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const updateSetting = db.prepare('delete from publish where _id = ? and appId = ? and userId = ?');
       updateSetting.run(Params._id, Params.appId, Params.userId);
       updateSetting.finalize();
+      log('Error Params:', Params);
     }
     catch (error: any) {
       log('Error setOpenAISetting:', error.message);
     }
   
-    return {"status":"ok", "msg":"Updated Success"}
+    return {"status":"ok", "msg":"Delete Success"}
   }
   
   export async function getPublish(id: string, userId: string) {

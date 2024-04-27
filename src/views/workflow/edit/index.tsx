@@ -13,6 +13,7 @@ import LeftWorkflow from 'src/views/workflow/edit/LeftWorkflow'
 
 import SimpleEdit from 'src/views/workflow/edit/SimpleEdit'
 import PreviewWorkflow from 'src/views/workflow/edit/PreviewWorkflow'
+import PublishApp from 'src/views/workflow/edit/PublishApp'
 
 // ** Axios Imports
 import toast from 'react-hot-toast'
@@ -106,7 +107,7 @@ const EditWorkflow = (props: any) => {
 
         {menuid == 'publish' ?
         <Fragment>
-          <SimpleEdit workflow={workflow} setWorkflow={setWorkflow} handleEditWorkflow={handleEditWorkflow} isDisabledButton={isDisabledButton} />
+          <PublishApp appId={workflow?._id} />
         </Fragment>
         :
         null

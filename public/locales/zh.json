@@ -329,8 +329,15 @@
   "Private": "私有",
   "Public": "公开",
   "Team": "团队",
-  "Select from templates":"从模板中选择"
+  "Select from templates":"从模板中选择",
+  "NotNeedLoginWindow": "免密码登录窗口",
+  "maxToken": "积分上限",
+  "returnReference": "返回引用",
+  "ipLimitPerMinute": "IP限流",
+  "expiredTime": "过期时间",
+  "authCheck": "身份校验",
+  "lastAccessTime": "最近访问时间"
 
-
+  
   
 }

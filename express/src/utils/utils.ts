@@ -6,7 +6,7 @@ import sqlite3 from 'sqlite3';
 import validator from 'validator';
 import { promisify } from 'util';
 import { DataDir, CONDENSE_TEMPLATE_INIT, QA_TEMPLATE_INIT } from './const';
-
+import { randomBytes } from 'crypto';
 import { db, getDbRecord, getDbRecordALL } from './db'
 
 type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
@@ -662,7 +662,6 @@ export async function getAgentsPage(pageid: number, pagesize: number) {
   return RS;
 }
 
-
 export async function getAgentsEnabledList(pageid: number, pagesize: number, type: string, search: string) {
   const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
@@ -754,3 +753,9 @@ export async function editAgent(Params: any) {
 
   return {"status":"ok", "msg":"Updated Success"}
 }
+
+export const getNanoid = (size = 12) => {
+  const bytes = randomBytes(16);
+  const hexString = bytes.toString('hex');
+  return hexString.slice(0, size);
+};

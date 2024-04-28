@@ -323,6 +323,7 @@
   "Group": "分组",
   "Test": "测试",
   "Return": "返回",
+  "Next": "下一步",
   "My App": "我的应用",
   "New App": "新建应用",
   "New": "新建应用",
@@ -449,7 +450,12 @@
         "Upload file progress": "文件上传进度",
         "Upload status": "状态",
         "Web link": "网页链接",
-        "Web link desc": "读取静态网页内容作为数据集"
+        "Web link desc": "读取静态网页内容作为数据集",
+        "Collection Name": "数据集名称",
+        "Collection Content": "数据集内容",
+        "Select Files":"选择文件",
+        "Data Deal":"数据处理",
+        "Upload Data":"上传数据"
   
   
 }

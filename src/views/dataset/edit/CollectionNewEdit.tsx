@@ -34,6 +34,8 @@ import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close';
 
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+
 const DataTypesList:any[] = [
     {
       type: 'File',
@@ -111,6 +113,10 @@ const nl2br = (tooltipText: string) => {
 
     return formattedText
 }
+
+const rows = [
+    { name: 'John'},
+  ];
 
 
 const CollectionNewEdit = (props: any) => {
@@ -320,9 +326,6 @@ const CollectionNewEdit = (props: any) => {
                         </Grid>
                     </Grid>
                 </Grid>
-
-                
-
                 <Grid item sx={{pr: 3}} xs={12}>
                     <Grid container alignItems="center">
                         <Grid item xs={3} sx={{pt: 4}}>
@@ -342,7 +345,7 @@ const CollectionNewEdit = (props: any) => {
                 
                 <Grid container sx={{mt: 4, pr: 3, justifyContent: 'flex-end'}} xs={12}>
                     {activeStep > 0 ?
-                    <Button sx={{mr: 3}} size="small" variant='contained' disabled={isDisabledButton} onClick={
+                    <Button sx={{mr: 3}} size="small" variant='outlined' disabled={isDisabledButton} onClick={
                         () => { setActiveStep(0) }
                     }>
                         {t("Previous")}
@@ -354,6 +357,52 @@ const CollectionNewEdit = (props: any) => {
                         () => { setActiveStep(2) }
                     }>
                     {t("Next")}
+                    </Button>
+                </Grid>
+            </Fragment>
+            :
+            null
+            }
+
+            {pageData.type == 'Text' && activeStep == 2 ?
+            <Fragment>
+                <Grid item sx={{pr: 3}} xs={12}>
+                    <Grid container alignItems="center">
+                        <TableContainer component={Paper} variant="outlined">
+                            <Table>
+                                <TableHead>
+                                <TableRow>
+                                    <TableCell>{t('Source name')}</TableCell>
+                                    <TableCell>{t('Status')}</TableCell>
+                                </TableRow>
+                                </TableHead>
+                                <TableBody>
+                                {rows.map((row) => (
+                                    <TableRow key={row.name}>
+                                        <TableCell style={{ width: '80%' }}>{pageData.CollectionName}</TableCell>
+                                        <TableCell style={{ width: '20%' }}>{pageData.status}</TableCell>
+                                    </TableRow>
+                                ))}
+                                </TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Grid>
+                </Grid>
+                
+                <Grid container sx={{mt: 4, pr: 3, justifyContent: 'flex-end'}} xs={12}>
+                    {activeStep > 0 ?
+                    <Button sx={{mr: 3}} size="small" variant='outlined' disabled={isDisabledButton} onClick={
+                        () => { setActiveStep(1) }
+                    }>
+                        {t("Previous")}
+                    </Button>
+                    :
+                    null
+                    }
+                    <Button size="small" variant='contained' disabled={isDisabledButton} onClick={
+                        () => {  }
+                    }>
+                    {t("Start upload")}
                     </Button>
                 </Grid>
             </Fragment>

@@ -48,7 +48,7 @@ const Collection = (props: any) => {
   }, [])
 
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
-  const [pageData, setPageData] = useState<any>({name: '', type: 'Text', updateTime: 0, status: 100, expiredTime: '', authCheck: '', datasetId: datasetId, FormAction: 'addcollection', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg', openEdit: false, openDelete: false })
+  const [pageData, setPageData] = useState<any>({name: '', type: 'Text', trainingMode: 'Chunk Split', processWay: 'Auto process', datasetId: datasetId, FormAction: 'addcollection', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg', openEdit: false, openDelete: false })
 
   const isMobileData = isMobile()
   
@@ -96,7 +96,7 @@ const Collection = (props: any) => {
       flex: 0.1,
       minWidth: 100,
       field: 'dataTotal',
-      headerName: `${t(`dataTotal`)}`,
+      headerName: `${t(`DataTotal`)}`,
       sortable: false,
       filterable: false,
       renderCell: ({ row }: any) => {
@@ -112,7 +112,7 @@ const Collection = (props: any) => {
       flex: 0.1,
       minWidth: 100,
       field: 'updateTime',
-      headerName: `${t(`updateTime`)}`,
+      headerName: `${t(`UpdateTime`)}`,
       sortable: false,
       filterable: false,
       renderCell: ({ row }: any) => {
@@ -127,7 +127,7 @@ const Collection = (props: any) => {
       flex: 0.1,
       minWidth: 100,
       field: 'status',
-      headerName: `${t(`status`)}`,
+      headerName: `${t(`Status`)}`,
       sortable: false,
       filterable: false,
       renderCell: ({ row }: any) => {
@@ -143,7 +143,7 @@ const Collection = (props: any) => {
       minWidth: 130,
       sortable: false,
       field: 'actions',
-      headerName: 'Actions',
+      headerName: t('Actions') as string,
       renderCell: ({ row }: any) => (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Button sx={{ my: 3, mr: 5 }} size="small" variant='outlined' onClick={

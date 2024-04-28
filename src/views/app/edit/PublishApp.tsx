@@ -159,7 +159,7 @@ const PublishApp = (props: any) => {
       minWidth: 130,
       sortable: false,
       field: 'actions',
-      headerName: 'Actions',
+      headerName: t('Actions') as string,
       renderCell: ({ row }: any) => (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Button sx={{ my: 3, mr: 5 }} size="small" variant='outlined' onClick={

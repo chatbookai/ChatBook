@@ -3,7 +3,7 @@
   import express, { Request, Response } from 'express';
 
   import { checkUserToken } from '../utils/user';
-  import { addDataset, editDataset, deleteDataset, getDataset, addPublish, editPublish, deletePublish, getPublish, getCollectionPageByCollection, getCollectionAll } from '../utils/dataset';
+  import { addDataset, editDataset, deleteDataset, getDataset, addCollection, editCollection, deleteCollection, getCollection, getCollectionPageByDataset, getCollectionAll } from '../utils/dataset';
  
   const app = express();
 
@@ -64,12 +64,12 @@
     res.end();
   });
 
-  app.get('/api/collectionbyapp/:appId/:pageid/:pagesize', async (req: Request, res: Response) => {
-    const { appId, pageid, pagesize } = req.params;
+  app.get('/api/collectionbydataset/:datasetId/:pageid/:pagesize', async (req: Request, res: Response) => {
+    const { datasetId, pageid, pagesize } = req.params;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
-        const getCollectionPageData: any = await getCollectionPageByCollection(appId, Number(pageid), Number(pagesize), checkUserTokenData.data.id);
+        const getCollectionPageData: any = await getCollectionPageByDataset(datasetId, Number(pageid), Number(pagesize), checkUserTokenData.data.id);
         res.status(200).json(getCollectionPageData);
     }
     else {
@@ -92,13 +92,13 @@
     res.end();
   });
 
-  app.post('/api/addpublish', async (req: Request, res: Response) => {
+  app.post('/api/addcollection', async (req: Request, res: Response) => {
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        console.log("checkUserTokenData addpublish", checkUserTokenData)
-        const addPublishData: any = await addPublish({...req.body, userId: checkUserTokenData.data.id});
-        res.status(200).json(addPublishData);
+        console.log("checkUserTokenData addcollection", checkUserTokenData)
+        const addCollectionData: any = await addCollection({...req.body, userId: checkUserTokenData.data.id});
+        res.status(200).json(addCollectionData);
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
@@ -106,13 +106,13 @@
     res.end();
   });
 
-  app.post('/api/editpublish', async (req: Request, res: Response) => {
+  app.post('/api/editcollection', async (req: Request, res: Response) => {
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        console.log("checkUserTokenData editpublish", checkUserTokenData)
-        const editPublishData: any = await editPublish({...req.body, userId: checkUserTokenData.data.id});
-        res.status(200).json(editPublishData);
+        console.log("checkUserTokenData editcollection", checkUserTokenData)
+        const editCollectionData: any = await editCollection({...req.body, userId: checkUserTokenData.data.id});
+        res.status(200).json(editCollectionData);
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
@@ -120,13 +120,13 @@
     res.end();
   });
 
-  app.post('/api/deletepublish', async (req: Request, res: Response) => {
+  app.post('/api/deletecollection', async (req: Request, res: Response) => {
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        console.log("checkUserTokenData deletepublish", checkUserTokenData)
-        const deletePublishData: any = await deletePublish({...req.body, userId: checkUserTokenData.data.id});
-        res.status(200).json(deletePublishData);
+        console.log("checkUserTokenData deletecollection", checkUserTokenData)
+        const deleteCollectionData: any = await deleteCollection({...req.body, userId: checkUserTokenData.data.id});
+        res.status(200).json(deleteCollectionData);
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});

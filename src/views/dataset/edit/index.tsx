@@ -11,7 +11,7 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 // ** Chat App Components Imports
 import LeftApp from 'src/views/dataset/edit/LeftApp'
 
-import PublishApp from 'src/views/dataset/edit/Collection'
+import CollectionApp from 'src/views/dataset/edit/Collection'
 
 // ** Axios Imports
 import toast from 'react-hot-toast'
@@ -95,9 +95,9 @@ const EditApp = (props: any) => {
       >
         <LeftApp app={app} hidden={false} menuid={menuid}/>
         
-        {menuid == 'publish' ?
+        {menuid == 'collection' ?
         <Fragment>
-          <PublishApp appId={app?._id} />
+          <CollectionApp datasetId={app?._id} />
         </Fragment>
         :
         null

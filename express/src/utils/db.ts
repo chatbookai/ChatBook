@@ -321,6 +321,23 @@ export async function initChatBookDb() {
                 userId INTEGER not null
             );
         `);
+        
+        db.run(`
+            CREATE TABLE IF NOT EXISTS collection (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                _id TEXT not null,
+                datasetId TEXT not null,
+                name TEXT not null,
+                dataTotal TEXT not null default '',
+                updateTime TEXT not null default '',
+                status TEXT not null default '',
+                type TEXT not null default '',
+                source TEXT not null default '',
+                data TEXT not null default '',
+                folder TEXT not null default '',
+                userId INTEGER not null
+            );
+        `);
     });
 }
 

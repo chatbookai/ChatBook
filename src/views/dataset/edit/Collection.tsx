@@ -41,14 +41,14 @@ const Collection = (props: any) => {
   const { t } = useTranslation()
   const auth = useAuth()
   const router = useRouter()
-  const { appId } = props
+  const { datasetId } = props
 
   useEffect(() => {
     CheckPermission(auth, router, false)
   }, [])
 
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
-  const [pageData, setPageData] = useState<any>({name: '', maxToken: 16000, returnReference: 0, ipLimitPerMinute: 100, expiredTime: '', authCheck: '', appId: appId, FormAction: 'addcollection', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg', openEdit: false, openDelete: false })
+  const [pageData, setPageData] = useState<any>({name: '', type: 'Text', updateTime: 0, status: 100, expiredTime: '', authCheck: '', datasetId: datasetId, FormAction: 'addcollection', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg', openEdit: false, openDelete: false })
 
   const isMobileData = isMobile()
   
@@ -61,12 +61,12 @@ const Collection = (props: any) => {
   useEffect(() => {
     fetchData(paginationModel)
     console.log("router", router)
-  }, [paginationModel, counter, isMobileData, auth, appId])
+  }, [paginationModel, counter, isMobileData, auth, datasetId])
 
   const fetchData = async function (paginationModel: any) {
-    if (auth && auth.user && appId) {
-      const RS = await axios.get(authConfig.backEndApiChatBook + '/api/collectionbydataset/' + appId + '/' + paginationModel.page + '/' + paginationModel.pageSize, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' }, params: { } }).then(res=>res.data)
-      console.log("RS", RS, "appId", appId)
+    if (auth && auth.user && datasetId) {
+      const RS = await axios.get(authConfig.backEndApiChatBook + '/api/collectionbydataset/' + datasetId + '/' + paginationModel.page + '/' + paginationModel.pageSize, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' }, params: { } }).then(res=>res.data)
+      console.log("RS", RS, "datasetId", datasetId)
       setStore(RS)  
     }
   }
@@ -95,15 +95,15 @@ const Collection = (props: any) => {
     {
       flex: 0.1,
       minWidth: 100,
-      field: 'maxToken',
-      headerName: `${t(`maxToken`)}`,
+      field: 'dataTotal',
+      headerName: `${t(`dataTotal`)}`,
       sortable: false,
       filterable: false,
       renderCell: ({ row }: any) => {
         
         return (
           <Typography noWrap variant='body2' >
-            {row.maxToken}
+            {row.dataTotal}
           </Typography>
         )
       }
@@ -111,14 +111,14 @@ const Collection = (props: any) => {
     {
       flex: 0.1,
       minWidth: 100,
-      field: 'returnReference',
-      headerName: `${t(`returnReference`)}`,
+      field: 'updateTime',
+      headerName: `${t(`updateTime`)}`,
       sortable: false,
       filterable: false,
       renderCell: ({ row }: any) => {
         return (
           <Typography noWrap variant='body2' >
-            {row.returnReference}
+            {row.updateTime}
           </Typography>
         )
       }
@@ -126,30 +126,14 @@ const Collection = (props: any) => {
     {
       flex: 0.1,
       minWidth: 100,
-      field: 'ipLimitPerMinute',
-      headerName: `${t(`ipLimitPerMinute`)}`,
+      field: 'status',
+      headerName: `${t(`status`)}`,
       sortable: false,
       filterable: false,
       renderCell: ({ row }: any) => {
         return (
           <Typography noWrap variant='body2' >
-            {row.ipLimitPerMinute}
-          </Typography>
-        )
-      }
-    },
-    {
-      flex: 0.1,
-      minWidth: 100,
-      field: 'expiredTime',
-      headerName: `${t(`expiredTime`)}`,
-      sortable: false,
-      filterable: false,
-      renderCell: ({ row }: any) => {
-        return (
-          <Typography noWrap variant='body2' >
-            {row.expiredTime}
-            {row.lastAccessTime}
+            {row.status}
           </Typography>
         )
       }
@@ -194,7 +178,7 @@ const Collection = (props: any) => {
       console.log("FormSubmit:", FormSubmit)
       if(FormSubmit?.status == "ok") {
           toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
-          setPageData({openEdit: false, name: '', maxToken: 16000, returnReference: 0, ipLimitPerMinute: 100, expiredTime: '', authCheck: '', appId: appId})
+          setPageData({openEdit: false, name: '', type: 'Text', updateTime: 0, status: 100, expiredTime: '', authCheck: '', datasetId: datasetId})
       }
       else {
           toast.error(t(FormSubmit.msg) as string, { duration: 4000 })
@@ -215,34 +199,37 @@ const Collection = (props: any) => {
       {store && store.data != undefined ?
         <Grid item xs={12}>
           <Card>
-            <Grid container>
-                <Grid item xs={12} lg={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Typography sx={{ my: 3, ml: 5 }}>{t('NotNeedLoginWindow')}</Typography>
-                    <Button sx={{ my: 3, mr: 5 }} size="small" variant='outlined' onClick={
-                        () => { setPageData( (prevState: any) => ({ ...prevState, openEdit: true, FormAction: 'addcollection', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg' }) ) }
-                    }>
-                    {t("Add")}
-                    </Button>
-                </Grid>
-                <DataGrid
-                    autoHeight
-                    rows={store.data}
-                    rowCount={store.total as number}
-                    columns={columns}
-                    sortingMode='server'
-                    paginationMode='server'
-                    filterMode="server"
-                    loading={isLoading}
-                    disableRowSelectionOnClick
-                    pageSizeOptions={[10, 15, 20, 30, 50, 100]}
-                    paginationModel={paginationModel}
-                    onPaginationModelChange={setPaginationModel}
-                    disableColumnMenu={true}
-                />
-                <CollectionNewEdit pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit} isDisabledButton={isDisabledButton}/>
-                <CollectionDelete pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit} isDisabledButton={isDisabledButton}/>
-                
-            </Grid>
+            {pageData.openEdit == false ?
+              <Grid container>
+                  <Grid item xs={12} lg={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <Typography sx={{ my: 3, ml: 5 }}>{t('Data')}</Typography>
+                      <Button sx={{ my: 3, mr: 5 }} size="small" variant='outlined' onClick={
+                          () => { setPageData( (prevState: any) => ({ ...prevState, openEdit: true, FormAction: 'addcollection', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg' }) ) }
+                      }>
+                      {t("Add")}
+                      </Button>
+                  </Grid>
+                  <DataGrid
+                      autoHeight
+                      rows={store.data}
+                      rowCount={store.total as number}
+                      columns={columns}
+                      sortingMode='server'
+                      paginationMode='server'
+                      filterMode="server"
+                      loading={isLoading}
+                      disableRowSelectionOnClick
+                      pageSizeOptions={[10, 15, 20, 30, 50, 100]}
+                      paginationModel={paginationModel}
+                      onPaginationModelChange={setPaginationModel}
+                      disableColumnMenu={true}
+                  />
+                  <CollectionDelete pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit} isDisabledButton={isDisabledButton}/>
+              </Grid>
+            : 
+              <CollectionNewEdit pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit} isDisabledButton={isDisabledButton}/>
+            }
+
           </Card>
         </Grid>
         :

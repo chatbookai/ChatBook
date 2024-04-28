@@ -91,17 +91,17 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return Template
   }
 
-  export async function getCollectionPageByCollection(appId: string, pageid: number, pagesize: number, userId: number) {
-    const appIdFileter = filterString(appId)
+  export async function getCollectionPageByDataset(datasetId: string, pageid: number, pagesize: number, userId: number) {
+    const datasetIdFileter = filterString(datasetId)
     const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
     const From = pageidFiler * pagesizeFiler;
     console.log("pageidFiler", pageidFiler)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from publish where appId = ? and userId = ?", [appIdFileter, userId]);
+    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from collection where datasetId = ? and userId = ?", [datasetIdFileter, userId]);
     const RecordsTotal: number = Records ? Records.NUM : 0;  
-    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from publish where appId = ? and userId = ? order by id desc limit ? OFFSET ? `, [appIdFileter, userId, pagesizeFiler, From]) as any[];
+    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from collection where datasetId = ? and userId = ? order by id desc limit ? OFFSET ? `, [datasetIdFileter, userId, pagesizeFiler, From]) as any[];
     
     const RS: any = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
@@ -126,7 +126,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     let RecordsAll: any[] = [];
     Records = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from publish");
     RecordsTotal = Records ? Records.NUM : 0;  
-    RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from publish order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]) as any[];
+    RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from collection order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]) as any[];
     
     const RS: any = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
@@ -139,7 +139,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return RS;
   }
 
-  export async function addPublish(Params: any) {
+  export async function addCollection(Params: any) {
     try{
       Params._id = getNanoid(32)
       Params.name = filterString(Params.name)
@@ -149,20 +149,20 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       Params.expiredTime = filterString(Params.expiredTime)
       Params.authCheck = filterString(Params.authCheck)
       Params.userId = filterString(Params.userId)
-      Params.appId = filterString(Params.appId)
+      Params.datasetId = filterString(Params.datasetId)
 
-      const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT id from publish where _id = ?", [Params._id]);
+      const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT id from collection where _id = ?", [Params._id]);
       const RecordId: number = Records ? Records.id : 0;
 
       console.log("RecordId", RecordId, Params)
       if(RecordId > 0) {
         Params.id = RecordId
-        editPublish(Params)
+        editCollection(Params)
         return {"status":"ok", "msg":"Update Success"}
       }
       else {
-        const insertSetting = db.prepare('INSERT OR IGNORE INTO publish (_id, appId, name, maxToken, returnReference, ipLimitPerMinute, expiredTime, authCheck, userId, lastAccessTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        insertSetting.run(Params._id, Params.appId, Params.name, Params.maxToken, Params.returnReference, Params.ipLimitPerMinute, Params.expiredTime, Params.authCheck, Params.userId, '');
+        const insertSetting = db.prepare('INSERT OR IGNORE INTO collection (_id, datasetId, name, maxToken, returnReference, ipLimitPerMinute, expiredTime, authCheck, userId, lastAccessTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        insertSetting.run(Params._id, Params.datasetId, Params.name, Params.maxToken, Params.returnReference, Params.ipLimitPerMinute, Params.expiredTime, Params.authCheck, Params.userId, '');
         insertSetting.finalize();
         return {"status":"ok", "msg":"Add Success"}
       }
@@ -173,7 +173,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     }
   }
 
-  export async function editPublish(Params: any) {
+  export async function editCollection(Params: any) {
     try{
       Params._id = filterString(Params._id)
       Params.name = filterString(Params.name)
@@ -183,9 +183,9 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       Params.expiredTime = filterString(Params.expiredTime)
       Params.authCheck = filterString(Params.authCheck)
       Params.userId = filterString(Params.userId)
-      Params.appId = filterString(Params.appId)
-      const updateSetting = db.prepare('update publish set name = ?, maxToken = ?, returnReference = ?, ipLimitPerMinute = ?, expiredTime = ? where _id = ? and appId = ? and userId = ?');
-      updateSetting.run(Params.name, Params.maxToken, Params.returnReference, Params.ipLimitPerMinute, Params.expiredTime, Params._id, Params.appId, Params.userId);
+      Params.datasetId = filterString(Params.datasetId)
+      const updateSetting = db.prepare('update collection set name = ?, maxToken = ?, returnReference = ?, ipLimitPerMinute = ?, expiredTime = ? where _id = ? and datasetId = ? and userId = ?');
+      updateSetting.run(Params.name, Params.maxToken, Params.returnReference, Params.ipLimitPerMinute, Params.expiredTime, Params._id, Params.datasetId, Params.userId);
       updateSetting.finalize();
     }
     catch (error: any) {
@@ -195,13 +195,13 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return {"status":"ok", "msg":"Update Success"}
   }
 
-  export async function deletePublish(Params: any) {
+  export async function deleteCollection(Params: any) {
     try{
       Params._id = filterString(Params._id)
-      Params.appId = filterString(Params.appId)
+      Params.datasetId = filterString(Params.datasetId)
       Params.userId = filterString(Params.userId)
-      const updateSetting = db.prepare('delete from publish where _id = ? and appId = ? and userId = ?');
-      updateSetting.run(Params._id, Params.appId, Params.userId);
+      const updateSetting = db.prepare('delete from collection where _id = ? and datasetId = ? and userId = ?');
+      updateSetting.run(Params._id, Params.datasetId, Params.userId);
       updateSetting.finalize();
       log('Error Params:', Params);
     }
@@ -212,11 +212,11 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return {"status":"ok", "msg":"Delete Success"}
   }
   
-  export async function getPublish(id: string, userId: string) {
+  export async function getCollection(id: string, userId: string) {
     const idFilter = filterString(id)
     const userIdFilter = Number(userId)
     
-    const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT data from publish where _id = ? and userId = ? `, [idFilter, userIdFilter]) as any[];
+    const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT data from collection where _id = ? and userId = ? `, [idFilter, userIdFilter]) as any[];
     
     let Template: any = {}
     if(SettingRS)  {

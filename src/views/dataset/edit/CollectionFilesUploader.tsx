@@ -77,10 +77,6 @@ const CollectionFilesUploader = (props: any) => {
   // ** State
   const [files, setFiles] = useState<File[]>([])
   const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({})
-  const [uploadingButton, setUploadingButton] = useState<string>(`${t(`Upload Files`)}`)
-  const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
-  const [removeAllButton, setRemoveAllButton] = useState<string>(`${t(`Remove All`)}`)
-  const [isDisabledRemove, setIsDisabledRemove] = useState<boolean>(false)
   
   // ** Hooks
   const { getRootProps, getInputProps } = useDropzone({
@@ -94,10 +90,8 @@ const CollectionFilesUploader = (props: any) => {
       'text/plain': ['.txt'],
     },
     onDrop: (acceptedFiles: File[]) => {
-      setFiles(acceptedFiles.map((file: File) => Object.assign(file)))
-      setIsDisabledButton(false)
-      setUploadingButton(`${t(`Upload Files`)}`)      
-      setRemoveAllButton(`${t(`Remove All`)}`)
+      setFiles((prevFiles) => [...prevFiles, ...acceptedFiles.map((file: File) => Object.assign(file))]);
+      uploadMultiFiles(acceptedFiles.map((file: File) => Object.assign(file)));
     },
     onDropRejected: () => {
       toast.error('You can only upload 120 files', {
@@ -121,24 +115,9 @@ const CollectionFilesUploader = (props: any) => {
     console.log("userId", userId)
   }
   
-
-  const handleRemoveAllFiles = () => {
-    setFiles([])    
-    setIsDisabledButton(false)
-    setIsDisabledRemove(false)
-    setUploadingButton(`${t(`Upload Files`)}`)
-    setUploadProgress({})
-  }
-
-  const handleUploadAllFiles = () => {
-    setIsDisabledButton(true)
-    setIsDisabledRemove(true)
-    setUploadingButton(`${t(`Uploading`)}...`)
-    uploadMultiFiles();
-  }
-
-  const uploadMultiFiles = async () => {
+  const uploadMultiFiles = async (files: File[]) => {
     if (auth && auth.user) {
+      console.log("uploadMultiFiles files", files)
       const formData = new FormData();
       formData.append('knowledgeId', knowledgeId);
       formData.append('knowledgeName', knowledgeName);
@@ -157,10 +136,6 @@ const CollectionFilesUploader = (props: any) => {
 
         toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
         
-        setIsDisabledButton(false)
-        setIsDisabledRemove(false)
-        setUploadingButton(`${t(`Upload Files`)}`)
-        handleRemoveAllFiles()
       }
       else if(FormSubmit && FormSubmit.msg=='Token is invalid') {
         CheckPermission(auth, router, true)
@@ -178,12 +153,9 @@ const CollectionFilesUploader = (props: any) => {
         console.log("uploadProgress key ....", key, value)
     })
     if(uploadProgress && Object.entries(uploadProgress) && Object.entries(uploadProgress).length > 0 && isFinishedAllUploaded) {
-        setIsDisabledButton(true)
-        setIsDisabledRemove(false)
-        setUploadingButton(t("Upload success") as string)
-        setRemoveAllButton(t("Clean Records") as string)        
         toast.success(t('Successfully submitted') as string, { duration: 4000 })
     }
+    console.log("uploadProgress", uploadProgress)
   }, [uploadProgress])
 
   return (
@@ -217,7 +189,6 @@ const CollectionFilesUploader = (props: any) => {
                 </TableRow>
                 </TableHead>
                 <TableBody>
-
                   {files.map((file: FileProp, index: number)=>{    
 
                       return (

@@ -153,6 +153,7 @@ const CollectionNewEdit = (props: any) => {
                                 ...prevState,
                                 type: e.target.value as string
                             }))
+                            setActiveStep(0)
                         }
                     }} >
                     {DataTypesList.map((item: any, index: number) => {
@@ -318,128 +319,144 @@ const CollectionNewEdit = (props: any) => {
 
             {activeStep == 1 ?
             <Fragment>
-                <Grid item sx={{pr: 3}} xs={12}>
-                    <Grid container alignItems="center">
-                        <Grid item xs={3} sx={{pt: 4}}>
-                            <InputLabel id='demo-dialog-select-label'>{t("Training mode")}</InputLabel>
-                        </Grid>
-                        <Grid item xs={9} sx={{pt: 6, pl: 2}}>
-                            <RadioGroup row value={pageData.trainingMode} name='simple-radio' aria-label='simple-radio' onClick={(e: any)=>{    
-                                    if(e.target.value)   {
-                                        setPageData((prevState: any)=>({
-                                            ...prevState,
-                                            trainingMode: e.target.value as string
-                                        }))
-                                    }
-                                }} >
-                                {TrainingModeList.map((item: any, index: number) => {
-                                    return (<Tooltip title={nl2br(t(item.intro) as string)} placement="top"><FormControlLabel value={item.type} control={<Radio />} label={t(item.name) as string} /></Tooltip>)
-                                })}
-                            </RadioGroup>
-                        </Grid>
-                    </Grid>
-                </Grid>
-                <Grid item sx={{pr: 3}} xs={12}>
-                    <Grid container alignItems="center">
-                        <Grid item xs={3} sx={{pt: 4}}>
-                            <InputLabel id='demo-dialog-select-label'>{t("Process way")}</InputLabel>
-                        </Grid>
-                        <Grid item xs={9} sx={{pt: 6, pl: 2}}>
-                            <RadioGroup row value={pageData.processWay} name='simple-radio' aria-label='simple-radio' onClick={(e: any)=>{    
-                                    if(e.target.value)   {
-                                        setPageData((prevState: any)=>({
-                                            ...prevState,
-                                            processWay: e.target.value as string
-                                        }))
-                                    }
-                                }} >
-                                {ProcessWayList.map((item: any, index: number) => {
-                                    return (<Tooltip title={nl2br(t(item.intro) as string)}placement="top"><FormControlLabel value={item.type} control={<Radio />} label={t(item.name) as string} /></Tooltip>)
-                                })}
-                            </RadioGroup>
-                            { pageData.processWay == 'Custom process' ?
-                            <Fragment>
-                                <Grid item sx={{pr: 3}} xs={12}>
-                                    <Grid container alignItems="center">
-                                        <Grid item xs={3} sx={{pt: 4}}>
-                                            <Tooltip title={nl2br(t("Ideal chunk length Tips") as string)} placement="top" arrow style={{ whiteSpace: 'pre-line' }}>
-                                                <InputLabel >{t("Ideal chunk length")}</InputLabel>
-                                            </Tooltip>
-                                        </Grid>
-                                        <Grid item xs={9} sx={{pt: 6, pl: 2}}>
-                                            <TextField
-                                                size="small"
-                                                type="number"
-                                                value={pageData.IdealChunkLength}
-                                                sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
-                                                placeholder={t("Ideal chunk length Tips") as string}
-                                                onChange={(e: any) => {
-                                                    setPageData( (prevState: any) => ({ ...prevState, IdealChunkLength: e.target.value }) )
-                                                }}
-                                                />
-                                        </Grid>
+                <Grid container spacing={2}>
+                    <Grid item xs={8}>
+                        <Grid container spacing={2}>
+                            <Grid item sx={{pr: 3}} xs={12}>
+                                <Grid container alignItems="center">
+                                    <Grid item xs={3} sx={{pt: 4}}>
+                                        <InputLabel id='demo-dialog-select-label'>{t("Training mode")}</InputLabel>
+                                    </Grid>
+                                    <Grid item xs={9} sx={{pt: 6, pl: 2}}>
+                                        <RadioGroup row value={pageData.trainingMode} name='simple-radio' aria-label='simple-radio' onClick={(e: any)=>{    
+                                                if(e.target.value)   {
+                                                    setPageData((prevState: any)=>({
+                                                        ...prevState,
+                                                        trainingMode: e.target.value as string
+                                                    }))
+                                                }
+                                            }} >
+                                            {TrainingModeList.map((item: any, index: number) => {
+                                                return (<Tooltip title={nl2br(t(item.intro) as string)} placement="top"><FormControlLabel value={item.type} control={<Radio />} label={t(item.name) as string} /></Tooltip>)
+                                            })}
+                                        </RadioGroup>
                                     </Grid>
                                 </Grid>
-                                <Grid item sx={{pr: 3}} xs={12}>
-                                    <Grid container alignItems="center">
-                                        <Grid item xs={3} sx={{pt: 4}}>
-                                            <Tooltip title={nl2br(t("Custom split char Tips") as string)} placement="top" arrow style={{ whiteSpace: 'pre-line' }}>
-                                                <InputLabel >{t("Custom split char")}</InputLabel>
-                                            </Tooltip>
-                                        </Grid>
-                                        <Grid item xs={9} sx={{pt: 6, pl: 2}}>
-                                            <TextField
-                                                size="small"
-                                                value={pageData.CustomSplitChar}
-                                                sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
-                                                placeholder={t("Custom split char Tips") as string}
-                                                onChange={(e: any) => {
-                                                    setPageData( (prevState: any) => ({ ...prevState, CustomSplitChar: e.target.value }) )
-                                                }}
-                                                />
-                                        </Grid>
+                            </Grid>
+                            <Grid item sx={{pr: 3}} xs={12}>
+                                <Grid container alignItems="center">
+                                    <Grid item xs={3} sx={{pt: 4}}>
+                                        <InputLabel id='demo-dialog-select-label'>{t("Process way")}</InputLabel>
                                     </Grid>
-                                </Grid>
-                            </Fragment>
-                            :
-                            null}
+                                    <Grid item xs={9} sx={{pt: 6, pl: 2}}>
+                                        <RadioGroup row value={pageData.processWay} name='simple-radio' aria-label='simple-radio' onClick={(e: any)=>{    
+                                                if(e.target.value)   {
+                                                    setPageData((prevState: any)=>({
+                                                        ...prevState,
+                                                        processWay: e.target.value as string
+                                                    }))
+                                                }
+                                            }} >
+                                            {ProcessWayList.map((item: any, index: number) => {
+                                                return (<Tooltip title={nl2br(t(item.intro) as string)}placement="top"><FormControlLabel value={item.type} control={<Radio />} label={t(item.name) as string} /></Tooltip>)
+                                            })}
+                                        </RadioGroup>
+                                        { pageData.processWay == 'Custom process' ?
+                                        <Fragment>
+                                            <Grid item sx={{pr: 3}} xs={12}>
+                                                <Grid container alignItems="center">
+                                                    <Grid item xs={3} sx={{pt: 4}}>
+                                                        <Tooltip title={nl2br(t("Ideal chunk length Tips") as string)} placement="top" arrow style={{ whiteSpace: 'pre-line' }}>
+                                                            <InputLabel >{t("Ideal chunk length")}</InputLabel>
+                                                        </Tooltip>
+                                                    </Grid>
+                                                    <Grid item xs={9} sx={{pt: 6, pl: 2}}>
+                                                        <TextField
+                                                            size="small"
+                                                            type="number"
+                                                            value={pageData.IdealChunkLength}
+                                                            sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
+                                                            placeholder={t("Ideal chunk length Tips") as string}
+                                                            onChange={(e: any) => {
+                                                                setPageData( (prevState: any) => ({ ...prevState, IdealChunkLength: e.target.value }) )
+                                                            }}
+                                                            />
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
+                                            <Grid item sx={{pr: 3}} xs={12}>
+                                                <Grid container alignItems="center">
+                                                    <Grid item xs={3} sx={{pt: 4}}>
+                                                        <Tooltip title={nl2br(t("Custom split char Tips") as string)} placement="top" arrow style={{ whiteSpace: 'pre-line' }}>
+                                                            <InputLabel >{t("Custom split char")}</InputLabel>
+                                                        </Tooltip>
+                                                    </Grid>
+                                                    <Grid item xs={9} sx={{pt: 6, pl: 2}}>
+                                                        <TextField
+                                                            size="small"
+                                                            value={pageData.CustomSplitChar}
+                                                            sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
+                                                            placeholder={t("Custom split char Tips") as string}
+                                                            onChange={(e: any) => {
+                                                                setPageData( (prevState: any) => ({ ...prevState, CustomSplitChar: e.target.value }) )
+                                                            }}
+                                                            />
+                                                    </Grid>
+                                                </Grid>
+                                            </Grid>
+                                        </Fragment>
+                                        :
+                                        null}
 
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <Grid container sx={{mt: 4, pr: 3, justifyContent: 'flex-end'}} xs={12}>
+                                {activeStep > 0 ?
+                                <Button sx={{mr: 3}} size="small" variant='outlined' disabled={isDisabledButton} onClick={
+                                    () => { setActiveStep(0) }
+                                }>
+                                    {t("Previous")}
+                                </Button>
+                                :
+                                null
+                                }
+                                <Button size="small" variant='contained' disabled={isDisabledButton} onClick={
+                                    () => { setActiveStep(2) }
+                                }>
+                                {t("Next")}
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+                    <Grid item xs={4}>
+                        <Grid container alignItems="center">
+                            <Grid item xs={12} sx={{pt: 2}}>
+                                <InputLabel>{t("Sources list")}</InputLabel>
+                            </Grid>
+                            <Grid item xs={12} sx={{pt: 2}}>
+                                {pageData.type == 'Web' ?
+                                <Fragment>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                        {pageData.LinkName && pageData.LinkName.trim().split('\n').map((item: string, index: number)=>{    
+                                            return (
+                                                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, mb: 2, mr: 10, pr: 10, py: 0, }} key={index}>
+                                                    <Tooltip title={item} placement="left">
+                                                        <Typography >{item}</Typography>
+                                                    </Tooltip>
+                                                </Box>
+                                            )
+                                        })}
+                                    </Box>
+                                </Fragment>
+                                :
+                                null
+                                }
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid item sx={{pr: 3}} xs={12}>
-                    <Grid container alignItems="center">
-                        <Grid item xs={3} sx={{pt: 4}}>
-                            <InputLabel id='demo-dialog-select-label'>{t("Sources list")}</InputLabel>
-                        </Grid>
-                        <Grid item xs={9} sx={{pt: 6, pl: 2}}>
-                            <TextField
-                                size="small"
-                                type="number"
-                                disabled
-                                value={pageData.name}
-                                sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
-                                />
-                        </Grid>
-                    </Grid>
-                </Grid>
-                
-                <Grid container sx={{mt: 4, pr: 3, justifyContent: 'flex-end'}} xs={12}>
-                    {activeStep > 0 ?
-                    <Button sx={{mr: 3}} size="small" variant='outlined' disabled={isDisabledButton} onClick={
-                        () => { setActiveStep(0) }
-                    }>
-                        {t("Previous")}
-                    </Button>
-                    :
-                    null
-                    }
-                    <Button size="small" variant='contained' disabled={isDisabledButton} onClick={
-                        () => { setActiveStep(2) }
-                    }>
-                    {t("Next")}
-                    </Button>
-                </Grid>
+
             </Fragment>
             :
             null
@@ -453,17 +470,21 @@ const CollectionNewEdit = (props: any) => {
                             <Table>
                                 <TableHead>
                                 <TableRow>
+                                    <TableCell>{t('Id')}</TableCell>
                                     <TableCell>{t('Source name')}</TableCell>
                                     <TableCell>{t('Status')}</TableCell>
                                 </TableRow>
                                 </TableHead>
                                 <TableBody>
-                                {rows.map((row) => (
-                                    <TableRow key={row.name}>
-                                        <TableCell style={{ width: '80%' }}>{pageData.CollectionName}</TableCell>
-                                        <TableCell style={{ width: '20%' }}>{pageData.status}</TableCell>
-                                    </TableRow>
-                                ))}
+                                {pageData.type == 'Web' && pageData.LinkName && pageData.LinkName.trim().split('\n').map((item: string, index: number)=>{    
+                                            return (
+                                                <TableRow key={index}>
+                                                    <TableCell style={{ width: '5%' }}>{(index+1)}</TableCell>
+                                                    <TableCell style={{ width: '80%' }}>{item}</TableCell>
+                                                    <TableCell style={{ width: '15%' }}>{pageData.status || 'Waiting'}</TableCell>
+                                                </TableRow>
+                                            )
+                                        })}
                                 </TableBody>
                             </Table>
                         </TableContainer>

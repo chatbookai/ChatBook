@@ -30,7 +30,7 @@ import toast from 'react-hot-toast'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 import { isMobile } from 'src/configs/functions'
-import { CheckPermission, GetAllLLMS } from 'src/functions/ChatBook'
+import { CheckPermission } from 'src/functions/ChatBook'
 
 import CollectionNewEdit from './CollectionNewEdit'
 import CollectionDelete from './CollectionDelete'
@@ -50,6 +50,8 @@ const Collection = (props: any) => {
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
   const [pageData, setPageData] = useState<any>({name: '', type: 'File', files: [], csvs: [], trainingMode: 'Chunk Split', processWay: 'Auto process', datasetId: datasetId, FormAction: 'addcollection', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg', openEdit: false, openDelete: false })
 
+  const [uploadProgress, setUploadProgress] = useState<any>({files: {}, csvs: {}})
+
   const isMobileData = isMobile()
   
   // ** State
@@ -61,6 +63,7 @@ const Collection = (props: any) => {
   useEffect(() => {
     fetchData(paginationModel)
     console.log("router", router)
+    setIsLoading(false)
   }, [paginationModel, counter, isMobileData, auth, datasetId])
 
   const fetchData = async function (paginationModel: any) {
@@ -147,7 +150,9 @@ const Collection = (props: any) => {
       renderCell: ({ row }: any) => (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Button sx={{ my: 3, mr: 5 }} size="small" variant='outlined' onClick={
-                        () => {  }
+                        () => { 
+                          console.log("Actions row", row)
+                         }
                     }>
             {t("BeginUsing")}
           </Button>
@@ -227,7 +232,7 @@ const Collection = (props: any) => {
                   <CollectionDelete pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit} isDisabledButton={isDisabledButton}/>
               </Grid>
             : 
-              <CollectionNewEdit pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit} isDisabledButton={isDisabledButton}/>
+              <CollectionNewEdit pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit} isDisabledButton={isDisabledButton} uploadProgress={uploadProgress} setUploadProgress={setUploadProgress}/>
             }
 
           </Card>

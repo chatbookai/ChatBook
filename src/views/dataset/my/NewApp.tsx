@@ -1,8 +1,7 @@
 // ** MUI Imports
 import React, { Fragment } from 'react';
-import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import Box, { BoxProps } from '@mui/material/Box'
+import Box from '@mui/material/Box'
 
 // ** Icon Imports
 import IconButton from '@mui/material/IconButton'
@@ -38,14 +37,6 @@ const DatasetTypesList: any[] = [
 
 const VectorModelList: string[] = ["Embedding-2"]
 const FileDealModelList: string[] = ["gpt-3.5-turbo"]
-
-const Header = styled(Box)<BoxProps>(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  padding: theme.spacing(3, 4),
-  justifyContent: 'space-between',
-  backgroundColor: theme.palette.background.default
-}))
 
 const NewApp = ({ NewOpen, setNewOpen, handleAddApp, AppNewForm, setAppNewForm }: any) => {
   const { t } = useTranslation()

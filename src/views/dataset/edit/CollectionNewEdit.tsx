@@ -25,15 +25,11 @@ import CollectionFilesUploader from './CollectionFilesUploader'
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import Link from '@mui/material/Link'
-import Avatar from '@mui/material/Avatar'
-import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
 import InputLabel from '@mui/material/InputLabel'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
-import CloseIcon from '@mui/icons-material/Close';
 import useBgColor, { UseBgColorType } from 'src/@core/hooks/useBgColor'
 
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
@@ -52,7 +48,7 @@ const DataTypesList:any[] = [
     {
       type: 'Text',
       name: 'Custom text',
-      intro: 'Custom text',
+      intro: 'Custom text desc',
     },
     {
       type: 'Table',
@@ -125,11 +121,9 @@ const maxCountCSV = 10;
 
 const CollectionNewEdit = (props: any) => {
     // ** Props
-    const {pageData, setPageData, handleSubmit, isDisabledButton } = props
+    const {pageData, setPageData, handleSubmit, isDisabledButton, uploadProgress, setUploadProgress } = props
     const [activeStep, setActiveStep] = useState<number>(0)
     const bgColors: UseBgColorType = useBgColor()
-
-    const [uploadProgress, setUploadProgress] = useState<any>({files: {}, csvs: {}})
 
     // ** Hook
     const { t } = useTranslation()
@@ -142,7 +136,6 @@ const CollectionNewEdit = (props: any) => {
     useEffect(() => {
         console.log("pageData pageData", pageData, uploadProgress)
       }, [pageData])
-
 
     return (
         <Grid container sx={{m: 3, p: 3}}>
@@ -163,7 +156,8 @@ const CollectionNewEdit = (props: any) => {
                         }
                     }} >
                     {DataTypesList.map((item: any, index: number) => {
-                        return (<Tooltip title={nl2br(t(item.intro) as string)}placement="top"><FormControlLabel value={item.type} control={<Radio />} label={t(item.name) as string} /></Tooltip>)
+
+                        return (<Tooltip key={index} title={nl2br(t(item.intro) as string)}placement="top"><FormControlLabel value={item.type} control={<Radio />} label={t(item.name) as string} /></Tooltip>)
                     })}
                 </RadioGroup>
             </Grid>
@@ -375,7 +369,8 @@ const CollectionNewEdit = (props: any) => {
                                                 }
                                             }} >
                                             {TrainingModeList.map((item: any, index: number) => {
-                                                return (<Tooltip title={nl2br(t(item.intro) as string)} placement="top"><FormControlLabel value={item.type} control={<Radio />} label={t(item.name) as string} /></Tooltip>)
+
+                                                return (<Tooltip key={index} title={nl2br(t(item.intro) as string)} placement="top"><FormControlLabel value={item.type} control={<Radio />} label={t(item.name) as string} /></Tooltip>)
                                             })}
                                         </RadioGroup>
                                     </Grid>
@@ -396,7 +391,8 @@ const CollectionNewEdit = (props: any) => {
                                                 }
                                             }} >
                                             {ProcessWayList.map((item: any, index: number) => {
-                                                return (<Tooltip title={nl2br(t(item.intro) as string)}placement="top"><FormControlLabel value={item.type} control={<Radio />} label={t(item.name) as string} /></Tooltip>)
+
+                                                return (<Tooltip key={index} title={nl2br(t(item.intro) as string)}placement="top"><FormControlLabel value={item.type} control={<Radio />} label={t(item.name) as string} /></Tooltip>)
                                             })}
                                         </RadioGroup>
                                         { pageData.processWay == 'Custom process' ?
@@ -512,7 +508,7 @@ const CollectionNewEdit = (props: any) => {
                                                     <Tooltip title={item.name} placement="left">
                                                         <Typography sx={{ fontSize: 'small', maxWidth: '350px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</Typography>
                                                     </Tooltip>
-                                                    <IconButton style={{width: '35px', height: '35px'}} color='primary' onClick={()=>{ }}>
+                                                    <IconButton style={{width: '35px', height: '35px'}} color='primary' onClick={()=>{ console.log("---") }}>
                                                         <Icon icon='mdi:eye-outline' />
                                                     </IconButton>
                                                 </Box>
@@ -532,7 +528,7 @@ const CollectionNewEdit = (props: any) => {
                                                     <Tooltip title={item.name} placement="left">
                                                         <Typography sx={{ fontSize: 'small', maxWidth: '350px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</Typography>
                                                     </Tooltip>
-                                                    <IconButton style={{width: '35px', height: '35px'}} color='primary' onClick={()=>{ }}>
+                                                    <IconButton style={{width: '35px', height: '35px'}} color='primary' onClick={()=>{ console.log("---") }}>
                                                         <Icon icon='mdi:eye-outline' />
                                                     </IconButton>
                                                 </Box>

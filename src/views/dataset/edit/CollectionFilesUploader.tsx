@@ -1,11 +1,8 @@
 // ** React Imports
-import { Fragment, useState, useEffect } from 'react'
+import { Fragment, useEffect } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
-import List from '@mui/material/List'
-import Button from '@mui/material/Button'
-import ListItem from '@mui/material/ListItem'
 import { styled } from '@mui/material/styles'
 import IconButton from '@mui/material/IconButton'
 import Typography, { TypographyProps } from '@mui/material/Typography'
@@ -15,8 +12,6 @@ import Icon from 'src/@core/components/icon'
 
 // ** Third Party Imports
 import { useDropzone } from 'react-dropzone'
-
-import CircularProgress from '@mui/material/CircularProgress'
 
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
@@ -62,7 +57,7 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
   }
 }))
 
-const maxSize = '100M'
+const maxSize = '50M'
 
 const CollectionFilesUploader = (props: any) => {
   // ** Props
@@ -76,7 +71,7 @@ const CollectionFilesUploader = (props: any) => {
     CheckPermission(auth, router, false)
   }, [])
 
-  const CurrentFiles: File[] = pageData[type]
+  const CurrentFiles: File[] = pageData[type] || []
   const CurrentUploadProgress: any = uploadProgress[type]
 
   useEffect(() => {
@@ -96,10 +91,12 @@ const CollectionFilesUploader = (props: any) => {
     }
     :
     { 'text/csv': ['.csv'] };
+  
+  const allowMaxFiles = maxCount - CurrentFiles.length > 0 ? maxCount - CurrentFiles.length : 0
 
   // ** Hooks
   const { getRootProps, getInputProps } = useDropzone({
-    maxFiles: 100,
+    maxFiles: allowMaxFiles,
     maxSize: 51200000,
     accept: acceptFilesHeader,
     onDrop: (acceptedFiles: File[]) => {
@@ -124,7 +121,7 @@ const CollectionFilesUploader = (props: any) => {
       uploadMultiFiles(acceptedFiles.map((file: File) => Object.assign(file)));
     },
     onDropRejected: () => {
-      toast.error('You can only upload 120 files', {
+      toast.error(t('Maximum number of uploaded files') as string + ": " + String(allowMaxFiles), {
         duration: 4000
       })
     }
@@ -163,7 +160,7 @@ const CollectionFilesUploader = (props: any) => {
       const NewProgress = {...CurrentUploadProgress}
 
       const uploadFiles = async () => {
-        const uploadPromises = files.map(async (file: File, index: number) => {
+        const uploadPromises = files.map(async (file: File) => {
           const formData = new FormData();
           formData.append('knowledgeId', '1');
           formData.append('knowledgeName', '1');

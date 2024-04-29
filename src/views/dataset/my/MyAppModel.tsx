@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useState } from 'react'
+import { Fragment } from 'react'
 import ReactMarkdown from 'react-markdown'
 
 // ** MUI Imports
@@ -42,30 +42,14 @@ const AppModel = (props: any) => {
     handelAddUserAgentAndChat,
     handelAddUserAgent,
     handelCancelUserAgent,
-    handleTypeFilter,
-    handleSearchFilter,
     userAgents,
     setNewOpen
   } = props
-
-  const [typeName, setTypeName] = useState<string>("")
 
   const handleImgInfo = (item: any) => {
     setShow(true)
     setAgent(item)
   }
-
-  const handleClickTypeFilter = (Item: string) => {
-    setTypeName(Item)
-    handleTypeFilter(Item)
-  }
-
-  const handleKeyPress = (event: any) => {
-    if (event.key === 'Enter') {
-    }
-    setTypeName("ALL")
-    handleSearchFilter(event.target.value)
-  };
 
   console.log("userAgents", userAgents)
   console.log("agent", agent)

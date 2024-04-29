@@ -470,7 +470,16 @@
         "DataTotal": "数据总量",
         "UpdateTime": "更新时间",
         "Actions": "动作",
-        "Data": "数据"
+        "Data": "数据",
+        "Base Url": "根地址",
+        "Config": "Web站点配置",
+        "Config Description": "Web 站点同步功能允许你填写一个网站的根地址，系统会自动深度抓取相关的网页进行知识库训练。仅会抓取静态的网站，以项目文档、博客为主。",
+        "Confirm Create Tips": "确认同步该站点，同步任务将随后开启，请确认！",
+        "Confirm Update Tips": "确认更新站点配置？会立即按新的配置开始同步，请确认！",
+        "Selector": "选择器",
+        "Selector Course": "使用教程",
+        "Start Sync": "开始同步",
+        "UnValid Website Tip": "您的站点可能非静态站点，无法同步"
   
         
 }

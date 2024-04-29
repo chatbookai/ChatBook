@@ -15,6 +15,7 @@ import StepperWrapper from 'src/@core/styles/mui/stepper'
 
 import Radio from '@mui/material/Radio'
 import Divider from '@mui/material/Divider'
+import Icon from 'src/@core/components/icon'
 import RadioGroup from '@mui/material/RadioGroup'
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
@@ -25,6 +26,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
+import Link from '@mui/material/Link'
 import Avatar from '@mui/material/Avatar'
 import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
@@ -33,6 +35,7 @@ import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close';
+import useBgColor, { UseBgColorType } from 'src/@core/hooks/useBgColor'
 
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
@@ -104,6 +107,7 @@ const steps = [
       subtitle: 'Upload Data'
     }
 ]
+
 const nl2br = (tooltipText: string) => {
     const formattedText = tooltipText.split('\n').map((line, index, array) => (
         <Fragment key={index}>
@@ -123,6 +127,7 @@ const CollectionNewEdit = (props: any) => {
     // ** Props
     const {pageData, setPageData, handleSubmit, isDisabledButton } = props
     const [activeStep, setActiveStep] = useState<number>(0)
+    const bgColors: UseBgColorType = useBgColor()
 
     // ** Hook
     const { t } = useTranslation()
@@ -235,7 +240,83 @@ const CollectionNewEdit = (props: any) => {
             null
             }
 
-            {pageData.type == 'Text' && activeStep == 1 ?
+            {pageData.type == 'Web' && activeStep == 0 ?
+            <Fragment>
+            <Grid item sx={{pr: 3}} xs={12}>
+                <Grid container alignItems="center">
+                    <Grid item xs={3} sx={{pt: 4}}>
+                        <InputLabel id='demo-dialog-select-label'>{t("Link name")}</InputLabel>
+                    </Grid>
+                    <Grid item xs={9} sx={{pt: 6, pl: 2}}>
+                        <TextField
+                            multiline
+                            fullWidth
+                            rows={9}
+                            size="small"
+                            value={pageData.LinkName}
+                            sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
+                            placeholder={t("Link name placeholder") as string}
+                            onChange={(e: any) => {
+                                setPageData( (prevState: any) => ({ ...prevState, LinkName: e.target.value }) )
+                            }}
+                            />
+                    </Grid>
+                </Grid>
+            </Grid>
+                <Grid item sx={{pr: 3}} xs={12}>
+                    <Grid container alignItems="center">
+                        <Grid item xs={3} sx={{pt: 4}}>
+                            <InputLabel id='demo-dialog-select-label'>{t("Selector")}</InputLabel>
+                        </Grid>
+                        <Grid item xs={9} sx={{pt: 6, pl: 2}}>
+                            <TextField
+                                size="small"
+                                value={pageData.Selector}
+                                sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
+                                placeholder={'body .content #document'}
+                                onChange={(e: any) => {
+                                    setPageData( (prevState: any) => ({ ...prevState, Selector: e.target.value }) )
+                                }}
+                                />
+                            <Box sx={{ display: 'flex', alignItems: 'center', pt: 2, flexWrap: 'wrap' }}>
+                                {pageData.LinkName && pageData.LinkName.trim().split('\n').map((item: string, index: number)=>{    
+                                    return (
+                                            <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, mr: 1, pl: 1, pr: 3, py: 0, backgroundColor: bgColors.primaryLight.backgroundColor, borderRadius: '8px' }} key={index}>
+                                                <Icon icon='ph:link-bold' style={{width: '18px'}}/>
+                                                <Typography sx={{ pl: 1 }}>{item}</Typography>
+                                                <IconButton style={{width: '35px', height: '35px'}} color='primary' onClick={()=>{
+                                                    const LinkNameNew1 = pageData.LinkName.trim().split('\n').filter((_: string, indexNew: number)=>{ 
+
+                                                        return indexNew != index
+                                                    })
+                                                    const LinkNameNew2 = LinkNameNew1.filter((itemNew: string)=>{ 
+                                                        
+                                                        return itemNew.toLowerCase().substring(0, 4) == 'http'
+                                                    })
+                                                    setPageData( (prevState: any) => ({ ...prevState, LinkName: LinkNameNew2.join('\n') }) )
+                                                }}>
+                                                    <Icon icon='mdi:delete-outline' />
+                                                </IconButton>
+                                            </Box>
+                                        )
+                                })}
+                            </Box>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid container sx={{mt: 4, pr: 3, justifyContent: 'flex-end'}} xs={12}>
+                    <Button size="small" variant='contained' disabled={isDisabledButton} onClick={
+                        () => { setActiveStep(1) }
+                    }>
+                    {t("Next")}
+                    </Button>
+                </Grid>
+            </Fragment>
+            :
+            null
+            }
+
+            {activeStep == 1 ?
             <Fragment>
                 <Grid item sx={{pr: 3}} xs={12}>
                     <Grid container alignItems="center">
@@ -364,7 +445,7 @@ const CollectionNewEdit = (props: any) => {
             null
             }
 
-            {pageData.type == 'Text' && activeStep == 2 ?
+            {activeStep == 2 ?
             <Fragment>
                 <Grid item sx={{pr: 3}} xs={12}>
                     <Grid container alignItems="center">

@@ -33,6 +33,7 @@ import DropzoneWrapper from 'src/@core/styles/libs/react-dropzone'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
+import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress'
 
 
 interface FileProp {
@@ -116,47 +117,38 @@ const CollectionFilesUploader = (props: any) => {
   }
   
   const uploadMultiFiles = async (files: File[]) => {
-    if (auth && auth.user) {
+    if (auth && auth.user && auth.user.token) {
       console.log("uploadMultiFiles files", files)
-      const formData = new FormData();
-      formData.append('knowledgeId', knowledgeId);
-      formData.append('knowledgeName', knowledgeName);
-      files.map((file: File)=>{
-        formData.append('files', file);
-      })
-      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/uploadfiles', formData, {
-        headers: {
-          Authorization: auth.user.token,
-          'Content-Type': 'multipart/form-data',
-        },
-      }).then(res => res.data);
-      console.log("FormSubmit:", FormSubmit)
-      
-      if(FormSubmit.status == "ok") {
 
-        toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
-        
-      }
-      else if(FormSubmit && FormSubmit.msg=='Token is invalid') {
-        CheckPermission(auth, router, true)
-      }
+      const uploadFiles = async () => {
+        const uploadPromises = files.map(async (file: File, index: number) => {
+          const formData = new FormData();
+          formData.append('knowledgeId', '1');
+          formData.append('knowledgeName', '1');
+          formData.append('files', file);
+          try {
+            const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/uploadfiles', formData, {
+              headers: {
+                Authorization: auth.user.token,
+                'Content-Type': 'multipart/form-data',
+              },
+              onUploadProgress: (progressEvent: any) => {
+                const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+                console.log("percentCompleted", percentCompleted);
+                setUploadProgress((prevState: any) => ({ ...prevState, [index]: percentCompleted }));
+              }
+            });
+            console.log("uploadProgress:", uploadProgress);
+          } catch (error) {
+            console.error("Error uploading file:", error);
+          }
+        });
+        await Promise.all(uploadPromises);
+      };
+      uploadFiles();
+
     }
   };
-
-  useEffect(() => {
-    let isFinishedAllUploaded = true
-    uploadProgress && Object.entries(uploadProgress) && Object.entries(uploadProgress).forEach(([key, value]) => {
-        if(value != 100) {
-            isFinishedAllUploaded = false
-        }
-
-        console.log("uploadProgress key ....", key, value)
-    })
-    if(uploadProgress && Object.entries(uploadProgress) && Object.entries(uploadProgress).length > 0 && isFinishedAllUploaded) {
-        toast.success(t('Successfully submitted') as string, { duration: 4000 })
-    }
-    console.log("uploadProgress", uploadProgress)
-  }, [uploadProgress])
 
   return (
     <Fragment>
@@ -205,35 +197,26 @@ const CollectionFilesUploader = (props: any) => {
                                 </Typography>
                               </TableCell>
                               <TableCell style={{ width: '20%', padding: 0, margin: 0 }}>
-                                {uploadProgress['UploadBundleFile'] && (
-                                      <Box sx={{ position: 'relative', display: 'inline-flex' }}>
-                                          <CircularProgress variant='determinate' {...{value: uploadProgress['UploadBundleFile']??0}} size={50} />
-                                          <Box
-                                          sx={{
-                                              top: 0,
-                                              left: 0,
-                                              right: 0,
-                                              bottom: 0,
-                                              display: 'flex',
-                                              position: 'absolute',
-                                              alignItems: 'center',
-                                              justifyContent: 'center'
-                                          }}
-                                          >
-                                          <Typography variant='caption' component='div' color='text.secondary'>
-                                              {uploadProgress['UploadBundleFile']??0}%
-                                          </Typography>
+                                {uploadProgress[index] && (
+                                      <Box sx={{ mt: 1, position: 'relative', display: 'inline-flex' }}>
+                                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                            <Box sx={{ width: '80px', mr: 1 }}>
+                                              <LinearProgress variant='determinate' value={uploadProgress[index]??0} />
+                                            </Box>
+                                            <Box sx={{ minWidth: 35 }}>
+                                              <Typography variant='body2' color='text.secondary'>{uploadProgress[index]??0}%</Typography>
+                                            </Box>
                                           </Box>
                                       </Box>
                                 )}
                               </TableCell>
                               <TableCell style={{ width: '10%', padding: 0, margin: 0 }}>                          
-                                { uploadProgress['UploadBundleFile'] && uploadProgress['UploadBundleFile'] > 0 ?
-                                    <Fragment></Fragment>
-                                :
+                                { uploadProgress[index] && uploadProgress[index] == 100 ?
                                     <IconButton size="small" sx={{width: '28px', height: '28px', py: 0, my: 0}} onClick={() => handleRemoveFile(file)}>
                                         <Icon icon='mdi:close' fontSize={20} />
                                     </IconButton> 
+                                :
+                                    null
                                 }
                               </TableCell>
                           </TableRow>

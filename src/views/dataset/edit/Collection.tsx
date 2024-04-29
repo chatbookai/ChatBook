@@ -48,7 +48,7 @@ const Collection = (props: any) => {
   }, [])
 
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
-  const [pageData, setPageData] = useState<any>({name: '', type: 'Text', trainingMode: 'Chunk Split', processWay: 'Auto process', datasetId: datasetId, FormAction: 'addcollection', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg', openEdit: false, openDelete: false })
+  const [pageData, setPageData] = useState<any>({name: '', type: 'File', trainingMode: 'Chunk Split', processWay: 'Auto process', datasetId: datasetId, FormAction: 'addcollection', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg', openEdit: false, openDelete: false })
 
   const isMobileData = isMobile()
   
@@ -178,7 +178,7 @@ const Collection = (props: any) => {
       console.log("FormSubmit:", FormSubmit)
       if(FormSubmit?.status == "ok") {
           toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
-          setPageData({openEdit: false, name: '', type: 'Text', updateTime: 0, status: 100, expiredTime: '', authCheck: '', datasetId: datasetId})
+          setPageData({openEdit: false, name: '', type: 'File', updateTime: 0, status: 100, expiredTime: '', authCheck: '', datasetId: datasetId})
       }
       else {
           toast.error(t(FormSubmit.msg) as string, { duration: 4000 })

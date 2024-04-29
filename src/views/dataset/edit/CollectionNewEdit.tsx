@@ -22,6 +22,7 @@ import CardContent from '@mui/material/CardContent'
 import Tooltip from '@mui/material/Tooltip'
 import FormControlLabel from '@mui/material/FormControlLabel'
 
+import CollectionFilesUploader from './CollectionFilesUploader'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -188,6 +189,23 @@ const CollectionNewEdit = (props: any) => {
 
             <Divider sx={{ m: '0 !important' }} />
             
+            {pageData.type == 'File' && activeStep == 0 ?
+            <Fragment>
+                <Grid item sx={{pr: 3}} xs={12}>
+                    <CollectionFilesUploader />
+                </Grid>
+                <Grid container sx={{mt: 4, pr: 3, justifyContent: 'flex-end'}} xs={12}>
+                    <Button size="small" variant='contained' disabled={isDisabledButton} onClick={
+                        () => { setActiveStep(1) }
+                    }>
+                    {t("Next")}
+                    </Button>
+                </Grid>
+            </Fragment>
+            :
+            null
+            }
+
             {pageData.type == 'Text' && activeStep == 0 ?
             <Fragment>
                 <Grid item sx={{pr: 3}} xs={12}>

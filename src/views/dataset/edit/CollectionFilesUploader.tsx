@@ -35,7 +35,6 @@ import DropzoneWrapper from 'src/@core/styles/libs/react-dropzone'
 import { useTranslation } from 'react-i18next'
 import LinearProgress from '@mui/material/LinearProgress'
 
-
 interface FileProp {
   name: string
   type: string
@@ -63,9 +62,11 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
   }
 }))
 
+const maxSize = '100M'
+
 const CollectionFilesUploader = (props: any) => {
   // ** Props
-  const { pageData, setPageData, userId } = props
+  const { pageData, setPageData, userId, fileType, maxCount, type, uploadProgress, setUploadProgress } = props
 
   // ** Hook
   const { t } = useTranslation()
@@ -75,32 +76,51 @@ const CollectionFilesUploader = (props: any) => {
     CheckPermission(auth, router, false)
   }, [])
 
+  const CurrentFiles: File[] = pageData[type]
+  const CurrentUploadProgress: any = uploadProgress[type]
+
   useEffect(() => {
-    console.log("pageData", pageData.files)
+    console.log("pageData[type]", CurrentFiles)
   }, [pageData])
 
-  // ** State
-  const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({})
-  
-  // ** Hooks
-  const { getRootProps, getInputProps } = useDropzone({
-    maxFiles: 100,
-    maxSize: 51200000,
-    accept: {
+  const acceptFilesHeader: any = type == 'files' ?
+    {
       'application/pdf': ['.pdf'],
       'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
       'application/vnd.openxmlformats-officedocument.presentationml.presentation': ['.pptx'],
       'text/plain': ['.txt'],
-    },
+      'text/markdown': ['.md'],
+      'text/html': ['.html'],
+      'text/csv': ['.csv'],
+    }
+    :
+    { 'text/csv': ['.csv'] };
+
+  // ** Hooks
+  const { getRootProps, getInputProps } = useDropzone({
+    maxFiles: 100,
+    maxSize: 51200000,
+    accept: acceptFilesHeader,
     onDrop: (acceptedFiles: File[]) => {
-      setPageData((prevState: any) => ({
-        ...prevState,
-        files: [
-          ...prevState.files,
-          ...acceptedFiles.map((file: File) => Object.assign(file))
-        ]
-      }));
+      if( type == 'files')    {
+        setPageData((prevState: any) => ({
+          ...prevState,
+          files: [
+            ...CurrentFiles,
+            ...acceptedFiles.map((file: File) => Object.assign(file))
+          ]
+        }));
+      }
+      if( type == 'csvs')    {
+        setPageData((prevState: any) => ({
+          ...prevState,
+          csvs: [
+            ...CurrentFiles,
+            ...acceptedFiles.map((file: File) => Object.assign(file))
+          ]
+        }));
+      }
       uploadMultiFiles(acceptedFiles.map((file: File) => Object.assign(file)));
     },
     onDropRejected: () => {
@@ -119,18 +139,28 @@ const CollectionFilesUploader = (props: any) => {
   }
 
   const handleRemoveFile = (file: FileProp) => {
-    const uploadedFiles = pageData.files
+    const uploadedFiles = CurrentFiles
     const filtered = uploadedFiles.filter((i: FileProp) => i.name !== file.name)
-    setPageData( (prevState: any) => ({ 
-      ...prevState, 
-      files: filtered
-      }) )
+    if( type == 'files') {
+      setPageData( (prevState: any) => ({ 
+        ...prevState, 
+        files: filtered
+        }) )
+    }
+    if( type == 'csvs') {
+      setPageData( (prevState: any) => ({ 
+        ...prevState, 
+        csvs: filtered
+        }) )
+    }
     console.log("userId", userId)
   }
   
   const uploadMultiFiles = async (files: File[]) => {
     if (auth && auth.user && auth.user.token) {
       console.log("uploadMultiFiles files", files)
+
+      const NewProgress = {...CurrentUploadProgress}
 
       const uploadFiles = async () => {
         const uploadPromises = files.map(async (file: File, index: number) => {
@@ -141,16 +171,28 @@ const CollectionFilesUploader = (props: any) => {
           try {
             const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/uploadfiles', formData, {
               headers: {
-                Authorization: auth.user.token,
+                Authorization: auth?.user?.token,
                 'Content-Type': 'multipart/form-data',
               },
               onUploadProgress: (progressEvent: any) => {
                 const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-                console.log("percentCompleted", percentCompleted);
-                setUploadProgress((prevState: any) => ({ ...prevState, [index]: percentCompleted }));
+
+                NewProgress[file.name] = percentCompleted
+                if( type == 'files') {
+                  setUploadProgress((prevState: any) => ({
+                    ...prevState, 
+                    files: NewProgress
+                  }));
+                }
+                if( type == 'csvs') {
+                  setUploadProgress((prevState: any) => ({
+                    ...prevState, 
+                    csvs: NewProgress
+                  }));
+                }
               }
             });
-            console.log("uploadProgress:", uploadProgress);
+            
             console.log("FormSubmit:", FormSubmit);
           } catch (error) {
             console.error("Error uploading file:", error);
@@ -173,15 +215,15 @@ const CollectionFilesUploader = (props: any) => {
           <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: ['center', 'center', 'inherit'] }}>
             <HeadingTypography variant='h5'>{`${t('Drop files here or click to upload.')}`}</HeadingTypography>
             <Typography color='textSecondary'>
-              {t('Support file type')}
+              {t('Support file type').replace('{{fileType}}', fileType)}
             </Typography>
             <Typography color='textSecondary'>
-            {t('Support max count')} {t('Support max size')}
+            {t('Support max count').replace('{{maxCount}}', String(maxCount))} {t('Support max size').replace('{{maxSize}}', maxSize)}
             </Typography>
           </Box>
         </Box>
       </div>
-      {pageData && pageData.files && pageData.files.length > 0 ? (
+      {pageData && CurrentFiles && CurrentFiles.length > 0 ? (
         <Fragment>
           <TableContainer component={Paper} variant="outlined" sx={{mt: 3}}>
             <Table>
@@ -194,7 +236,7 @@ const CollectionFilesUploader = (props: any) => {
                 </TableRow>
                 </TableHead>
                 <TableBody>
-                  {pageData.files.map((file: FileProp, index: number)=>{    
+                  {CurrentFiles.map((file: FileProp, index: number)=>{    
 
                       return (
                           <TableRow key={index}>
@@ -210,21 +252,21 @@ const CollectionFilesUploader = (props: any) => {
                                 </Typography>
                               </TableCell>
                               <TableCell style={{ width: '20%', padding: 0, margin: 0 }}>
-                                {uploadProgress[index] && (
+                                {CurrentUploadProgress[file.name] && (
                                       <Box sx={{ mt: 1, position: 'relative', display: 'inline-flex' }}>
                                           <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                             <Box sx={{ width: '80px', mr: 1 }}>
-                                              <LinearProgress variant='determinate' value={uploadProgress[index]??0} />
+                                              <LinearProgress variant='determinate' value={CurrentUploadProgress[file.name]??0} />
                                             </Box>
                                             <Box sx={{ minWidth: 35 }}>
-                                              <Typography variant='body2' color='text.secondary'>{uploadProgress[index]??0}%</Typography>
+                                              <Typography variant='body2' color='text.secondary'>{CurrentUploadProgress[file.name]??0}%</Typography>
                                             </Box>
                                           </Box>
                                       </Box>
                                 )}
                               </TableCell>
                               <TableCell style={{ width: '10%', padding: 0, margin: 0 }}>                          
-                                { uploadProgress[index] && uploadProgress[index] == 100 ?
+                                { CurrentUploadProgress[file.name] && CurrentUploadProgress[file.name] == 100 ?
                                     <IconButton size="small" sx={{width: '28px', height: '28px', py: 0, my: 0}} onClick={() => handleRemoveFile(file)}>
                                         <Icon icon='mdi:close' fontSize={20} />
                                     </IconButton> 

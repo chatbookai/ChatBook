@@ -5,13 +5,11 @@ import { useAuth } from 'src/hooks/useAuth'
 import { CheckPermission } from 'src/functions/ChatBook'
 import { useTranslation } from 'react-i18next'
 
-
 import Step from '@mui/material/Step'
 import Stepper from '@mui/material/Stepper'
 import StepLabel from '@mui/material/StepLabel'
 import StepperCustomDot from './StepperCustomDot'
 import StepperWrapper from 'src/@core/styles/mui/stepper'
-
 
 import Radio from '@mui/material/Radio'
 import Divider from '@mui/material/Divider'
@@ -119,16 +117,19 @@ const nl2br = (tooltipText: string) => {
     return formattedText
 }
 
-const rows = [
-    { name: 'John'},
-  ];
+const fileTypeFile = '.txt, .docx, .csv, .xlsx, .pdf, .md, .html, .pptx';
+const maxCountFile = 10;
 
+const fileTypeCSV = '.csv';
+const maxCountCSV = 10;
 
 const CollectionNewEdit = (props: any) => {
     // ** Props
     const {pageData, setPageData, handleSubmit, isDisabledButton } = props
     const [activeStep, setActiveStep] = useState<number>(0)
     const bgColors: UseBgColorType = useBgColor()
+
+    const [uploadProgress, setUploadProgress] = useState<any>({files: {}, csvs: {}})
 
     // ** Hook
     const { t } = useTranslation()
@@ -137,6 +138,10 @@ const CollectionNewEdit = (props: any) => {
     useEffect(() => {
         CheckPermission(auth, router, false)
     }, [auth, router])
+
+    useEffect(() => {
+        console.log("pageData pageData", pageData, uploadProgress)
+      }, [pageData])
 
 
     return (
@@ -172,10 +177,8 @@ const CollectionNewEdit = (props: any) => {
                                     <Step key={index}>
                                         <StepLabel StepIconComponent={StepperCustomDot}>
                                             <div className='step-label'>
-                                            <Typography className='step-number'>{`${index + 1}`}</Typography>
-                                            <div>
+                                                <Typography className='step-number'>{`${index + 1}`}</Typography>
                                                 <Typography className='step-title'>{t(step.title)}</Typography>
-                                            </div>
                                             </div>
                                         </StepLabel>
                                     </Step>
@@ -192,7 +195,24 @@ const CollectionNewEdit = (props: any) => {
             {pageData.type == 'File' && activeStep == 0 ?
             <Fragment>
                 <Grid item sx={{pr: 3}} xs={12}>
-                    <CollectionFilesUploader pageData={pageData} setPageData={setPageData} />
+                    <CollectionFilesUploader pageData={pageData} setPageData={setPageData} fileType={fileTypeFile} maxCount={maxCountFile}  type='files' uploadProgress={uploadProgress} setUploadProgress={setUploadProgress}/>
+                </Grid>
+                <Grid container sx={{mt: 4, pr: 3, justifyContent: 'flex-end'}} xs={12}>
+                    <Button size="small" variant='contained' disabled={isDisabledButton} onClick={
+                        () => { setActiveStep(1) }
+                    }>
+                    {t("Next")}
+                    </Button>
+                </Grid>
+            </Fragment>
+            :
+            null
+            }
+
+            {pageData.type == 'Table' && activeStep == 0 ?
+            <Fragment>
+                <Grid item sx={{pr: 3}} xs={12}>
+                    <CollectionFilesUploader pageData={pageData} setPageData={setPageData} fileType={fileTypeCSV} maxCount={maxCountCSV} type='csvs' uploadProgress={uploadProgress} setUploadProgress={setUploadProgress} />
                 </Grid>
                 <Grid container sx={{mt: 4, pr: 3, justifyContent: 'flex-end'}} xs={12}>
                     <Button size="small" variant='contained' disabled={isDisabledButton} onClick={
@@ -261,27 +281,27 @@ const CollectionNewEdit = (props: any) => {
 
             {pageData.type == 'Web' && activeStep == 0 ?
             <Fragment>
-            <Grid item sx={{pr: 3}} xs={12}>
-                <Grid container alignItems="center">
-                    <Grid item xs={3} sx={{pt: 4}}>
-                        <InputLabel id='demo-dialog-select-label'>{t("Link name")}</InputLabel>
-                    </Grid>
-                    <Grid item xs={9} sx={{pt: 6, pl: 2}}>
-                        <TextField
-                            multiline
-                            fullWidth
-                            rows={9}
-                            size="small"
-                            value={pageData.LinkName}
-                            sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
-                            placeholder={t("Link name placeholder") as string}
-                            onChange={(e: any) => {
-                                setPageData( (prevState: any) => ({ ...prevState, LinkName: e.target.value }) )
-                            }}
-                            />
+                <Grid item sx={{pr: 3}} xs={12}>
+                    <Grid container alignItems="center">
+                        <Grid item xs={3} sx={{pt: 4}}>
+                            <InputLabel id='demo-dialog-select-label'>{t("Link name")}</InputLabel>
+                        </Grid>
+                        <Grid item xs={9} sx={{pt: 6, pl: 2}}>
+                            <TextField
+                                multiline
+                                fullWidth
+                                rows={9}
+                                size="small"
+                                value={pageData.LinkName}
+                                sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
+                                placeholder={t("Link name placeholder") as string}
+                                onChange={(e: any) => {
+                                    setPageData( (prevState: any) => ({ ...prevState, LinkName: e.target.value }) )
+                                }}
+                                />
+                        </Grid>
                     </Grid>
                 </Grid>
-            </Grid>
                 <Grid item sx={{pr: 3}} xs={12}>
                     <Grid container alignItems="center">
                         <Grid item xs={3} sx={{pt: 4}}>
@@ -470,11 +490,63 @@ const CollectionNewEdit = (props: any) => {
                                 :
                                 null
                                 }
+                                {pageData.type == 'Text' ?
+                                <Fragment>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                        <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, mb: 2, mr: 10, pr: 10, py: 0, }}>
+                                            <Tooltip title={pageData.CollectionName} placement="left">
+                                                <Typography >{pageData.CollectionName}</Typography>
+                                            </Tooltip>
+                                        </Box>
+                                    </Box>
+                                </Fragment>
+                                :
+                                null
+                                }
+                                {pageData.type == 'File' ?
+                                <Fragment>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                        {pageData.files && pageData.files.map((item: any, index: number)=>{    
+                                            return (
+                                                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, mb: 2, mr: 10, pr: 10, py: 0, }} key={index}>
+                                                    <Tooltip title={item.name} placement="left">
+                                                        <Typography sx={{ fontSize: 'small', maxWidth: '350px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</Typography>
+                                                    </Tooltip>
+                                                    <IconButton style={{width: '35px', height: '35px'}} color='primary' onClick={()=>{ }}>
+                                                        <Icon icon='mdi:eye-outline' />
+                                                    </IconButton>
+                                                </Box>
+                                            )
+                                        })}
+                                    </Box>
+                                </Fragment>
+                                :
+                                null
+                                }
+                                {pageData.type == 'Table' ?
+                                <Fragment>
+                                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                        {pageData.csvs && pageData.csvs.map((item: any, index: number)=>{    
+                                            return (
+                                                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1, mb: 2, mr: 10, pr: 10, py: 0, }} key={index}>
+                                                    <Tooltip title={item.name} placement="left">
+                                                        <Typography sx={{ fontSize: 'small', maxWidth: '350px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{item.name}</Typography>
+                                                    </Tooltip>
+                                                    <IconButton style={{width: '35px', height: '35px'}} color='primary' onClick={()=>{ }}>
+                                                        <Icon icon='mdi:eye-outline' />
+                                                    </IconButton>
+                                                </Box>
+                                            )
+                                        })}
+                                    </Box>
+                                </Fragment>
+                                :
+                                null
+                                }
                             </Grid>
                         </Grid>
                     </Grid>
                 </Grid>
-
             </Fragment>
             :
             null
@@ -499,7 +571,55 @@ const CollectionNewEdit = (props: any) => {
                                                 <TableRow key={index}>
                                                     <TableCell style={{ width: '5%' }}>{(index+1)}</TableCell>
                                                     <TableCell style={{ width: '80%' }}>{item}</TableCell>
-                                                    <TableCell style={{ width: '15%' }}>{pageData.status || 'Waiting'}</TableCell>
+                                                    <TableCell style={{ width: '15%' }}>
+                                                        <Button variant='text' disabled>
+                                                        {pageData.status || 'Waiting'}
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                        })}
+                                </TableBody>
+                                <TableBody>
+                                {pageData.type == 'Text' && pageData.CollectionName ?
+                                    <TableRow key={'0'}>
+                                        <TableCell style={{ width: '5%' }}>{(1)}</TableCell>
+                                        <TableCell style={{ width: '80%' }}>{pageData.CollectionName}</TableCell>
+                                        <TableCell style={{ width: '15%' }}>
+                                            <Button variant='text' disabled>
+                                            {pageData.status || 'Waiting'}
+                                            </Button>
+                                        </TableCell>
+                                    </TableRow>
+                                :
+                                null}
+                                </TableBody>
+                                <TableBody>
+                                {pageData.type == 'File' && pageData.files && pageData.files.map((item: any, index: number)=>{    
+                                            return (
+                                                <TableRow key={index}>
+                                                    <TableCell style={{ width: '5%' }}>{(index+1)}</TableCell>
+                                                    <TableCell style={{ width: '80%' }}>{item.name}</TableCell>
+                                                    <TableCell style={{ width: '15%' }}>
+                                                        <Button variant='text' disabled>
+                                                        {pageData.status || 'Waiting'}
+                                                        </Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            )
+                                        })}
+                                </TableBody>
+                                <TableBody>
+                                {pageData.type == 'Table' && pageData.csvs && pageData.csvs.map((item: any, index: number)=>{    
+                                            return (
+                                                <TableRow key={index}>
+                                                    <TableCell style={{ width: '5%' }}>{(index+1)}</TableCell>
+                                                    <TableCell style={{ width: '80%' }}>{item.name}</TableCell>
+                                                    <TableCell style={{ width: '15%' }}>
+                                                        <Button variant='text' disabled>
+                                                        {pageData.status || 'Waiting'}
+                                                        </Button>
+                                                    </TableCell>
                                                 </TableRow>
                                             )
                                         })}

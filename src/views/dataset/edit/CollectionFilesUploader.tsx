@@ -33,7 +33,7 @@ import DropzoneWrapper from 'src/@core/styles/libs/react-dropzone'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
-import LinearProgress, { LinearProgressProps } from '@mui/material/LinearProgress'
+import LinearProgress from '@mui/material/LinearProgress'
 
 
 interface FileProp {
@@ -65,7 +65,7 @@ const HeadingTypography = styled(Typography)<TypographyProps>(({ theme }) => ({
 
 const CollectionFilesUploader = (props: any) => {
   // ** Props
-  const { knowledgeId, knowledgeName, userId } = props
+  const { pageData, setPageData, userId } = props
 
   // ** Hook
   const { t } = useTranslation()
@@ -75,8 +75,11 @@ const CollectionFilesUploader = (props: any) => {
     CheckPermission(auth, router, false)
   }, [])
 
+  useEffect(() => {
+    console.log("pageData", pageData.files)
+  }, [pageData])
+
   // ** State
-  const [files, setFiles] = useState<File[]>([])
   const [uploadProgress, setUploadProgress] = useState<{ [key: string]: number }>({})
   
   // ** Hooks
@@ -91,7 +94,13 @@ const CollectionFilesUploader = (props: any) => {
       'text/plain': ['.txt'],
     },
     onDrop: (acceptedFiles: File[]) => {
-      setFiles((prevFiles) => [...prevFiles, ...acceptedFiles.map((file: File) => Object.assign(file))]);
+      setPageData((prevState: any) => ({
+        ...prevState,
+        files: [
+          ...prevState.files,
+          ...acceptedFiles.map((file: File) => Object.assign(file))
+        ]
+      }));
       uploadMultiFiles(acceptedFiles.map((file: File) => Object.assign(file)));
     },
     onDropRejected: () => {
@@ -110,9 +119,12 @@ const CollectionFilesUploader = (props: any) => {
   }
 
   const handleRemoveFile = (file: FileProp) => {
-    const uploadedFiles = files
+    const uploadedFiles = pageData.files
     const filtered = uploadedFiles.filter((i: FileProp) => i.name !== file.name)
-    setFiles([...filtered])
+    setPageData( (prevState: any) => ({ 
+      ...prevState, 
+      files: filtered
+      }) )
     console.log("userId", userId)
   }
   
@@ -139,6 +151,7 @@ const CollectionFilesUploader = (props: any) => {
               }
             });
             console.log("uploadProgress:", uploadProgress);
+            console.log("FormSubmit:", FormSubmit);
           } catch (error) {
             console.error("Error uploading file:", error);
           }
@@ -168,7 +181,7 @@ const CollectionFilesUploader = (props: any) => {
           </Box>
         </Box>
       </div>
-      {files.length ? (
+      {pageData && pageData.files && pageData.files.length > 0 ? (
         <Fragment>
           <TableContainer component={Paper} variant="outlined" sx={{mt: 3}}>
             <Table>
@@ -181,7 +194,7 @@ const CollectionFilesUploader = (props: any) => {
                 </TableRow>
                 </TableHead>
                 <TableBody>
-                  {files.map((file: FileProp, index: number)=>{    
+                  {pageData.files.map((file: FileProp, index: number)=>{    
 
                       return (
                           <TableRow key={index}>

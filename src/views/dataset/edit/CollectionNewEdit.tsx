@@ -192,7 +192,7 @@ const CollectionNewEdit = (props: any) => {
             {pageData.type == 'File' && activeStep == 0 ?
             <Fragment>
                 <Grid item sx={{pr: 3}} xs={12}>
-                    <CollectionFilesUploader />
+                    <CollectionFilesUploader pageData={pageData} setPageData={setPageData} />
                 </Grid>
                 <Grid container sx={{mt: 4, pr: 3, justifyContent: 'flex-end'}} xs={12}>
                     <Button size="small" variant='contained' disabled={isDisabledButton} onClick={

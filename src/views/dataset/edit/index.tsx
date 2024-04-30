@@ -130,6 +130,14 @@ const EditDataSet = (props: any) => {
         null
         }
 
+        {menuid == 'searchtest' && app && app._id ?
+        <Fragment>
+          <ConfigApp app={app} setApp={setApp} handleEditDataSet={handleEditDataSet}/>
+          <ConfigAppDelete app={app} setApp={setApp} isDisabledButton={isDisabledButton} handleDeleteDataSet={handleDeleteDataSet}/>
+        </Fragment>
+        :
+        null
+        }
 
       </Box>
       :

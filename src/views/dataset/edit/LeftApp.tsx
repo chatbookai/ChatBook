@@ -133,8 +133,8 @@ const LeftApp = (props: any) => {
           <List sx={{ mb: 4, p: 0 }}>{renderChats()}</List>
         </Box>
       </ScrollWrapper>
-      <Button variant="contained" color="primary" sx={{ m: 0 }}>
-        {t('My App')}
+      <Button variant="contained" color="primary" sx={{ m: 0 }} onClick={()=>router.push('/dataset/my')}>
+        {t('My Dataset')}
       </Button>
     </Box>
   )

@@ -35,7 +35,6 @@ import { CheckPermission, GetAllLLMS } from 'src/functions/ChatBook'
 import PublishAppNewEdit from './PublishAppNewEdit'
 import PublishAppDelete from './PublishAppDelete'
 
-
 const PublishApp = (props: any) => {
   // ** Hook
   const { t } = useTranslation()

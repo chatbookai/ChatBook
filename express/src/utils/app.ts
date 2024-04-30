@@ -63,7 +63,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
   
   export async function deleteApp(Params: any) {
     try{
-      Params._id = filterString(Params._id)
+      Params._id = filterString(Params.appId)
       Params.userId = filterString(Params.userId)
       const deleteSetting = db.prepare('delete from app where _id = ? and userId = ?');
       deleteSetting.run(Params._id, Params.userId);
@@ -91,6 +91,28 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     }
   
     return Template
+  }
+
+  export async function getAppPage(pageid: number, pagesize: number, userId: number) {
+    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+    const From = pageidFiler * pagesizeFiler;
+    console.log("pageidFiler", pageidFiler)
+    console.log("pagesizeFiler", pagesizeFiler)
+
+    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from app where userId = ?", [userId]);
+    const RecordsTotal: number = Records ? Records.NUM : 0;  
+    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from app where userId = ? order by id desc limit ? OFFSET ? `, [userId, pagesizeFiler, From]) as any[];
+    
+    const RS: any = {};
+    RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
+    RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
+    RS['from'] = From;
+    RS['pageid'] = pageidFiler;
+    RS['pagesize'] = pagesizeFiler;
+    RS['total'] = RecordsTotal;
+
+    return RS;
   }
 
   export async function getChatlogPageByApp(appId: string, pageid: number, pagesize: number, userId: number) {

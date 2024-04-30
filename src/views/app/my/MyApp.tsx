@@ -1,8 +1,9 @@
 // ** React Imports
 import { Fragment, useEffect, useState } from 'react'
 
-import AppModel from 'src/views/app/my/MyAppModel'
 import NewApp from 'src/views/app/my/NewApp'
+import MyAppModel from 'src/views/app/my/MyAppModel'
+import MyAppDelete from 'src/views/app/my/MyAppDelete'
 
 // ** Axios Imports
 import axios from 'axios'
@@ -11,8 +12,9 @@ import { useAuth } from 'src/hooks/useAuth'
 import toast from 'react-hot-toast'
 import { useTranslation } from 'react-i18next'
 import { getNanoid } from 'src/functions/app/string.tools'
-import { simpleChat } from '../data/simpleChat'
 import { useRouter } from 'next/router'
+import { CheckPermission } from 'src/functions/ChatBook'
+import { simpleChat } from '../data/simpleChat'
 
 
 const MyApp = () => {
@@ -21,24 +23,30 @@ const MyApp = () => {
   const auth = useAuth()
   const { t } = useTranslation()
   const router = useRouter()
+
+  useEffect(() => {
+    CheckPermission(auth, router, false)
+  }, [])
   
+  const [deleteOpen, setDeleteOpen] = useState<boolean>(false)
+  const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
+  const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
   const [pageid, setPageid] = useState<number>(0)
   const [show, setShow] = useState<boolean>(false)
   const [loadingAllData, setLoadingAllData] = useState<boolean>(false)
   const [app, setApp] = useState<any[]>([])
-  const [favoriteList, setFavoriteList] = useState<any[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [loadingText, setLoadingText] = useState<string>('Loading')
-  const [agent, setAgent] = useState<any>(null)
-  const [userAgents, setUserAgents] = useState<number[]>([])
+  const [appId, setAppId] = useState<string>('')
   
   const [type, setType] = useState<string>("ALL")
   const [search, setSearch] = useState<string>("ALL")
 
   useEffect(() => {
-    getApp(type, search)
-    getUserAgents()    
-  }, [type, search])
+    if(auth && auth.user && auth.user.email) {
+      getAppsPage(type, search)
+    }
+  }, [type, search, auth, refreshChatCounter])
 
   const handleSearchFilter = async function (Item: string) {
     setPageid(0)
@@ -46,14 +54,15 @@ const MyApp = () => {
     setApp([])
     setType("ALL")
     setSearch(Item)
+    setAppId("")
   }
 
-  const getApp = async function (type: string, search: string) {
+  const getAppsPage = async function (type: string, search: string) {
     console.log("loadingAllData", loadingAllData)
+    const pagesize = 20
     if(loadingAllData == false)  {
-      const pagesize = 20
       setLoading(true)
-      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/agents/' + pageid + '/' + pagesize, {type, search},  {
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getapppage/' + pageid + '/' + pagesize, {type, search},  {
         headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
       }).then(res => res.data);
       if(RS && RS.data) {
@@ -65,7 +74,7 @@ const MyApp = () => {
           setLoadingAllData(true)
         }
         setApp([...app, ...appInitial].filter((element) => element != null))
-        setFavoriteList(RS.favorite)
+        setAppId("")
       }
       const timer = setTimeout(() => {
         setLoading(false);
@@ -88,74 +97,28 @@ const MyApp = () => {
     }
   }
 
-  const addUserAgent = async function () {
-    if(auth && auth.user && auth.user.token && agent)    {
+  const handleDeleteApp = async function () {
+    if(auth && auth.user && auth.user.token && appId)    {
+      setDeleteOpen(false)
       setLoading(true)
-      const data: any = {agentId: agent.id}
-      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/user/agent/add', data, {
+      setIsDisabledButton(true)
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/deleteapp', {appId: appId}, {
         headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
       }).then(res => res.data);
       if(RS && RS.status && RS.status == 'ok') {
         setLoading(false)
-        const newUserAgentsSet = new Set(userAgents);
-        newUserAgentsSet.add(agent.id);
-        setUserAgents(Array.from(newUserAgentsSet));
         toast.success(t(RS.msg) as string, { duration: 2500 })
+        setRefreshChatCounter((prevState: number)=>(prevState+2))
+        setPageid(0)
+        setLoadingAllData(false)
+        setApp([])
+        setIsDisabledButton(false)
+        setAppId("")
       }
       else {
         setLoading(false)
+        setIsDisabledButton(false)
       }
-    }
-  }
-
-  const deleteUserAgent = async function () {
-    if(auth && auth.user && auth.user.token && agent)    {
-      setLoading(true)
-      const data: any = {agentId: agent.id}
-      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/user/agent/delete', data, {
-        headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
-      }).then(res => res.data);
-      if(RS && RS.status && RS.status == 'ok') {
-        setLoading(false)
-        const updatedUserAgents = userAgents.filter(id => id !== agent.id);
-        setUserAgents(updatedUserAgents);
-        toast.success(t(RS.msg) as string, { duration: 2500 })
-      }
-      else {
-        setLoading(false)
-      }
-    }
-  }
-
-  const handelAddUserAgentAndChat  = async function () {
-    addUserAgent()
-    setShow(false)
-    console.log("打开会话")
-  }
-
-  const handelAddUserAgent  = async function () {
-    addUserAgent()
-    setShow(false)
-  }
-
-  const handelCancelUserAgent  = async function () {
-    deleteUserAgent()
-    setShow(false)
-  }
-
-  const getUserAgents = async function () {
-    if(auth && auth.user && auth.user.token)    {
-      setLoading(true)
-      const data: any = {pageid: 0, pagesize: 999}
-      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/user/agents', data, {
-        headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' },
-      }).then(res => res.data);
-      if(RS && RS.data) {
-        setLoading(false)
-        const InitialUserAgents = RS.data.map((Item: any)=>Item.agentId)
-        setUserAgents(InitialUserAgents)
-      }
-      setLoading(false)
     }
   }
 
@@ -163,7 +126,7 @@ const MyApp = () => {
     const handleScroll = () => {
       if (window.innerHeight + document.documentElement.scrollTop !== document.documentElement.offsetHeight) return;
       setPageid(pageid + 1)
-      getApp(type, search);
+      getAppsPage(type, search);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -180,7 +143,7 @@ const MyApp = () => {
     setAppNewForm((prevState: any)=>({
       ...prevState,
       name: t('My App') as string
-  }))
+    }))
   }, [t]); 
 
   const handleAddApp = async () => {
@@ -211,8 +174,9 @@ const MyApp = () => {
 
   return (
     <Fragment>
-      <AppModel app={app} favoriteList={favoriteList} loading={loading} loadingText={loadingText} agent={agent} setAgent={setAgent} show={show} setShow={setShow} handelAddUserAgentAndChat={handelAddUserAgentAndChat} handelAddUserAgent={handelAddUserAgent} handelCancelUserAgent={handelCancelUserAgent} handleSearchFilter={handleSearchFilter} userAgents={userAgents} setNewOpen={setNewOpen}/>
+      <MyAppModel app={app} loading={loading} loadingText={loadingText} appId={appId} setAppId={setAppId} show={show} setShow={setShow} setDeleteOpen={setDeleteOpen} handleDeleteApp={handleDeleteApp} handleSearchFilter={handleSearchFilter} setNewOpen={setNewOpen}/>
       <NewApp NewOpen={NewOpen} setNewOpen={setNewOpen} handleAddApp={handleAddApp} AppNewForm={AppNewForm} setAppNewForm={setAppNewForm}/>
+      <MyAppDelete deleteOpen={deleteOpen} setDeleteOpen={setDeleteOpen} isDisabledButton={isDisabledButton} handleDeleteApp={handleDeleteApp}/>
     </Fragment>
   )
 }

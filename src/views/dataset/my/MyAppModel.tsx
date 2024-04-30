@@ -1,6 +1,5 @@
 // ** React Imports
 import { useState, MouseEvent, Fragment } from 'react'
-import ReactMarkdown from 'react-markdown'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -65,7 +64,7 @@ const AppModel = (props: any) => {
   
     return (
       <>
-        <IconButton size='small' onMouseEnter={handleRowOptionsClick} onClick={handleRowOptionsClick} >
+        <IconButton size='small' onClick={handleRowOptionsClick} >
           <Icon icon='mdi:dots-vertical' />
         </IconButton>
         <Menu
@@ -186,19 +185,19 @@ const AppModel = (props: any) => {
                             <Typography variant='caption'>{item.intro}</Typography>
                           </Box>
                           <Box position="absolute" bottom={0} left={1} m={1} px={0.8}>
-                            <Button disabled variant="text" size="small" startIcon={<Icon icon='ri:git-repository-private-line' />} >
+                            <Button disabled variant="text" size="small" startIcon={<Icon icon={item.permission == 'private' ? 'ri:git-repository-private-line' : 'mdi:users-outline'} />} >
                               {t(item.permission)}
                             </Button>
                           </Box>
                           <Box position="absolute" bottom={0} right={1} m={1} px={0.8}>
-                            <Button disabled variant="text" size="small" startIcon={<Icon icon='mdi:database-outline' />} >
+                            <Button disabled variant="text" size="small" startIcon={<Icon icon={item.type == 'General' ? 'mdi:database-outline' : 'mdi:internet'} />} >
                               {t(item.type == 'General' ? t('Common Dataset') : t('Website Sync'))}
                             </Button>
                           </Box>
                         </Box>
                       </Grid>
                     ))}
-                    {app && app.length == 0 ?
+                    {app && app.length == 0 && loading == false?
                     <Grid 
                       item 
                       key='0' 

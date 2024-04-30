@@ -1,6 +1,5 @@
 // ** React Imports
-import { Fragment, useState } from 'react'
-import ReactMarkdown from 'react-markdown'
+import { useState, MouseEvent, Fragment } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -14,61 +13,107 @@ import DialogContent from '@mui/material/DialogContent'
 import Drawer from '@mui/material/Drawer'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
+import Menu from '@mui/material/Menu'
+import MenuItem from '@mui/material/MenuItem'
+import Link from 'next/link'
 
 import Avatar from '@mui/material/Avatar'
 import Container from '@mui/material/Container'
 import CircularProgress from '@mui/material/CircularProgress'
 import { useTheme } from '@mui/material/styles'
+import { useRouter } from 'next/router'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
 
 import { useTranslation } from 'react-i18next'
 
+
 const AppModel = (props: any) => {
   // ** Hook
   const { t } = useTranslation()
   const theme = useTheme()
+  const router = useRouter()
 
   // ** Props
   const {
     app,
     loading,
     loadingText,
-    agent,
-    setAgent,
+    appId,
+    setAppId,
     show,
     setShow,
-    handelAddUserAgentAndChat,
-    handelAddUserAgent,
-    handelCancelUserAgent,
-    handleTypeFilter,
-    handleSearchFilter,
-    userAgents,
+    setDeleteOpen,
     setNewOpen
   } = props
 
-  const [typeName, setTypeName] = useState<string>("")
+  const RowOptions = (props: any) => {
+    const { id } = props
 
-  const handleImgInfo = (item: any) => {
-    setShow(true)
-    setAgent(item)
-  }
-
-  const handleClickTypeFilter = (Item: string) => {
-    setTypeName(Item)
-    handleTypeFilter(Item)
-  }
-
-  const handleKeyPress = (event: any) => {
-    if (event.key === 'Enter') {
+    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  
+    const rowOptionsOpen = Boolean(anchorEl)
+  
+    const handleRowOptionsClick = (event: MouseEvent<HTMLElement>) => {
+      setAnchorEl(event.currentTarget)
     }
-    setTypeName("ALL")
-    handleSearchFilter(event.target.value)
-  };
+    const handleRowOptionsClose = () => {
+      setAnchorEl(null)
+    }
+  
+    return (
+      <>
+        <IconButton size='small' onClick={handleRowOptionsClick} >
+          <Icon icon='mdi:dots-vertical' />
+        </IconButton>
+        <Menu
+          keepMounted
+          anchorEl={anchorEl}
+          open={rowOptionsOpen}
+          onClose={handleRowOptionsClose}
+          anchorOrigin={{
+            vertical: 'bottom',
+            horizontal: 'right'
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right'
+          }}
+          PaperProps={{ style: { minWidth: '8rem' } }}
+        >
+          <MenuItem
+            component={Link}
+            sx={{ '& svg': { mr: 2 } }}
+            onClick={handleRowOptionsClose}
+            href={`/app/edit/${id}`}
+          >
+            <Icon icon='mdi:pencil-outline' fontSize={20} />
+            {t('Edit')}
+          </MenuItem>
+          <MenuItem
+            component={Link}
+            sx={{ '& svg': { mr: 2 } }}
+            onClick={handleRowOptionsClose}
+            href={`/app/chat/${id}`}
+          >
+            <Icon icon='mdi:database-outline' fontSize={20} />
+            {t('Chat')}
+          </MenuItem>
+          <MenuItem onClick={()=>{
+            setAppId(id)
+            setDeleteOpen(true)
+            }} 
+            sx={{ '& svg': { mr: 2 } }}>
+            <Icon icon='mdi:delete-outline' fontSize={20} />
+            {t('Delete')}
+          </MenuItem>
+        </Menu>
+      </>
+    )
+  }
 
-  console.log("userAgents", userAgents)
-  console.log("agent", agent)
+  console.log("app", app)
   
   const renderContent = () => {
       return (
@@ -86,56 +131,72 @@ const AppModel = (props: any) => {
                     <Grid item xs={6}>
                       <Box p={2} display="flex" justifyContent="flex-end">
                         <Button variant="contained" color="primary" size="small" startIcon={<Icon icon='mdi:add' />} onClick={()=>{setNewOpen(true)}}>
-                        {t('New')}
+                        {t('New App')}
                         </Button>
                       </Box>
                     </Grid>
                   </Grid>
                   <Grid container spacing={2} sx={{ mt: 2, mb: 2}}>
                     {app && app.map((item: any, index: number) => (
-                      <Grid item key={index} xs={12} sm={6} md={3} lg={3}>
-                        <Box position="relative" sx={{mb: 1, mr: 1}}>
-                          <CardMedia image={`${authConfig.backEndApiChatBook}/images/pages/tree-cone-cube-bg-${theme.palette.mode}.png`} sx={{ height: '13.25rem', objectFit: 'contain', borderRadius: 1 }}/>
-                          <Box position="absolute" top={10} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)} sx={{ cursor: 'pointer' }}>
-                            <Avatar src={item.avatar} sx={{ mr: 3, width: 50, height: 50 }} />
+                      <Grid item key={index} xs={12} sm={6} md={4} lg={4}>
+                        <Box position="relative" sx={{mb: 2, mr: 2}}>
+                          <CardMedia image={`${authConfig.backEndApiChatBook}/images/pages/tree-cone-cube-bg-${theme.palette.mode}.png`} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1 }}/>
+                          <Box position="absolute" top={10} left={5} m={1} px={0.8} borderRadius={1}
+                            onClick={()=>{
+                              router.push('/app/edit/' + item._id)
+                            }}
+                            sx={{cursor: 'pointer'}}
+                          >
+                            <Box display="flex" alignItems="center">
+                              <Avatar src={item.avatar || authConfig.logo} sx={{ mr: 3, width: 35, height: 35 }} />
+                              <Typography 
+                                  sx={{
+                                      fontWeight: 500,
+                                      lineHeight: 1.71,
+                                      letterSpacing: '0.22px',
+                                      fontSize: '1rem !important',
+                                      maxWidth: '200px',
+                                      overflow: 'hidden',
+                                      textOverflow: 'ellipsis',
+                                      whiteSpace: 'nowrap',
+                                      flexGrow: 1,
+                                  }}
+                              >
+                                  {item.name}
+                              </Typography>
+                            </Box>
                           </Box>
-                          {userAgents && item && item.id && userAgents.includes(item.id) ?
-                          <Box position="absolute" top={0} right={0} m={1} px={0.8} borderRadius={1} sx={{ cursor: 'pointer' }}>
-                            <IconButton aria-label='capture screenshot' onClick={()=>{handelCancelUserAgent()}}>
-                              <Icon icon='mdi:delete-outline' />
-                            </IconButton>
+                          <Box position="absolute" top={0} right={0} m={1} px={0.8} borderRadius={1}>
+                            <RowOptions id={item._id} />
                           </Box>
-                          :
-                          null}
-                          <Box position="absolute" top={70} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)} sx={{ cursor: 'pointer' }}>
-                            <Typography sx={{ 
-                                  fontWeight: 500,
-                                  lineHeight: 1.71,
-                                  letterSpacing: '0.22px',
-                                  fontSize: '1rem !important',
-                                  maxWidth: '200px',
-                                  overflow: 'hidden',
-                                  textOverflow: 'ellipsis',
-                                  whiteSpace: 'nowrap',
-                                  }} >{item.title}</Typography>
-                          </Box>
-                          <Box position="absolute" top={100} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)} 
+                          <Box position="absolute" top={55} left={5} m={1} px={0.8} borderRadius={1} 
                             sx={{ 
                               cursor: 'pointer',
                               overflow: 'hidden',
                               display: '-webkit-box',
-                              WebkitLineClamp: 4,
+                              WebkitLineClamp: 3,
                               WebkitBoxOrient: 'vertical',
-                            }}>
-                            <Typography variant='caption'>{item.description}</Typography>
+                            }}
+                            onClick={()=>{
+                              router.push('/app/edit/' + item._id)
+                            }}
+                            >
+                            <Typography variant='caption'>{item.intro}</Typography>
                           </Box>
-                          <Box position="absolute" bottom={0} left={1} m={1} px={0.8} bgcolor="rgba(0, 0, 0, 0.35)" borderRadius={0.7} color="white" sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: '200px' }}>
-                            <Typography variant="body2" color="white">{item.tags}</Typography>
+                          <Box position="absolute" bottom={0} left={1} m={1} px={0.8}>
+                            <Button disabled variant="text" size="small" startIcon={<Icon icon='ri:git-repository-private-line' />} >
+                              {t(item.permission)}
+                            </Button>
+                          </Box>
+                          <Box position="absolute" bottom={0} right={1} m={1} px={0.8}>
+                            <Button disabled variant="text" size="small" startIcon={<Icon icon='material-symbols:chat-outline' />} >
+                              {t('Chat')}
+                            </Button>
                           </Box>
                         </Box>
                       </Grid>
                     ))}
-                    {app && app.length == 0 ?
+                    {app && app.length == 0 && loading == false?
                     <Grid 
                       item 
                       key='0' 
@@ -158,72 +219,6 @@ const AppModel = (props: any) => {
                 <Fragment></Fragment>
               )}
             </Card>
-            {show && agent ?
-            <Drawer
-              open={show}
-              anchor='right'
-              onClose={() => setShow(false)}
-              ModalProps={{ keepMounted: true }}
-              sx={{ '& .MuiDrawer-paper': { width: [300, 400] } }}
-            >              
-              <Container>
-                <Grid container spacing={2}>
-                  <Grid item xs={12}>
-                    <Grid sx={{ height: '100%', px: 4 }}>
-                      <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                        <Box
-                          position="relative"
-                          sx={{
-                            mt: 6, // 设置顶部边距
-                            display: 'flex',
-                            justifyContent: 'center', // 水平居中
-                            alignItems: 'center', // 垂直居中
-                          }}
-                        >
-                          <Avatar src={agent.avatar} sx={{ width: 100, height: 100 }} />
-                        </Box>
-                        </Grid>
-
-                        <Grid item xs={12}>
-                          <Typography variant="body1" sx={{ mb: 2, fontWeight: 'bold', textAlign: 'center' }}>
-                            {agent.title}
-                          </Typography>
-                        </Grid>
-                        <Grid item xs={12}>
-                          <Typography variant="body2" sx={{mb: 2}}>
-                            {agent.description}
-                          </Typography>
-                          {userAgents && agent && agent.id && userAgents.includes(agent.id) ?
-                          <Button variant={'contained'} size="small" sx={{mb: 2}} fullWidth onClick={()=>{handelCancelUserAgent()}}>{t('Cancel Agent')}</Button>
-                          :
-                          <Fragment>
-                            <Button variant={'contained'} size="small" sx={{mb: 2}} fullWidth onClick={()=>{handelAddUserAgentAndChat()}}>{t('Add Agent And Chat')}</Button>
-                            <Button variant={'outlined'} size="small" sx={{mb: 2}} fullWidth onClick={()=>{handelAddUserAgent()}}>{t('Add Agent')}</Button>
-                          </Fragment>
-                          }
-                        </Grid>
-                        <Grid item xs={12}>
-                          <Typography
-                          sx={{
-                            boxShadow: 1,
-                            borderRadius: 1,
-                            width: 'fit-content',
-                            fontSize: '0.875rem',
-                            p: theme => theme.spacing(2, 4),
-                          }}
-                          >
-                            <ReactMarkdown>{agent.config.replace('\n', '  \n')}</ReactMarkdown>
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </Grid>
-                </Grid>
-              </Container>
-            </Drawer>
-            :
-            null}
             {loading ?
             <Dialog
               open={show}

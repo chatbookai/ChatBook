@@ -3,7 +3,7 @@
   import express, { Request, Response } from 'express';
 
   import { checkUserToken } from '../utils/user';
-  import { addApp, editApp, deleteApp, getApp, addPublish, editPublish, deletePublish, getPublish, getPublishsPageByApp, getPublishsAll, getChatlogPageByApp } from '../utils/app';
+  import { addApp, editApp, deleteApp, getApp, getAppPage, addPublish, editPublish, deletePublish, getPublish, getPublishsPageByApp, getPublishsAll, getChatlogPageByApp } from '../utils/app';
  
   const app = express();
 
@@ -57,6 +57,20 @@
         console.log("checkUserTokenData app", checkUserTokenData)
         const getAppData: any = await getApp(id, checkUserTokenData.data.id);
         res.status(200).json(getAppData);
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+    }
+    res.end();
+  });
+
+  app.post('/api/getapppage/:pageid/:pagesize', async (req: Request, res: Response) => {
+    const { pageid, pagesize } = req.params;
+    const { authorization } = req.headers;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
+        const getChatlogPageData: any = await getAppPage(Number(pageid), Number(pagesize), checkUserTokenData.data.id);
+        res.status(200).json(getChatlogPageData);
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});

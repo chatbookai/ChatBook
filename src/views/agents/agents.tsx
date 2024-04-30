@@ -64,7 +64,7 @@ const AppChat = () => {
         RS.data.map((Item: any)=>{
           agentListInitial.push(Item)
         })
-        if(RS.data.length < pagesize && pageid > 0) {
+        if(RS.data.length < pagesize && pageid >= 0) {
           setLoadingAllData(true)
         }
         setAgentList([...agentList, ...agentListInitial].filter((element) => element != null))

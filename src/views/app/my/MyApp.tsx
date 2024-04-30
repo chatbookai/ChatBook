@@ -61,7 +61,7 @@ const MyApp = () => {
         RS.data.map((Item: any)=>{
           appInitial.push(Item)
         })
-        if(RS.data.length < pagesize && pageid > 0) {
+        if(RS.data.length < pagesize && pageid >= 0) {
           setLoadingAllData(true)
         }
         setApp([...app, ...appInitial].filter((element) => element != null))

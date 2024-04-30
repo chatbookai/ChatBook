@@ -10,6 +10,7 @@ export default {
   meEndpoint: '/auth/me',
   storageTokenKeyName: 'ChatBookAccessToken',
   userInfoTokenKeyName: 'ChatBookUserToken',
-  onTokenExpiration: 'ChatBookRefreshToken'
+  onTokenExpiration: 'ChatBookRefreshToken',
+  logo: '/images/chives.png'
 }
 

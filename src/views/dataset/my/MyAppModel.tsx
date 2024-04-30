@@ -22,6 +22,7 @@ import Avatar from '@mui/material/Avatar'
 import Container from '@mui/material/Container'
 import CircularProgress from '@mui/material/CircularProgress'
 import { useTheme } from '@mui/material/styles'
+import { useRouter } from 'next/router'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -29,32 +30,28 @@ import Icon from 'src/@core/components/icon'
 import { useTranslation } from 'react-i18next'
 
 
-
-
 const AppModel = (props: any) => {
   // ** Hook
   const { t } = useTranslation()
   const theme = useTheme()
+  const router = useRouter()
 
   // ** Props
   const {
     app,
     loading,
     loadingText,
-    agent,
-    setAgent,
+    appId,
+    setAppId,
     show,
     setShow,
-    handleAddUserAgentAndChat,
-    handleAddUserAgent,
-    handleDeleteDataset,
-    userAgents,
+    setDeleteOpen,
     setNewOpen
   } = props
 
   const RowOptions = (props: any) => {
     const { id } = props
-    
+
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   
     const rowOptionsOpen = Boolean(anchorEl)
@@ -68,7 +65,7 @@ const AppModel = (props: any) => {
   
     return (
       <>
-        <IconButton size='small' onMouseEnter={handleRowOptionsClick} >
+        <IconButton size='small' onMouseEnter={handleRowOptionsClick} onClick={handleRowOptionsClick} >
           <Icon icon='mdi:dots-vertical' />
         </IconButton>
         <Menu
@@ -90,18 +87,36 @@ const AppModel = (props: any) => {
             component={Link}
             sx={{ '& svg': { mr: 2 } }}
             onClick={handleRowOptionsClose}
-            href='/apps/user/view/overview/'
+            href={`/dataset/collection/${id}`}
           >
             <Icon icon='mdi:eye-outline' fontSize={20} />
-            View
+            {t('Dataset')}
           </MenuItem>
-          <MenuItem onClick={handleRowOptionsClose} sx={{ '& svg': { mr: 2 } }}>
+          <MenuItem
+            component={Link}
+            sx={{ '& svg': { mr: 2 } }}
+            onClick={handleRowOptionsClose}
+            href={`/dataset/config/${id}`}
+          >
             <Icon icon='mdi:pencil-outline' fontSize={20} />
-            Edit
+            {t('Edit')}
           </MenuItem>
-          <MenuItem onClick={()=>handleDeleteDataset(id)} sx={{ '& svg': { mr: 2 } }}>
+          <MenuItem
+            component={Link}
+            sx={{ '& svg': { mr: 2 } }}
+            onClick={handleRowOptionsClose}
+            href={`/dataset/searchtest/${id}`}
+          >
+            <Icon icon='mdi:database-outline' fontSize={20} />
+            {t('Test')}
+          </MenuItem>
+          <MenuItem onClick={()=>{
+            setAppId(id)
+            setDeleteOpen(true)
+            }} 
+            sx={{ '& svg': { mr: 2 } }}>
             <Icon icon='mdi:delete-outline' fontSize={20} />
-            Delete
+            {t('Delete')}
           </MenuItem>
         </Menu>
       </>
@@ -134,7 +149,9 @@ const AppModel = (props: any) => {
                   <Grid container spacing={2} sx={{ mt: 2, mb: 2}}>
                     {app && app.map((item: any, index: number) => (
                       <Grid item key={index} xs={12} sm={6} md={4} lg={4}>
-                        <Box position="relative" sx={{mb: 2, mr: 2}}>
+                        <Box position="relative" sx={{mb: 2, mr: 2, cursor: 'pointer'}} onClick={()=>{
+                          router.push('/dataset/collection/' + item._id)
+                        }}>
                           <CardMedia image={`${authConfig.backEndApiChatBook}/images/pages/tree-cone-cube-bg-${theme.palette.mode}.png`} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1 }}/>
                           <Box position="absolute" top={10} left={5} m={1} px={0.8} borderRadius={1}>
                             <Box display="flex" alignItems="center">

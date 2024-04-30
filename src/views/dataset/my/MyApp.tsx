@@ -1,8 +1,9 @@
 // ** React Imports
 import { Fragment, useEffect, useState } from 'react'
 
-import AppModel from 'src/views/dataset/my/MyAppModel'
 import NewApp from 'src/views/dataset/my/NewApp'
+import MyAppModel from 'src/views/dataset/my/MyAppModel'
+import MyAppDelete from 'src/views/dataset/my/MyAppDelete'
 
 // ** Axios Imports
 import axios from 'axios'
@@ -26,15 +27,16 @@ const MyApp = () => {
     CheckPermission(auth, router, false)
   }, [])
   
+  const [deleteOpen, setDeleteOpen] = useState<boolean>(false)
+  const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
   const [pageid, setPageid] = useState<number>(0)
   const [show, setShow] = useState<boolean>(false)
   const [loadingAllData, setLoadingAllData] = useState<boolean>(false)
   const [app, setApp] = useState<any[]>([])
-  const [favoriteList, setFavoriteList] = useState<any[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [loadingText, setLoadingText] = useState<string>('Loading')
-  const [agent, setAgent] = useState<any>(null)
+  const [appId, setAppId] = useState<string>('')
   
   const [type, setType] = useState<string>("ALL")
   const [search, setSearch] = useState<string>("ALL")
@@ -51,6 +53,7 @@ const MyApp = () => {
     setApp([])
     setType("ALL")
     setSearch(Item)
+    setAppId("")
   }
 
   const getDatasetsPage = async function (type: string, search: string) {
@@ -70,7 +73,7 @@ const MyApp = () => {
           setLoadingAllData(true)
         }
         setApp([...app, ...appInitial].filter((element) => element != null))
-        setFavoriteList(RS.favorite)
+        setAppId("")
       }
       const timer = setTimeout(() => {
         setLoading(false);
@@ -93,10 +96,12 @@ const MyApp = () => {
     }
   }
 
-  const handleDeleteDataset = async function (id: string) {
-    if(auth && auth.user && auth.user.token && id)    {
+  const handleDeleteDataset = async function () {
+    if(auth && auth.user && auth.user.token && appId)    {
+      setDeleteOpen(false)
       setLoading(true)
-      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/deletedataset', {datasetId: id}, {
+      setIsDisabledButton(true)
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/deletedataset', {datasetId: appId}, {
         headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
       }).then(res => res.data);
       if(RS && RS.status && RS.status == 'ok') {
@@ -106,20 +111,13 @@ const MyApp = () => {
         setPageid(0)
         setLoadingAllData(false)
         setApp([])
+        setIsDisabledButton(false)
+        setAppId("")
       }
       else {
         setLoading(false)
       }
     }
-  }
-
-  const handleAddUserAgentAndChat  = async function () {
-    setShow(false)
-    console.log("打开会话")
-  }
-
-  const handleAddUserAgent  = async function () {
-    setShow(false)
   }
 
   useEffect(() => {
@@ -169,8 +167,9 @@ const MyApp = () => {
 
   return (
     <Fragment>
-      <AppModel app={app} favoriteList={favoriteList} loading={loading} loadingText={loadingText} agent={agent} setAgent={setAgent} show={show} setShow={setShow} handleAddUserAgentAndChat={handleAddUserAgentAndChat} handleAddUserAgent={handleAddUserAgent} handleDeleteDataset={handleDeleteDataset} handleSearchFilter={handleSearchFilter} setNewOpen={setNewOpen}/>
+      <MyAppModel app={app} loading={loading} loadingText={loadingText} appId={appId} setAppId={setAppId} show={show} setShow={setShow} setDeleteOpen={setDeleteOpen} handleDeleteDataset={handleDeleteDataset} handleSearchFilter={handleSearchFilter} setNewOpen={setNewOpen}/>
       <NewApp NewOpen={NewOpen} setNewOpen={setNewOpen} handleAddApp={handleAddApp} AppNewForm={AppNewForm} setAppNewForm={setAppNewForm}/>
+      <MyAppDelete deleteOpen={deleteOpen} setDeleteOpen={setDeleteOpen} isDisabledButton={isDisabledButton} handleDeleteDataset={handleDeleteDataset}/>
     </Fragment>
   )
 }

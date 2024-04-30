@@ -45,8 +45,8 @@ const LeftApp = (props: any) => {
 
   const active = menuid
 
-  const handleChatClick = (id: string, path: string) => {
-    router.push(`/app/${path}/${app.id}`)
+  const handleMenuClick = (path: string) => {
+    router.push(`/dataset/${path}/${app._id}`)
   }
 
   const renderChats = () => {
@@ -60,7 +60,7 @@ const LeftApp = (props: any) => {
           <ListItem key={index} disablePadding sx={{ '&:not(:last-child)': { mb: 1.5 } }}>
             <ListItemButton
               disableRipple
-              onClick={() => handleChatClick(Item.id, Item.path)}
+              onClick={() => handleMenuClick(Item.path)}
               sx={{
                 px: 3,
                 pb: 2.5,

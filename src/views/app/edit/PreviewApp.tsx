@@ -3,7 +3,6 @@ import { useState, useEffect, ReactNode } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
-import List from '@mui/material/List'
 import Badge from '@mui/material/Badge'
 import Drawer from '@mui/material/Drawer'
 import Avatar from '@mui/material/Avatar'

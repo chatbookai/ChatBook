@@ -26,8 +26,8 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       Params.fileDealModel = filterString(Params.fileDealModel)
       Params.permission = filterString(Params.permission || 'private')
   
-      const insertSetting = db.prepare('INSERT OR IGNORE INTO dataset (_id, name, intro, avatar, type, vectorModel, singleDataUpLimit, fileDealModel, permission, createTime, userId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-      insertSetting.run(Params._id, Params.name, Params.intro, Params.avatar, Params.type, Params.vectorModel, Params.singleDataUpLimit, Params.fileDealModel, Params.permission, 'createTime', Params.userId);
+      const insertSetting = db.prepare('INSERT OR IGNORE INTO dataset (_id, teamId, name, intro, avatar, type, vectorModel, singleDataUpLimit, fileDealModel, permission, createTime, userId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+      insertSetting.run(Params._id, Params._id, Params.name, Params.intro, Params.avatar, Params.type, Params.vectorModel, Params.singleDataUpLimit, Params.fileDealModel, Params.permission, 'createTime', Params.userId);
       insertSetting.finalize();
       log('Error Params:', Params);
       return {"status":"ok", "msg":"Add Success"}
@@ -46,11 +46,11 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       Params.intro = filterString(Params.intro)
       Params.avatar = filterString(Params.avatar)
       Params.type = filterString(Params.type)
-      Params.flowGroup = filterString(Params.flowGroup || '')
+      Params.vectorModel = filterString(Params.vectorModel || '')
+      Params.fileDealModel = filterString(Params.fileDealModel || '')
       Params.permission = filterString(Params.permission)
-      Params.data = filterString(JSON.stringify(Params.data))
-      const updateSetting = db.prepare('update dataset set teamId = ?, name = ?, intro = ?, avatar = ?, type = ?, flowGroup = ?, permission = ?, data = ?where _id = ?');
-      updateSetting.run(Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.flowGroup, Params.permission, Params.data, Params._id);
+      const updateSetting = db.prepare('update dataset set teamId = ?, name = ?, intro = ?, avatar = ?, type = ?, vectorModel = ?, permission = ?, fileDealModel = ? where _id = ?');
+      updateSetting.run(Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.vectorModel, Params.permission, Params.fileDealModel, Params._id);
       updateSetting.finalize();
     }
     catch (error: any) {
@@ -72,7 +72,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       log('Error setOpenAISetting:', error.message);
     }
   
-    return {"status":"ok", "msg":"Update Success"}
+    return {"status":"ok", "msg":"Delete Success"}
   }
   
   export async function getDataset(id: string, userId: string) {

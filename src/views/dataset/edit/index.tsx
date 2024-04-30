@@ -10,8 +10,9 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Chat App Components Imports
 import LeftApp from 'src/views/dataset/edit/LeftApp'
-
-import CollectionApp from 'src/views/dataset/edit/Collection'
+import ConfigApp from 'src/views/dataset/edit/ConfigApp'
+import ConfigAppDelete from 'src/views/dataset/edit/ConfigAppDelete'
+import Collection from 'src/views/dataset/edit/Collection'
 
 // ** Axios Imports
 import toast from 'react-hot-toast'
@@ -22,10 +23,10 @@ import { useAuth } from 'src/hooks/useAuth'
 import { CheckPermission } from 'src/functions/ChatBook'
 import { useTranslation } from 'react-i18next'
 
-const EditApp = (props: any) => {
+const EditDataSet = (props: any) => {
   // ** States
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
-  const [app, setApp] = useState<any>(null)
+  const [app, setApp] = useState<any>({openDelete: false})
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
 
   const { menuid } = props
@@ -44,26 +45,43 @@ const EditApp = (props: any) => {
   const fetchData = async function (id: string) {
     if (auth && auth.user && id) {
       const RS = await axios.get(authConfig.backEndApiChatBook + '/api/getdataset/' + id, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
-      setApp(RS)
+      setApp({...RS, openDelete: false})
     }
   }
 
-  const handleEditApp = async () => {
-    console.log("handleEditApp app", app)
+  const handleEditDataSet = async () => {
+    console.log("handleEditDataSet app", app)
     setIsDisabledButton(true)
     if (auth && auth.user) {
       const appNew = {
         ...app,
-        updateTime: String(new Date(Date.now()).toLocaleString()),
-        mode: 'simple'
+        updateTime: String(new Date(Date.now()).toLocaleString())
       }
-      const PostParams = {name: appNew.name, _id: appNew._id, teamId: appNew.teamId, intro: appNew.intro, avatar: appNew.avatar, type: appNew.type, flowGroup: appNew.flowGroup, permission: appNew.permission, data: appNew}
-      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/editapp', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+      const PostParams = appNew
+      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/editdataset', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit", FormSubmit)
       setIsDisabledButton(false)
       toast.success(t('Update success') as string, {
         duration: 2000
       })
+    }
+  }
+
+  const handleDeleteDataSet = async () => {
+    console.log("handleDeleteDataSet app", app)
+    setIsDisabledButton(true)
+    if (auth && auth.user) {
+      const appNew = {
+        ...app
+      }
+      const PostParams = appNew
+      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/deletedataset', PostParams, { headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+      console.log("FormSubmit", FormSubmit)
+      toast.success(t(FormSubmit.msg) as string, {
+        duration: 2000
+      })
+      setIsDisabledButton(false)
+      router.push('/dataset/my')
     }
   }
 
@@ -95,9 +113,18 @@ const EditApp = (props: any) => {
       >
         <LeftApp app={app} hidden={false} menuid={menuid}/>
         
-        {menuid == 'collection' ?
+        {menuid == 'collection' && app && app._id ?
         <Fragment>
-          <CollectionApp datasetId={app?._id} />
+          <Collection datasetId={app._id} />
+        </Fragment>
+        :
+        null
+        }
+
+        {menuid == 'config' && app && app._id ?
+        <Fragment>
+          <ConfigApp app={app} setApp={setApp} handleEditDataSet={handleEditDataSet}/>
+          <ConfigAppDelete app={app} setApp={setApp} isDisabledButton={isDisabledButton} handleDeleteDataSet={handleDeleteDataSet}/>
         </Fragment>
         :
         null
@@ -112,5 +139,5 @@ const EditApp = (props: any) => {
   )
 }
 
-export default EditApp
+export default EditDataSet
 

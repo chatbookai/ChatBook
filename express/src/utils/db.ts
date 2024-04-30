@@ -308,6 +308,7 @@ export async function initChatBookDb() {
             CREATE TABLE IF NOT EXISTS dataset (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 _id TEXT not null,
+                teamId TEXT not null,
                 name TEXT not null,
                 avatar TEXT not null default '',
                 type TEXT not null default '',

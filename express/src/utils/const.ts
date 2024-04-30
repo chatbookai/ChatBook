@@ -41,34 +41,24 @@ export const MenuListAdmin = [
     path: '/chat/chat'
   },
   {
-    title: 'Mind Map',
-    icon: 'mdi:account-box-multiple-outline',
-    path: '/chat/mindmap'
+    title: 'Square',
+    icon: 'tabler:apps-filled',
+    path: '/app/all'
+  },
+  {
+    title: 'App',
+    icon: 'icon-park-outline:application-two',
+    path: '/app/my'
+  },
+  {
+    title: 'Dataset',
+    icon: 'mdi:database',
+    path: '/dataset/my'
   },
   {
     title: 'Agents Square',
     icon: 'mdi:account-box-multiple-outline',
     path: '/agents'
-  },
-  {
-    title: 'Text to Image',
-    icon: 'material-symbols:imagesmode',
-    path: '/image/stability'
-  },
-  {
-    title: 'Image to Image',
-    icon: 'material-symbols:imagesmode',
-    path: '/image/stability2'
-  },
-  {
-    title: 'Knowledge Chat',
-    icon: 'material-symbols:chat',
-    path: '/chat/knowledge'
-  },
-  {
-    title: 'Community',
-    icon: 'fluent:people-community-32-filled',
-    path: '/community'
   },
   {
     sectionTitle: 'Settings'

@@ -52,12 +52,13 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const updateSetting = db.prepare('update dataset set teamId = ?, name = ?, intro = ?, avatar = ?, type = ?, vectorModel = ?, permission = ?, fileDealModel = ? where _id = ?');
       updateSetting.run(Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.vectorModel, Params.permission, Params.fileDealModel, Params._id);
       updateSetting.finalize();
+      return {"status":"ok", "msg":"Update Success"}
     }
     catch (error: any) {
       log('Error setOpenAISetting:', error.message);
+      return {"status":"error", "msg":error.message}
     }
   
-    return {"status":"ok", "msg":"Update Success"}
   }
   
   export async function deleteDataset(Params: any) {
@@ -67,12 +68,13 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const deleteSetting = db.prepare('delete from dataset where _id = ? and userId = ?');
       deleteSetting.run(Params._id, Params.userId);
       deleteSetting.finalize();
+      return {"status":"ok", "msg":"Delete Success"}
     }
     catch (error: any) {
       log('Error setOpenAISetting:', error.message);
+      return {"status":"error", "msg":error.message}
     }
   
-    return {"status":"ok", "msg":"Delete Success"}
   }
   
   export async function getDataset(id: string, userId: string) {
@@ -187,12 +189,13 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const updateSetting = db.prepare('update collection set name = ?, maxToken = ?, returnReference = ?, ipLimitPerMinute = ?, expiredTime = ? where _id = ? and datasetId = ? and userId = ?');
       updateSetting.run(Params.name, Params.maxToken, Params.returnReference, Params.ipLimitPerMinute, Params.expiredTime, Params._id, Params.datasetId, Params.userId);
       updateSetting.finalize();
+      return {"status":"ok", "msg":"Update Success"}
     }
     catch (error: any) {
       log('Error setOpenAISetting:', error.message);
+      return {"status":"error", "msg":error.message}
     }
 
-    return {"status":"ok", "msg":"Update Success"}
   }
 
   export async function deleteCollection(Params: any) {
@@ -204,12 +207,13 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       updateSetting.run(Params._id, Params.datasetId, Params.userId);
       updateSetting.finalize();
       log('Error Params:', Params);
+      return {"status":"ok", "msg":"Delete Success"}
     }
     catch (error: any) {
       log('Error setOpenAISetting:', error.message);
+      return {"status":"error", "msg":error.message}
     }
-  
-    return {"status":"ok", "msg":"Delete Success"}
+    
   }
   
   export async function getCollection(id: string, userId: string) {

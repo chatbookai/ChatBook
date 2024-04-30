@@ -52,12 +52,13 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const updateSetting = db.prepare('update app set teamId = ?, name = ?, intro = ?, avatar = ?, type = ?, flowGroup = ?, permission = ?, data = ?where _id = ?');
       updateSetting.run(Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.flowGroup, Params.permission, Params.data, Params._id);
       updateSetting.finalize();
+      return {"status":"ok", "msg":"Update Success"}
     }
     catch (error: any) {
       log('Error setOpenAISetting:', error.message);
+      return {"status":"error", "msg":error.message}
     }
-  
-    return {"status":"ok", "msg":"Update Success"}
+
   }
   
   export async function deleteApp(Params: any) {
@@ -67,12 +68,13 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const deleteSetting = db.prepare('delete from app where _id = ? and userId = ?');
       deleteSetting.run(Params._id, Params.userId);
       deleteSetting.finalize();
+      return {"status":"ok", "msg":"Update Success"}
     }
     catch (error: any) {
       log('Error setOpenAISetting:', error.message);
+      return {"status":"error", "msg":error.message}
     }
   
-    return {"status":"ok", "msg":"Update Success"}
   }
   
   export async function getApp(id: string, userId: string) {
@@ -210,12 +212,13 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const updateSetting = db.prepare('update publish set name = ?, maxToken = ?, returnReference = ?, ipLimitPerMinute = ?, expiredTime = ? where _id = ? and appId = ? and userId = ?');
       updateSetting.run(Params.name, Params.maxToken, Params.returnReference, Params.ipLimitPerMinute, Params.expiredTime, Params._id, Params.appId, Params.userId);
       updateSetting.finalize();
+      return {"status":"ok", "msg":"Update Success"}
     }
     catch (error: any) {
       log('Error setOpenAISetting:', error.message);
+      return {"status":"error", "msg":error.message}
     }
-
-    return {"status":"ok", "msg":"Update Success"}
+    
   }
 
   export async function deletePublish(Params: any) {
@@ -227,12 +230,13 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       updateSetting.run(Params._id, Params.appId, Params.userId);
       updateSetting.finalize();
       log('Error Params:', Params);
+      return {"status":"ok", "msg":"Delete Success"}
     }
     catch (error: any) {
       log('Error setOpenAISetting:', error.message);
-    }
-  
-    return {"status":"ok", "msg":"Delete Success"}
+      return {"status":"error", "msg":error.message}
+    }  
+    
   }
   
   export async function getPublish(id: string, userId: string) {

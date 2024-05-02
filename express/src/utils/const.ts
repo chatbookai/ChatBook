@@ -43,7 +43,7 @@ export const MenuListAdmin = [
   {
     title: 'Store',
     icon: 'tabler:apps-filled',
-    path: '/app/all'
+    path: '/store'
   },
   {
     title: 'App',
@@ -124,12 +124,12 @@ export const MenuListUser = [
   {
     title: 'Chat',
     icon: 'mdi:message-outline',
-    path: '/chat/chat'
+    path: '/chat'
   },
   {
     title: 'Store',
     icon: 'tabler:apps-filled',
-    path: '/app/all'
+    path: '/store'
   },
   {
     title: 'App',

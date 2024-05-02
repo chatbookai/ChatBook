@@ -1,12 +1,11 @@
-import EditApp from 'src/views/app/edit';
+import Chat from 'src/views/app/chat/index';
 
-const EditAppApp = () => {
+const ChatApp = () => {
 
-  return <EditApp menuid={'chat'}/>
+  return <Chat menuid={'chat'}/>
 
 }
 
-EditAppApp.contentHeightFixed = true
+ChatApp.contentHeightFixed = true
 
-export default EditAppApp
-
+export default ChatApp

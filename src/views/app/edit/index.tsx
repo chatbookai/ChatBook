@@ -15,7 +15,7 @@ import SimpleEdit from 'src/views/app/edit/SimpleEdit'
 import PreviewApp from 'src/views/app/edit/PreviewApp'
 import PublishApp from 'src/views/app/edit/PublishApp'
 import ChatlogApp from 'src/views/app/edit/ChatlogApp'
-import Chat from 'src/views/app/chat'
+import ChatIndex from 'src/views/app/chat/ChatIndex'
 
 // ** Axios Imports
 import toast from 'react-hot-toast'
@@ -112,7 +112,7 @@ const EditApp = (props: any) => {
         {menuid == 'edit' && app?._id?
         <Fragment>
           <SimpleEdit app={app} setApp={setApp} handleEditApp={handleEditApp} isDisabledButton={isDisabledButton} />
-          <Chat app={app} />
+          <ChatIndex app={app} />
         </Fragment>
         :
         null
@@ -136,7 +136,7 @@ const EditApp = (props: any) => {
 
         {menuid == 'chat' && app?._id?
         <Fragment>
-          <Chat app={app} />
+          <ChatIndex app={app} />
         </Fragment>
         :
         null

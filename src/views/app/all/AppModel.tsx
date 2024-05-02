@@ -40,12 +40,8 @@ const AppModel = (props: any) => {
     app,
     loading,
     loadingText,
-    appId,
-    setAppId,
     show,
-    setShow,
-    setDeleteOpen,
-    setNewOpen
+    setShow
   } = props
 
   const RowOptions = (props: any) => {
@@ -119,7 +115,7 @@ const AppModel = (props: any) => {
                           <CardMedia image={`/images/cardmedia/cardmedia-${theme.palette.mode}.png`} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1 }}/>
                           <Box position="absolute" top={10} left={5} m={1} px={0.8} borderRadius={1}
                             onClick={()=>{
-                              router.push('/app/edit/' + item._id)
+                              router.push('/store/chat/' + item._id)
                             }}
                             sx={{cursor: 'pointer'}}
                           >

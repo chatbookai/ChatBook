@@ -14,6 +14,8 @@ import { useTranslation } from 'next-i18next'
 
 import { appTypeTemplate } from '../data/appTypeTemplate'
 
+import authConfig from 'src/configs/auth'
+
 const Header = styled(Box)<BoxProps>(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',

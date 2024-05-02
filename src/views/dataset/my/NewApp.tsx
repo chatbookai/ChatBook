@@ -20,6 +20,8 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
 
+import authConfig from 'src/configs/auth'
+
 const DatasetTypesList: any[] = [
     {
       type: 'General',

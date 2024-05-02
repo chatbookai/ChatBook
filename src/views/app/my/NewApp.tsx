@@ -21,6 +21,8 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import TextField from '@mui/material/TextField'
 
+import authConfig from 'src/configs/auth'
+
 import { appTemplates, appGroup } from 'src/views/app/data/appTypeTemplate'
 
 const Header = styled(Box)<BoxProps>(({ theme }) => ({

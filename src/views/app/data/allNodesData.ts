@@ -1,3 +1,4 @@
+import authConfig from 'src/configs/auth'
 
 export const allNodesData: any = {
     "_id": "660d13ad361cf48ed91321fb",
@@ -5,7 +6,7 @@ export const allNodesData: any = {
     "tmbId": "65ad85ddb9c540f1cfe0f231",
     "id": "simpleChat",
     "name": "simpleChat",
-    "avatar": "/icon/logo.svg",
+    "avatar": authConfig.logo,
     "intro": "一个极其简单的 AI 应用，你可以绑定知识库或工具。",
     "type": "simpleChat",
     "modules": [

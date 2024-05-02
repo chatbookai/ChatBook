@@ -1,10 +1,11 @@
+import authConfig from 'src/configs/auth'
 
 export const simpleChat: any = {
     "_id": "660d13ad361cf48ed91321fb",
     "teamId": "65ad85ddb9c540f1cfe0f22f",
     "id": "simpleChat",
     "name": "simpleChat",
-    "avatar": "/icon/logo.svg",
+    "avatar": authConfig.logo,
     "intro": "一个极其简单的 AI 应用，你可以绑定知识库或工具。",
     "type": "simpleChat",
     "mode": 'simple',

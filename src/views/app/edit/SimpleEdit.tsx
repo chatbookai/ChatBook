@@ -124,7 +124,7 @@ const SimpleEdit = (props: any) => {
                                         }}
                                         >
                                         {WorkFlowPermissionList.map((item: any, indexItem: number)=>{
-                                            return <MenuItem value={item} key={`${indexItem}`}>{item}</MenuItem>
+                                            return <MenuItem value={item} key={`${indexItem}`}>{t(item) as string}</MenuItem>
                                         })}
                                     </Select>
                                 </FormControl>

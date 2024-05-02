@@ -184,7 +184,7 @@ const AppModel = (props: any) => {
                             <Typography variant='caption'>{item.intro}</Typography>
                           </Box>
                           <Box position="absolute" bottom={0} left={1} m={1} px={0.8}>
-                            <Button disabled variant="text" size="small" startIcon={<Icon icon='ri:git-repository-private-line' />} >
+                            <Button disabled variant="text" size="small" startIcon={<Icon icon={item.permission == 'private' ? 'ri:git-repository-private-line' : 'material-symbols:share'} />} >
                               {t(item.permission)}
                             </Button>
                           </Box>

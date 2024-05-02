@@ -125,7 +125,21 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                               value={t(item.value) as string}
                               style={{ width: '100%', resize: 'both'}}
                               onChange={(e: any) => {
-                                console.log("e", e)
+                                setNodes((prevState: any)=>{
+                                  const nodesNew = prevState.map((itemNode: any)=>{
+                                    if(itemNode.data.id == data.id) {
+                                      const targetNode = { ...itemNode }
+                                      const ItemData = targetNode.data.inputs[index]
+                                      targetNode.data.inputs[index] = { ...ItemData, value: e.target.value as string }
+                                      console.log("targetNode", targetNode)
+                                      return targetNode
+                                    }
+                                    else {
+                                      return itemNode
+                                    }
+                                  })
+                                  return nodesNew;
+                                })
                               }}
                             />
                           </Grid>

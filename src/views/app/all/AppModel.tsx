@@ -86,7 +86,7 @@ const AppModel = (props: any) => {
             component={Link}
             sx={{ '& svg': { mr: 2 } }}
             onClick={handleRowOptionsClose}
-            href={`/app/chat/${id}`}
+            href={`/store/chat/${id}`}
           >
             <Icon icon='mdi:database-outline' fontSize={20} />
             {t('Chat')}
@@ -154,7 +154,7 @@ const AppModel = (props: any) => {
                               WebkitBoxOrient: 'vertical',
                             }}
                             onClick={()=>{
-                              router.push('/chat/' + item._id)
+                              router.push('/store/chat/' + item._id)
                             }}
                             >
                             <Typography variant='caption'>{item.intro}</Typography>

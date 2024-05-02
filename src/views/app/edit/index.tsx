@@ -134,7 +134,7 @@ const EditApp = (props: any) => {
         null
         }
 
-        {menuid == 'chat' && app?
+        {menuid == 'chat' && app?._id?
         <Fragment>
           <Chat app={app} />
         </Fragment>

@@ -131,7 +131,7 @@ const AppChat = (props: any) => {
   // ** Hooks
   const theme = useTheme()
   const { settings } = useSettings()
-  const hidden = useMediaQuery(theme.breakpoints.down('lg'))
+  const hidden = false
 
   useEffect(() => {
     if(auth.user && auth.user.id)   {
@@ -249,7 +249,5 @@ const AppChat = (props: any) => {
     </Fragment>
   )
 }
-
-AppChat.contentHeightFixed = true
 
 export default AppChat

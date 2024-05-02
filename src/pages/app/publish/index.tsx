@@ -6,5 +6,7 @@ const EditAppApp = () => {
 
 }
 
+EditAppApp.contentHeightFixed = true
+
 export default EditAppApp
 

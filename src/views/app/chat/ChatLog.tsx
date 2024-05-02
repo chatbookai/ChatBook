@@ -30,7 +30,7 @@ import {
 } from 'src/types/apps/chatTypes'
 
 const PerfectScrollbar = styled(PerfectScrollbarComponent)<ScrollBarProps & { ref: Ref<unknown> }>(({ theme }) => ({
-  padding: theme.spacing(5)
+  padding: theme.spacing(3, 5, 3, 3)
 }))
 
 const LinkStyled = styled(Link)(({ theme }) => ({
@@ -169,8 +169,8 @@ const ChatLog = (props: any) => {
                 width: '2rem',
                 height: '2rem',
                 fontSize: '0.875rem',
-                ml: isSender ? 3.5 : undefined,
-                mr: !isSender ? 3.5 : undefined
+                ml: isSender ? 3 : undefined,
+                mr: !isSender ? 3 : undefined
               }}
               {...(!isSender
                 ? {
@@ -192,7 +192,7 @@ const ChatLog = (props: any) => {
             }
           </div>
 
-          <Box className='chat-body' sx={{ maxWidth: ['calc(100% - 5.75rem)', '75%', '65%'] }}>
+          <Box className='chat-body' sx={{ maxWidth: ['calc(100% - 5.75rem)', '100%', '100%'] }}>
             {item.messages.map((chat: ChatLogChatType, index: number, { length }: { length: number }) => {
               let ChatMsgType = 'Chat'
               let ChatMsgContent: any
@@ -206,7 +206,7 @@ const ChatLog = (props: any) => {
               }
 
               return (
-                <Box key={index} sx={{ '&:not(:last-of-type)': { mb: 3.5 } }}>
+                <Box key={index} sx={{ '&:not(:last-of-type)': { mb: 3 } }}>
                     {ChatMsgType == "Chat" ?
                       <div>
                         <Typography
@@ -215,7 +215,7 @@ const ChatLog = (props: any) => {
                           borderRadius: 1,
                           width: 'fit-content',
                           fontSize: '0.875rem',
-                          p: theme => theme.spacing(2, 4),
+                          p: theme => theme.spacing(0.5, 2, 0.5, 3),
                           ml: isSender ? 'auto' : undefined,
                           borderTopLeftRadius: !isSender ? 0 : undefined,
                           borderTopRightRadius: isSender ? 0 : undefined,
@@ -324,7 +324,7 @@ const ChatLog = (props: any) => {
       )
     } else {
       return (
-        <PerfectScrollbar ref={chatArea} options={{ wheelPropagation: false }}>
+        <PerfectScrollbar ref={chatArea} options={{ wheelPropagation: false, suppressScrollX: true }}>
           {children}
         </PerfectScrollbar>
       )

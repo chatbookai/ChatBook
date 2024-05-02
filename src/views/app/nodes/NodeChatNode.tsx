@@ -35,10 +35,12 @@ import Icon from 'src/@core/components/icon'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 
-import { FlowContext } from '../advanced/FlowContext';
-import { getNanoid } from 'src/functions/app/string.tools';
+import { FlowContext } from '../advanced/FlowContext'
+import { getNanoid } from 'src/functions/app/string.tools'
+import TextField2 from 'src/context/TextField2'
 
 import LLMModelModel from 'src/views/app/components/LLMModel'
+
 
 const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const { moduleId, outputs, inputs, name, id } = data;
@@ -351,7 +353,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                                   <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1, pt: 1.3 }} />
                                 </Tooltip>
                               </Box>
-                              <TextField
+                              <TextField2
                                 multiline
                                 rows={6}
                                 value={item.value}

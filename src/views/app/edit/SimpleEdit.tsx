@@ -14,6 +14,7 @@ import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
+import TextField2 from 'src/context/TextField2'
 
 // ** Axios Imports
 import { useRouter } from 'next/router'
@@ -149,7 +150,7 @@ const SimpleEdit = (props: any) => {
                                         </FormControl>
                                     </Grid>
                                     <Grid container item xs={12} alignItems="center">
-                                        <TextField
+                                        <TextField2
                                             fullWidth
                                             multiline
                                             rows={4}

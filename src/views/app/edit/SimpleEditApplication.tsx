@@ -21,6 +21,7 @@ import TTS from 'src/views/app/components/TTS'
 import GlobalVariableModel from 'src/views/app/components/GlobalVariable'
 
 import LLMModelModel from 'src/views/app/components/LLMModel'
+import TextField2 from 'src/context/TextField2'
 
 const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }: any) => {
   
@@ -149,7 +150,7 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
                                   <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1, pt: 1.3 }} />
                                 </Tooltip>
                               </Box>
-                              <TextField
+                              <TextField2
                                 multiline
                                 rows={6}
                                 value={item.value || ''}
@@ -229,7 +230,7 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
                                 <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
                             </Tooltip>
                             </Box>
-                            <TextField
+                            <TextField2
                                 multiline
                                 rows={4}
                                 value={t(item.value) as string}

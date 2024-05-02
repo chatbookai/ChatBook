@@ -40,6 +40,7 @@ import { FlowContext } from '../advanced/FlowContext';
 import { getNanoid } from 'src/functions/app/string.tools';
 
 import LLMModelModel from 'src/views/app/components/LLMModel'
+import TextField2 from 'src/context/TextField2'
 
 const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const { moduleId, outputs, inputs, name, id } = data;
@@ -442,7 +443,7 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                                   <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1, pt: 1.3 }} />
                                 </Tooltip>
                               </Box>
-                              <TextField
+                              <TextField2
                                 multiline
                                 rows={6}
                                 value={item.value}

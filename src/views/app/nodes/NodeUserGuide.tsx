@@ -10,7 +10,6 @@ import Tooltip from '@mui/material/Tooltip'
 import CardHeader from '@mui/material/CardHeader'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
-import TextField from '@mui/material/TextField'
 import Switch from '@mui/material/Switch'
 
 import { useTranslation } from 'react-i18next'
@@ -22,6 +21,7 @@ import { FlowModuleItemType } from 'src/functions/app/type'
 
 import Button from '@mui/material/Button'
 import Icon from 'src/@core/components/icon'
+import TextField2 from 'src/context/TextField2'
 
 import TTS from 'src/views/app/components/TTS'
 import GlobalVariableModel from 'src/views/app/components/GlobalVariable'
@@ -119,7 +119,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                 <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
                               </Tooltip>
                             </Box>
-                            <TextField
+                            <TextField2
                               multiline
                               rows={4}
                               value={t(item.value) as string}

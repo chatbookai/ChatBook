@@ -433,7 +433,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
           };
         }
       })
-      setEdges(updateEdges)
+      //setEdges(updateEdges)
     }
   }, [selected, setEdges, edges, id])
 
@@ -650,7 +650,21 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                                 sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                 placeholder={t(item.placeholder) as string}
                                 onChange={(e: any) => {
-                                  console.log("e.target.value", e.target.value);
+                                  setNodes((prevState: any)=>{
+                                    const nodesNew = prevState.map((itemNode: any)=>{
+                                      if(itemNode.data.id == data.id) {
+                                        const targetNode = { ...itemNode }
+                                        const ItemData = targetNode.data.inputs[index]
+                                        targetNode.data.inputs[index] = { ...ItemData, value: e.target.value as string }
+                                        console.log("targetNode", targetNode)
+                                        return targetNode
+                                      }
+                                      else {
+                                        return itemNode
+                                      }
+                                    })
+                                    return nodesNew;
+                                  })
                                 }}
                               />
                             </Grid>
@@ -878,13 +892,26 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                                     value={item.value}
                                     fullWidth
                                     onChange={(e: any) => {
-                                        if(e.target.value != null) {
-                                        }
+                                      setNodes((prevState: any)=>{
+                                        const nodesNew = prevState.map((itemNode: any)=>{
+                                          if(itemNode.data.id == data.id) {
+                                            const targetNode = { ...itemNode }
+                                            const ItemData = targetNode.data.inputs[index]
+                                            targetNode.data.inputs[index] = { ...ItemData, value: e.target.value as string }
+                                            console.log("targetNode Select", targetNode)
+                                            return targetNode
+                                          }
+                                          else {
+                                            return itemNode
+                                          }
+                                        })
+                                        return nodesNew;
+                                      })
                                     }}
                                     >
-                                    {httpMethodList.map((item: any, indexItem: number)=>{
+                                    {httpMethodList.map((itemHttpMethod: string, indexItem: number)=>{
                                         
-                                        return <MenuItem value={item} key={`item_${indexItem}`}>{item}</MenuItem>
+                                        return <MenuItem value={itemHttpMethod} key={`${indexItem}`}>{itemHttpMethod}</MenuItem>
                                     })}
                                 </Select>
                             </Grid>
@@ -895,7 +922,21 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                                     value={item.httpReqUrl}
                                     sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                     onChange={(e: any) => {
-                                      console.log(e)
+                                      setNodes((prevState: any)=>{
+                                        const nodesNew = prevState.map((itemNode: any)=>{
+                                          if(itemNode.data.id == data.id) {
+                                            const targetNode = { ...itemNode }
+                                            const ItemData = targetNode.data.inputs[index]
+                                            targetNode.data.inputs[index] = { ...ItemData, httpReqUrl: e.target.value as string }
+                                            console.log("targetNode", targetNode)
+                                            return targetNode
+                                          }
+                                          else {
+                                            return itemNode
+                                          }
+                                        })
+                                        return nodesNew;
+                                      })
                                     }}
                                 />
                               </Box>

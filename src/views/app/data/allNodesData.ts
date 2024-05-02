@@ -274,7 +274,7 @@ export const allNodesData: any = {
               "moduleId": "chatModule"
           },
           "position": {
-              "x": 1150.8317145593148,
+              "x": 1150,
               "y": 720
           }
       },
@@ -324,7 +324,7 @@ export const allNodesData: any = {
             "moduleId": "assignedReply_1"
         },
         "position": {
-            "x": 1800,
+            "x": 1300,
             "y": 721
         }
       },
@@ -455,7 +455,7 @@ export const allNodesData: any = {
             "moduleId": "classifyQuestion_1"
         },
         "position": {
-            "x": 2000,
+            "x": 1500,
             "y": 721
         }
       },
@@ -597,7 +597,7 @@ export const allNodesData: any = {
             "moduleId": "contentExtract_1"
         },
         "position": {
-            "x": 2100,
+            "x": 1700,
             "y": 721
         }
       },

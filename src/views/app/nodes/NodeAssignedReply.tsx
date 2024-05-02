@@ -209,7 +209,7 @@ const NodeAssignedReply = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
           };
         }
       })
-      setEdges(updateEdges)
+      //setEdges(updateEdges)
     }
   }, [selected, setEdges, edges, id])
   
@@ -424,7 +424,21 @@ const NodeAssignedReply = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                 sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
                                 placeholder={t(item.placeholder) as string}
                                 onChange={(e: any) => {
-                                  console.log("e.target.value", e.target.value);
+                                  setNodes((prevState: any)=>{
+                                    const nodesNew = prevState.map((itemNode: any)=>{
+                                      if(itemNode.data.id == data.id) {
+                                        const targetNode = { ...itemNode }
+                                        const ItemData = targetNode.data.inputs[index]
+                                        targetNode.data.inputs[index] = { ...ItemData, value: e.target.value as string }
+                                        console.log("targetNode", targetNode)
+                                        return targetNode
+                                      }
+                                      else {
+                                        return itemNode
+                                      }
+                                    })
+                                    return nodesNew;
+                                  })
                                 }}
                               />
                             </Grid>

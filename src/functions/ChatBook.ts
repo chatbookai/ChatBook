@@ -174,11 +174,11 @@ export function DeleteChatChat() {
     window.localStorage.setItem(ChatChat, JSON.stringify([]))
 }
 
-export function DeleteChatChatHistory(UserId: number, knowledgeId: number | string, agentId: number) {
+export function DeleteChatChatHistory(UserId: number, knowledgeId: number | string, appId: string) {
 	const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatHistoryList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : {}
-    if(ChatChatHistoryList[UserId] && ChatChatHistoryList[UserId][knowledgeId] && ChatChatHistoryList[UserId][knowledgeId][agentId]) {
-        ChatChatHistoryList[UserId][knowledgeId][agentId] = []
+    if(ChatChatHistoryList[UserId] && ChatChatHistoryList[UserId][knowledgeId] && ChatChatHistoryList[UserId][knowledgeId][appId]) {
+        ChatChatHistoryList[UserId][knowledgeId][appId] = []
         window.localStorage.setItem(ChatChatHistory, JSON.stringify(ChatChatHistoryList))
     }
 }
@@ -241,12 +241,12 @@ export function ChatChatInput(Message: string, UserId: number) {
     window.localStorage.setItem(ChatChat, JSON.stringify(ChatChatList))
 }
 
-export async function ChatChatOutput(Message: string, Token: string, UserId: number, chatId: number | string, agentId: number, setProcessingMessage:any, template: string, setFinishedMessage:any) {
+export async function ChatChatOutput(Message: string, Token: string, UserId: number, chatId: number | string, appId: string, setProcessingMessage:any, template: string, setFinishedMessage:any) {
     const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []
     const History: any = []
-    if(ChatChatList && ChatChatList[UserId] && ChatChatList[UserId][chatId] && ChatChatList[UserId][chatId][agentId]) {
-        const ChatChatListLast10 = ChatChatList[UserId][chatId][agentId].slice(-10)
+    if(ChatChatList && ChatChatList[UserId] && ChatChatList[UserId][chatId] && ChatChatList[UserId][chatId][appId]) {
+        const ChatChatListLast10 = ChatChatList[UserId][chatId][appId].slice(-10)
         ChatChatListLast10.map((Item: any)=>{
             if(Item.question && Item.answer) {
                 History.push([Item.question,Item.answer.substring(0, 200)])
@@ -287,7 +287,7 @@ export async function ChatChatOutput(Message: string, Token: string, UserId: num
                 Authorization: Token,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ question: Message, history: History, knowledgeId: chatId, agentId: agentId, template: template }),
+            body: JSON.stringify({ question: Message, history: History, knowledgeId: chatId, appId: appId, template: template }),
             });
             if (!response.body) {
             throw new Error('Response body is not readable as a stream');
@@ -307,7 +307,7 @@ export async function ChatChatOutput(Message: string, Token: string, UserId: num
             if(responseText) {
                 console.log("OpenAI Response:", responseText)
                 ChatChatInput(responseText, 999999)
-                ChatChatHistoryInput(Message, responseText, UserId, chatId, agentId)
+                ChatChatHistoryInput(Message, responseText, UserId, chatId, appId)
                 setFinishedMessage(responseText);
         
                 return true
@@ -329,12 +329,76 @@ export async function ChatChatOutput(Message: string, Token: string, UserId: num
       
 }
 
-export function ChatChatHistoryInput(question: string, answer: string, UserId: number, knowledgeId: number | string, agentId: number) {
+export async function ChatAiOutputV1(Message: string, Token: string, UserId: number, chatId: number | string, appId: string, setProcessingMessage:any, template: string, setFinishedMessage:any) {
+    const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
+    const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []
+    const History: any = []
+    if(ChatChatList && ChatChatList[UserId] && ChatChatList[UserId][chatId] && ChatChatList[UserId][chatId][appId]) {
+        const ChatChatListLast10 = ChatChatList[UserId][chatId][appId].slice(-10)
+        ChatChatListLast10.map((Item: any)=>{
+            if(Item.question && Item.answer) {
+                History.push([Item.question,Item.answer.substring(0, 200)])
+            }
+        })
+    }
+    try {
+        setProcessingMessage('')
+        console.log("chatId", chatId)
+        if(true)  {
+            const response = await fetch(authConfig.backEndApiChatBook + `/api/ChatApp`, {
+            method: 'POST',
+            headers: {
+                Authorization: Token,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ question: Message, history: History, appId: appId, template: template }),
+            });
+            if (!response.body) {
+            throw new Error('Response body is not readable as a stream');
+            }
+            const reader = response.body.getReader();
+            let responseText = "";
+            while (true) {
+                const { done, value } = await reader.read();
+                const text = new TextDecoder('utf-8').decode(value);
+                setProcessingMessage((prevText: string) => prevText + text);
+                responseText = responseText + text;
+                if (done) {
+                    setProcessingMessage('')
+                    break;
+                }
+            }
+            if(responseText) {
+                console.log("OpenAI Response:", responseText)
+                ChatChatInput(responseText, 999999)
+                ChatChatHistoryInput(Message, responseText, UserId, chatId, appId)
+                setFinishedMessage(responseText);
+        
+                return true
+            }
+            else {
+                return true
+            }
+        }
+        else {
+            return false
+        }
+
+    } 
+    catch (error: any) {
+        console.log('Error:', error.message);
+        
+        return true
+    }
+      
+}
+
+export function ChatChatHistoryInput(question: string, answer: string, UserId: number, knowledgeId: number | string, appId: string) {
     console.log("ChatChatHistoryList", question, answer, UserId)
 	const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatHistoryList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : {}
-    if(ChatChatHistoryList && ChatChatHistoryList[UserId] && ChatChatHistoryList[UserId][knowledgeId] && ChatChatHistoryList[UserId][knowledgeId][agentId]) {
-        ChatChatHistoryList[UserId][knowledgeId][agentId].push({
+    if(ChatChatHistoryList && ChatChatHistoryList[UserId] && ChatChatHistoryList[UserId][knowledgeId] && ChatChatHistoryList[UserId][knowledgeId][appId]) {
+        ChatChatHistoryList[UserId][knowledgeId][appId].push({
             "question": question,
             "time": String(Date.now()),
             "answer": answer,
@@ -343,7 +407,7 @@ export function ChatChatHistoryInput(question: string, answer: string, UserId: n
     else {
         ChatChatHistoryList[UserId] = {}
         ChatChatHistoryList[UserId][knowledgeId] = {}
-        ChatChatHistoryList[UserId][knowledgeId][agentId] = [{
+        ChatChatHistoryList[UserId][knowledgeId][appId] = [{
             "question": question,
             "time": String(Date.now()),
             "answer": answer,

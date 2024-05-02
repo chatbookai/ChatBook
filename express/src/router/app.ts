@@ -1,9 +1,8 @@
-
   // app.ts
   import express, { Request, Response } from 'express';
 
   import { checkUserToken } from '../utils/user';
-  import { addApp, editApp, deleteApp, getApp, getAppPage, addPublish, editPublish, deletePublish, getPublish, getPublishsPageByApp, getPublishsAll, getChatlogPageByApp } from '../utils/app';
+  import { addApp, editApp, deleteApp, getApp, getAppPage, addPublish, editPublish, deletePublish, getPublish, getPublishsPageByApp, getPublishsAll, getChatlogPageByApp, getChatLogByAppIdAndUserId, deleteUserLogByAppId } from '../utils/app';
  
   const app = express();
 
@@ -162,5 +161,35 @@
     }
     res.end();
   });
+
+  app.get('/api/app/chatlog/:appId/:pageid/:pagesize', async (req, res) => {
+    const { appId, pageid, pagesize } = req.params;
+    const { authorization } = req.headers;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
+        const getChatLogByAppIdAndUserIdData: any = await getChatLogByAppIdAndUserId(appId, Number(checkUserTokenData.data.id), Number(pageid), Number(pagesize));
+        res.status(200).json(getChatLogByAppIdAndUserIdData);
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+    }
+    res.end();
+  });
+
+  app.get('/api/app/chatlog/clear/:appId', async (req, res) => {
+    const { appId } = req.params;
+    const { authorization } = req.headers;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
+        const deleteUserLogByappIdData: any = await deleteUserLogByAppId(appId, Number(checkUserTokenData.data.id));
+        res.status(200).json(deleteUserLogByappIdData);
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+    }
+    res.end();
+  });
+
+
 
   export default app;

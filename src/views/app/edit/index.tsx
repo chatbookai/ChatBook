@@ -15,6 +15,7 @@ import SimpleEdit from 'src/views/app/edit/SimpleEdit'
 import PreviewApp from 'src/views/app/edit/PreviewApp'
 import PublishApp from 'src/views/app/edit/PublishApp'
 import ChatlogApp from 'src/views/app/edit/ChatlogApp'
+import Chat from 'src/views/app/chat'
 
 // ** Axios Imports
 import toast from 'react-hot-toast'
@@ -44,7 +45,7 @@ const EditApp = (props: any) => {
     CheckPermission(auth, router, false)
   }, [])
 
-  const fetchData = async function (id: string) {
+  const getMyApp = async function (id: string) {
     if (auth && auth.user && id) {
       const RS = await axios.get(authConfig.backEndApiChatBook + '/api/getapp/' + id, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       setApp(RS)
@@ -78,7 +79,7 @@ const EditApp = (props: any) => {
 
   useEffect(() => {
     if(id) {
-      fetchData(String(id))  
+      getMyApp(String(id))  
     }
   }, [refreshChatCounter, id])
 
@@ -111,7 +112,7 @@ const EditApp = (props: any) => {
         {menuid == 'edit' && app?._id?
         <Fragment>
           <SimpleEdit app={app} setApp={setApp} handleEditApp={handleEditApp} isDisabledButton={isDisabledButton} />
-          <PreviewApp app={app} hidden={false} />
+          <Chat app={app} />
         </Fragment>
         :
         null
@@ -133,9 +134,9 @@ const EditApp = (props: any) => {
         null
         }
 
-        {menuid == 'chat' && app?._id?
+        {menuid == 'chat' && app?
         <Fragment>
-          <ChatlogApp appId={app?._id} />
+          <Chat app={app} />
         </Fragment>
         :
         null

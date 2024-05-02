@@ -276,3 +276,32 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
   
     return Template
   }
+
+  export async function getChatLogByAppIdAndUserId(appId: string, userId: number, pageid: number, pagesize: number) {
+    const appIdFiler = filterString(appId);
+    const userIdFiler = Number(userId) < 0 ? 0 : Number(userId) || 1;
+    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+    const From = pageidFiler * pagesizeFiler;
+  
+    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from chatlog where current = 1 and appId = ? and userId = ?", [appIdFiler, userIdFiler]);
+    const RecordsTotal: number = Records ? Records.NUM : 0;
+    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from chatlog where current = 1 and  appId = ? and userId = ? order by id desc limit ? OFFSET ? `, [appIdFiler, userIdFiler, pagesizeFiler, From]) as any[];
+  
+    const RS: any = {};
+    RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
+    RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
+    RS['from'] = From;
+    RS['pageid'] = pageidFiler;
+    RS['pagesize'] = pagesizeFiler;
+    RS['total'] = RecordsTotal;
+  
+    return RS;
+  }
+
+  export async function deleteUserLogByAppId(appId: string, userId: number) {
+    const UpdateChatLog = db.prepare("update chatlog set current = 0 where appId = ? and userId = ?");
+    UpdateChatLog.run(appId, userId);
+    UpdateChatLog.finalize();
+    return {"status":"ok", "msg":"Clear History Success"}
+  }

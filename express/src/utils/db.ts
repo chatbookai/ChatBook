@@ -76,15 +76,14 @@ export async function initChatBookDb() {
         db.run(`
             CREATE TABLE IF NOT EXISTS chatlog (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                knowledgeId TEXT not null default 0,
-                send TEXT  not null,
+                send TEXT not null,
                 received TEXT not null,
                 userId INTEGER not null default 0,
                 timestamp INTEGER not null default 0,
                 source TEXT not null,
                 history TEXT not null,
                 current INTEGER not null default 1,
-                agentId INTEGER not null default 0
+                appId TEXT not null
             );
         `);        
         db.run(`
@@ -242,9 +241,9 @@ export async function initChatBookDb() {
             CREATE TABLE IF NOT EXISTS useragents (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 userId INTEGER not null default 0,
-                agentId INTEGER not null default 0,
+                appId INTEGER not null default 0,
                 createtime INTEGER not null default 0,
-                UNIQUE(userId, agentId)
+                UNIQUE(userId, appId)
             );
         `);
         db.run(`

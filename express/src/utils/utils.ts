@@ -328,9 +328,9 @@ export async function getChatLogByKnowledgeIdAndUserId(knowledgeId: number | str
   const From = pageidFiler * pagesizeFiler;
 
   
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from chatlog where current = 1 and agentId = ? and userId = ?", [KnowledgeIdFiler, userIdFiler]);
+  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from chatlog where current = 1 and appId = ? and userId = ?", [KnowledgeIdFiler, userIdFiler]);
   const RecordsTotal: number = Records ? Records.NUM : 0;
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from chatlog where current = 1 and  agentId = ? and userId = ? order by id desc limit ? OFFSET ? `, [KnowledgeIdFiler, userIdFiler, pagesizeFiler, From]) as any[];
+  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from chatlog where current = 1 and  appId = ? and userId = ? order by id desc limit ? OFFSET ? `, [KnowledgeIdFiler, userIdFiler, pagesizeFiler, From]) as any[];
 
   const RS: any = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
@@ -420,7 +420,7 @@ export async function deleteLog() {
 }
 
 export async function deleteUserLogByKnowledgeId(knowledgeId: number | string, userId: number) {
-  const UpdateChatLog = db.prepare("update chatlog set current = 0 where agentId = ? and userId = ?");
+  const UpdateChatLog = db.prepare("update chatlog set current = 0 where appId = ? and userId = ?");
   UpdateChatLog.run(knowledgeId, userId);
   UpdateChatLog.finalize();
   return {"status":"ok", "msg":"Clear History Success"}

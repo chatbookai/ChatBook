@@ -117,7 +117,7 @@ const ChatContent = (props: any) => {
                     <Fragment>
                     </Fragment>
                   ) : null}
-                  <Button onClick={()=>ClearButtonClick()} disabled={historyCounter==0?true:false}>{ClearButtonName}({historyCounter})</Button>
+                  <Button size="small" onClick={()=>ClearButtonClick()} disabled={historyCounter==0?true:false}>{ClearButtonName}({historyCounter})</Button>
                 </Box>
               </Box>
 

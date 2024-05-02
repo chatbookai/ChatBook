@@ -68,7 +68,7 @@ const FlowLeft = ({ LeftOpen, setLeftOpen, handleAddNode }: any) => {
                         <Fragment key={index}>
                             <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}
                                 onClick={()=>{handleAddNode(item.flowType)}} >
-                                <Avatar src={item.avatar} sx={{ mr: 3, width: 42, height: 42 }} />
+                                <Avatar src={item.avatar || authConfig.logo} sx={{ mr: 3, width: 42, height: 42 }} />
                                 <Box
                                     sx={{
                                         width: '100%',

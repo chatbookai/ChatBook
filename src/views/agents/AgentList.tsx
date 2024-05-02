@@ -103,9 +103,9 @@ const AgentList = (props: any) => {
                     {agentList && agentList.map((item: any, index: number) => (
                       <Grid item key={index} xs={12} sm={6} md={3} lg={3}>
                         <Box position="relative" sx={{mb: 1, mr: 1}}>
-                          <CardMedia image={`${authConfig.backEndApiChatBook}/images/pages/tree-cone-cube-bg-${theme.palette.mode}.png`} sx={{ height: '13.25rem', objectFit: 'contain', borderRadius: 1 }}/>
+                          <CardMedia image={`/images/cardmedia/cardmedia-${theme.palette.mode}.png`} sx={{ height: '13.25rem', objectFit: 'contain', borderRadius: 1 }}/>
                           <Box position="absolute" top={10} left={5} m={1} px={0.8} borderRadius={1} onClick={()=>handleImgInfo(item)} sx={{ cursor: 'pointer' }}>
-                            <Avatar src={item.avatar} sx={{ mr: 3, width: 50, height: 50 }} />
+                            <Avatar src={item.avatar || authConfig.logo} sx={{ mr: 3, width: 50, height: 50 }} />
                           </Box>
                           {userAgents && item && item.id && userAgents.includes(item.id) ?
                           <Box position="absolute" top={0} right={0} m={1} px={0.8} borderRadius={1} sx={{ cursor: 'pointer' }}>

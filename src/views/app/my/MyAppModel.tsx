@@ -140,7 +140,7 @@ const AppModel = (props: any) => {
                     {app && app.map((item: any, index: number) => (
                       <Grid item key={index} xs={12} sm={6} md={4} lg={4}>
                         <Box position="relative" sx={{mb: 2, mr: 2}}>
-                          <CardMedia image={`${authConfig.backEndApiChatBook}/images/pages/tree-cone-cube-bg-${theme.palette.mode}.png`} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1 }}/>
+                          <CardMedia image={`/images/cardmedia/cardmedia-${theme.palette.mode}.png`} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1 }}/>
                           <Box position="absolute" top={10} left={5} m={1} px={0.8} borderRadius={1}
                             onClick={()=>{
                               router.push('/app/edit/' + item._id)

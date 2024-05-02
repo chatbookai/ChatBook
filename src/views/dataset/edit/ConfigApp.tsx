@@ -114,7 +114,7 @@ const ConfigApp = (props: any) => {
                 <Grid item xs={12}>
                     <Grid container alignItems="center">
                         <Grid item xs={4} sx={{minWidth: '140px'}}>
-                            <InputLabel sx={{pt: 6}}>{t("intro")}</InputLabel>
+                            <InputLabel sx={{pt: 6}}>{t("Intro")}</InputLabel>
                         </Grid>
                         <Grid item xs={8} sx={{pt: 6, pl: 2}}>
                             <TextField

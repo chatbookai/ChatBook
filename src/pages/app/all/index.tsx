@@ -1,10 +1,10 @@
-import AgentsModel from 'src/views/agents/agents';
+import AllApp from 'src/views/app/all/App';
 
-const AppAll = () => {
+const AllAppAPP = () => {
     
     return (
-        <AgentsModel />
+        <AllApp />
     )
 }
 
-export default AppAll
+export default AllAppAPP

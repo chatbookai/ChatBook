@@ -68,7 +68,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const deleteSetting = db.prepare('delete from app where _id = ? and userId = ?');
       deleteSetting.run(Params._id, Params.userId);
       deleteSetting.finalize();
-      return {"status":"ok", "msg":"Update Success"}
+      return {"status":"ok", "msg":"Delete Success"}
     }
     catch (error: any) {
       log('Error setOpenAISetting:', error.message);

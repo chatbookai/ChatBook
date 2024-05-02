@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useEffect, ReactNode } from 'react'
+import { Fragment, useEffect, ReactNode, useState } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -25,8 +25,9 @@ import Icon from 'src/@core/components/icon'
 import { useTranslation } from 'react-i18next'
 import { useAuth } from 'src/hooks/useAuth'
 import { CheckPermission } from 'src/functions/ChatBook'
-import SimpleEditApplication from 'src/views/app/edit/SimpleEditApplication'
 import PerfectScrollbar from 'react-perfect-scrollbar'
+import SimpleEditApplication from 'src/views/app/edit/SimpleEditApplication'
+import SimpleEditAppDelete from 'src/views/app/edit/SimpleEditAppDelete'
 
 const WorkFlowPermissionList = ['private','team','public']
 
@@ -40,7 +41,7 @@ const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: bool
 
 const SimpleEdit = (props: any) => {
   // ** Props
-  const { app, setApp, handleEditApp, isDisabledButton } = props
+  const { app, setApp, handleEditApp, handleDeleteApp, isDisabledButton, deleteOpen, setDeleteOpen } = props
   
   // ** Hook
   const { t } = useTranslation()
@@ -55,7 +56,8 @@ const SimpleEdit = (props: any) => {
   }, [app])
 
   // ** State
-  
+
+   
   const hidden = false;
   
   return (
@@ -82,14 +84,17 @@ const SimpleEdit = (props: any) => {
                                     </Grid>
                                     <Grid item xs={12}>
                                         <Button variant='outlined' sx={{mr: 1}} size="small" startIcon={<Icon icon='mingcute:file-export-fill' />} onClick={()=>{
+                                            router.push('/app/chat/' + app?._id)
                                         }}>
                                         {t("Chat")}
                                         </Button>
                                         <Button variant='outlined' sx={{mr: 1}} size="small" startIcon={<Icon icon='material-symbols:chat' />} onClick={()=>{
+                                            router.push('/app/publish/' + app?._id)
                                         }}>
                                         {t("Publish")}
                                         </Button>
                                         <Button variant='contained' sx={{mr: 1}} size="small" startIcon={<Icon icon='material-symbols:save' />}onClick={()=>{
+                                            setDeleteOpen(true)
                                         }}>
                                         {t("Delete")}
                                         </Button>
@@ -174,6 +179,11 @@ const SimpleEdit = (props: any) => {
                     </Grid>
                     { app ? 
                     <SimpleEditApplication app={app} setApp={setApp} handleEditApp={handleEditApp} isDisabledButton={isDisabledButton} />
+                    :
+                    null
+                    }
+                    { app ? 
+                    <SimpleEditAppDelete deleteOpen={deleteOpen} setDeleteOpen={setDeleteOpen} isDisabledButton={isDisabledButton} handleDeleteApp={handleDeleteApp}/>
                     :
                     null
                     }

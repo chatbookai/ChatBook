@@ -19,7 +19,7 @@ import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close';
 
-const MyAppDelete = (props: any) => {
+const SimpleEditAppDelete = (props: any) => {
     // ** Props
     const {deleteOpen, setDeleteOpen, handleDeleteApp, isDisabledButton } = props
 
@@ -70,4 +70,4 @@ const MyAppDelete = (props: any) => {
   )
 }
 
-export default MyAppDelete
+export default SimpleEditAppDelete

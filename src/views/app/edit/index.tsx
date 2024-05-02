@@ -31,6 +31,7 @@ const EditApp = (props: any) => {
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
   const [app, setApp] = useState<any>(null)
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
+  const [deleteOpen, setDeleteOpen] = useState<boolean>(false) 
 
   const { menuid } = props
 
@@ -77,6 +78,27 @@ const EditApp = (props: any) => {
     }
   }
 
+  const handleDeleteApp = async () => {
+    console.log("handleEditApp app", app)
+    setIsDisabledButton(true)
+    if (auth && auth.user) {
+      const PostParams = {appId: app._id}
+      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/deleteapp', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+      console.log("FormSubmit", FormSubmit)
+      setIsDisabledButton(false)
+      if(FormSubmit?.status == "ok") {
+          toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
+          router.push('/app/my')
+      }
+      else {
+          toast.error(t(FormSubmit.msg) as string, { duration: 4000 })
+          if(FormSubmit && FormSubmit.msg=='Token is invalid') {
+            CheckPermission(auth, router, true)
+          }
+      }
+    }
+  }
+
   useEffect(() => {
     if(id) {
       getMyApp(String(id))  
@@ -111,7 +133,7 @@ const EditApp = (props: any) => {
         
         {menuid == 'edit' && app?._id?
         <Fragment>
-          <SimpleEdit app={app} setApp={setApp} handleEditApp={handleEditApp} isDisabledButton={isDisabledButton} />
+          <SimpleEdit app={app} setApp={setApp} handleEditApp={handleEditApp} handleDeleteApp={handleDeleteApp} isDisabledButton={isDisabledButton} deleteOpen={deleteOpen} setDeleteOpen={setDeleteOpen}/>
           <ChatIndex app={app} />
         </Fragment>
         :

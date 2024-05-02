@@ -102,8 +102,13 @@ const EditApp = (props: any) => {
           ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
         }}
       >
+        {app?._id?
         <LeftApp app={app} hidden={false} menuid={menuid}/>
-        {menuid == 'edit' ?
+        :
+        null
+        }
+        
+        {menuid == 'edit' && app?._id?
         <Fragment>
           <SimpleEdit app={app} setApp={setApp} handleEditApp={handleEditApp} isDisabledButton={isDisabledButton} />
           <PreviewApp app={app} hidden={false} />
@@ -112,7 +117,7 @@ const EditApp = (props: any) => {
         null
         }
 
-        {menuid == 'publish' ?
+        {menuid == 'publish' && app?._id?
         <Fragment>
           <PublishApp appId={app?._id} />
         </Fragment>
@@ -120,7 +125,7 @@ const EditApp = (props: any) => {
         null
         }
 
-        {menuid == 'chatlog' ?
+        {menuid == 'chatlog' && app?._id?
         <Fragment>
           <ChatlogApp appId={app?._id} />
         </Fragment>
@@ -128,7 +133,7 @@ const EditApp = (props: any) => {
         null
         }
 
-        {menuid == 'chat' ?
+        {menuid == 'chat' && app?._id?
         <Fragment>
           <ChatlogApp appId={app?._id} />
         </Fragment>

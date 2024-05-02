@@ -34,6 +34,7 @@ const PublishAppNewEdit = (props: any) => {
         CheckPermission(auth, router, false)
     }, [auth, router])
 
+    console.log("pageDatapageDatapageData",pageData)
 
     return (
         <Dialog fullWidth open={pageData.openEdit} onClose={

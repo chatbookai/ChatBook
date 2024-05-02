@@ -61,7 +61,7 @@ const SimpleEdit = (props: any) => {
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={7} textAlign='right'>
-                                    <Typography sx={{ mr: 3, mb: 1, mt: 2, fontSize: '0.62rem' }}>
+                                    <Typography sx={{ mr: 3, mb: 1, mt: 2, fontSize: '0.8rem' }}>
                                     Id:{`${t(app?._id || '')}`}
                                     </Typography>
                                 </Grid>

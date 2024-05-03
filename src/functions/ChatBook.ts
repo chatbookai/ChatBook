@@ -198,6 +198,7 @@ export function ChatChatInit(MsgList: any, PromptTemplate: string) {
             "senderId": 999999,
             "history": [],
             "responseTime": 0,
+            "question": '',
             "feedback": {
                 "isSent": true,
                 "isDelivered": true,
@@ -221,8 +222,9 @@ export function ChatChatInit(MsgList: any, PromptTemplate: string) {
             "message": Item.received,
             "time": Item.timestamp,
             "senderId": 999999,
-            "history": Item.history,
+            "history": JSON.parse(Item.history),
             "responseTime": Item.responseTime,
+            "question": Item.send,
             "feedback": {
                 "isSent": true,
                 "isDelivered": true,
@@ -236,7 +238,7 @@ export function ChatChatInit(MsgList: any, PromptTemplate: string) {
     return ChatLogList
 }
 
-export function ChatChatInput(Message: string, UserId: number, responseTime: number, History: any[]) {
+export function ChatChatInput(Question: string, Message: string, UserId: number, responseTime: number, History: any[]) {
 	const ChatChatText = window.localStorage.getItem(ChatChat)      
     const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
     ChatChatList.push({
@@ -245,6 +247,7 @@ export function ChatChatInput(Message: string, UserId: number, responseTime: num
       "responseTime": responseTime,
       "senderId": UserId,
       "history": History,
+      "question": Question,
       "feedback": {
           "isSent": true,
           "isDelivered": true,
@@ -386,7 +389,7 @@ export async function ChatAiOutputV1(Message: string, Token: string, UserId: num
                 console.log("OpenAI Response:", responseText)
                 const endTime = performance.now()
                 const responseTime = Math.round((endTime - startTime) * 100 / 1000) / 100
-                ChatChatInput(responseText, 999999, responseTime, History)
+                ChatChatInput(Message, responseText, 999999, responseTime, History)
                 ChatChatHistoryInput(Message, responseText, UserId, chatId, appId, responseTime, History)
                 setFinishedMessage(responseText);
         

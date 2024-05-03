@@ -99,7 +99,8 @@ const ChatLog = (props: any) => {
           msg: msg.message,
           responseTime: msg.responseTime,
           history: msg.history,
-          feedback: msg.feedback
+          feedback: msg.feedback,
+          question: ''
         })
       } else {
         chatMessageSenderId = msg.senderId
@@ -113,7 +114,8 @@ const ChatLog = (props: any) => {
               msg: msg.message,
               responseTime: msg.responseTime,
               history: msg.history,
-              feedback: msg.feedback
+              feedback: msg.feedback,
+              question: msg.question
             }
           ]
         }
@@ -314,7 +316,13 @@ const ChatLog = (props: any) => {
                             {!isSender && Number(chat.responseTime) > 0 && ( (index + 1 == ChatItemMsgList.length && !sendButtonDisable) || (index + 1 < ChatItemMsgList.length))?
                             <Box display="flex" alignItems="center" justifyContent="left" borderRadius="8px" p={0} mb={1} >
                                 <Tooltip title={t('ClickViewContentPreview')}>
-                                  <Button color='success' size="small" style={{ whiteSpace: 'nowrap' }}>{t('ContextCount')}({(chat.history.length+1)*2+1})</Button>
+                                  <Button color='success' size="small" style={{ whiteSpace: 'nowrap' }} onClick={()=>{
+                                    const historyAll: any[] = [...chat.history]
+                                    historyAll.push([chat.question, chat.msg])
+                                    console.log("chatchatchatchatchat",historyAll);
+                                  }}>
+                                    {t('ContextCount')}({(chat.history.length+1)*2+1})
+                                    </Button>
                                 </Tooltip>
                                 <Tooltip title={t('ModuleRunningTime')}>
                                   <Button color='error' size="small" style={{ whiteSpace: 'nowrap' }} disableTouchRipple disableRipple>{chat.responseTime}S</Button>

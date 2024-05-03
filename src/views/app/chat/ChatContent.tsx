@@ -14,7 +14,7 @@ import Icon from 'src/@core/components/icon'
 
 // ** Custom Components Import
 import ChatLog from './ChatLog'
-import SendMsgForm from 'src/views/chat/Knowledge/SendMsgForm'
+import SendMsgForm from 'src/views/app/chat/SendMsgForm'
 
 const ChatContent = (props: any) => {
   // ** Props

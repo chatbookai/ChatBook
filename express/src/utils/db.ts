@@ -83,6 +83,7 @@ export async function initChatBookDb() {
                 source TEXT not null,
                 history TEXT not null,
                 current INTEGER not null default 1,
+                responseTime INTEGER not null default 0,
                 appId TEXT not null
             );
         `);        

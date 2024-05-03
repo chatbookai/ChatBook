@@ -97,6 +97,8 @@ const ChatLog = (props: any) => {
         msgGroup.messages.push({
           time: msg.time,
           msg: msg.message,
+          responseTime: msg.responseTime,
+          history: msg.history,
           feedback: msg.feedback
         })
       } else {
@@ -109,6 +111,8 @@ const ChatLog = (props: any) => {
             {
               time: msg.time,
               msg: msg.message,
+              responseTime: msg.responseTime,
+              history: msg.history,
               feedback: msg.feedback
             }
           ]
@@ -269,6 +273,8 @@ const ChatLog = (props: any) => {
                 ChatMsgContent = JSON.parse(chat.msg)
               }
 
+              console.log("chatchatchat",chat)
+
               return (
                 <Box key={ChatIndex} sx={{ '&:not(:last-of-type)': { mb: 3 } }}>
                     {ChatMsgType == "Chat" ?
@@ -301,15 +307,15 @@ const ChatLog = (props: any) => {
                             {!isSender && ( (index + 1 == ChatItemMsgList.length && !sendButtonDisable) || (index + 1 < ChatItemMsgList.length))?
                             <Box display="flex" alignItems="center" justifyContent="left" borderRadius="8px" p={0} mb={1} >
                                 <Tooltip title={t('ClickViewContentPreview')}>
-                                  <Button color='success' size="small">{t('ContextCount')}(10)</Button>
+                                  <Button color='success' size="small" style={{ whiteSpace: 'nowrap' }}>{t('ContextCount')}({(chat.history.length+1)*2+1})</Button>
                                 </Tooltip>
                                 <Tooltip title={t('ModuleRunningTime')}>
-                                  <Button color='error' size="small">7.86S</Button>
+                                  <Button color='error' size="small" style={{ whiteSpace: 'nowrap' }} disableTouchRipple disableRipple>{chat.responseTime}S</Button>
                                 </Tooltip>
                                 <Tooltip title={t('ClickViewDetailFlow')}>
-                                  <Button color='warning' size="small">{t('ViewDetail')}</Button>
+                                  <Button color='warning' size="small" style={{ whiteSpace: 'nowrap' }}>{t('ViewDetail')}</Button>
                                 </Tooltip>
-                                <Button color='info' size="small" disabled>
+                                <Button color='info' size="small" disabled style={{ whiteSpace: 'nowrap' }}>
                                 {chat.time ? new Date(Number(chat.time)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) : null}
                                 </Button>
                             </Box>

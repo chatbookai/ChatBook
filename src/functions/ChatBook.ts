@@ -196,6 +196,8 @@ export function ChatChatInit(MsgList: any, PromptTemplate: string) {
             "message": PromptTemplate,
             "time": Date.now(),
             "senderId": 999999,
+            "history": [],
+            "responseTime": 0,
             "feedback": {
                 "isSent": true,
                 "isDelivered": true,
@@ -203,6 +205,7 @@ export function ChatChatInit(MsgList: any, PromptTemplate: string) {
             }
         })
     }
+    console.log("MsgList", MsgList)
     MsgList.map((Item: any)=>{
         ChatLogList.push({
             "message": Item.send,
@@ -218,6 +221,8 @@ export function ChatChatInit(MsgList: any, PromptTemplate: string) {
             "message": Item.received,
             "time": Item.timestamp,
             "senderId": 999999,
+            "history": Item.history,
+            "responseTime": Item.responseTime,
             "feedback": {
                 "isSent": true,
                 "isDelivered": true,
@@ -231,13 +236,15 @@ export function ChatChatInit(MsgList: any, PromptTemplate: string) {
     return ChatLogList
 }
 
-export function ChatChatInput(Message: string, UserId: number) {
+export function ChatChatInput(Message: string, UserId: number, responseTime: number, History: any[]) {
 	const ChatChatText = window.localStorage.getItem(ChatChat)      
     const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
     ChatChatList.push({
       "message": Message,
       "time": Date.now(),
+      "responseTime": responseTime,
       "senderId": UserId,
+      "history": History,
       "feedback": {
           "isSent": true,
           "isDelivered": true,
@@ -343,7 +350,7 @@ export async function ChatAiOutputV1(Message: string, Token: string, UserId: num
         const ChatChatListLast10 = ChatChatList[UserId][chatId][appId].slice(-10)
         ChatChatListLast10.map((Item: any)=>{
             if(Item.question && Item.answer) {
-                History.push([Item.question,Item.answer.substring(0, 200)])
+                History.push([Item.question, Item.answer.substring(0, 200)])
             }
         })
     }
@@ -351,6 +358,7 @@ export async function ChatAiOutputV1(Message: string, Token: string, UserId: num
         setProcessingMessage('')
         console.log("chatId", chatId)
         if(true)  {
+            const startTime = performance.now()
             const response = await fetch(authConfig.backEndApiChatBook + `/api/ChatApp`, {
             method: 'POST',
             headers: {
@@ -376,8 +384,10 @@ export async function ChatAiOutputV1(Message: string, Token: string, UserId: num
             }
             if(responseText) {
                 console.log("OpenAI Response:", responseText)
-                ChatChatInput(responseText, 999999)
-                ChatChatHistoryInput(Message, responseText, UserId, chatId, appId)
+                const endTime = performance.now()
+                const responseTime = Math.round((endTime - startTime) * 100 / 1000) / 100
+                ChatChatInput(responseText, 999999, responseTime, History)
+                ChatChatHistoryInput(Message, responseText, UserId, chatId, appId, responseTime, History)
                 setFinishedMessage(responseText);
         
                 return true
@@ -399,7 +409,7 @@ export async function ChatAiOutputV1(Message: string, Token: string, UserId: num
       
 }
 
-export function ChatChatHistoryInput(question: string, answer: string, UserId: number, knowledgeId: number | string, appId: string) {
+export function ChatChatHistoryInput(question: string, answer: string, UserId: number, knowledgeId: number | string, appId: string, responseTime: number, History: any[]) {
     console.log("ChatChatHistoryList", question, answer, UserId)
 	const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatHistoryList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : {}
@@ -407,6 +417,8 @@ export function ChatChatHistoryInput(question: string, answer: string, UserId: n
         ChatChatHistoryList[UserId][knowledgeId][appId].push({
             "question": question,
             "time": String(Date.now()),
+            "responseTime": responseTime,
+            "history": History,
             "answer": answer,
         })
     }
@@ -416,6 +428,8 @@ export function ChatChatHistoryInput(question: string, answer: string, UserId: n
         ChatChatHistoryList[UserId][knowledgeId][appId] = [{
             "question": question,
             "time": String(Date.now()),
+            "responseTime": responseTime,
+            "history": History,
             "answer": answer,
         }]
     }

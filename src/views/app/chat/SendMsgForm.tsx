@@ -104,11 +104,16 @@ const SendMsgForm = (props: SendMsgComponentType) => {
                 boxShadow: 'none', // 默认状态下无阴影
             }}
           />
-          <Button type='submit' variant='contained' disabled={sendButtonDisable}  sx={{ bottom: 0, right: 0, position: 'absolute', mt: 0.6, whiteSpace: 'nowrap' }} 
-                  endIcon={sendButtonDisable ? <CircularProgress size={20} color="inherit" /> : null}
-                  >
+          {sendButtonDisable ?
+          <Box sx={{ bottom: 0, right: 0, position: 'absolute', mt: 0.6, whiteSpace: 'nowrap' }} >
+            <CircularProgress size={20} color="inherit" />
+          </Box>
+          :
+          <Button type='submit' variant='contained' disabled={sendButtonDisable}  sx={{ bottom: 0, right: 0, position: 'absolute', mt: 0.6, whiteSpace: 'nowrap' }} >
             {sendButtonText}
           </Button>
+          }
+          
         </Box>
       </ChatFormWrapper>
     </Form>

@@ -165,12 +165,16 @@ export type MessageType = {
   time: string | Date
   message: string
   senderId: number
+  responseTime: string
+  history: any[]
   feedback: MsgFeedbackType
 }
 
 export type ChatLogChatType = {
   msg: string
   time: string | Date
+  responseTime: string
+  history: any[]
   feedback: MsgFeedbackType
 }
 

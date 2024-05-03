@@ -41,8 +41,6 @@ const ChatContextPreview = (props: any) => {
         CheckPermission(auth, router, false)
     }, [auth, router])
 
-    console.log("contextPreviewData", GetSystemPromptFromAppValue, contextPreviewData)
-
     return (
         <Dialog fullWidth open={contextPreviewOpen} onClose={
             () => { setContextPreviewOpen( false ) }

@@ -32,7 +32,8 @@ const ChatContent = (props: any) => {
     ClearButtonClick,
     ClearButtonName,
     historyCounter,
-    app
+    app,
+    GetSystemPromptFromAppValue
   } = props
 
   const [rowInMsg, setRowInMsg] = useState<number>(1)
@@ -122,9 +123,9 @@ const ChatContent = (props: any) => {
               </Box>
 
               {store && store.selectedChat && store.userProfile ? 
-                <ChatLog hidden={hidden} data={{ ...store.selectedChat, userContact: store.userProfile }} chatId={chatId} chatName={chatName} app={app} rowInMsg={rowInMsg} maxRows={maxRows} sendButtonDisable={sendButtonDisable} />
+                <ChatLog hidden={hidden} data={{ ...store.selectedChat, userContact: store.userProfile }} chatId={chatId} chatName={chatName} app={app} rowInMsg={rowInMsg} maxRows={maxRows} sendButtonDisable={sendButtonDisable} GetSystemPromptFromAppValue={GetSystemPromptFromAppValue}/>
               : 
-                <ChatLog hidden={hidden} data={{}} chatId={chatId} chatName={chatName} app={app} rowInMsg={rowInMsg} maxRows={maxRows} sendButtonDisable={sendButtonDisable} />
+                <ChatLog hidden={hidden} data={{}} chatId={chatId} chatName={chatName} app={app} rowInMsg={rowInMsg} maxRows={maxRows} sendButtonDisable={sendButtonDisable} GetSystemPromptFromAppValue={GetSystemPromptFromAppValue}/>
               }
 
               <SendMsgForm store={store} sendMsg={sendMsg} sendButtonDisable={sendButtonDisable} sendButtonLoading={sendButtonLoading} sendButtonText={sendButtonText} sendInputText={sendInputText} rowInMsg={rowInMsg} handleSetRowInMsg={handleSetRowInMsg} maxRows={maxRows} />

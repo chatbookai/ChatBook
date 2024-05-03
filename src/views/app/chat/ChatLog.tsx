@@ -1,5 +1,5 @@
 // ** React Imports
-import { useRef, useEffect, Ref, ReactNode, Fragment } from 'react'
+import { useRef, useEffect, Ref, ReactNode, Fragment, useState } from 'react'
 import { saveAs } from 'file-saver';
 
 // ** MUI Imports
@@ -17,6 +17,7 @@ import Tooltip from '@mui/material/Tooltip'
 import { useTranslation } from 'react-i18next'
 import CircularProgress from '@mui/material/CircularProgress'
 
+import ChatContextPreview from 'src/views/app/chat/ChatContextPreview'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -48,7 +49,11 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 const ChatLog = (props: any) => {
   // ** Props
   const { t } = useTranslation()
-  const { data, hidden, chatName, app, rowInMsg, maxRows, sendButtonDisable } = props
+  const { data, hidden, chatName, app, rowInMsg, maxRows, sendButtonDisable, GetSystemPromptFromAppValue } = props
+
+  const [contextPreviewOpen, setContextPreviewOpen] = useState<boolean>(false)
+  const [contextPreviewData, setContextPreviewData] = useState<any[]>([])
+  const [contextPreviewSystemPrompt, setContextPreviewSystemPrompt] = useState<string>()
 
   // ** Ref
   const chatArea = useRef(null)
@@ -319,7 +324,8 @@ const ChatLog = (props: any) => {
                                   <Button color='success' size="small" style={{ whiteSpace: 'nowrap' }} onClick={()=>{
                                     const historyAll: any[] = [...chat.history]
                                     historyAll.push([chat.question, chat.msg])
-                                    console.log("chatchatchatchatchat",historyAll);
+                                    setContextPreviewOpen(true)
+                                    setContextPreviewData(historyAll)
                                   }}>
                                     {t('ContextCount')}({(chat.history.length+1)*2+1})
                                     </Button>
@@ -431,9 +437,12 @@ const ChatLog = (props: any) => {
   const inputMsgHeight = rowInMsg <= maxRows? rowInMsg * 1.25 : maxRows * 1.25
 
   return (
+    <Fragment>
     <Box sx={{ height: `calc(100% - 6.2rem - ${inputMsgHeight}rem)` }}>
       <ScrollWrapper>{renderChats()}</ScrollWrapper>
     </Box>
+    <ChatContextPreview contextPreviewOpen={contextPreviewOpen} setContextPreviewOpen={setContextPreviewOpen} contextPreviewData={contextPreviewData} GetSystemPromptFromAppValue={GetSystemPromptFromAppValue}/>
+    </Fragment>
   )
 }
 

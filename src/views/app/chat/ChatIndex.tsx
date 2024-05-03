@@ -119,7 +119,8 @@ const AppChat = (props: any) => {
   const [processingMessage, setProcessingMessage] = useState("")
   const [finishedMessage, setFinishedMessage] = useState("")
   const [responseTime, setResponseTime] = useState<number | null>(null);
-
+  const [GetSystemPromptFromAppValue, setGetSystemPromptFromAppValue] = useState<string>("");
+  
   const lastChat = {
     "message": processingMessage,
     "time": Date.now(),
@@ -185,6 +186,8 @@ const AppChat = (props: any) => {
     }
     setSendButtonText(t("Send") as string)
     setSendInputText(t("Your message...") as string)    
+    const GetSystemPromptFromAppValueTemp = GetSystemPromptFromApp(app)
+    setGetSystemPromptFromAppValue(GetSystemPromptFromAppValueTemp)
   }, [])
 
   const GetSystemPromptFromApp = (app: any) => {
@@ -219,9 +222,8 @@ const AppChat = (props: any) => {
       setSendButtonLoading(true)
       setSendButtonText(t("Sending") as string)
       setSendInputText(t("Answering...") as string)
-      ChatChatInput(Obj.message, auth.user.id, 0, [])
+      ChatChatInput(Obj.send, Obj.message, auth.user.id, 0, [])
       setRefreshChatCounter(refreshChatCounter + 1)
-      const GetSystemPromptFromAppValue = GetSystemPromptFromApp(app)
       const startTime = performance.now()
       const ChatAiOutputV1Status = await ChatAiOutputV1(Obj.message, auth.user.token, auth.user.id, chatId, app.id, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage)
       const endTime = performance.now();
@@ -278,6 +280,7 @@ const AppChat = (props: any) => {
         ClearButtonName={t('Clear')}
         historyCounter={historyCounter}
         app={app}
+        GetSystemPromptFromAppValue={GetSystemPromptFromAppValue}
       />
       </Box>
     </Fragment>

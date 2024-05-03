@@ -4,12 +4,17 @@ import { saveAs } from 'file-saver';
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
+import Button from '@mui/material/Button'
 import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import ReactMarkdown from 'react-markdown'
 import CardMedia from '@mui/material/CardMedia'
 import Link from 'next/link'
 import authConfig from 'src/configs/auth'
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
+import IconButton from '@mui/material/IconButton'
+import Tooltip from '@mui/material/Tooltip'
+import { useTranslation } from 'react-i18next'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -40,7 +45,8 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 
 const ChatLog = (props: any) => {
   // ** Props
-  const { data, hidden, chatName, agent, rowInMsg, maxRows } = props
+  const { t } = useTranslation()
+  const { data, hidden, chatName, app, rowInMsg, maxRows } = props
 
   // ** Ref
   const chatArea = useRef(null)
@@ -156,12 +162,29 @@ const ChatLog = (props: any) => {
           key={index}
           sx={{
             display: 'flex',
-            flexDirection: !isSender ? 'row' : 'row-reverse',
+            flexDirection: 'column',
             mb: index !== formattedChatData().length - 1 ? 4 : undefined
           }}
         >
-          <div>
-            {agent && agent.title ?
+          {isSender ?
+          <Box display="flex" alignItems="center" justifyContent="right" borderRadius="8px" p={0} mb={1} >
+            <ToggleButtonGroup exclusive value={'left'} size='small' aria-label='text alignment'>
+              <Tooltip title={t('Copy')}>
+                <IconButton aria-label='capture screenshot' color='secondary' size='small'>
+                  <Icon icon='material-symbols:file-copy-outline-rounded' fontSize='inherit' />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t('Refresh')}>
+                <IconButton aria-label='capture screenshot' color='secondary' size='small'>
+                  <Icon icon='mdi:refresh' fontSize='inherit' />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t('Delete')}>
+                <IconButton aria-label='capture screenshot' color='secondary' size='small'>
+                  <Icon icon='mdi:trash-outline' fontSize='inherit' />
+                </IconButton>
+              </Tooltip>
+            </ToggleButtonGroup>
             <CustomAvatar
               skin='light'
               color={'primary'}
@@ -169,28 +192,46 @@ const ChatLog = (props: any) => {
                 width: '2rem',
                 height: '2rem',
                 fontSize: '0.875rem',
-                ml: isSender ? 3 : undefined,
-                mr: !isSender ? 3 : undefined
               }}
-              {...(!isSender
-                ? {
-                    src: agent.avatar? agent.avatar : '/images/avatars/1.png',
-                    alt: chatName
-                  }
-                : {})}
-              {...(isSender
-                ? {
-                    src: data.userContact.avatar,
-                    alt: data.userContact.fullName
-                  }
-                : {})}
+              {...{
+                src: data.userContact.avatar,
+                alt: data.userContact.fullName
+              }}
             >
-              {chatName}
+              {app.name}
             </CustomAvatar>
-            :
-            null
-            }
-          </div>
+          </Box>
+          :
+          <Box display="flex" alignItems="center" justifyContent="left" borderRadius="8px" p={0} mb={1} >
+            <CustomAvatar
+              skin='light'
+              color={'primary'}
+              sx={{
+                width: '2rem',
+                height: '2rem',
+                fontSize: '0.875rem',
+              }}
+              {...{
+                src: app.avatar? app.avatar : '/images/avatars/1.png',
+                alt: chatName
+              }}
+            >
+              {app.name}
+            </CustomAvatar>
+            <ToggleButtonGroup exclusive value={'left'} size='small' aria-label='text alignment'>
+              <Tooltip title={t('Copy')}>
+                <IconButton aria-label='capture screenshot' color='secondary' size='small'>
+                  <Icon icon='material-symbols:file-copy-outline-rounded' fontSize='inherit' />
+                </IconButton>
+              </Tooltip>
+              <Tooltip title={t('ReadAloudContent')}>
+                <IconButton aria-label='capture screenshot' color='secondary' size='small'>
+                  <Icon icon='wpf:speaker' fontSize='inherit' />
+                </IconButton>
+              </Tooltip>
+            </ToggleButtonGroup>
+          </Box>
+          }
 
           <Box className='chat-body' sx={{ maxWidth: ['calc(100% - 5.75rem)', '100%', '100%'] }}>
             {item.messages.map((chat: ChatLogChatType, index: number, { length }: { length: number }) => {
@@ -235,11 +276,26 @@ const ChatLog = (props: any) => {
                             }}
                           >
                             {renderMsgFeedback(isSender, chat.feedback)}
-                            <Typography variant='caption'>
-                              {chat.time
-                                ? new Date(Number(chat.time)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true })
-                                : null}
-                            </Typography>
+                            {!isSender ?
+                            <Box display="flex" alignItems="center" justifyContent="left" borderRadius="8px" p={0} mb={1} >
+                                <Tooltip title={t('ClickViewContentPreview')}>
+                                  <Button color='success' size="small">{t('ContextCount')}(10)</Button>
+                                </Tooltip>
+                                <Tooltip title={t('ModuleRunningTime')}>
+                                  <Button color='error' size="small">7.86S</Button>
+                                </Tooltip>
+                                <Tooltip title={t('ClickViewDetailFlow')}>
+                                  <Button color='warning' size="small">{t('ViewDetail')}</Button>
+                                </Tooltip>
+                                <Tooltip title={t('Copy')}>
+                                  <Button color='info' size="small" disabled>
+                                  {chat.time ? new Date(Number(chat.time)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) : null}
+                                  </Button>
+                                </Tooltip>
+                            </Box>
+                            :
+                            null
+                            }
                           </Box>
                         ) : null}
                       </div>
@@ -310,6 +366,7 @@ const ChatLog = (props: any) => {
               )
             })}
           </Box>
+          
         </Box>
       )
     })

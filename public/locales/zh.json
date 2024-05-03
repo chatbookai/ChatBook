@@ -475,6 +475,8 @@
   "Intro": "简介",
   "App": "应用",
   "Store": "商店",
+  "Refresh": "刷新",
+  "ReadAloudContent": "朗读内容",
   "Square": "广场",
   "Base Url": "根地址",
   "Config": "Web站点配置",
@@ -502,7 +504,12 @@
   "Support file type": "支持 {{fileType}} 类型文件",
   "Support max count": "最多支持 {{maxCount}} 个文件。",
   "Support max size": "单个文件最大 {{maxSize}}。",
-  "Upload failed": "上传异常"
+  "Upload failed": "上传异常",
+  "ClickViewContentPreview":"点击查看上下文预览",
+  "ModuleRunningTime":"模块运行时间",
+  "ClickViewDetailFlow":"点击查看详细流程",
+  "ViewDetail":"查看详情",
+  "ContextCount":"上下文数量"
   
         
 }

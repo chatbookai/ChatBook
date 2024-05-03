@@ -19,7 +19,8 @@ const ChatFormWrapper = styled(Box)<BoxProps>(({ theme }) => ({
   padding: theme.spacing(1.25, 4),
   justifyContent: 'space-between',
   borderRadius: theme.shape.borderRadius,
-  backgroundColor: theme.palette.background.paper
+  backgroundColor: theme.palette.background.paper,
+  marginTop: 2
 }))
 
 const Form = styled('form')(({ theme }) => ({

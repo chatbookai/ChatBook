@@ -158,6 +158,7 @@ const ChatLog = (props: any) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data])
 
+
   // ** Renders user chat
   const renderChats = () => {
     return formattedChatData().map((item: FormattedChatsType, index: number, ChatItemMsgList: any[]) => {
@@ -244,6 +245,9 @@ const ChatLog = (props: any) => {
                 </Typography>
             </Fragment>
             :
+            null
+            }
+            {sendButtonDisable == false && index > 0 ?
             <ToggleButtonGroup exclusive value={'left'} size='small' aria-label='text alignment'>
               <Tooltip title={t('Copy')}>
                 <IconButton aria-label='capture screenshot' color='secondary' size='small'>
@@ -256,7 +260,10 @@ const ChatLog = (props: any) => {
                 </IconButton>
               </Tooltip>
             </ToggleButtonGroup>
+            :
+            null
             }
+
           </Box>
           }
 
@@ -273,7 +280,7 @@ const ChatLog = (props: any) => {
                 ChatMsgContent = JSON.parse(chat.msg)
               }
 
-              console.log("chatchatchat",chat)
+              //console.log("chatchatchat",chat)
 
               return (
                 <Box key={ChatIndex} sx={{ '&:not(:last-of-type)': { mb: 3 } }}>
@@ -304,7 +311,7 @@ const ChatLog = (props: any) => {
                             }}
                           >
                             {renderMsgFeedback(isSender, chat.feedback)}
-                            {!isSender && ( (index + 1 == ChatItemMsgList.length && !sendButtonDisable) || (index + 1 < ChatItemMsgList.length))?
+                            {!isSender && Number(chat.responseTime) > 0 && ( (index + 1 == ChatItemMsgList.length && !sendButtonDisable) || (index + 1 < ChatItemMsgList.length))?
                             <Box display="flex" alignItems="center" justifyContent="left" borderRadius="8px" p={0} mb={1} >
                                 <Tooltip title={t('ClickViewContentPreview')}>
                                   <Button color='success' size="small" style={{ whiteSpace: 'nowrap' }}>{t('ContextCount')}({(chat.history.length+1)*2+1})</Button>
@@ -416,7 +423,7 @@ const ChatLog = (props: any) => {
   const inputMsgHeight = rowInMsg <= maxRows? rowInMsg * 1.25 : maxRows * 1.25
 
   return (
-    <Box sx={{ height: `calc(100% - 7rem - ${inputMsgHeight}rem)` }}>
+    <Box sx={{ height: `calc(100% - 6.2rem - ${inputMsgHeight}rem)` }}>
       <ScrollWrapper>{renderChats()}</ScrollWrapper>
     </Box>
   )

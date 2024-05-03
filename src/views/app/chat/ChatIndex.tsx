@@ -49,7 +49,9 @@ const AppChat = (props: any) => {
         console.log("appapp", app)
         setChatId('ChatApp')
         setChatName('ChatApp')
-        getChatLogList(app._id, "您好, " + app.name + ", " + app.intro + "，让我们开始对话吧！")
+        const WelcomeText = GetWelcomeTextFromApp(app)
+        console.log("WelcomeText", WelcomeText)
+        getChatLogList(app._id, WelcomeText)
     }
   }, [app])
 
@@ -189,6 +191,19 @@ const AppChat = (props: any) => {
     const AiNode = app.modules.filter((item: any)=>item.type == 'chatNode')
     if(AiNode && AiNode[0] && AiNode[0].data && AiNode[0].data.inputs) {
       const systemPromptList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'systemPrompt')
+      if(systemPromptList && systemPromptList[0] && systemPromptList[0]['value']) {
+        const systemPromptText = systemPromptList[0]['value']
+        return systemPromptText
+      }
+    }
+    return ''
+  }
+
+  const GetWelcomeTextFromApp = (app: any) => {
+    const AiNode = app.modules.filter((item: any)=>item.type == 'userGuide')
+    if(AiNode && AiNode[0] && AiNode[0].data && AiNode[0].data.inputs) {
+      console.log("WelcomeText", AiNode)
+      const systemPromptList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'welcomeText')
       if(systemPromptList && systemPromptList[0] && systemPromptList[0]['value']) {
         const systemPromptText = systemPromptList[0]['value']
         return systemPromptText

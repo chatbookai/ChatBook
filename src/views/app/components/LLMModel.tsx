@@ -1,4 +1,4 @@
-import { useEffect, memo } from 'react'
+import { useEffect, memo, useState } from 'react'
 
 import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
@@ -20,7 +20,7 @@ import Slider from '@mui/material/Slider'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
 
-import { llms } from 'src/functions/llms'
+import { GetLLMS } from 'src/functions/ChatBook'
 
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
@@ -34,10 +34,18 @@ const LLMModel = (props: any) => {
     const { t } = useTranslation()
     const auth = useAuth()
     const router = useRouter()
+    
     useEffect(() => {
         CheckPermission(auth, router, false)
     }, [auth, router])
 
+    const [llms, setLlms] = useState<any>()
+    useEffect(() => {
+        const fetchData = async () => {
+            setLlms(await GetLLMS())
+        };
+        fetchData();
+    }, [])
 
     return (
         <Dialog fullWidth open={LLMModel.LLMModelOpen} onClose={

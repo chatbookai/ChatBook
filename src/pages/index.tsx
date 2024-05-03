@@ -9,7 +9,7 @@ const AppChat = () => {
   const router = useRouter()
 
   useEffect(() => {
-    router.push("/chat/chat")
+    router.push("/store")
   }, [])
 
   return (

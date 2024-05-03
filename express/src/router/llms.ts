@@ -5,6 +5,7 @@
 
   import { getLLMSSetting, uploadfiles, uploadfilesInsertIntoDb } from '../utils/utils';
   import { outputImage, outputImageOrigin, outputAudio, chatChatBaiduWenxin, chatChatGemini, chatChatGeminiMindMap, chatChatOpenAI, chatKnowledgeOpenAI, GenereateImageUsingDallE2, GenereateAudioUsingTTS, parseFiles } from '../utils/llms';
+  import { llms } from '../config';
 
   const app = express();
 
@@ -187,6 +188,10 @@
   app.get('/api/imageorigin/:file', async (req: Request, res: Response) => {
     const { file } = req.params;
     outputImageOrigin(res, file);
+  });
+
+  app.get('/api/llms', async (req: Request, res: Response) => {
+    res.status(200).json(llms)
   });
   
 

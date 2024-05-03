@@ -13,9 +13,6 @@ import TextField from '@mui/material/TextField'
 import Switch from '@mui/material/Switch'
 import Select from '@mui/material/Select'
 import MenuItem from '@mui/material/MenuItem'
-import InputLabel from '@mui/material/InputLabel'
-import FormControl from '@mui/material/FormControl'
-import Slider from '@mui/material/Slider'
 import Fab from '@mui/material/Fab'
 
 import Dialog from '@mui/material/Dialog'
@@ -29,7 +26,6 @@ import HelpOutlineIcon from '@mui/icons-material/HelpOutline'
 
 import { NodeProps, Handle, Position } from 'reactflow'
 import { FlowModuleItemType } from 'src/functions/app/type'
-import { llms } from 'src/functions/llms'
 
 import Button from '@mui/material/Button'
 import Icon from 'src/@core/components/icon'
@@ -52,11 +48,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
   console.log("NodeContentExtract moduleId", selected, id, name, moduleId, inputs, outputs)
   console.log("NodeContentExtract data", data)
 
-
-  const [TTSOpen, setTTSOpen] = useState<boolean>(false)
   const [RenameOpen, setRenameOpen] = useState<boolean>(false)
-  const [TTSValue, setTTSValue] = useState<string>("Disabled")
-  const [TTSSpeed, setTTSSpeed] = useState<number>(1)
   const [NodeTitle, setNodeTitle] = useState<string>("")
 
   //const [TTSModel,setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
@@ -71,14 +63,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                                                 maxChatHistories: 6,
                                                 charsPointsPrice: 2
                                               })
-  
-  const handleClickTTSOpen = () => {
-    setTTSOpen(true)
-  }
 
-  const handleTTSClose = () => {
-    setTTSOpen(false)
-  }
 
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
@@ -1159,103 +1144,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                           :
                           null}
 
-                          {item.key == 'tts' ?
-                          <Fragment>
-                            <Grid item xs={12}>
-                              <Box display="flex" mb={1} alignItems="center">
-                                <Avatar src={'/icons/core/app/simpleMode/tts.svg'} variant="rounded" sx={{ width: '25px', height: '25px', pl: 1}} />
-                                <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
-                                <Tooltip title={t('ttsTip')}>
-                                  <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
-                                </Tooltip>
-                                <Box position={'absolute'} right={'10px'}>
-                                  <Button variant='outlined' size="small" onClick={handleClickTTSOpen}>
-                                    {t(TTSValue) as string}
-                                  </Button>
-                                </Box>
-                              </Box>
-                            </Grid>
-                            <Grid item xs={12}>
-                              <Divider sx={{ bgcolor: 'rgba(0, 0, 0, 0.12)' }} />
-                            </Grid>
-                            <Dialog maxWidth='xs' fullWidth open={TTSOpen} onClose={handleTTSClose}>
-                              <DialogTitle>
-                              <Box display="flex" alignItems="center">
-                                <Avatar src={'/icons/core/app/simpleMode/tts.svg'} variant="rounded" sx={{ width: '25px', height: '25px', pl: 1}} />
-                                <Typography sx={{pl: 2, pt: 2, pb: 1}}>{t(item.label) as string}</Typography>
-                                <Box position={'absolute'} right={'5px'} top={'1px'}>
-                                  <IconButton size="small" edge="end" onClick={handleTTSClose} aria-label="close">
-                                    <CloseIcon />
-                                  </IconButton>
-                                </Box>
-                              </Box>
-                              </DialogTitle>
-                              <DialogContent sx={{  }}>
-                                <Grid item xs={12}>
-                                  <FormControl sx={{ mt: 4, mr: 4 }}>
-                                    <InputLabel id='demo-dialog-select-label'>{t("TTSModel")}</InputLabel>
-                                    <Select 
-                                      size="small" 
-                                      label={t("Tts")}
-                                      labelId='demo-dialog-select-label' 
-                                      id='demo-dialog-select' 
-                                      defaultValue={TTSValue} 
-                                      value={TTSValue}
-                                      fullWidth
-                                      onChange={(e: any) => {
-                                        if(e.target.value != null) {
-                                          setTTSValue(e.target.value as string)
-                                        }
-                                      }}
-                                      >
-                                      <MenuItem value={"Disabled"}>{t("Disabled")}</MenuItem>
-                                      <MenuItem value={"AudioBrowser"}>{t("AudioBrowser")}</MenuItem>
-                                      {llms && llms.audioSpeechModels && llms.audioSpeechModels[0] && llms.audioSpeechModels[0].voices && llms.audioSpeechModels[0].voices.map((item: any, indexItem: number)=>{
-                                        return <MenuItem value={item.value} key={`voices_${indexItem}`}>{item.label}</MenuItem>
-                                      })}
-                                    </Select>
-                                  </FormControl>
-                                </Grid>
-                                <Grid item xs={11.8} pt={8}>
-                                <Typography sx={{ fontWeight: 500 }}>{t("TTSSpeed")}</Typography>
-                                <Slider
-                                  size="small"
-                                  min={0.3}
-                                  max={2}
-                                  step={0.1}
-                                  onChange={(e: any) => {
-                                    if(e.target.value != null) {
-                                      setTTSSpeed(Number(e.target.value as string))
-                                    }
-                                  }}
-                                  value={TTSSpeed}
-                                  valueLabelDisplay='on'
-                                  aria-labelledby="custom-marks-slider"
-                                  marks={[
-                                    {
-                                      value: 0.3,
-                                      label: '0.3'
-                                    },
-                                    {
-                                      value: 2,
-                                      label: '2'
-                                    }
-                                    ]}
-                                />
-                                </Grid>
-                              </DialogContent>
-                              <DialogActions>
-                                <Button size="small" variant='contained' startIcon={<Icon icon='arcticons:ds-audio' />}>
-                                  {t("TrialListening")}
-                                </Button>
-                                <Button size="small" variant='outlined' onClick={handleTTSClose}>
-                                  {t("Close")}
-                                </Button>
-                              </DialogActions>
-                            </Dialog>
-                          </Fragment>
-                          :
-                          null}
+                          
 
                           </Fragment>)
               })

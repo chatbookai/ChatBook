@@ -1,4 +1,5 @@
 import authConfig from 'src/configs/auth'
+import axios from 'axios'
 
 const ChatKnowledge = "ChatKnowledge"
 const ChatChat = "ChatChat"
@@ -6,6 +7,11 @@ const ChatChatName = "ChatChatName"
 const ChatKnowledgeHistory = "ChatKnowledgeHistory"
 const ChatChatHistory = "ChatChatHistory"
 const ChatBookLanguage = "ChatBookLanguage"
+
+export async function GetLLMS() {
+    const response = await axios.get(authConfig.backEndApiChatBook + '/api/llms', { }).then(res=>res.data)
+    return response
+}
 
 export function ChatKnowledgeInit(MsgList: any) {
     const ChatLogList: any = []

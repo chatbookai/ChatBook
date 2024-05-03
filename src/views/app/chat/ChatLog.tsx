@@ -1,5 +1,5 @@
 // ** React Imports
-import { useRef, useEffect, Ref, ReactNode } from 'react'
+import { useRef, useEffect, Ref, ReactNode, Fragment } from 'react'
 import { saveAs } from 'file-saver';
 
 // ** MUI Imports
@@ -15,6 +15,8 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import { useTranslation } from 'react-i18next'
+import CircularProgress from '@mui/material/CircularProgress'
+
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -46,7 +48,7 @@ const LinkStyled = styled(Link)(({ theme }) => ({
 const ChatLog = (props: any) => {
   // ** Props
   const { t } = useTranslation()
-  const { data, hidden, chatName, app, rowInMsg, maxRows } = props
+  const { data, hidden, chatName, app, rowInMsg, maxRows, sendButtonDisable } = props
 
   // ** Ref
   const chatArea = useRef(null)
@@ -154,7 +156,7 @@ const ChatLog = (props: any) => {
 
   // ** Renders user chat
   const renderChats = () => {
-    return formattedChatData().map((item: FormattedChatsType, index: number) => {
+    return formattedChatData().map((item: FormattedChatsType, index: number, ChatItemMsgList: any[]) => {
       const isSender = item.senderId === data.userContact.id
 
       return (
@@ -218,6 +220,26 @@ const ChatLog = (props: any) => {
             >
               {app.name}
             </CustomAvatar>
+            {sendButtonDisable ?
+            <Fragment>
+              
+              <Typography
+                sx={{
+                  boxShadow: 1,
+                  borderRadius: 0.5,
+                  width: 'fit-content',
+                  fontSize: '0.875rem',
+                  p: theme => theme.spacing(0.5, 2, 0.5, 2),
+                  ml: 1,
+                  color: 'text.primary',
+                  backgroundColor: 'background.paper'
+                }}
+                >
+                  <CircularProgress color='success' size={10} sx={{mr: 1}}/>
+                  {t('AI Chat')}
+                </Typography>
+            </Fragment>
+            :
             <ToggleButtonGroup exclusive value={'left'} size='small' aria-label='text alignment'>
               <Tooltip title={t('Copy')}>
                 <IconButton aria-label='capture screenshot' color='secondary' size='small'>
@@ -230,11 +252,12 @@ const ChatLog = (props: any) => {
                 </IconButton>
               </Tooltip>
             </ToggleButtonGroup>
+            }
           </Box>
           }
 
           <Box className='chat-body' sx={{ maxWidth: ['calc(100% - 5.75rem)', '100%', '100%'] }}>
-            {item.messages.map((chat: ChatLogChatType, index: number, { length }: { length: number }) => {
+            {item.messages.map((chat: ChatLogChatType, ChatIndex: number, ChatMsgList: any[]) => {
               let ChatMsgType = 'Chat'
               let ChatMsgContent: any
               if(chat.msg.includes('"type":"image"')) {
@@ -247,7 +270,7 @@ const ChatLog = (props: any) => {
               }
 
               return (
-                <Box key={index} sx={{ '&:not(:last-of-type)': { mb: 3 } }}>
+                <Box key={ChatIndex} sx={{ '&:not(:last-of-type)': { mb: 3 } }}>
                     {ChatMsgType == "Chat" ?
                       <div>
                         <Typography
@@ -266,8 +289,7 @@ const ChatLog = (props: any) => {
                         >
                           <ReactMarkdown>{chat.msg.replace('\n', '  \n')}</ReactMarkdown>
                         </Typography>
-                        {index + 1 === length ? (
-                          <Box
+                        <Box
                             sx={{
                               mt: 1,
                               display: 'flex',
@@ -276,7 +298,7 @@ const ChatLog = (props: any) => {
                             }}
                           >
                             {renderMsgFeedback(isSender, chat.feedback)}
-                            {!isSender ?
+                            {!isSender && ( (index + 1 == ChatItemMsgList.length && !sendButtonDisable) || (index + 1 < ChatItemMsgList.length))?
                             <Box display="flex" alignItems="center" justifyContent="left" borderRadius="8px" p={0} mb={1} >
                                 <Tooltip title={t('ClickViewContentPreview')}>
                                   <Button color='success' size="small">{t('ContextCount')}(10)</Button>
@@ -287,17 +309,14 @@ const ChatLog = (props: any) => {
                                 <Tooltip title={t('ClickViewDetailFlow')}>
                                   <Button color='warning' size="small">{t('ViewDetail')}</Button>
                                 </Tooltip>
-                                <Tooltip title={t('Copy')}>
-                                  <Button color='info' size="small" disabled>
-                                  {chat.time ? new Date(Number(chat.time)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) : null}
-                                  </Button>
-                                </Tooltip>
+                                <Button color='info' size="small" disabled>
+                                {chat.time ? new Date(Number(chat.time)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) : null}
+                                </Button>
                             </Box>
                             :
                             null
                             }
                           </Box>
-                        ) : null}
                       </div>
                       :
                       null

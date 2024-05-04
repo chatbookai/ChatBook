@@ -6,6 +6,7 @@ import Box from '@mui/material/Box'
 import { useTheme } from '@mui/material/styles'
 import useMediaQuery from '@mui/material/useMediaQuery'
 import toast from 'react-hot-toast'
+import { getNanoid } from 'src/functions/app/string.tools';
 
 // ** Types
 import { StatusObjType } from 'src/types/apps/chatTypes'
@@ -105,8 +106,25 @@ const AppChat = (props: any) => {
       }
       setStore(storeInit)
       DeleteChatChatHistory(auth.user.id, chatId, app.id)
-      await axios.get(authConfig.backEndApiChatBook + '/api/app/chatlog/clear/' + app.id, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      const data: any = {appId: app._id}
+      await axios.post(authConfig.backEndApiChatBook + '/api/app/chatlog/clear/', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       setHistoryCounter(0)
+    }
+  }
+
+  const handleDeleteOneChatLogById = async function (chatlogId: number) {
+    if (auth && auth.user && app && app._id) {
+      //DeleteChatChat()
+      //DeleteChatChatHistory(auth.user.id, chatId, app.id)
+      const data: any = {chatlogId: chatlogId, appId: app._id}
+      console.log("handleDeleteOneChatLogById", data)
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/app/chatlog/delete', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      if(RS && RS.status == 'ok') { 
+        toast.success(t(RS.msg) as string, { duration: 2500 })
+      }
+      else {
+        toast.error(t(RS.msg) as string, { duration: 2500 })
+      }
     }
   }
   
@@ -222,10 +240,11 @@ const AppChat = (props: any) => {
       setSendButtonLoading(true)
       setSendButtonText(t("Sending") as string)
       setSendInputText(t("Answering...") as string)
-      ChatChatInput(Obj.send, Obj.message, auth.user.id, 0, [])
+      const _id = getNanoid(32)
+      ChatChatInput(_id, Obj.send, Obj.message, auth.user.id, 0, [])
       setRefreshChatCounter(refreshChatCounter + 1)
       const startTime = performance.now()
-      const ChatAiOutputV1Status = await ChatAiOutputV1(Obj.message, auth.user.token, auth.user.id, chatId, app.id, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage)
+      const ChatAiOutputV1Status = await ChatAiOutputV1(_id, Obj.message, auth.user.token, auth.user.id, chatId, app.id, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage)
       const endTime = performance.now();
       setResponseTime(endTime - startTime);
       if(ChatAiOutputV1Status) {
@@ -281,6 +300,7 @@ const AppChat = (props: any) => {
         historyCounter={historyCounter}
         app={app}
         GetSystemPromptFromAppValue={GetSystemPromptFromAppValue}
+        handleDeleteOneChatLogById={handleDeleteOneChatLogById}
       />
       </Box>
     </Fragment>

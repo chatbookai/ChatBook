@@ -166,6 +166,7 @@ export type MessageType = {
   message: string
   senderId: number
   responseTime: string
+  chatlogId: string
   history: any[]
   feedback: MsgFeedbackType
   question: string
@@ -175,6 +176,7 @@ export type ChatLogChatType = {
   msg: string
   time: string | Date
   responseTime: string
+  chatlogId: string
   history: any[]
   feedback: MsgFeedbackType
   question: string

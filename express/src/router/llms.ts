@@ -61,13 +61,13 @@
   });
   
   app.post('/api/ChatOpenai', async (req: Request, res: Response) => {
-    const { knowledgeId, question, history, template, appId } = req.body;
+    const { knowledgeId, question, history, template, appId, _id } = req.body;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         const getLLMSSettingData = await getLLMSSetting(knowledgeId);
         if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
-          await chatChatOpenAI(res, knowledgeId, checkUserTokenData.data.id, question, history, template, appId);
+          await chatChatOpenAI(_id, res, knowledgeId, checkUserTokenData.data.id, question, history, template, appId);
           res.end();
         }
         else {
@@ -81,14 +81,14 @@
   });
 
   app.post('/api/ChatApp', async (req: Request, res: Response) => {
-    const { question, history, template, appId } = req.body;
+    const { question, history, template, appId, _id } = req.body;
     const { authorization } = req.headers;
     const knowledgeId = 'ChatGPT3.5'
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         const getLLMSSettingData = await getLLMSSetting(knowledgeId);
         if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
-          await chatChatOpenAI(res, knowledgeId, checkUserTokenData.data.id, question, history, template, appId);
+          await chatChatOpenAI(_id, res, knowledgeId, checkUserTokenData.data.id, question, history, template, appId);
           res.end();
         }
         else {

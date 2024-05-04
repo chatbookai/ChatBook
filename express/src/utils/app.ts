@@ -305,3 +305,10 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     UpdateChatLog.finalize();
     return {"status":"ok", "msg":"Clear History Success"}
   }
+
+  export async function deleteUserLogByChatlogId(appId: string, userId: number, id: number) {
+    const UpdateChatLog = db.prepare("delete from chatlog where appId = ? and userId = ? and _id = ?");
+    UpdateChatLog.run(appId, userId, id);
+    UpdateChatLog.finalize();
+    return {"status":"ok", "msg":"Delete Success"}
+  }

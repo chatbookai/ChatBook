@@ -133,7 +133,7 @@ const TextToSpeech = ({ text, AudioType, app }: any) => {
 const ChatLog = (props: any) => {
   // ** Props
   const { t } = useTranslation()
-  const { data, hidden, chatName, app, rowInMsg, maxRows, sendButtonDisable, GetSystemPromptFromAppValue } = props
+  const { data, hidden, chatName, app, rowInMsg, maxRows, sendButtonDisable, GetSystemPromptFromAppValue, handleDeleteOneChatLogById } = props
 
   const [contextPreviewOpen, setContextPreviewOpen] = useState<boolean>(false)
   const [contextPreviewData, setContextPreviewData] = useState<any[]>([])
@@ -186,6 +186,7 @@ const ChatLog = (props: any) => {
           time: msg.time,
           msg: msg.message,
           responseTime: msg.responseTime,
+          chatlogId: msg.chatlogId,
           history: msg.history,
           feedback: msg.feedback,
           question: ''
@@ -201,6 +202,7 @@ const ChatLog = (props: any) => {
               time: msg.time,
               msg: msg.message,
               responseTime: msg.responseTime,
+              chatlogId: msg.chatlogId,
               history: msg.history,
               feedback: msg.feedback,
               question: msg.question
@@ -280,7 +282,9 @@ const ChatLog = (props: any) => {
                 </IconButton>
               </Tooltip>
               <Tooltip title={t('Delete')}>
-                <IconButton aria-label='capture screenshot' color='secondary' size='small'>
+                <IconButton aria-label='capture screenshot' color='secondary' size='small' onClick={()=>{
+                  handleDeleteOneChatLogById(item.messages[0].chatlogId)
+                }}>
                   <Icon icon='mdi:trash-outline' fontSize='inherit' />
                 </IconButton>
               </Tooltip>

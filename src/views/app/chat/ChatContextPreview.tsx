@@ -72,10 +72,10 @@ const ChatContextPreview = (props: any) => {
                         </CardContent>
                     </Card>
                 </Grid>
-                {contextPreviewData && contextPreviewData.map((item: any)=>{
+                {contextPreviewData && contextPreviewData.map((item: any, index: number)=>{
 
                     return (
-                        <Fragment>
+                        <Fragment key={index}>
                             <Grid item xs={12}>
                                 <Card sx={{mt: 2}}>
                                     <CardContent sx={{px: 3, py: 0, m: 0}}>

@@ -198,6 +198,7 @@ export function ChatChatInit(MsgList: any, PromptTemplate: string) {
             "senderId": 999999,
             "history": [],
             "responseTime": 0,
+            "chatlogId": 0,
             "question": '',
             "feedback": {
                 "isSent": true,
@@ -212,6 +213,7 @@ export function ChatChatInit(MsgList: any, PromptTemplate: string) {
             "message": Item.send,
             "time": Item.timestamp,
             "senderId": Item.userId,
+            "chatlogId": Item._id,
             "feedback": {
                 "isSent": true,
                 "isDelivered": true,
@@ -224,6 +226,7 @@ export function ChatChatInit(MsgList: any, PromptTemplate: string) {
             "senderId": 999999,
             "history": JSON.parse(Item.history),
             "responseTime": Item.responseTime,
+            "chatlogId": Item._id,
             "question": Item.send,
             "feedback": {
                 "isSent": true,
@@ -238,13 +241,14 @@ export function ChatChatInit(MsgList: any, PromptTemplate: string) {
     return ChatLogList
 }
 
-export function ChatChatInput(Question: string, Message: string, UserId: number, responseTime: number, History: any[]) {
+export function ChatChatInput(chatlogId: string, Question: string, Message: string, UserId: number, responseTime: number, History: any[]) {
 	const ChatChatText = window.localStorage.getItem(ChatChat)      
     const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
     ChatChatList.push({
       "message": Message,
       "time": Date.now(),
       "responseTime": responseTime,
+      "chatlogId": chatlogId,
       "senderId": UserId,
       "history": History,
       "question": Question,
@@ -258,91 +262,6 @@ export function ChatChatInput(Question: string, Message: string, UserId: number,
 }
 
 export async function ChatChatOutput(Message: string, Token: string, UserId: number, chatId: number | string, appId: string, setProcessingMessage:any, template: string, setFinishedMessage:any) {
-    const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
-    const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []
-    const History: any = []
-    if(ChatChatList && ChatChatList[UserId] && ChatChatList[UserId][chatId] && ChatChatList[UserId][chatId][appId]) {
-        const ChatChatListLast10 = ChatChatList[UserId][chatId][appId].slice(-10)
-        ChatChatListLast10.map((Item: any)=>{
-            if(Item.question && Item.answer) {
-                History.push([Item.question,Item.answer.substring(0, 200)])
-            }
-        })
-    }
-    try {
-        setProcessingMessage('')
-        let modelName = ''
-        switch(chatId) {
-            case 'ChatGPT3.5':
-                modelName = 'ChatOpenai'
-                break;
-            case 'ChatGPT4':
-                modelName = 'ChatOpenai'
-                break;
-            case 'Gemini':
-                modelName = 'ChatGemini'
-                break;
-            case 'GeminiMindMap':
-                modelName = 'ChatGeminiMindMap'
-                break;
-            case 'BaiduWenxin':
-                modelName = 'ChatBaiduwenxin'
-                break;
-            case 'Dall-E-2':
-                modelName = 'DallE2Openai'
-                break;
-            default:
-                modelName = String(chatId);
-                break;
-        }
-        console.log("chatId", chatId)
-        if(modelName != '')  {
-            const response = await fetch(authConfig.backEndApiChatBook + `/api/` + modelName, {
-            method: 'POST',
-            headers: {
-                Authorization: Token,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ question: Message, history: History, knowledgeId: chatId, appId: appId, template: template }),
-            });
-            if (!response.body) {
-            throw new Error('Response body is not readable as a stream');
-            }
-            const reader = response.body.getReader();
-            let responseText = "";
-            while (true) {
-                const { done, value } = await reader.read();
-                const text = new TextDecoder('utf-8').decode(value);
-                setProcessingMessage((prevText: string) => prevText + text);
-                responseText = responseText + text;
-                if (done) {
-                    setProcessingMessage('')
-                    break;
-                }
-            }
-            if(responseText) {
-                console.log("OpenAI Response:", responseText)
-                ChatChatInput(responseText, 999999)
-                ChatChatHistoryInput(Message, responseText, UserId, chatId, appId)
-                setFinishedMessage(responseText);
-        
-                return true
-            }
-            else {
-                return true
-            }
-        }
-        else {
-            return false
-        }
-
-    } 
-    catch (error: any) {
-        console.log('Error:', error.message);
-        
-        return true
-    }
-      
 }
 
 export async function ChatAiAudioV1(Message: string, Token: string, voice: string, appId: string) {
@@ -368,7 +287,7 @@ export async function ChatAiAudioV1(Message: string, Token: string, voice: strin
       
 }
 
-export async function ChatAiOutputV1(Message: string, Token: string, UserId: number, chatId: number | string, appId: string, setProcessingMessage:any, template: string, setFinishedMessage:any) {
+export async function ChatAiOutputV1(_id: string, Message: string, Token: string, UserId: number, chatId: number | string, appId: string, setProcessingMessage:any, template: string, setFinishedMessage:any) {
     const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []
     const History: any = []
@@ -391,7 +310,7 @@ export async function ChatAiOutputV1(Message: string, Token: string, UserId: num
                 Authorization: Token,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ question: Message, history: History, appId: appId, template: template }),
+            body: JSON.stringify({ question: Message, history: History, appId: appId, template: template, _id }),
             });
             if (!response.body) {
             throw new Error('Response body is not readable as a stream');
@@ -412,8 +331,8 @@ export async function ChatAiOutputV1(Message: string, Token: string, UserId: num
                 console.log("OpenAI Response:", responseText)
                 const endTime = performance.now()
                 const responseTime = Math.round((endTime - startTime) * 100 / 1000) / 100
-                ChatChatInput(Message, responseText, 999999, responseTime, History)
-                ChatChatHistoryInput(Message, responseText, UserId, chatId, appId, responseTime, History)
+                ChatChatInput(_id, Message, responseText, 999999, responseTime, History)
+                ChatChatHistoryInput(_id, Message, responseText, UserId, chatId, appId, responseTime, History)
                 setFinishedMessage(responseText);
         
                 return true
@@ -435,7 +354,7 @@ export async function ChatAiOutputV1(Message: string, Token: string, UserId: num
       
 }
 
-export function ChatChatHistoryInput(question: string, answer: string, UserId: number, knowledgeId: number | string, appId: string, responseTime: number, History: any[]) {
+export function ChatChatHistoryInput(chatlogId: string, question: string, answer: string, UserId: number, knowledgeId: number | string, appId: string, responseTime: number, History: any[]) {
     console.log("ChatChatHistoryList", question, answer, UserId)
 	const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatHistoryList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : {}
@@ -444,6 +363,7 @@ export function ChatChatHistoryInput(question: string, answer: string, UserId: n
             "question": question,
             "time": String(Date.now()),
             "responseTime": responseTime,
+            "chatlogId" : chatlogId,
             "history": History,
             "answer": answer,
         })
@@ -455,6 +375,7 @@ export function ChatChatHistoryInput(question: string, answer: string, UserId: n
             "question": question,
             "time": String(Date.now()),
             "responseTime": responseTime,
+            "chatlogId" : chatlogId,
             "history": History,
             "answer": answer,
         }]

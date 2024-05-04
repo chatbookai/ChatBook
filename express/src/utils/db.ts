@@ -76,6 +76,7 @@ export async function initChatBookDb() {
         db.run(`
             CREATE TABLE IF NOT EXISTS chatlog (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                _id TEXT not null,
                 send TEXT not null,
                 received TEXT not null,
                 userId INTEGER not null default 0,

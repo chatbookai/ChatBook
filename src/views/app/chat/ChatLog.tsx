@@ -1,5 +1,5 @@
 // ** React Imports
-import { useRef, useEffect, Ref, ReactNode, Fragment, useState, SyntheticEvent } from 'react'
+import { useRef, useEffect, Ref, ReactNode, Fragment, useState } from 'react'
 import { saveAs } from 'file-saver';
 
 // ** MUI Imports
@@ -77,8 +77,10 @@ const TextToSpeech = ({ text, AudioType, app }: any) => {
           setAudioFilesCache((prevState: any)=>{
             const AudioFilesCache = { ...prevState }
             AudioFilesCache[text] = ChatAiAudioV1Status.ShortFileName
+
             return AudioFilesCache
           })
+
           // Test URL `http://localhost:1988/api/audio/1706839115494-336161094-TTS-1`
           audio.src = authConfig.backEndApiChatBook + '/api/audio/' + ChatAiAudioV1Status.ShortFileName
           console.log("audio.src realtime get audio", audio.src)
@@ -268,7 +270,7 @@ const ChatLog = (props: any) => {
           sx={{
             display: 'flex',
             flexDirection: 'column',
-            mb: index !== formattedChatData().length - 1 ? 4 : undefined
+            mb: index !== ChatItemMsgList.length - 1 ? 4 : undefined
           }}
         >
           {isSender ?

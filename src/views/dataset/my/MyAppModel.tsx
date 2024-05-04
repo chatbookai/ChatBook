@@ -10,7 +10,6 @@ import CardMedia from '@mui/material/CardMedia'
 import authConfig from 'src/configs/auth'
 import Dialog from '@mui/material/Dialog'
 import DialogContent from '@mui/material/DialogContent'
-import Drawer from '@mui/material/Drawer'
 import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import Menu from '@mui/material/Menu'
@@ -40,7 +39,6 @@ const AppModel = (props: any) => {
     app,
     loading,
     loadingText,
-    appId,
     setAppId,
     show,
     setShow,

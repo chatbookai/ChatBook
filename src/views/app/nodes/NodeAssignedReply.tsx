@@ -193,7 +193,6 @@ const NodeAssignedReply = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
           };
         }
       })
-      //setEdges(updateEdges)
     }
   }, [selected, setEdges, edges, id])
   
@@ -372,12 +371,15 @@ const NodeAssignedReply = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                         const ItemData = targetNode.data.inputs[index]
                                         targetNode.data.inputs[index] = { ...ItemData, value: e.target.value as string }
                                         console.log("targetNode", targetNode)
+
                                         return targetNode
                                       }
                                       else {
+
                                         return itemNode
                                       }
                                     })
+
                                     return nodesNew;
                                   })
                                 }}
@@ -415,12 +417,15 @@ const NodeAssignedReply = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                         const ItemData = targetNode.data.inputs[index]
                                         targetNode.data.inputs[index] = { ...ItemData, value: e.target.value as string }
                                         console.log("targetNode", targetNode)
+
                                         return targetNode
                                       }
                                       else {
+
                                         return itemNode
                                       }
                                     })
+
                                     return nodesNew;
                                   })
                                 }}
@@ -518,12 +523,15 @@ const NodeAssignedReply = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                                     const ItemData = targetNode.data.inputs[index]
                                                     targetNode.data.inputs[index] = { ...ItemData, value: !!e.target.checked }
                                                     console.log("targetNode", targetNode)
+
                                                     return targetNode
                                                   }
                                                   else {
+
                                                     return itemNode
                                                   }
                                                 })
+
                                                 return nodesNew;
                                             })
                                         }}

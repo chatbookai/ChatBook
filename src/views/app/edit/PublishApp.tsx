@@ -30,7 +30,7 @@ import toast from 'react-hot-toast'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 import { isMobile } from 'src/configs/functions'
-import { CheckPermission, GetAllLLMS } from 'src/functions/ChatBook'
+import { CheckPermission } from 'src/functions/ChatBook'
 
 import PublishAppNewEdit from './PublishAppNewEdit'
 import PublishAppDelete from './PublishAppDelete'

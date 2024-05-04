@@ -25,14 +25,6 @@ import authConfig from 'src/configs/auth'
 
 import { appTemplates, appGroup } from 'src/views/app/data/appTypeTemplate'
 
-const Header = styled(Box)<BoxProps>(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  padding: theme.spacing(3, 4),
-  justifyContent: 'space-between',
-  backgroundColor: theme.palette.background.default
-}))
-
 const NewApp = ({ NewOpen, setNewOpen, handleAddApp, AppNewForm, setAppNewForm }: any) => {
   const { t } = useTranslation()
   const appGroupList = appGroup.split(',')

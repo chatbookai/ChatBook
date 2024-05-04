@@ -56,12 +56,15 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
             const ItemData = targetNode.data.inputs[index]
             targetNode.data.inputs[index] = { ...ItemData, value, speed }
             console.log("targetNode", targetNode)
+
             return targetNode
           }
           else {
+
             return itemNode
           }
         })
+        
         return nodesNew;
     })
   }
@@ -72,7 +75,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
       TTSNode.map((itemNode: any)=>{
         if(itemNode.key == 'tts') {
           console.log("setTTSModel NodeUserGuide", itemNode)
-          setTTSModel( (prevState: any) => ({ TTSOpen: false, TTSValue: itemNode.value, TTSSpeed: itemNode.speed }) );
+          setTTSModel( () => ({ TTSOpen: false, TTSValue: itemNode.value, TTSSpeed: itemNode.speed }) );
         }
       })
     }
@@ -132,12 +135,15 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                       const ItemData = targetNode.data.inputs[index]
                                       targetNode.data.inputs[index] = { ...ItemData, value: e.target.value as string }
                                       console.log("targetNode", targetNode)
+
                                       return targetNode
                                     }
                                     else {
+
                                       return itemNode
                                     }
                                   })
+
                                   return nodesNew;
                                 })
                               }}
@@ -193,12 +199,15 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                                                     const ItemData = targetNode.data.inputs[index]
                                                     targetNode.data.inputs[index] = { ...ItemData, value: !!e.target.checked }
                                                     console.log("targetNode", targetNode)
+
                                                     return targetNode
                                                   }
                                                   else {
+
                                                     return itemNode
                                                   }
                                                 })
+
                                                 return nodesNew;
                                             })
                                         }}

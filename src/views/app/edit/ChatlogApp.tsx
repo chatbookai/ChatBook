@@ -27,7 +27,7 @@ import Icon from 'src/@core/components/icon'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 import { isMobile } from 'src/configs/functions'
-import { CheckPermission, GetAllLLMS } from 'src/functions/ChatBook'
+import { CheckPermission } from 'src/functions/ChatBook'
 
 const ChatlogApp = (props: any) => {
   // ** Hook

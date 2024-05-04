@@ -12,7 +12,6 @@ import { useSettings } from 'src/@core/hooks/useSettings'
 import LeftApp from 'src/views/app/edit/LeftApp'
 
 import SimpleEdit from 'src/views/app/edit/SimpleEdit'
-import PreviewApp from 'src/views/app/edit/PreviewApp'
 import PublishApp from 'src/views/app/edit/PublishApp'
 import ChatlogApp from 'src/views/app/edit/ChatlogApp'
 import ChatIndex from 'src/views/app/chat/ChatIndex'

@@ -419,7 +419,6 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
           };
         }
       })
-      //setEdges(updateEdges)
     }
   }, [selected, setEdges, edges, id])
 
@@ -600,12 +599,15 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                                         const ItemData = targetNode.data.inputs[index]
                                         targetNode.data.inputs[index] = { ...ItemData, value: e.target.value as string }
                                         console.log("targetNode", targetNode)
+
                                         return targetNode
                                       }
                                       else {
+
                                         return itemNode
                                       }
                                     })
+
                                     return nodesNew;
                                   })
                                 }}
@@ -643,12 +645,15 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                                         const ItemData = targetNode.data.inputs[index]
                                         targetNode.data.inputs[index] = { ...ItemData, value: e.target.value as string }
                                         console.log("targetNode", targetNode)
+
                                         return targetNode
                                       }
                                       else {
+
                                         return itemNode
                                       }
                                     })
+
                                     return nodesNew;
                                   })
                                 }}
@@ -885,12 +890,15 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                                             const ItemData = targetNode.data.inputs[index]
                                             targetNode.data.inputs[index] = { ...ItemData, value: e.target.value as string }
                                             console.log("targetNode Select", targetNode)
+
                                             return targetNode
                                           }
                                           else {
+
                                             return itemNode
                                           }
                                         })
+
                                         return nodesNew;
                                       })
                                     }}
@@ -915,12 +923,15 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                                             const ItemData = targetNode.data.inputs[index]
                                             targetNode.data.inputs[index] = { ...ItemData, httpReqUrl: e.target.value as string }
                                             console.log("targetNode", targetNode)
+
                                             return targetNode
                                           }
                                           else {
+
                                             return itemNode
                                           }
                                         })
+
                                         return nodesNew;
                                       })
                                     }}
@@ -1124,12 +1135,15 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                                                     const ItemData = targetNode.data.inputs[index]
                                                     targetNode.data.inputs[index] = { ...ItemData, value: !!e.target.checked }
                                                     console.log("targetNode", targetNode)
+
                                                     return targetNode
                                                   }
                                                   else {
+
                                                     return itemNode
                                                   }
                                                 })
+
                                                 return nodesNew;
                                             })
                                         }}

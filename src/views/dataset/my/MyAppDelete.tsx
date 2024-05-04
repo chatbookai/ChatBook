@@ -1,6 +1,5 @@
 // ** React Imports
-import { Fragment, useState } from 'react'
-import { useEffect, memo } from 'react'
+import { useEffect, useState } from 'react'
 
 import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
@@ -15,12 +14,7 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogContentText from '@mui/material/DialogContentText'
 
 import Box from '@mui/material/Box'
-import Grid from '@mui/material/Grid'
-import Avatar from '@mui/material/Avatar'
-import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
-import InputLabel from '@mui/material/InputLabel'
-import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close';
@@ -36,12 +30,6 @@ const MyAppDelete = (props: any) => {
     useEffect(() => {
         CheckPermission(auth, router, false)
     }, [auth, router])
-
-  const [open, setOpen] = useState<boolean>(false)
-
-  const handleClickOpen = () => setOpen(true)
-
-  const handleClose = () => setOpen(false)
 
   return (
     <Dialog fullWidth open={deleteOpen} onClose={

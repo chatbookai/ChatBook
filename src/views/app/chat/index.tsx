@@ -9,15 +9,9 @@ import { useTheme } from '@mui/material/styles'
 import { useSettings } from 'src/@core/hooks/useSettings'
 
 // ** Chat App Components Imports
-import LeftApp from 'src/views/app/edit/LeftApp'
-
-import SimpleEdit from 'src/views/app/edit/SimpleEdit'
-import PublishApp from 'src/views/app/edit/PublishApp'
-import ChatlogApp from 'src/views/app/edit/ChatlogApp'
 import ChatIndex from 'src/views/app/chat/ChatIndex'
 
 // ** Axios Imports
-import toast from 'react-hot-toast'
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useRouter } from 'next/router'
@@ -29,9 +23,6 @@ const Chat = (props: any) => {
   // ** States
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
   const [app, setApp] = useState<any>(null)
-  const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
-
-  const { menuid } = props
 
   // ** Hooks
   const { t } = useTranslation()

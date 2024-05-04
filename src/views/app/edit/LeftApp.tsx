@@ -1,12 +1,11 @@
 // ** React Imports
-import { useState, useEffect, ReactNode } from 'react'
+import { ReactNode } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import List from '@mui/material/List'
 import Badge from '@mui/material/Badge'
 import Button from '@mui/material/Button'
-import Drawer from '@mui/material/Drawer'
 import Avatar from '@mui/material/Avatar'
 import ListItem from '@mui/material/ListItem'
 import Typography from '@mui/material/Typography'

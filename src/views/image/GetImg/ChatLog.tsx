@@ -148,7 +148,7 @@ const ChatLog = (props: any) => {
 
   // ** Renders user chat
   const renderChats = () => {
-    return formattedChatData().map((item: FormattedChatsType, index: number) => {
+    return formattedChatData().map((item: FormattedChatsType, index: number, ChatItemMsgList: any[]) => {
       const isSender = item.senderId === data.userContact.id
 
       return (
@@ -157,7 +157,7 @@ const ChatLog = (props: any) => {
           sx={{
             display: 'flex',
             flexDirection: !isSender ? 'row' : 'row-reverse',
-            mb: index !== formattedChatData().length - 1 ? 4 : undefined
+            mb: index !== ChatItemMsgList.length - 1 ? 4 : undefined
           }}
         >
           <div>

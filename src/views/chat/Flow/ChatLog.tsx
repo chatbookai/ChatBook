@@ -148,7 +148,7 @@ const ChatLog = (props: any) => {
 
   // ** Renders user chat
   const renderChats = () => {
-    return formattedChatData().map((item: FormattedChatsType, index: number) => {
+    return formattedChatData().map((item: FormattedChatsType, index: number, ChatItemMsgList: any[]) => {
       const isSender = item.senderId === data.userContact.id
 
       return (

@@ -1,6 +1,5 @@
 // ** React Imports
-import { Fragment, useState } from 'react'
-import { useEffect, memo } from 'react'
+import { Fragment, useEffect } from 'react'
 
 import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
@@ -12,21 +11,14 @@ import Dialog from '@mui/material/Dialog'
 import DialogTitle from '@mui/material/DialogTitle'
 import DialogContent from '@mui/material/DialogContent'
 import DialogActions from '@mui/material/DialogActions'
-import DialogContentText from '@mui/material/DialogContentText'
 
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import Avatar from '@mui/material/Avatar'
-import Switch from '@mui/material/Switch'
 import Typography from '@mui/material/Typography'
-import InputLabel from '@mui/material/InputLabel'
-import TextField from '@mui/material/TextField'
-import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close';
 import Card from '@mui/material/Card'
 import CardContent from '@mui/material/CardContent'
-import CardHeader from '@mui/material/CardHeader'
 import ReactMarkdown from 'react-markdown'
 
 const ChatContextPreview = (props: any) => {
@@ -63,7 +55,7 @@ const ChatContextPreview = (props: any) => {
                         <CardContent sx={{px: 3, py: 0, m: 0}}>
                             <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'space-between', pt: 4, m: 0 }}>
                                 <Typography sx={{ fontSize: '0.875rem' }}>
-                                    System
+                                    {t('System')}
                                 </Typography>
                                 <Typography sx={{ color: 'action.active', fontSize: '0.8125rem' }}>
                                     <ReactMarkdown>{GetSystemPromptFromAppValue.replace('\n', '  \n')}</ReactMarkdown>
@@ -81,7 +73,7 @@ const ChatContextPreview = (props: any) => {
                                     <CardContent sx={{px: 3, py: 0, m: 0}}>
                                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'space-between', pt: 4, m: 0 }}>
                                             <Typography sx={{ fontSize: '0.875rem' }}>
-                                                Human
+                                            {t('Human')}
                                             </Typography>
                                             <Typography sx={{ color: 'action.active', fontSize: '0.8125rem' }}>
                                                 <ReactMarkdown>{item[0].replace('\n', '  \n')}</ReactMarkdown>
@@ -95,7 +87,7 @@ const ChatContextPreview = (props: any) => {
                                     <CardContent sx={{px: 3, py: 0, m: 0}}>
                                         <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'space-between', pt: 4, m: 0 }}>
                                             <Typography sx={{ fontSize: '0.875rem' }}>
-                                                AI
+                                                {t('AI')}
                                             </Typography>
                                             <Typography sx={{ color: 'action.active', fontSize: '0.8125rem' }}>
                                                 <ReactMarkdown>{item[1].replace('\n', '  \n')}</ReactMarkdown>

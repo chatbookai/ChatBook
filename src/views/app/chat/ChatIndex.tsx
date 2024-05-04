@@ -159,7 +159,6 @@ const AppChat = (props: any) => {
   useEffect(() => {
     if(auth.user && auth.user.id)   {
       const ChatChatListValue = ChatChatList()
-      const ShowData = processingMessage && processingMessage!="" ? processingMessage : finishedMessage
       if(processingMessage && processingMessage!="") {
         
         //流式输出的时候,进来显示
@@ -209,9 +208,11 @@ const AppChat = (props: any) => {
       const systemPromptList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'systemPrompt')
       if(systemPromptList && systemPromptList[0] && systemPromptList[0]['value']) {
         const systemPromptText = systemPromptList[0]['value']
+
         return systemPromptText
       }
     }
+    
     return ''
   }
 
@@ -222,9 +223,11 @@ const AppChat = (props: any) => {
       const systemPromptList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'welcomeText')
       if(systemPromptList && systemPromptList[0] && systemPromptList[0]['value']) {
         const systemPromptText = systemPromptList[0]['value']
+
         return systemPromptText
       }
     }
+
     return ''
   }
 

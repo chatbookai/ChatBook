@@ -1,4 +1,4 @@
-export const appGroup: string = "写作,代码,软件开发,技术,英语,企业,研究,沟通,联网,前端,电子商务,人工智能,设计师,Typescript"
+export const appGroup = "写作,代码,软件开发,技术,英语,企业,研究,沟通,联网,前端,电子商务,人工智能,设计师,Typescript"
 
 export const appTemplates: any[] = [
     {

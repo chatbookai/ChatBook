@@ -7,7 +7,6 @@ import AppModel from 'src/views/app/all/AppModel'
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
-import { useTranslation } from 'react-i18next'
 import { useRouter } from 'next/router'
 import { CheckPermission } from 'src/functions/ChatBook'
 
@@ -15,7 +14,6 @@ const AllApp = () => {
 
   // ** Hook
   const auth = useAuth()
-  const { t } = useTranslation()
   const router = useRouter()
 
   useEffect(() => {

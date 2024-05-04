@@ -10,6 +10,7 @@ const ChatBookLanguage = "ChatBookLanguage"
 
 export async function GetLLMS() {
     const response = await axios.get(authConfig.backEndApiChatBook + '/api/llms', { }).then(res=>res.data)
+    
     return response
 }
 
@@ -279,6 +280,7 @@ export function ChatChatInput(chatlogId: string, Question: string, Message: stri
     window.localStorage.setItem(ChatChat, JSON.stringify(ChatChatList))
 }
 
+//@ts-ignore
 export async function ChatChatOutput(Message: string, Token: string, UserId: number, chatId: number | string, appId: string, setProcessingMessage:any, template: string, setFinishedMessage:any) {
 }
 

@@ -60,7 +60,7 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
       TTSNode.map((itemNode: any)=>{
         if(itemNode.key == 'tts') {
           console.log("setTTSModel Default", itemNode)
-          setTTSModel( (prevState: any) => ({ TTSOpen: false, TTSValue: itemNode.value, TTSSpeed: itemNode.speed }) );
+          setTTSModel( () => ({ TTSOpen: false, TTSValue: itemNode.value, TTSSpeed: itemNode.speed }) );
         }
       })
     }

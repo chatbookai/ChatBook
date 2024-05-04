@@ -20,7 +20,7 @@ import ChatContent from 'src/views/app/chat/ChatContent'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
-import { ChatChatInit, ChatChatNameList, ChatChatInput, ChatAiOutputV1, DeleteChatChat, DeleteChatChatHistory  } from 'src/functions/ChatBook'
+import { ChatChatList, ChatChatInit, ChatChatNameList, ChatChatInput, ChatAiOutputV1, DeleteChatChat, DeleteChatChatHistory, DeleteChatChatByChatlogId, DeleteChatChatHistoryByChatlogId  } from 'src/functions/ChatBook'
 
 // ** Axios Imports
 import axios from 'axios'
@@ -47,7 +47,6 @@ const AppChat = (props: any) => {
 
   useEffect(() => {
     if(app._id) {
-        console.log("appapp", app)
         setChatId('ChatApp')
         setChatName('ChatApp')
         const WelcomeText = GetWelcomeTextFromApp(app)
@@ -112,14 +111,14 @@ const AppChat = (props: any) => {
     }
   }
 
-  const handleDeleteOneChatLogById = async function (chatlogId: number) {
+  const handleDeleteOneChatLogById = async function (chatlogId: string) {
     if (auth && auth.user && app && app._id) {
-      //DeleteChatChat()
-      //DeleteChatChatHistory(auth.user.id, chatId, app.id)
+      DeleteChatChatByChatlogId(chatlogId)
+      DeleteChatChatHistoryByChatlogId(auth.user.id, chatId, app.id, chatlogId)
       const data: any = {chatlogId: chatlogId, appId: app._id}
-      console.log("handleDeleteOneChatLogById", data)
       const RS = await axios.post(authConfig.backEndApiChatBook + '/api/app/chatlog/delete', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       if(RS && RS.status == 'ok') { 
+        setRefreshChatCounter(refreshChatCounter + 1)
         toast.success(t(RS.msg) as string, { duration: 2500 })
       }
       else {
@@ -159,23 +158,19 @@ const AppChat = (props: any) => {
 
   useEffect(() => {
     if(auth.user && auth.user.id)   {
-      const ChatChatText = window.localStorage.getItem("ChatChat")
-      const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
-      console.log("ChatChatList", ChatChatList)
-      console.log("processingMessage", processingMessage)
+      const ChatChatListValue = ChatChatList()
       const ShowData = processingMessage && processingMessage!="" ? processingMessage : finishedMessage
       if(processingMessage && processingMessage!="") {
         
         //流式输出的时候,进来显示
-        ChatChatList.push(lastChat)
+        ChatChatListValue.push(lastChat)
       }
-      console.log("ShowData", ShowData)
       const selectedChat = {
         "chat": {
             "id": auth.user.id,
             "userId": auth.user.id,
             "unseenMsgs": 0,
-            "chat": ChatChatList
+            "chat": ChatChatListValue
         }
       }
       const storeInit = {
@@ -188,7 +183,7 @@ const AppChat = (props: any) => {
         "selectedChat": selectedChat
       }
       setStore(storeInit)
-      setHistoryCounter(ChatChatList.length)
+      setHistoryCounter(ChatChatListValue.length)
     }
     else {
       setSendButtonDisable(true)

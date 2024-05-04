@@ -180,11 +180,29 @@ export function DeleteChatChat() {
     window.localStorage.setItem(ChatChat, JSON.stringify([]))
 }
 
+export function DeleteChatChatByChatlogId(chatlogId: string) {
+    const ChatChatText = window.localStorage.getItem(ChatChat)
+    const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
+    const ChatChatListFilter = ChatChatList.filter((item: any)=>item.chatlogId!=chatlogId)
+    window.localStorage.setItem(ChatChat, JSON.stringify(ChatChatListFilter))
+}
+
 export function DeleteChatChatHistory(UserId: number, knowledgeId: number | string, appId: string) {
 	const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatHistoryList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : {}
     if(ChatChatHistoryList[UserId] && ChatChatHistoryList[UserId][knowledgeId] && ChatChatHistoryList[UserId][knowledgeId][appId]) {
         ChatChatHistoryList[UserId][knowledgeId][appId] = []
+        window.localStorage.setItem(ChatChatHistory, JSON.stringify(ChatChatHistoryList))
+    }
+}
+
+export function DeleteChatChatHistoryByChatlogId(UserId: number, knowledgeId: number | string, appId: string, chatlogId: string) {
+	const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
+    const ChatChatHistoryList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : {}
+    if(ChatChatHistoryList[UserId] && ChatChatHistoryList[UserId][knowledgeId] && ChatChatHistoryList[UserId][knowledgeId][appId]) {
+        const TempList = ChatChatHistoryList[UserId][knowledgeId][appId]
+        const TempListFilter = TempList.filter((item: any)=>item.chatlogId!=chatlogId)
+        ChatChatHistoryList[UserId][knowledgeId][appId] = TempListFilter
         window.localStorage.setItem(ChatChatHistory, JSON.stringify(ChatChatHistoryList))
     }
 }

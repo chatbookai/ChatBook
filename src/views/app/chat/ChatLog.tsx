@@ -10,7 +10,9 @@ import Typography from '@mui/material/Typography'
 import ReactMarkdown from 'react-markdown'
 import CardMedia from '@mui/material/CardMedia'
 import Link from 'next/link'
+import toast from 'react-hot-toast'
 import authConfig from 'src/configs/auth'
+import { useAuth } from 'src/hooks/useAuth'
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
@@ -18,6 +20,8 @@ import { useTranslation } from 'react-i18next'
 import CircularProgress from '@mui/material/CircularProgress'
 
 import ChatContextPreview from 'src/views/app/chat/ChatContextPreview'
+
+import { ChatAiAudioV1 } from 'src/functions/ChatBook'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -46,6 +50,86 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   color: theme.palette.primary.main
 }))
 
+const TextToSpeech = ({ text, AudioType, app }: any) => {
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioFilesCache, setAudioFilesCache] = useState<any>({})
+
+  const [audio] = useState(new Audio());
+  const synth = window.speechSynthesis;
+  const { t } = useTranslation()
+  const auth = useAuth()
+
+  const beginPlaying = async () => {
+    if (!isPlaying && AudioType == 'Broswer') {
+      setIsPlaying(true);
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'zh-CN';
+      synth.cancel();
+      synth.speak(utterance);
+    }
+
+    if (!isPlaying && AudioType != 'Broswer' && auth && auth.user && auth.user.token) {
+      setIsPlaying(true);
+      if(audioFilesCache[text] == null)    {
+        const ChatAiAudioV1Status: any = await ChatAiAudioV1(text, auth.user.token, AudioType, app._id)
+        console.log("ChatAiAudioV1Status", ChatAiAudioV1Status)
+        if(ChatAiAudioV1Status && ChatAiAudioV1Status.type == 'audio' && ChatAiAudioV1Status.status == 'OK') {
+          setAudioFilesCache((prevState: any)=>{
+            const AudioFilesCache = { ...prevState }
+            AudioFilesCache[text] = ChatAiAudioV1Status.ShortFileName
+            return AudioFilesCache
+          })
+          // Test URL `http://localhost:1988/api/audio/1706839115494-336161094-TTS-1`
+          audio.src = authConfig.backEndApiChatBook + '/api/audio/' + ChatAiAudioV1Status.ShortFileName
+          console.log("audio.src realtime get audio", audio.src)
+          audio.play();
+        }
+      }
+      else {
+        audio.src = authConfig.backEndApiChatBook + '/api/audio/' + audioFilesCache[text]
+        console.log("audio.src using cache", audio.src)
+        audio.play();
+      }
+    }
+  };
+
+  const stopPlaying = () => {
+    if (isPlaying && AudioType == 'Broswer') {
+      setIsPlaying(false);
+      synth.cancel();
+    }
+    if (isPlaying && AudioType != 'Broswer') {
+      setIsPlaying(false);
+      audio.pause();
+      audio.currentTime = 0;
+    }
+  };
+
+  audio.onended = () => {
+    setIsPlaying(false);
+  };
+
+  return (
+    <div>
+      {isPlaying ?
+      (
+        <Tooltip title={t('ReadAloudContent')}>
+          <IconButton aria-label='capture screenshot' color='error' size='small' onClick={stopPlaying} >
+            <Icon icon='material-symbols:stop-circle-outline' fontSize='inherit' />
+          </IconButton>
+        </Tooltip>
+      )
+      :
+      <Tooltip title={t('ReadAloudContent')}>
+        <IconButton aria-label='capture screenshot' color='secondary' size='small' onClick={beginPlaying} >
+          <Icon icon='wpf:speaker' fontSize='inherit' />
+        </IconButton>
+      </Tooltip>
+      }
+    </div>
+  );
+};
+
 const ChatLog = (props: any) => {
   // ** Props
   const { t } = useTranslation()
@@ -53,7 +137,6 @@ const ChatLog = (props: any) => {
 
   const [contextPreviewOpen, setContextPreviewOpen] = useState<boolean>(false)
   const [contextPreviewData, setContextPreviewData] = useState<any[]>([])
-  const [contextPreviewSystemPrompt, setContextPreviewSystemPrompt] = useState<string>()
 
   // ** Ref
   const chatArea = useRef(null)
@@ -184,7 +267,10 @@ const ChatLog = (props: any) => {
           <Box display="flex" alignItems="center" justifyContent="right" borderRadius="8px" p={0} mb={1} >
             <ToggleButtonGroup exclusive value={'left'} size='small' aria-label='text alignment'>
               <Tooltip title={t('Copy')}>
-                <IconButton aria-label='capture screenshot' color='secondary' size='small'>
+                <IconButton aria-label='capture screenshot' color='secondary' size='small' onClick={()=>{
+                  navigator.clipboard.writeText(item.messages[0].msg);
+                  toast.success(t('Copied success') as string, { duration: 1000 })
+                }}>
                   <Icon icon='material-symbols:file-copy-outline-rounded' fontSize='inherit' />
                 </IconButton>
               </Tooltip>
@@ -257,15 +343,14 @@ const ChatLog = (props: any) => {
             {sendButtonDisable == false && index > 0 ?
             <ToggleButtonGroup exclusive value={'left'} size='small' aria-label='text alignment'>
               <Tooltip title={t('Copy')}>
-                <IconButton aria-label='capture screenshot' color='secondary' size='small'>
+                <IconButton aria-label='capture screenshot' color='secondary' size='small' onClick={()=>{
+                  navigator.clipboard.writeText(item.messages[0].msg);
+                  toast.success(t('Copied success') as string, { duration: 1000 })
+                }}>
                   <Icon icon='material-symbols:file-copy-outline-rounded' fontSize='inherit' />
                 </IconButton>
               </Tooltip>
-              <Tooltip title={t('ReadAloudContent')}>
-                <IconButton aria-label='capture screenshot' color='secondary' size='small'>
-                  <Icon icon='wpf:speaker' fontSize='inherit' />
-                </IconButton>
-              </Tooltip>
+              <TextToSpeech text={item.messages[0].msg} AudioType='alloy' app={app}/>
             </ToggleButtonGroup>
             :
             null

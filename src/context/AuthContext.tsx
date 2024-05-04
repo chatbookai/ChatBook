@@ -94,7 +94,7 @@ const AuthProvider = ({ children }: Props) => {
     }
     else {
       setUser({'loading': '1'} as UserDataType)
-      router.push('/overview')
+      router.push('/store')
     }
   }, [])
 
@@ -102,7 +102,7 @@ const AuthProvider = ({ children }: Props) => {
     setUser({'loading': '1'} as UserDataType)
     window.localStorage.removeItem(authConfig.userInfoTokenKeyName)
     window.localStorage.removeItem(authConfig.storageTokenKeyName)
-    router.push('/overview')
+    router.push('/store')
   }
 
   const handleRegister = (params: RegisterParams, errorCallback?: ErrCallbackType) => {

@@ -20,7 +20,7 @@ const ServerSideNavItems = () => {
     axios.get(authConfig.backEndApiChatBook + '/api/menu/vertical', { headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' }, params: { } }).then(response => {
       const menuArray = response.data
       if(menuArray && menuArray.status == 'error') {
-        router.push('/overview')
+        router.push('/store')
       }
       else {
         setMenuItems(menuArray)

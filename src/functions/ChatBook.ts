@@ -345,6 +345,29 @@ export async function ChatChatOutput(Message: string, Token: string, UserId: num
       
 }
 
+export async function ChatAiAudioV1(Message: string, Token: string, voice: string, appId: string) {
+    try {
+        const response = await axios.post(authConfig.backEndApiChatBook + '/api/app/audio', {
+                            question: Message,
+                            voice: voice,
+                            appId: appId
+                        }, {
+                            headers: {
+                                Authorization: Token,
+                                'Content-Type': 'application/json',
+                            }
+                        }).then(res=>res.data);
+        
+        return response;
+    } 
+    catch (error: any) {
+        console.log('Error:', error.message);
+        
+        return
+    }
+      
+}
+
 export async function ChatAiOutputV1(Message: string, Token: string, UserId: number, chatId: number | string, appId: string, setProcessingMessage:any, template: string, setFinishedMessage:any) {
     const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []

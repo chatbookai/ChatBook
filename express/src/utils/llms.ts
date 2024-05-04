@@ -48,7 +48,7 @@ import { StringOutputParser } from '@langchain/core/output_parsers';
 
 import { DataDir } from './const';
 import { db, getDbRecord, getDbRecordALL } from './db'
-import { getLLMSSetting, GetSetting, log, isFile } from './utils'
+import { getLLMSSetting, GetSetting, log, isFile, formatDateString, enableDir } from './utils'
 
 //.ENV
 import dotenv from 'dotenv';
@@ -463,12 +463,12 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function GenereateAudioUsingTTS(res: Response, knowledgeId: number | string, userId: string, question: string, voice='alloy') {
-    getLLMSSettingData = await getLLMSSetting(knowledgeId);    
+  export async function GenereateAudioUsingTTS(res: Response, ModelId: string, userId: string, question: string, voice='alloy', appId: string) {
+    getLLMSSettingData = await getLLMSSetting(ModelId);    
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE ?? "https://api.openai.com/v1";
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
     
-    if(OPENAI_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
+    if(OPENAI_API_KEY && OPENAI_API_KEY != '') {
       const requestData = {
         model: 'tts-1',
         voice: voice,
@@ -476,6 +476,7 @@ let ChatBaiduWenxinModel: any = null
         response_format: "mp3",
       };
       try {
+        const startTime = performance.now()
         const response = await axios.post(OPENAI_API_BASE + '/audio/speech', requestData, {
           headers: {
             'Content-Type': 'application/json',
@@ -487,13 +488,17 @@ let ChatBaiduWenxinModel: any = null
         const generatedAudio = response.data;
         const data = Buffer.from(generatedAudio);
         const DateNow = Date.now();
-        const ShortFileName = DateNow + '-' + Math.round(Math.random() * 1e9) + '-' + knowledgeId;
-        const FileName = DataDir + "/audio/"+ ShortFileName + ".mp3";
+        const formatDateStringValue = formatDateString(DateNow)
+        const ShortFileName = formatDateStringValue + "_" + appId + '-' + Math.round(Math.random() * 1e9) + '-' + ModelId;
+        const FileName = DataDir + "/audio/" + formatDateStringValue + "/" + ShortFileName + ".mp3";
+        enableDir(DataDir + "/audio/" + formatDateStringValue + "/");
         fs.writeFileSync(FileName, data);
         const generatedAudioTS = {...requestData, FileName: FileName, type: 'audio', status: 'OK', timestamp: DateNow, ShortFileName: ShortFileName}
-        const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?)');
-        insertChatLog.run(question, JSON.stringify(generatedAudioTS), userId, DateNow, JSON.stringify([]), JSON.stringify([]));
-        insertChatLog.finalize();
+        const endTime = performance.now()
+        const responseTime = Math.round((endTime - startTime) * 100 / 1000) / 100   
+        //const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (send, Received, userId, timestamp, source, history, responseTime, appId) VALUES (?,?,?,?,?,?,?,?)');
+        //insertChatLog.run(question, JSON.stringify(generatedAudioTS), userId, DateNow, JSON.stringify([]), JSON.stringify([]), responseTime, appId);
+        //insertChatLog.finalize();
         log('Generated Audio:', generatedAudioTS);
 
         return generatedAudioTS;
@@ -512,7 +517,8 @@ let ChatBaiduWenxinModel: any = null
 
   export async function outputAudio(res: Response, file: string) {
     try {
-      const FileName = DataDir + "/audio/"+ file + ".mp3";
+      const fileList = file.split('_')
+      const FileName = DataDir + "/audio/" + fileList[0] + "/" + file + ".mp3";
       if(isFile(FileName))   {
         const readStream = fs.createReadStream(FileName);
         res.setHeader('Content-Type', 'audio/mpeg');
@@ -520,12 +526,12 @@ let ChatBaiduWenxinModel: any = null
         console.log("FileName Exist: ", FileName)
       }
       else {
-        res.status(200).json({ error: 'File not exist' })
+        res.status(200).json({ error: 'File not exist', FileName })
       }
     } 
     catch (error) {
         console.error('outputImage Error:', error);
-        res.status(200).json({ error: 'File not exist' })
+        res.status(200).json({ error: 'File not exist and can not open' })
     }
   }
 

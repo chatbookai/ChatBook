@@ -3,6 +3,8 @@
 
   import { checkUserToken } from '../utils/user';
   import { addApp, editApp, deleteApp, getApp, getAppPage, addPublish, editPublish, deletePublish, getPublish, getPublishsPageByApp, getPublishsAll, getChatlogPageByApp, getChatLogByAppIdAndUserId, deleteUserLogByAppId } from '../utils/app';
+  import { getLLMSSetting } from '../utils/utils';
+  import { GenereateAudioUsingTTS } from '../utils/llms';
  
   const app = express();
 
@@ -183,6 +185,28 @@
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         const deleteUserLogByappIdData: any = await deleteUserLogByAppId(appId, Number(checkUserTokenData.data.id));
         res.status(200).json(deleteUserLogByappIdData);
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+    }
+    res.end();
+  });
+
+  app.post('/api/app/audio', async (req: Request, res: Response) => {
+    const question: string = req.body.question
+    const voice: string = req.body.voice
+    const appId: string = req.body.appId
+    const { authorization } = req.headers;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
+        const getLLMSSettingData = await getLLMSSetting("TTS-1");   
+        if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
+          const GenereateAudioUsingTTSData = await GenereateAudioUsingTTS(res, "TTS-1", checkUserTokenData.data.id, question, voice, appId);
+          res.status(200).json(GenereateAudioUsingTTSData);
+        }
+        else {        
+          res.status(200).json({"status":"error", "msg":"Not set API_KEY", "data": null});
+        }
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});

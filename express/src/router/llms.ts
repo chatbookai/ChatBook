@@ -3,7 +3,7 @@
 
   import { checkUserToken } from '../utils/user';
 
-  import { getLLMSSetting, uploadfiles, uploadfilesInsertIntoDb } from '../utils/utils';
+  import { getLLMSSetting, uploadfiles, uploadfilesInsertIntoDb, filterString } from '../utils/utils';
   import { outputImage, outputImageOrigin, outputAudio, chatChatBaiduWenxin, chatChatGemini, chatChatGeminiMindMap, chatChatOpenAI, chatKnowledgeOpenAI, GenereateImageUsingDallE2, GenereateAudioUsingTTS, parseFiles } from '../utils/llms';
   import { llms } from '../config';
 
@@ -157,12 +157,14 @@
 
   app.post('/api/TTS-1', async (req: Request, res: Response) => {
     const question: string = req.body.question
+    const voice: string = req.body.voice
+    const appId: string = req.body.appId
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
         const getLLMSSettingData = await getLLMSSetting("TTS-1");   
         if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
-          const GenereateAudioUsingTTSData = await GenereateAudioUsingTTS(res, "TTS-1", checkUserTokenData.data.id, question, 'alloy');
+          const GenereateAudioUsingTTSData = await GenereateAudioUsingTTS(res, "TTS-1", checkUserTokenData.data.id, question, voice, appId);
           res.status(200).json(GenereateAudioUsingTTSData);
         }
         else {        
@@ -183,6 +185,7 @@
   app.get('/api/image/:file', async (req: Request, res: Response) => {
     const { file } = req.params;
     outputImage(res, file);
+
   });
 
   app.get('/api/imageorigin/:file', async (req: Request, res: Response) => {

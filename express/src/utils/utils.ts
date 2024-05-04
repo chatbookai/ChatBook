@@ -554,6 +554,18 @@ export function formatDate(timestamp: number | string) {
   return formattedDate;
 }
 
+export function formatDateString(timestamp: number | string) {
+  const date = new Date(timestamp);
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+
+  const formattedDate = `${year}${month}${day}`;
+
+  return formattedDate;
+}
+
 export const isEmailValid = (email: string): boolean => {
   return validator.isEmail(email);
 };
@@ -729,7 +741,7 @@ export async function addAgent(Params: any) {
     }
     else {
       const formatDateValue = formatDate(Date.now())
-      const insertSetting = db.prepare('INSERT OR IGNORE INTO agents (title, description, tags, config, avatar, author, createDate, status, model, type, userId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');formatDate
+      const insertSetting = db.prepare('INSERT OR IGNORE INTO agents (title, description, tags, config, avatar, author, createDate, status, model, type, userId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
       insertSetting.run(Params.title, Params.description, Params.tags, Params.config, Params.avatar, Params.author, formatDateValue, 1, Params.model, 1, Params.userId);
       insertSetting.finalize();
       return {"status":"ok", "msg":"Add Success"}

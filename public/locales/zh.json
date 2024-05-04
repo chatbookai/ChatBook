@@ -510,7 +510,8 @@
   "ModuleRunningTime":"模块运行时间",
   "ClickViewDetailFlow":"点击查看详细流程",
   "ViewDetail":"查看详情",
-  "ContextCount":"上下文数量"
+  "ContextCount":"上下文数量",
+  "ReGenerate":"重新生成"
   
         
 }

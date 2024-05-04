@@ -37,12 +37,6 @@ const PublishAppDelete = (props: any) => {
         CheckPermission(auth, router, false)
     }, [auth, router])
 
-  const [open, setOpen] = useState<boolean>(false)
-
-  const handleClickOpen = () => setOpen(true)
-
-  const handleClose = () => setOpen(false)
-
   return (
     <Dialog fullWidth open={pageData.openDelete} onClose={
         () => { setPageData( (prevState: any) => ({ ...prevState, openDelete: false }) ) }

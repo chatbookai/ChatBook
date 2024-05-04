@@ -1,5 +1,5 @@
 // ** React Imports
-import { useRef, useEffect, Ref, ReactNode, Fragment, useState } from 'react'
+import { useRef, useEffect, Ref, ReactNode, Fragment, useState, SyntheticEvent } from 'react'
 import { saveAs } from 'file-saver';
 
 // ** MUI Imports
@@ -133,7 +133,13 @@ const TextToSpeech = ({ text, AudioType, app }: any) => {
 const ChatLog = (props: any) => {
   // ** Props
   const { t } = useTranslation()
-  const { data, hidden, chatName, app, rowInMsg, maxRows, sendButtonDisable, GetSystemPromptFromAppValue, handleDeleteOneChatLogById } = props
+  const { data, hidden, chatName, app, rowInMsg, maxRows, sendButtonDisable, GetSystemPromptFromAppValue, handleDeleteOneChatLogById, sendMsg, store } = props
+
+  const handleSendMsg = (msg: string) => {
+    if (store && store.selectedChat && msg.trim().length) {
+      sendMsg({ ...store.selectedChat, message: msg, template: '' })
+    }
+  }
 
   const [contextPreviewOpen, setContextPreviewOpen] = useState<boolean>(false)
   const [contextPreviewData, setContextPreviewData] = useState<any[]>([])
@@ -276,8 +282,10 @@ const ChatLog = (props: any) => {
                   <Icon icon='material-symbols:file-copy-outline-rounded' fontSize='inherit' />
                 </IconButton>
               </Tooltip>
-              <Tooltip title={t('Refresh')}>
-                <IconButton aria-label='capture screenshot' color='secondary' size='small'>
+              <Tooltip title={t('ReGenerate')}>
+                <IconButton aria-label='capture screenshot' color='secondary' size='small' onClick={()=>{
+                  handleSendMsg(item.messages[0].msg)
+                }}>
                   <Icon icon='mdi:refresh' fontSize='inherit' />
                 </IconButton>
               </Tooltip>
@@ -507,7 +515,7 @@ const ChatLog = (props: any) => {
     })
   }
 
-  const ScrollWrapper = ({ children }: { children: ReactNode }) => {
+  const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: boolean }) => {
     if (hidden) {
       return (
         <Box ref={chatArea} sx={{ p: 5, height: '100%', overflowY: 'auto', overflowX: 'hidden' }}>
@@ -528,7 +536,7 @@ const ChatLog = (props: any) => {
   return (
     <Fragment>
     <Box sx={{ height: `calc(100% - 6.2rem - ${inputMsgHeight}rem)` }}>
-      <ScrollWrapper>{renderChats()}</ScrollWrapper>
+      <ScrollWrapper hidden={hidden}>{renderChats()}</ScrollWrapper>
     </Box>
     <ChatContextPreview contextPreviewOpen={contextPreviewOpen} setContextPreviewOpen={setContextPreviewOpen} contextPreviewData={contextPreviewData} GetSystemPromptFromAppValue={GetSystemPromptFromAppValue}/>
     </Fragment>

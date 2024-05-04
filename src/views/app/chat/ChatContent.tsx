@@ -5,12 +5,8 @@ import { Fragment, useState } from 'react'
 import Badge from '@mui/material/Badge'
 import MuiAvatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
-import IconButton from '@mui/material/IconButton'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
-
-// ** Icon Imports
-import Icon from 'src/@core/components/icon'
 
 // ** Custom Components Import
 import ChatLog from './ChatLog'
@@ -22,7 +18,6 @@ const ChatContent = (props: any) => {
     store,
     hidden,
     sendMsg,
-    mdAbove,
     sendButtonDisable,
     sendButtonLoading,
     sendButtonText,
@@ -64,15 +59,9 @@ const ChatContent = (props: any) => {
                   justifyContent: 'space-between',
                   borderBottom: theme => `1px solid ${theme.palette.divider}`
                 }}
-              >
-                {app && app.title ?                
+              >            
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  {mdAbove ? null : (
-                    <IconButton sx={{ mr: 2 }}>
-                      <Icon icon='mdi:menu' />
-                    </IconButton>
-                  )}
-                  <Box sx={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }} >
+                  <Box sx={{ display: 'flex', alignItems: 'center'}} >
                     <Badge
                       overlap='circular'
                       anchorOrigin={{
@@ -95,9 +84,9 @@ const ChatContent = (props: any) => {
                       }
                     >
                       <MuiAvatar
-                        src={app.avatar? app.avatar : '/images/avatars/1.png'}
+                        src={app.avatar}
                         alt={chatName}
-                        sx={{ width: '2.375rem', height: '2.375rem' }}
+                        sx={{ width: '2rem', height: '2rem' }}
                       />
                     </Badge>
                     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -110,23 +99,15 @@ const ChatContent = (props: any) => {
                     </Box>
                   </Box>
                 </Box>
-                :
-                null
-                }
-
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  {mdAbove ? (
-                    <Fragment>
-                    </Fragment>
-                  ) : null}
                   <Button size="small" onClick={()=>ClearButtonClick()} disabled={historyCounter==0?true:false}>{ClearButtonName}({historyCounter})</Button>
                 </Box>
               </Box>
 
               {store && store.selectedChat && store.userProfile ? 
-                <ChatLog hidden={hidden} data={{ ...store.selectedChat, userContact: store.userProfile }} chatId={chatId} chatName={chatName} app={app} rowInMsg={rowInMsg} maxRows={maxRows} sendButtonDisable={sendButtonDisable} GetSystemPromptFromAppValue={GetSystemPromptFromAppValue} handleDeleteOneChatLogById={handleDeleteOneChatLogById}/>
+                <ChatLog hidden={hidden} data={{ ...store.selectedChat, userContact: store.userProfile }} chatId={chatId} chatName={chatName} app={app} rowInMsg={rowInMsg} maxRows={maxRows} sendButtonDisable={sendButtonDisable} GetSystemPromptFromAppValue={GetSystemPromptFromAppValue} handleDeleteOneChatLogById={handleDeleteOneChatLogById} sendMsg={sendMsg} store={store}/>
               : 
-                <ChatLog hidden={hidden} data={{}} chatId={chatId} chatName={chatName} app={app} rowInMsg={rowInMsg} maxRows={maxRows} sendButtonDisable={sendButtonDisable} GetSystemPromptFromAppValue={GetSystemPromptFromAppValue} handleDeleteOneChatLogById={handleDeleteOneChatLogById}/>
+                <ChatLog hidden={hidden} data={{}} chatId={chatId} chatName={chatName} app={app} rowInMsg={rowInMsg} maxRows={maxRows} sendButtonDisable={sendButtonDisable} GetSystemPromptFromAppValue={GetSystemPromptFromAppValue} handleDeleteOneChatLogById={handleDeleteOneChatLogById} sendMsg={sendMsg} store={store}/>
               }
 
               <SendMsgForm store={store} sendMsg={sendMsg} sendButtonDisable={sendButtonDisable} sendButtonLoading={sendButtonLoading} sendButtonText={sendButtonText} sendInputText={sendInputText} rowInMsg={rowInMsg} handleSetRowInMsg={handleSetRowInMsg} maxRows={maxRows} />

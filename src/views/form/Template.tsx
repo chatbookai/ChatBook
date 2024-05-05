@@ -79,7 +79,7 @@ const TemplateModelForm = (props: any) => {
 
   const handleSubmit = async () => {
     if(CONDENSE_TEMPLATE == "" && QA_TEMPLATE == "") {
-        toast.error(t("TEMPLATE cannot be empty") as string, { duration: 4000 })
+        toast.error(t("TEMPLATE cannot be empty") as string, { duration: 4000, position: 'top-center' })
         setIsDisabledButton(false)
         setUploadingButton(`${t('Submit')}`)
 
@@ -90,10 +90,10 @@ const TemplateModelForm = (props: any) => {
         const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/settemplate', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
         console.log("FormSubmit:", FormSubmit)
         if(FormSubmit?.status == "ok") {
-            toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
+            toast.success(t(FormSubmit.msg) as string, { duration: 4000, position: 'top-center' })
         }
         else {
-            toast.error(t(FormSubmit.msg) as string, { duration: 4000 })
+            toast.error(t(FormSubmit.msg) as string, { duration: 4000, position: 'top-center' })
             if(FormSubmit && FormSubmit.msg=='Token is invalid') {
                 CheckPermission(auth, router, true)
             }

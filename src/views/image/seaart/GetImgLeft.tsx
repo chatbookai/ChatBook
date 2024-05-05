@@ -187,12 +187,12 @@ const GetImgLeft = (props: any) => {
   const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault()
     if(promptValue == null || promptValue == '') {      
-      toast.error(t('Prompt Must Not Null') as string, { duration: 4000 })
+      toast.error(t('Prompt Must Not Null') as string, { duration: 4000, position: 'top-center' })
 
       return
     }
     if(negativePromptValue == null || negativePromptValue == '') {      
-      toast.error(t('Negative Prompt Must Not Null') as string, { duration: 4000 })
+      toast.error(t('Negative Prompt Must Not Null') as string, { duration: 4000, position: 'top-center' })
 
       return
     }

@@ -195,7 +195,7 @@ const FileUploaderMultiple = (props: any) => {
       
       if(FormSubmit.status == "ok") {
 
-        toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
+        toast.success(t(FormSubmit.msg) as string, { duration: 4000, position: 'top-center' })
         
         setIsDisabledButton(false)
         setIsDisabledRemove(false)
@@ -222,7 +222,7 @@ const FileUploaderMultiple = (props: any) => {
         setIsDisabledRemove(false)
         setUploadingButton(t("Upload success") as string)
         setRemoveAllButton(t("Clean Records") as string)        
-        toast.success(t('Successfully submitted') as string, { duration: 4000 })
+        toast.success(t('Successfully submitted') as string, { duration: 4000, position: 'top-center' })
     }
   }, [uploadProgress])
 

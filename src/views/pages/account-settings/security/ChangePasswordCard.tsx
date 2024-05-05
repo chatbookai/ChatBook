@@ -106,10 +106,10 @@ const ChangePasswordCard = () => {
          .then(res=>res.data)
          .then(res=>{
           if(res.status == 'ok') {
-            toast.success(t(res.msg) as string, { duration: 4000 })
+            toast.success(t(res.msg) as string, { duration: 4000, position: 'top-center' })
           }
           else {
-            toast.error(t(res.msg) as string, { duration: 4000 })
+            toast.error(t(res.msg) as string, { duration: 4000, position: 'top-center' })
           }
          })
     }

@@ -107,7 +107,7 @@ const MyApp = () => {
       }).then(res => res.data);
       if(RS && RS.status && RS.status == 'ok') {
         setLoading(false)
-        toast.success(t(RS.msg) as string, { duration: 2500 })
+        toast.success(t(RS.msg) as string, { duration: 2500, position: 'top-center' })
         setRefreshChatCounter((prevState: number)=>(prevState+2))
         setPageid(0)
         setLoadingAllData(false)
@@ -166,7 +166,7 @@ const MyApp = () => {
       const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/addapp', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit", FormSubmit)
       if(FormSubmit && FormSubmit.status == 'ok' && code)  {
-        toast.success(t(FormSubmit.msg) as string, { duration: 2500 })
+        toast.success(t(FormSubmit.msg) as string, { duration: 2500, position: 'top-center' })
         router.push('/app/edit/' + code)
       }
     }

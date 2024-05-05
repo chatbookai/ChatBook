@@ -103,7 +103,7 @@ const AppChat = () => {
         const newUserAgentsSet = new Set(userAgents);
         newUserAgentsSet.add(agent.id);
         setUserAgents(Array.from(newUserAgentsSet));
-        toast.success(t(RS.msg) as string, { duration: 2500 })
+        toast.success(t(RS.msg) as string, { duration: 2500, position: 'top-center' })
       }
       else {
         setLoading(false)
@@ -122,7 +122,7 @@ const AppChat = () => {
         setLoading(false)
         const updatedUserAgents = userAgents.filter(id => id !== agent.id);
         setUserAgents(updatedUserAgents);
-        toast.success(t(RS.msg) as string, { duration: 2500 })
+        toast.success(t(RS.msg) as string, { duration: 2500, position: 'top-center' })
       }
       else {
         setLoading(false)

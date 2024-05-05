@@ -118,7 +118,7 @@ const UserAccount = () => {
       axios.post(authConfig.backEndApiChatBook + '/api/user/setuserinfo', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} })
          .then(res=>res.data)
          .then(res=>{
-          toast.success(t(res.msg) as string, { duration: 4000 })
+          toast.success(t(res.msg) as string, { duration: 4000, position: 'top-center' })
          })
     }
   }

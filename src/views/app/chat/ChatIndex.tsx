@@ -119,10 +119,10 @@ const AppChat = (props: any) => {
       const RS = await axios.post(authConfig.backEndApiChatBook + '/api/app/chatlog/delete', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       if(RS && RS.status == 'ok') { 
         setRefreshChatCounter(refreshChatCounter + 1)
-        toast.success(t(RS.msg) as string, { duration: 2500 })
+        toast.success(t(RS.msg) as string, { duration: 2500, position: 'top-center' })
       }
       else {
-        toast.error(t(RS.msg) as string, { duration: 2500 })
+        toast.error(t(RS.msg) as string, { duration: 2500, position: 'top-center' })
       }
     }
   }

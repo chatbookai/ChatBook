@@ -182,11 +182,11 @@ const Collection = (props: any) => {
       const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/' + pageData.FormAction, pageData, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit:", FormSubmit)
       if(FormSubmit?.status == "ok") {
-          toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
+          toast.success(t(FormSubmit.msg) as string, { duration: 4000, position: 'top-center' })
           setPageData({openEdit: false, name: '', type: 'File', files: [], csvs: [], updateTime: 0, status: 100, expiredTime: '', authCheck: '', datasetId: datasetId})
       }
       else {
-          toast.error(t(FormSubmit.msg) as string, { duration: 4000 })
+          toast.error(t(FormSubmit.msg) as string, { duration: 4000, position: 'top-center' })
           if(FormSubmit && FormSubmit.msg=='Token is invalid') {
             CheckPermission(auth, router, true)
           }

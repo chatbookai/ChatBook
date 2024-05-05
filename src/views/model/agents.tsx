@@ -283,14 +283,14 @@ const Agents = () => {
 
   const handleSubmit = async () => {
     if(title == "") {
-        toast.error(t("Title cannot be empty") as string, { duration: 4000 })
+        toast.error(t("Title cannot be empty") as string, { duration: 4000, position: 'top-center' })
         setIsDisabledButton(false)
         setUploadingButton(`${t('Submit')}`)
 
         return
     }
     if(description == "") {
-        toast.error(t("Description cannot be empty") as string, { duration: 4000 })
+        toast.error(t("Description cannot be empty") as string, { duration: 4000, position: 'top-center' })
         setIsDisabledButton(false)
         setUploadingButton(`${t('Submit')}`)
 
@@ -302,7 +302,7 @@ const Agents = () => {
       const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/addagent', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit:", FormSubmit)
       if(FormSubmit?.status == "ok") {
-          toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
+          toast.success(t(FormSubmit.msg) as string, { duration: 4000, position: 'top-center' })
           setTitle('')
           setDescription('')
           setStatus('')
@@ -311,7 +311,7 @@ const Agents = () => {
           setTags('')
       }
       else {
-          toast.error(t(FormSubmit.msg) as string, { duration: 4000 })
+          toast.error(t(FormSubmit.msg) as string, { duration: 4000, position: 'top-center' })
           if(FormSubmit && FormSubmit.msg=='Token is invalid') {
             CheckPermission(auth, router, true)
           }

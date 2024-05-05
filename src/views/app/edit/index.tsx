@@ -66,10 +66,10 @@ const EditApp = (props: any) => {
       console.log("FormSubmit", FormSubmit)
       setIsDisabledButton(false)
       if(FormSubmit?.status == "ok") {
-          toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
+          toast.success(t(FormSubmit.msg) as string, { duration: 4000, position: 'top-center' })
       }
       else {
-          toast.error(t(FormSubmit.msg) as string, { duration: 4000 })
+          toast.error(t(FormSubmit.msg) as string, { duration: 4000, position: 'top-center' })
           if(FormSubmit && FormSubmit.msg=='Token is invalid') {
             CheckPermission(auth, router, true)
           }
@@ -86,11 +86,11 @@ const EditApp = (props: any) => {
       console.log("FormSubmit", FormSubmit)
       setIsDisabledButton(false)
       if(FormSubmit?.status == "ok") {
-          toast.success(t(FormSubmit.msg) as string, { duration: 4000 })
+          toast.success(t(FormSubmit.msg) as string, { duration: 4000, position: 'top-center' })
           router.push('/app/my')
       }
       else {
-          toast.error(t(FormSubmit.msg) as string, { duration: 4000 })
+          toast.error(t(FormSubmit.msg) as string, { duration: 4000, position: 'top-center' })
           if(FormSubmit && FormSubmit.msg=='Token is invalid') {
             CheckPermission(auth, router, true)
           }

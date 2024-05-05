@@ -260,7 +260,7 @@ const AdvancedApp = () => {
 
   const fetchData = async function (id: string) {
     if (auth && auth.user && id) {
-      const CurrentAppDataTemp = await axios.get(authConfig.backEndApiChatBook + '/api/getapp/' + id, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      const CurrentAppDataTemp = await axios.post(authConfig.backEndApiChatBook + '/api/getapp', {appId: id}, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       const nodesInitial: Node<FlowModuleItemType, string | undefined>[] = CurrentAppDataTemp.modules
       const edgesInitial: Edge<any[]>[] = CurrentAppDataTemp.edges
       setEdges(edgesInitial)

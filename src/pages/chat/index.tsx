@@ -1,4 +1,4 @@
-import EditApp from 'src/views/app/chat/ChatIndex';
+import EditApp from 'src/views/app/edit';
 
 const EditAppApp = () => {
 

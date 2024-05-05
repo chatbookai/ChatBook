@@ -305,4 +305,6 @@ const AppChat = (props: any) => {
   )
 }
 
+//AppChat.contentHeightFixed = true
+
 export default AppChat

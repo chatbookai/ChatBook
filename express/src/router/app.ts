@@ -2,7 +2,7 @@
   import express, { Request, Response } from 'express';
 
   import { checkUserToken } from '../utils/user';
-  import { addApp, editApp, deleteApp, getApp, getAppPage, addPublish, editPublish, deletePublish, getPublish, getPublishsPageByApp, getPublishsAll, getChatlogPageByApp, getChatLogByAppIdAndUserId, deleteUserLogByAppId, deleteUserLogByChatlogId } from '../utils/app';
+  import { addApp, editApp, deleteApp, getApp, getAppPage, addPublish, editPublish, deletePublish, getPublish, getPublishsPageByApp, getPublishsAll, getChatlogPageByApp, getChatLogByAppIdAndUserId, deleteUserLogByAppId, deleteUserLogByChatlogId, getAppByPublishId } from '../utils/app';
   import { getLLMSSetting } from '../utils/utils';
   import { GenereateAudioUsingTTS } from '../utils/llms';
  
@@ -50,13 +50,28 @@
     res.end();
   });
 
-  app.get('/api/getapp/:id', async (req: Request, res: Response) => {
+  app.post('/api/getapp', async (req: Request, res: Response) => {
     const { id } = req.params;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') && req.body.appId) {
         console.log("checkUserTokenData app", checkUserTokenData)
-        const getAppData: any = await getApp(id, checkUserTokenData.data.id);
+        const getAppData: any = await getApp(req.body.appId, checkUserTokenData.data.id);
+        res.status(200).json(getAppData);
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+    }
+    res.end();
+  });
+
+  app.post('/api/getappbypublishid', async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { authorization } = req.headers;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') && req.body.publishId) {
+        console.log("checkUserTokenData app", checkUserTokenData)
+        const getAppData: any = await getAppByPublishId(req.body.publishId, checkUserTokenData.data.id);
         res.status(200).json(getAppData);
     }
     else {

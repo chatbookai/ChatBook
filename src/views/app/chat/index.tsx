@@ -37,7 +37,7 @@ const Chat = (props: any) => {
 
   const getMyApp = async function (id: string) {
     if (auth && auth.user && id) {
-      const RS = await axios.get(authConfig.backEndApiChatBook + '/api/getapp/' + id, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getapp', {appId: id}, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       setApp(RS)
     }
   }

@@ -93,6 +93,30 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return Template
   }
 
+  export async function getAppByPublishId(id: string, userId: string) {
+    const idFilter = filterString(id)
+    const userIdFilter = Number(userId)
+    
+
+    const PublishRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT appId, userId from publish where _id = ?`, [idFilter]) as any[];
+    console.log("PublishRS", PublishRS)
+    if(PublishRS && PublishRS[0] && PublishRS[0].appId)  {
+      const appid = PublishRS[0].appId
+      const userId = PublishRS[0].userId
+      const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT data from app where _id = ? and userId = ? `, [appid, userId]) as any[];
+      let Template: any = {}
+      if(SettingRS)  {
+        SettingRS.map((Item: any)=>{
+          Template = JSON.parse(Item.data)
+        })
+      }
+      return Template
+    }
+    else {
+      return 
+    }
+  }
+
   export async function getAppPage(pageid: number, pagesize: number, userId: number) {
     const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;

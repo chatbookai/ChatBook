@@ -117,7 +117,7 @@ const PublishApp = (props: any) => {
       renderCell: ({ row }: any) => {
         return (
           <Typography noWrap variant='body2' >
-            {row.returnReference}
+            {row.returnReference == 1 ? t('Enabled') : t('Disabled')}
           </Typography>
         )
       }
@@ -162,7 +162,7 @@ const PublishApp = (props: any) => {
       renderCell: ({ row }: any) => (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
           <Button sx={{ my: 3, mr: 5 }} size="small" variant='outlined' onClick={
-                        () => {  }
+                        () => { router.push('/chat/' + row._id) }
                     }>
             {t("BeginUsing")}
           </Button>

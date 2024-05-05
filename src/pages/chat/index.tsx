@@ -1,12 +1,15 @@
-import EditApp from 'src/views/app/edit';
+import { ReactNode } from 'react'
+import BlankLayout from 'src/@core/layouts/BlankLayout'
+import ChatAnonymous from 'src/views/app/chat/ChatAnonymous';
 
-const EditAppApp = () => {
+const ChatAnonymousApp = () => {
 
-  return <EditApp menuid={'chat'}/>
+  return <ChatAnonymous />
 
 }
 
-EditAppApp.contentHeightFixed = true
+ChatAnonymousApp.contentHeightFixed = true
+ChatAnonymousApp.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
 
-export default EditAppApp
+export default ChatAnonymousApp
 

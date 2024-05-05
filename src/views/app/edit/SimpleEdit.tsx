@@ -102,8 +102,8 @@ const SimpleEdit = (props: any) => {
                                     </Grid>
                                     <Grid item xs={2}>
                                         <Avatar
-                                            src={'Item.avatar'}
-                                            alt={'Item.name'}
+                                            src={app.avatar}
+                                            alt={app.name}
                                             sx={{
                                             width: 38,
                                             height: 38,

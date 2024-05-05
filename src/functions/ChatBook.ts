@@ -262,7 +262,7 @@ export function ChatChatInit(MsgList: any, PromptTemplate: string) {
     return ChatLogList
 }
 
-export function ChatChatInput(chatlogId: string, Question: string, Message: string, UserId: number, responseTime: number, History: any[]) {
+export function ChatChatInput(chatlogId: string, Question: string, Message: string, UserId: number | string, responseTime: number, History: any[]) {
 	const ChatChatText = window.localStorage.getItem(ChatChat)      
     const ChatChatList = ChatChatText ? JSON.parse(ChatChatText) : []
     ChatChatList.push({
@@ -311,7 +311,7 @@ export async function ChatAiAudioV1(Message: string, Token: string, voice: strin
       
 }
 
-export async function ChatAiOutputV1(_id: string, Message: string, Token: string, UserId: number, chatId: number | string, appId: string, setProcessingMessage:any, template: string, setFinishedMessage:any, userType: string) {
+export async function ChatAiOutputV1(_id: string, Message: string, Token: string, UserId: number | string, chatId: number | string, appId: string, setProcessingMessage:any, template: string, setFinishedMessage:any, userType: string) {
     const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []
     const History: any = []
@@ -353,7 +353,7 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
                 }
             }
             if(responseText) {
-                console.log("OpenAI Response:", responseText)
+                console.log("OpenAI Response:", UserId, responseText)
                 const endTime = performance.now()
                 const responseTime = Math.round((endTime - startTime) * 100 / 1000) / 100
                 ChatChatInput(_id, Message, responseText, 999999, responseTime, History)

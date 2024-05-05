@@ -11,5 +11,7 @@ const ChatAnonymousApp = () => {
 ChatAnonymousApp.contentHeightFixed = true
 ChatAnonymousApp.getLayout = (page: ReactNode) => <BlankLayout>{page}</BlankLayout>
 
+//ChatAnonymousApp.guestGuard = true
+
 export default ChatAnonymousApp
 

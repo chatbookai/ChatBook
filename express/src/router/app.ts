@@ -66,13 +66,23 @@
   });
 
   app.post('/api/getappbypublishid', async (req: Request, res: Response) => {
-    const { id } = req.params;
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') && req.body.publishId) {
-        console.log("checkUserTokenData app", checkUserTokenData)
-        const getAppData: any = await getAppByPublishId(req.body.publishId, checkUserTokenData.data.id);
-        res.status(200).json(getAppData);
+    const { publishId, userType } = req.body;
+    let userId = null
+    if(userType == "User")   {
+      const checkUserTokenData: any = await checkUserToken(authorization as string);
+      if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
+        userId = checkUserTokenData.data.id
+      }
+    }
+    else {
+      if(authorization && authorization.length == 32) {
+        userId = authorization
+      }
+    }
+    if(userId != null) {
+      const getAppData: any = await getAppByPublishId(req.body.publishId);
+      res.status(200).json(getAppData);
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});

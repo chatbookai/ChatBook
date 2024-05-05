@@ -138,12 +138,19 @@ const AppChat = (props: any) => {
       DeleteChatChatHistory(userId, chatId, app.id)
       
       const data: any = {appId: app._id, userType: userType}
-      await axios.post(authConfig.backEndApiChatBook + '/api/app/chatlog/clear/', data, { 
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/app/chatlog/clear/', data, { 
         headers: { 
           Authorization: userType=='User' ? auth?.user?.token : anonymousUserId,
           'Content-Type': 'application/json'
         } 
       }).then(res=>res.data)
+      if(RS && RS.status == 'ok') { 
+        setRefreshChatCounter(refreshChatCounter + 1)
+        toast.success(t(RS.msg) as string, { duration: 2500, position: 'top-center' })
+      }
+      else {
+        toast.error(t(RS.msg) as string, { duration: 2500, position: 'top-center' })
+      }
       setHistoryCounter(0)
     }
   }
@@ -284,16 +291,26 @@ const AppChat = (props: any) => {
 
 
   const sendMsg = async (Obj: any) => {
-    if(auth.user && auth.user.token && app && app.id)  {
+    let userId = null
+    let authorization = ""
+    if(auth.user && auth.user.id && auth.user.token && userType=='User' && app && app.id)   {
+      userId = auth.user.id
+      authorization = auth.user.token
+    }
+    if(userType=='Anonymous' && app && app.id)   {
+      userId = anonymousUserId
+      authorization = anonymousUserId
+    }
+    if(userId) {
       setSendButtonDisable(true)
       setSendButtonLoading(true)
       setSendButtonText(t("Sending") as string)
       setSendInputText(t("Answering...") as string)
       const _id = getNanoid(32)
-      ChatChatInput(_id, Obj.send, Obj.message, auth.user.id, 0, [])
+      ChatChatInput(_id, Obj.send, Obj.message, userId, 0, [])
       setRefreshChatCounter(refreshChatCounter + 1)
       const startTime = performance.now()
-      const ChatAiOutputV1Status = await ChatAiOutputV1(_id, Obj.message, auth.user.token, auth.user.id, chatId, app.id, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage, userType)
+      const ChatAiOutputV1Status = await ChatAiOutputV1(_id, Obj.message, authorization, userId, chatId, app.id, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage, userType)
       const endTime = performance.now();
       setResponseTime(endTime - startTime);
       if(ChatAiOutputV1Status) {

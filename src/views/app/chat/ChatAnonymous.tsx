@@ -14,39 +14,52 @@ import IdNotExist from 'src/pages/404IdNotExist'
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useRouter } from 'next/router'
-import { useAuth } from 'src/hooks/useAuth'
-import { CheckPermission } from 'src/functions/ChatBook'
+import { getAnonymousUserId } from 'src/functions/ChatBook'
 import { useTranslation } from 'react-i18next'
+
+import Grid from '@mui/material/Grid'
+import Dialog from '@mui/material/Dialog'
+import IconButton from '@mui/material/IconButton'
+import Typography from '@mui/material/Typography'
+import Fade, { FadeProps } from '@mui/material/Fade'
+import DialogContent from '@mui/material/DialogContent'
+import Divider from '@mui/material/Divider'
+import Container from '@mui/material/Container'
+import CardContent from '@mui/material/CardContent'
+import CircularProgress from '@mui/material/CircularProgress'
+import FavoriteIcon from '@mui/icons-material/Favorite'
+import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
+import VisibilityIcon from '@mui/icons-material/Visibility'
 
 const ChatAnonymous = () => {
     // ** States
     const [app, setApp] = useState<any>(null)
-  
+    const [show, setShow] = useState<boolean>(true)
+
     // ** Hooks
-    const { i18n } = useTranslation()
+    const { t, i18n } = useTranslation()
     const theme = useTheme()
     const { settings } = useSettings()
-    const auth = useAuth()
     const router = useRouter()
     const { id } = router.query
-    useEffect(() => {
-      CheckPermission(auth, router, false)
-    }, [])
 
-    const getMyApp = async function (id: string) {
-        if (auth && auth.user && id) {
-          const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getappbypublishid/', {publishId: id}, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
-          if(RS && RS.PublishApp && RS.PublishApp.appId) {
-            i18n.changeLanguage(RS.PublishApp.language)
-          }
+    const getMyApp = async function (id: string, anonymousUserId: string) {
+      if (id && id.length == 32 && anonymousUserId && anonymousUserId.length == 32) {
+        const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getappbypublishid/', {publishId: id, userType: 'Anonymous'}, { headers: { Authorization: anonymousUserId, 'Content-Type': 'application/json'} }).then(res=>res.data)
+        if(RS && RS.PublishApp && RS.PublishApp.appId) {
+          i18n.changeLanguage(RS.PublishApp.language)
+          setShow(false)
           setApp(RS)
         }
+      }
     }
 
     useEffect(() => {
-        if(id) {
-          getMyApp(String(id))  
-        }
+      if(id && id.length == 32) {
+        const anonymousUserId: string = getAnonymousUserId()
+        getMyApp(String(id), anonymousUserId)  
+        console.log("anonymousUserId id", id, anonymousUserId)
+      }
     }, [id])
 
     const { skin } = settings
@@ -77,6 +90,26 @@ const ChatAnonymous = () => {
             :
             null
             }
+            {!app ?
+            <Dialog
+              open={show}
+              onClose={() => setShow(false)}
+            >
+              <DialogContent sx={{ position: 'relative' }}>
+                <Container>
+                  <Grid container spacing={2}>
+                    <Grid item xs={8} sx={{}}>
+                      <Box sx={{ ml: 6, display: 'flex', alignItems: 'center', flexDirection: 'column', whiteSpace: 'nowrap' }}>
+                        <CircularProgress sx={{ mb: 4 }} />
+                        <Typography>{t('Loading') as string}</Typography>
+                      </Box>
+                    </Grid>
+                  </Grid>
+                </Container>
+              </DialogContent>
+            </Dialog>
+            :
+            null}
           </Box>
         </Fragment>
     )

@@ -93,9 +93,8 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return Template
   }
 
-  export async function getAppByPublishId(id: string, userId: string) {
+  export async function getAppByPublishId(id: string) {
     const idFilter = filterString(id)
-    const userIdFilter = Number(userId)
     
     const PublishApp: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from publish where _id = ?`, [idFilter]) as any[];
     if(PublishApp && PublishApp[0] && PublishApp[0].appId)  {

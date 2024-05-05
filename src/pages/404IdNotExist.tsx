@@ -1,5 +1,3 @@
-// ** React Imports
-import { ReactNode } from 'react'
 
 // ** Next Import
 import Link from 'next/link'
@@ -10,12 +8,6 @@ import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
 import Box, { BoxProps } from '@mui/material/Box'
 import { useTranslation } from 'react-i18next'
-
-// ** Layout Import
-import BlankLayout from 'src/@core/layouts/BlankLayout'
-
-// ** Demo Imports
-import FooterIllustrations from 'src/views/pages/misc/FooterIllustrations'
 
 // ** Styled Components
 const BoxWrapper = styled(Box)<BoxProps>(({ theme }) => ({
@@ -35,15 +27,6 @@ const Img = styled('img')(({ theme }) => ({
   },
   [theme.breakpoints.up('lg')]: {
     marginTop: theme.spacing(5)
-  }
-}))
-
-const TreeIllustration = styled('img')(({ theme }) => ({
-  left: 0,
-  bottom: '5rem',
-  position: 'absolute',
-  [theme.breakpoints.down('lg')]: {
-    bottom: 0
   }
 }))
 

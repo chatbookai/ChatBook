@@ -303,10 +303,12 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
   export async function getChatLogByAppIdAndUserId(appId: string, userId: number, pageid: number, pagesize: number) {
     const appIdFiler = filterString(appId);
-    const userIdFiler = Number(userId) < 0 ? 0 : Number(userId) || 1;
+    const userIdFiler = filterString(userId);
     const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
     const From = pageidFiler * pagesizeFiler;
+
+    console.log("appIdFiler", appIdFiler, userIdFiler)
   
     const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from chatlog where current = 1 and appId = ? and userId = ?", [appIdFiler, userIdFiler]);
     const RecordsTotal: number = Records ? Records.NUM : 0;

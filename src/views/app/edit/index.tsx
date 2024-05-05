@@ -134,7 +134,7 @@ const EditApp = (props: any) => {
         {menuid == 'edit' && app?._id?
         <Fragment>
           <SimpleEdit app={app} setApp={setApp} handleEditApp={handleEditApp} handleDeleteApp={handleDeleteApp} isDisabledButton={isDisabledButton} deleteOpen={deleteOpen} setDeleteOpen={setDeleteOpen}/>
-          <ChatIndex app={app} />
+          <ChatIndex app={app} userType={'User'}/>
         </Fragment>
         :
         null
@@ -158,7 +158,7 @@ const EditApp = (props: any) => {
 
         {menuid == 'chat' && app?._id?
         <Fragment>
-          <ChatIndex app={app} />
+          <ChatIndex app={app} userType={'User'}/>
         </Fragment>
         :
         null

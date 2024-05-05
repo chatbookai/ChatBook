@@ -13,7 +13,6 @@ import Link from 'next/link'
 import toast from 'react-hot-toast'
 import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
-import ToggleButtonGroup from '@mui/material/ToggleButtonGroup'
 import IconButton from '@mui/material/IconButton'
 import Tooltip from '@mui/material/Tooltip'
 import { useTranslation } from 'react-i18next'
@@ -50,7 +49,7 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   color: theme.palette.primary.main
 }))
 
-const TextToSpeech = ({ text, AudioType, app }: any) => {
+const TextToSpeech = ({ text, AudioType, app, userType }: any) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioFilesCache, setAudioFilesCache] = useState<any>({})
 
@@ -71,7 +70,7 @@ const TextToSpeech = ({ text, AudioType, app }: any) => {
     if (!isPlaying && AudioType != 'Broswer' && auth && auth.user && auth.user.token) {
       setIsPlaying(true);
       if(audioFilesCache[text] == null)    {
-        const ChatAiAudioV1Status: any = await ChatAiAudioV1(text, auth.user.token, AudioType, app._id)
+        const ChatAiAudioV1Status: any = await ChatAiAudioV1(text, auth.user.token, AudioType, app._id, userType)
         console.log("ChatAiAudioV1Status", ChatAiAudioV1Status)
         if(ChatAiAudioV1Status && ChatAiAudioV1Status.type == 'audio' && ChatAiAudioV1Status.status == 'OK') {
           setAudioFilesCache((prevState: any)=>{
@@ -135,7 +134,7 @@ const TextToSpeech = ({ text, AudioType, app }: any) => {
 const ChatLog = (props: any) => {
   // ** Props
   const { t } = useTranslation()
-  const { data, hidden, chatName, app, rowInMsg, maxRows, sendButtonDisable, GetSystemPromptFromAppValue, handleDeleteOneChatLogById, sendMsg, store } = props
+  const { data, hidden, chatName, app, rowInMsg, maxRows, sendButtonDisable, GetSystemPromptFromAppValue, handleDeleteOneChatLogById, sendMsg, store, userType } = props
 
   const handleSendMsg = (msg: string) => {
     if (store && store.selectedChat && msg.trim().length) {
@@ -361,7 +360,7 @@ const ChatLog = (props: any) => {
                   <Icon icon='material-symbols:file-copy-outline-rounded' fontSize='inherit' />
                 </IconButton>
               </Tooltip>
-              <TextToSpeech text={item.messages[0].msg} AudioType='alloy' app={app}/>
+              <TextToSpeech text={item.messages[0].msg} AudioType='alloy' app={app} userType={userType}/>
             </Fragment>
             :
             null

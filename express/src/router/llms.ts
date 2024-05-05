@@ -100,6 +100,26 @@
     }
     res.end();
   });
+
+  app.post('/api/ChatAppAnonymous', async (req: Request, res: Response) => {
+    const { question, history, template, appId, _id } = req.body;
+    const { authorization } = req.headers;
+    const knowledgeId = 'ChatGPT3.5'
+    if(authorization && authorization.length == 32) {
+        const getLLMSSettingData = await getLLMSSetting(knowledgeId);
+        if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
+          await chatChatOpenAI(_id, res, knowledgeId, authorization, question, history, template, appId);
+          res.end();
+        }
+        else {
+          res.status(200).json({"status":"error", "msg":"Not set API_KEY", "data": null});
+        }
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+    }
+    res.end();
+  });
   
   app.post('/api/ChatGemini', async (req: Request, res: Response) => {
     const { knowledgeId, question, history, template, appId } = req.body;

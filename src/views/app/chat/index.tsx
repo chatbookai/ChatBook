@@ -68,7 +68,7 @@ const Chat = (props: any) => {
           ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
         }}
       >
-        <ChatIndex app={app} />
+        <ChatIndex app={app} userType={'User'}/>
 
       </Box>
       :

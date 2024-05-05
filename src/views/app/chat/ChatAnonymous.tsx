@@ -39,7 +39,6 @@ const ChatAnonymous = () => {
           if(RS && RS.PublishApp && RS.PublishApp.appId) {
             i18n.changeLanguage(RS.PublishApp.language)
           }
-          console.log("RSRSRSRS", RS)
           setApp(RS)
         }
     }
@@ -50,7 +49,6 @@ const ChatAnonymous = () => {
         }
     }, [id])
 
-    
     const { skin } = settings
 
     return (
@@ -70,7 +68,7 @@ const ChatAnonymous = () => {
             }}
           >
             {app && app.id ?
-            <ChatIndex app={app} />
+            <ChatIndex app={app} userType={'Anonymous'}/>
             :
             null
             }

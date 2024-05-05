@@ -1,5 +1,6 @@
 import authConfig from 'src/configs/auth'
 import axios from 'axios'
+import { getNanoid } from 'src/functions/app/string.tools';
 
 const ChatKnowledge = "ChatKnowledge"
 const ChatChat = "ChatChat"
@@ -7,6 +8,7 @@ const ChatChatName = "ChatChatName"
 const ChatKnowledgeHistory = "ChatKnowledgeHistory"
 const ChatChatHistory = "ChatChatHistory"
 const ChatBookLanguage = "ChatBookLanguage"
+const ChatAnonymousUserId = "ChatAnonymousUserId"
 
 export async function GetLLMS() {
     const response = await axios.get(authConfig.backEndApiChatBook + '/api/llms', { }).then(res=>res.data)
@@ -188,7 +190,7 @@ export function DeleteChatChatByChatlogId(chatlogId: string) {
     window.localStorage.setItem(ChatChat, JSON.stringify(ChatChatListFilter))
 }
 
-export function DeleteChatChatHistory(UserId: number, knowledgeId: number | string, appId: string) {
+export function DeleteChatChatHistory(UserId: number | string, knowledgeId: number | string, appId: string) {
 	const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatHistoryList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : {}
     if(ChatChatHistoryList[UserId] && ChatChatHistoryList[UserId][knowledgeId] && ChatChatHistoryList[UserId][knowledgeId][appId]) {
@@ -197,7 +199,7 @@ export function DeleteChatChatHistory(UserId: number, knowledgeId: number | stri
     }
 }
 
-export function DeleteChatChatHistoryByChatlogId(UserId: number, knowledgeId: number | string, appId: string, chatlogId: string) {
+export function DeleteChatChatHistoryByChatlogId(UserId: number | string, knowledgeId: number | string, appId: string, chatlogId: string) {
 	const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatHistoryList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : {}
     if(ChatChatHistoryList[UserId] && ChatChatHistoryList[UserId][knowledgeId] && ChatChatHistoryList[UserId][knowledgeId][appId]) {
@@ -284,15 +286,17 @@ export function ChatChatInput(chatlogId: string, Question: string, Message: stri
 export async function ChatChatOutput(Message: string, Token: string, UserId: number, chatId: number | string, appId: string, setProcessingMessage:any, template: string, setFinishedMessage:any) {
 }
 
-export async function ChatAiAudioV1(Message: string, Token: string, voice: string, appId: string) {
+export async function ChatAiAudioV1(Message: string, Token: string, voice: string, appId: string, userType: string) {
     try {
+        const anonymousUserId = getAnonymousUserId()
         const response = await axios.post(authConfig.backEndApiChatBook + '/api/app/audio', {
                             question: Message,
                             voice: voice,
-                            appId: appId
+                            appId: appId,
+                            userType: userType
                         }, {
                             headers: {
-                                Authorization: Token,
+                                Authorization: userType=='User' ? Token : anonymousUserId,
                                 'Content-Type': 'application/json',
                             }
                         }).then(res=>res.data);
@@ -307,7 +311,7 @@ export async function ChatAiAudioV1(Message: string, Token: string, voice: strin
       
 }
 
-export async function ChatAiOutputV1(_id: string, Message: string, Token: string, UserId: number, chatId: number | string, appId: string, setProcessingMessage:any, template: string, setFinishedMessage:any) {
+export async function ChatAiOutputV1(_id: string, Message: string, Token: string, UserId: number, chatId: number | string, appId: string, setProcessingMessage:any, template: string, setFinishedMessage:any, userType: string) {
     const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []
     const History: any = []
@@ -323,14 +327,15 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
         setProcessingMessage('')
         console.log("chatId", chatId)
         if(true)  {
+            const anonymousUserId = getAnonymousUserId()
             const startTime = performance.now()
-            const response = await fetch(authConfig.backEndApiChatBook + `/api/ChatApp`, {
+            const response = await fetch(authConfig.backEndApiChatBook + `/api/` + (userType=='User' ? 'ChatApp' : 'ChatAppAnonymous'), {
             method: 'POST',
             headers: {
-                Authorization: Token,
+                Authorization: userType=='User' ? Token : anonymousUserId,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ question: Message, history: History, appId: appId, template: template, _id }),
+            body: JSON.stringify({ question: Message, history: History, appId: appId, template: template, _id}),
             });
             if (!response.body) {
             throw new Error('Response body is not readable as a stream');
@@ -414,6 +419,22 @@ export function setChatBookLanguage(Language: string) {
 
     return true
 };
+
+export function getAnonymousUserId() {
+    const ChatAnonymousUserIdValue = window.localStorage.getItem(ChatAnonymousUserId)
+    if(ChatAnonymousUserIdValue && ChatAnonymousUserIdValue.length == 32) {
+
+        return ChatAnonymousUserIdValue
+    }
+    else {
+        const ChatAnonymousUserIdValueNew = getNanoid(32)
+        window.localStorage.setItem(ChatAnonymousUserId, ChatAnonymousUserIdValueNew)
+
+        return ChatAnonymousUserIdValueNew
+    }
+};
+
+
 
 export function GetAllLLMS(): any[] {
     const AllLLMS: any[] = []

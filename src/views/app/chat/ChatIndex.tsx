@@ -20,7 +20,7 @@ import ChatContent from 'src/views/app/chat/ChatContent'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 
-import { ChatChatList, ChatChatInit, ChatChatNameList, ChatChatInput, ChatAiOutputV1, DeleteChatChat, DeleteChatChatHistory, DeleteChatChatByChatlogId, DeleteChatChatHistoryByChatlogId  } from 'src/functions/ChatBook'
+import { ChatChatList, ChatChatInit, ChatChatNameList, ChatChatInput, ChatAiOutputV1, DeleteChatChat, DeleteChatChatHistory, DeleteChatChatByChatlogId, DeleteChatChatHistoryByChatlogId, getAnonymousUserId  } from 'src/functions/ChatBook'
 
 // ** Axios Imports
 import axios from 'axios'
@@ -34,12 +34,14 @@ const AppChat = (props: any) => {
   const { t } = useTranslation()
   const auth = useAuth()
   const router = useRouter()
-  const { app } = props
+  const { app, userType } = props
 
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
   const [chatId, setChatId] = useState<number | string>(-1)
   const [chatName, setChatName] = useState<string>("")
   const [historyCounter, setHistoryCounter] = useState<number>(0)
+
+  const anonymousUserId: string = getAnonymousUserId()
 
   useEffect(() => {
     CheckPermission(auth, router, false)
@@ -63,15 +65,30 @@ const AppChat = (props: any) => {
   }, [app])
 
   const getChatLogList = async function (appId: string, appTemplate: string) {
-    if (auth && auth.user) {
-      const RS = await axios.get(authConfig.backEndApiChatBook + '/api/app/chatlog/' + appId + '/0/90', { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+    let userId = null
+    let authorization = null
+    if(auth.user && auth.user.id && userType=='User')   {
+      userId = auth.user.id
+      authorization = auth.user.token
+    }
+    if(userType=='Anonymous')   {
+      userId = anonymousUserId
+      authorization = anonymousUserId
+    }
+    if(userId) {
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/app/chatlog/' + appId + '/0/90', {userType}, { 
+        headers: { 
+          Authorization: authorization, 
+          'Content-Type': 'application/json'
+        } 
+      }).then(res=>res.data)
       if(RS['data'])  {
         const ChatChatInitList = ChatChatInit(RS['data'].reverse(), appTemplate)
         setHistoryCounter(ChatChatInitList.length)
         const selectedChat = {
           "chat": {
               "id": 1,
-              "userId": auth.user.id,
+              "userId": userId,
               "unseenMsgs": 0,
               "chat": ChatChatInitList
           }
@@ -79,7 +96,7 @@ const AppChat = (props: any) => {
         const storeInit = {
           "chats": [],
           "userProfile": {
-              "id": auth.user.id,
+              "id": userId,
               "avatar": "/images/avatars/1.png",
               "fullName": "Current User",
           },
@@ -91,12 +108,19 @@ const AppChat = (props: any) => {
   }
 
   const ClearButtonClick = async function () {
-    if (auth && auth.user && app && app.id) {
+    let userId = null
+    if(auth.user && auth.user.id && userType=='User')   {
+      userId = auth.user.id
+    }
+    if(userType=='Anonymous')   {
+      userId = anonymousUserId
+    }
+    if(userId) {
       DeleteChatChat()
       const selectedChat = {
         "chat": {
-            "id": auth.user.id,
-            "userId": auth.user.id,
+            "id": userId,
+            "userId": userId,
             "unseenMsgs": 0,
             "chat": []
         }
@@ -104,26 +128,39 @@ const AppChat = (props: any) => {
       const storeInit = {
         "chats": [],
         "userProfile": {
-            "id": auth.user.id,
+            "id": userId,
             "avatar": "/images/avatars/1.png",
             "fullName": "Current User",
         },
         "selectedChat": selectedChat
       }
       setStore(storeInit)
-      DeleteChatChatHistory(auth.user.id, chatId, app.id)
-      const data: any = {appId: app._id}
-      await axios.post(authConfig.backEndApiChatBook + '/api/app/chatlog/clear/', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      DeleteChatChatHistory(userId, chatId, app.id)
+      
+      const data: any = {appId: app._id, userType: userType}
+      await axios.post(authConfig.backEndApiChatBook + '/api/app/chatlog/clear/', data, { 
+        headers: { 
+          Authorization: userType=='User' ? auth?.user?.token : anonymousUserId,
+          'Content-Type': 'application/json'
+        } 
+      }).then(res=>res.data)
       setHistoryCounter(0)
     }
   }
 
   const handleDeleteOneChatLogById = async function (chatlogId: string) {
     if (auth && auth.user && app && app._id) {
+      const userId = userType=='User' ? auth.user.id : anonymousUserId
       DeleteChatChatByChatlogId(chatlogId)
-      DeleteChatChatHistoryByChatlogId(auth.user.id, chatId, app.id, chatlogId)
-      const data: any = {chatlogId: chatlogId, appId: app._id}
-      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/app/chatlog/delete', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      DeleteChatChatHistoryByChatlogId(userId, chatId, app.id, chatlogId)
+      
+      const data: any = {chatlogId: chatlogId, appId: app._id, userType: userType}
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/app/chatlog/delete', data, { 
+                          headers: { 
+                            Authorization: userType=='User' ? auth.user.token : anonymousUserId,
+                            'Content-Type': 'application/json'
+                          } 
+                        }).then(res=>res.data)
       if(RS && RS.status == 'ok') { 
         setRefreshChatCounter(refreshChatCounter + 1)
         toast.success(t(RS.msg) as string, { duration: 2500, position: 'top-center' })
@@ -164,7 +201,14 @@ const AppChat = (props: any) => {
   const hidden = false
 
   useEffect(() => {
-    if(auth.user && auth.user.id)   {
+    let userId = null
+    if(auth.user && auth.user.id && userType=='User')   {
+      userId = auth.user.id
+    }
+    if(userType=='Anonymous')   {
+      userId = anonymousUserId
+    }
+    if(userId) {
       const ChatChatListValue = ChatChatList()
       if(processingMessage && processingMessage!="") {
         
@@ -173,8 +217,8 @@ const AppChat = (props: any) => {
       }
       const selectedChat = {
         "chat": {
-            "id": auth.user.id,
-            "userId": auth.user.id,
+            "id": userId,
+            "userId": userId,
             "unseenMsgs": 0,
             "chat": ChatChatListValue
         }
@@ -182,7 +226,7 @@ const AppChat = (props: any) => {
       const storeInit = {
         "chats": [],
         "userProfile": {
-            "id": auth.user.id,
+            "id": userId,
             "avatar": "/images/avatars/1.png",
             "fullName": "Current User",
         },
@@ -249,7 +293,7 @@ const AppChat = (props: any) => {
       ChatChatInput(_id, Obj.send, Obj.message, auth.user.id, 0, [])
       setRefreshChatCounter(refreshChatCounter + 1)
       const startTime = performance.now()
-      const ChatAiOutputV1Status = await ChatAiOutputV1(_id, Obj.message, auth.user.token, auth.user.id, chatId, app.id, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage)
+      const ChatAiOutputV1Status = await ChatAiOutputV1(_id, Obj.message, auth.user.token, auth.user.id, chatId, app.id, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage, userType)
       const endTime = performance.now();
       setResponseTime(endTime - startTime);
       if(ChatAiOutputV1Status) {
@@ -305,6 +349,7 @@ const AppChat = (props: any) => {
         app={app}
         GetSystemPromptFromAppValue={GetSystemPromptFromAppValue}
         handleDeleteOneChatLogById={handleDeleteOneChatLogById}
+        userType={userType}
       />
       </Box>
     </Fragment>

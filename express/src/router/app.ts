@@ -179,12 +179,24 @@
     res.end();
   });
 
-  app.get('/api/app/chatlog/:appId/:pageid/:pagesize', async (req, res) => {
+  app.post('/api/app/chatlog/:appId/:pageid/:pagesize', async (req, res) => {
     const { appId, pageid, pagesize } = req.params;
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        const getChatLogByAppIdAndUserIdData: any = await getChatLogByAppIdAndUserId(appId, Number(checkUserTokenData.data.id), Number(pageid), Number(pagesize));
+    const { userType } = req.body;
+    let userId = null
+    if(userType == "User")   {
+      const checkUserTokenData: any = await checkUserToken(authorization as string);
+      if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
+        userId = checkUserTokenData.data.id
+      }
+    }
+    else {
+      if(authorization && authorization.length == 32) {
+        userId = authorization
+      }
+    }
+    if(userId != null) {
+        const getChatLogByAppIdAndUserIdData: any = await getChatLogByAppIdAndUserId(appId, userId, Number(pageid), Number(pagesize));
         res.status(200).json(getChatLogByAppIdAndUserIdData);
     }
     else {
@@ -194,11 +206,22 @@
   });
 
   app.post('/api/app/chatlog/clear', async (req, res) => {
-    const { appId } = req.body;
+    const { appId, userType } = req.body;
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        const deleteUserLogByappIdData: any = await deleteUserLogByAppId(appId, Number(checkUserTokenData.data.id));
+    let userId = null
+    if(userType == "User")   {
+      const checkUserTokenData: any = await checkUserToken(authorization as string);
+      if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
+        userId = checkUserTokenData.data.id
+      }
+    }
+    else {
+      if(authorization && authorization.length == 32) {
+        userId = authorization
+      }
+    }
+    if(userId != null) {
+        const deleteUserLogByappIdData: any = await deleteUserLogByAppId(appId, userId);
         res.status(200).json(deleteUserLogByappIdData);
     }
     else {
@@ -208,15 +231,26 @@
   });
 
   app.post('/api/app/chatlog/delete', async (req, res) => {
-    const { appId, chatlogId } = req.body;
+    const { appId, chatlogId, userType } = req.body;
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        const deleteUserLogByappIdData: any = await deleteUserLogByChatlogId(appId, Number(checkUserTokenData.data.id), chatlogId);
-        res.status(200).json(deleteUserLogByappIdData);
+    let userId = null
+    if(userType == "User")   {
+      const checkUserTokenData: any = await checkUserToken(authorization as string);
+      if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
+        userId = checkUserTokenData.data.id
+      }
     }
     else {
-        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+      if(authorization && authorization.length == 32) {
+        userId = authorization
+      }
+    }
+    if(userId != null) {
+      const deleteUserLogByappIdData: any = await deleteUserLogByChatlogId(appId, userId, chatlogId);
+      res.status(200).json(deleteUserLogByappIdData);
+    }
+    else {
+      res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
     }
     res.end();
   });
@@ -225,12 +259,24 @@
     const question: string = req.body.question
     const voice: string = req.body.voice
     const appId: string = req.body.appId
+    const userType: string = req.body.userType
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
+    let userId = null
+    if(userType == "User")   {
+      const checkUserTokenData: any = await checkUserToken(authorization as string);
+      if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
+        userId = checkUserTokenData.data.id
+      }
+    }
+    else {
+      if(authorization && authorization.length == 32) {
+        userId = authorization
+      }
+    }
+    if(userId != null) {
         const getLLMSSettingData = await getLLMSSetting("TTS-1");   
         if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
-          const GenereateAudioUsingTTSData = await GenereateAudioUsingTTS(res, "TTS-1", checkUserTokenData.data.id, question, voice, appId);
+          const GenereateAudioUsingTTSData = await GenereateAudioUsingTTS(res, "TTS-1", userId, question, voice, appId);
           res.status(200).json(GenereateAudioUsingTTSData);
         }
         else {        
@@ -242,7 +288,5 @@
     }
     res.end();
   });
-
-
 
   export default app;

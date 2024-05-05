@@ -294,7 +294,6 @@ const AppChat = (props: any) => {
         chatName={chatName}
         email={auth?.user?.email}
         ClearButtonClick={ClearButtonClick}
-        ClearButtonName={t('Clear')}
         historyCounter={historyCounter}
         app={app}
         GetSystemPromptFromAppValue={GetSystemPromptFromAppValue}

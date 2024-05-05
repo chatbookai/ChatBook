@@ -10,6 +10,7 @@ import Button from '@mui/material/Button'
 
 // ** Custom Components Import
 import ChatLog from './ChatLog'
+import { useTranslation } from 'react-i18next'
 import SendMsgForm from 'src/views/app/chat/SendMsgForm'
 
 const ChatContent = (props: any) => {
@@ -25,12 +26,13 @@ const ChatContent = (props: any) => {
     chatId,
     chatName,
     ClearButtonClick,
-    ClearButtonName,
     historyCounter,
     app,
     GetSystemPromptFromAppValue,
     handleDeleteOneChatLogById
   } = props
+
+  const { t } = useTranslation()
 
   const [rowInMsg, setRowInMsg] = useState<number>(1)
   
@@ -100,7 +102,7 @@ const ChatContent = (props: any) => {
                   </Box>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Button size="small" onClick={()=>ClearButtonClick()} disabled={historyCounter==0?true:false}>{ClearButtonName}({historyCounter})</Button>
+                  <Button size="small" onClick={()=>ClearButtonClick()} disabled={historyCounter==0?true:false}>{t('Clear')}({historyCounter})</Button>
                 </Box>
               </Box>
 

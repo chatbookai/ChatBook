@@ -8,16 +8,9 @@ import { useTheme } from '@mui/material/styles'
 // ** Hooks
 import { useSettings } from 'src/@core/hooks/useSettings'
 
-// ** Chat App Components Imports
-import LeftApp from 'src/views/app/edit/LeftApp'
-
-import SimpleEdit from 'src/views/app/edit/SimpleEdit'
-import PublishApp from 'src/views/app/edit/PublishApp'
-import ChatlogApp from 'src/views/app/edit/ChatlogApp'
 import ChatIndex from 'src/views/app/chat/ChatIndex'
 
 // ** Axios Imports
-import toast from 'react-hot-toast'
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useRouter } from 'next/router'
@@ -30,7 +23,7 @@ const ChatAnonymous = () => {
     const [app, setApp] = useState<any>(null)
   
     // ** Hooks
-    const { t } = useTranslation()
+    const { i18n } = useTranslation()
     const theme = useTheme()
     const { settings } = useSettings()
     const auth = useAuth()
@@ -38,6 +31,7 @@ const ChatAnonymous = () => {
     const { id } = router.query
     useEffect(() => {
       CheckPermission(auth, router, false)
+      i18n.changeLanguage('zh')
     }, [])
 
     const getMyApp = async function (id: string) {

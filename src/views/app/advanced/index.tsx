@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import ReactFlow, {
   useNodesState,
   useEdgesState,
@@ -19,6 +19,7 @@ import 'reactflow/dist/style.css';
 import { FlowContext } from './FlowContext';
 import FlowLeft from './FlowLeft';
 import ButtonEdge from '../edges/ButtonEdge';
+import IdNotExist from 'src/pages/404IdNotExist'
 import SelfConnectingEdge from '../edges/SelfConnectingEdge';
 import BiDirectionalEdge from '../edges/BiDirectionalEdge';
 
@@ -280,70 +281,81 @@ const AdvancedApp = () => {
   }, [nodes]);
 
   return (
-    <FlowContext.Provider value={{ setNodes, nodes, setEdges, edges }}>
-      <ReactFlowProvider>
-        <ReactFlow
-          fitView
-          nodes={nodes}
-          edges={edges}
-          minZoom={0.1}
-          maxZoom={1.5}
-          defaultEdgeOptions={{
-            animated: true,
-            zIndex: 0
-          }}
-          elevateEdgesOnSelect
-          connectionLineStyle={{ strokeWidth: 2, stroke: '#5A646Es' }}
-          nodeTypes={nodeTypes}
-          edgeTypes={edgeTypes}
-          onSelectionChange={onSelectionChange}
-          onNodesChange={onNodesChange}
-          onNodesDelete={onNodesDelete}
-          onEdgeClick={onEdgeClick}
-          onEdgesChange={onEdgesChange}
-          onConnect={customOnConnect}
-          attributionPosition="bottom-right"
-          connectionMode={ConnectionMode.Loose}
-        >
-          <Controls />
-          <Background />
-          <Box sx={{ display: 'flex', flexDirection: 'column', pt: 2, pl: 2 }}>
-            <Box sx={{mt: 1}}>
-              <Fab color='primary' aria-label='add' size='small' onClick={() => { 
-                setLeftOpen(true) 
-                }}>
-                <Icon icon='mdi:plus' />
-              </Fab>
+    <Fragment>
+    {currentAppData && currentAppData.modules ?
+      <FlowContext.Provider value={{ setNodes, nodes, setEdges, edges }}>
+        <ReactFlowProvider>
+          <ReactFlow
+            fitView
+            nodes={nodes}
+            edges={edges}
+            minZoom={0.1}
+            maxZoom={1.5}
+            defaultEdgeOptions={{
+              animated: true,
+              zIndex: 0
+            }}
+            elevateEdgesOnSelect
+            connectionLineStyle={{ strokeWidth: 2, stroke: '#5A646Es' }}
+            nodeTypes={nodeTypes}
+            edgeTypes={edgeTypes}
+            onSelectionChange={onSelectionChange}
+            onNodesChange={onNodesChange}
+            onNodesDelete={onNodesDelete}
+            onEdgeClick={onEdgeClick}
+            onEdgesChange={onEdgesChange}
+            onConnect={customOnConnect}
+            attributionPosition="bottom-right"
+            connectionMode={ConnectionMode.Loose}
+          >
+            <Controls />
+            <Background />
+            <Box sx={{ display: 'flex', flexDirection: 'column', pt: 2, pl: 2 }}>
+              <Box sx={{mt: 1}}>
+                <Fab color='primary' aria-label='add' size='small' onClick={() => { 
+                  setLeftOpen(true) 
+                  }}>
+                  <Icon icon='mdi:plus' />
+                </Fab>
+              </Box>
+              <Box sx={{mt: 3}}>
+                <Fab color='primary' aria-label='add' size='small' onClick={() => { 
+                  router.push(`/app/edit/${id}`)
+                  }}>
+                  <Icon icon='mdi:keyboard-return' />
+                </Fab>
+              </Box>
             </Box>
-            <Box sx={{mt: 3}}>
-              <Fab color='primary' aria-label='add' size='small' onClick={() => { 
-                router.push(`/app/edit/${id}`)
-                }}>
-                <Icon icon='mdi:keyboard-return' />
-              </Fab>
-            </Box>
-          </Box>
-          <div style={{ position: 'absolute', top: '8px', right: '5px', zIndex: 999 }}>
-            <Button variant='outlined' sx={{mr: 1}} size="small" startIcon={<Icon icon='mingcute:file-export-fill' />} onClick={()=>{
-              handleExportWorkFlow()
-            }}>
-              {t("Export")}
-            </Button>
-            <Button variant='outlined' sx={{mr: 1}} size="small" startIcon={<Icon icon='material-symbols:chat' />} onClick={()=>{
-              handleTestWorkFlow()
-            }}>
-              {t("Test")}
-            </Button>
-            <Button variant='contained' sx={{mr: 1}} size="small" startIcon={<Icon icon='material-symbols:save' />}onClick={()=>{
-              handleSaveWorkFlow()
-            }}>
-              {t("Save")}
-            </Button>
-          </div>
-          <FlowLeft LeftOpen={LeftOpen} setLeftOpen={setLeftOpen} handleAddNode={handleAddNode}/>
-        </ReactFlow>
-      </ReactFlowProvider>
-    </FlowContext.Provider>
+            <div style={{ position: 'absolute', top: '8px', right: '5px', zIndex: 999 }}>
+              <Button variant='outlined' sx={{mr: 1}} size="small" startIcon={<Icon icon='mingcute:file-export-fill' />} onClick={()=>{
+                handleExportWorkFlow()
+              }}>
+                {t("Export")}
+              </Button>
+              <Button variant='outlined' sx={{mr: 1}} size="small" startIcon={<Icon icon='material-symbols:chat' />} onClick={()=>{
+                handleTestWorkFlow()
+              }}>
+                {t("Test")}
+              </Button>
+              <Button variant='contained' sx={{mr: 1}} size="small" startIcon={<Icon icon='material-symbols:save' />}onClick={()=>{
+                handleSaveWorkFlow()
+              }}>
+                {t("Save")}
+              </Button>
+            </div>
+            <FlowLeft LeftOpen={LeftOpen} setLeftOpen={setLeftOpen} handleAddNode={handleAddNode}/>
+          </ReactFlow>
+        </ReactFlowProvider>
+      </FlowContext.Provider>
+      :
+      null
+    }
+    {currentAppData && !currentAppData.modules ?
+    <IdNotExist id={id} module={'Ai Flow Design Module'}/>
+    :
+    null
+    }
+    </Fragment>
   );
 };
 

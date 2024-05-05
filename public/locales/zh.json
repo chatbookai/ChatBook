@@ -512,7 +512,11 @@
   "ClickViewDetailFlow":"点击查看详细流程",
   "ViewDetail":"查看详情",
   "ContextCount":"上下文数量",
-  "ReGenerate":"重新生成"
+  "ReGenerate":"重新生成",
+  "Id Not Found":"没有找到ID",
+  "Back to Home": "返回首页",
+  "Module":"模块",
+  "We couldn't find this id you are looking for.":"我们找不到您正在寻找的这个 ID。"
   
         
 }

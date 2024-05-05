@@ -55,9 +55,9 @@ const PublishAppNewEdit = (props: any) => {
                 <Grid item xs={12}>
                     <Grid container alignItems="center">
                         <Grid item xs={4}>
-                            <InputLabel id='demo-dialog-select-label'>{t("Name")}</InputLabel>
+                            <InputLabel id='demo-dialog-select-label' sx={{pt:5}}>{t("Name")}</InputLabel>
                         </Grid>
-                        <Grid item xs={8} sx={{pt: 6, pl: 2}}>
+                        <Grid item xs={8} sx={{pt: 4, pl: 2}}>
                             <TextField
                                 size="small"
                                 value={pageData.name}
@@ -73,9 +73,9 @@ const PublishAppNewEdit = (props: any) => {
                 <Grid item xs={12}>
                     <Grid container alignItems="center">
                         <Grid item xs={4}>
-                            <InputLabel id='demo-dialog-select-label'>{t("maxToken")}</InputLabel>
+                            <InputLabel id='demo-dialog-select-label' sx={{pt:5}}>{t("maxToken")}</InputLabel>
                         </Grid>
-                        <Grid item xs={8} sx={{pt: 6, pl: 2}}>
+                        <Grid item xs={8} sx={{pt: 4, pl: 2}}>
                             <TextField
                                 type="number"
                                 size="small"
@@ -93,9 +93,9 @@ const PublishAppNewEdit = (props: any) => {
                 <Grid item xs={12}>
                     <Grid container alignItems="center">
                         <Grid item xs={4}>
-                            <InputLabel id='demo-dialog-select-label'>{t("ipLimitPerMinute")}</InputLabel>
+                            <InputLabel id='demo-dialog-select-label' sx={{pt:5}}>{t("ipLimitPerMinute")}</InputLabel>
                         </Grid>
-                        <Grid item xs={8} sx={{pt: 6, pl: 2}}>
+                        <Grid item xs={8} sx={{pt: 4, pl: 2}}>
                             <TextField
                                 type="number"
                                 size="small"
@@ -113,9 +113,9 @@ const PublishAppNewEdit = (props: any) => {
                 <Grid item xs={12}>
                     <Grid container alignItems="center">
                         <Grid item xs={4}>
-                            <InputLabel id='demo-dialog-select-label'>{t("expiredTime")}</InputLabel>
+                            <InputLabel id='demo-dialog-select-label' sx={{pt:5}}>{t("expiredTime")}</InputLabel>
                         </Grid>
-                        <Grid item xs={8} sx={{pt: 6, pl: 2}}>
+                        <Grid item xs={8} sx={{pt: 4, pl: 2}}>
                             <TextField
                                 size="small"
                                 value={pageData.expiredTime}
@@ -131,9 +131,27 @@ const PublishAppNewEdit = (props: any) => {
                 <Grid item xs={12}>
                     <Grid container alignItems="center">
                         <Grid item xs={4}>
-                            <InputLabel id='demo-dialog-select-label'>{t("returnReference")}</InputLabel>
+                            <InputLabel id='demo-dialog-select-label' sx={{pt:5}}>{t("Language")}</InputLabel>
                         </Grid>
-                        <Grid item xs={8} sx={{pt: 6, pl: 2}}>
+                        <Grid item xs={8} sx={{pt: 4, pl: 2}}>
+                            <TextField
+                                size="small"
+                                value={pageData.language}
+                                sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
+                                placeholder={t(pageData.placeholder) as string}
+                                onChange={(e: any) => {
+                                  setPageData( (prevState: any) => ({ ...prevState, language: e.target.value }) )
+                                }}
+                              />
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <Grid item xs={12}>
+                    <Grid container alignItems="center">
+                        <Grid item xs={4}>
+                            <InputLabel id='demo-dialog-select-label' sx={{pt:5}}>{t("returnReference")}</InputLabel>
+                        </Grid>
+                        <Grid item xs={8} sx={{pt: 4, pl: 2}}>
                             <Switch 
                                 checked={pageData.returnReference == 1 ? true : false} 
                                 onChange={(e: any) => {
@@ -168,9 +186,9 @@ export default memo(PublishAppNewEdit);
                 <Grid item xs={12}>
                     <Grid container alignItems="center">
                         <Grid item xs={4}>
-                            <InputLabel id='demo-dialog-select-label'>{t("authCheck")}</InputLabel>
+                            <InputLabel id='demo-dialog-select-label' sx={{pt:5}}>{t("authCheck")}</InputLabel>
                         </Grid>
-                        <Grid item xs={8} sx={{pt: 6, pl: 2}}>
+                        <Grid item xs={8} sx={{pt: 4, pl: 2}}>
                             <TextField
                                 size="small"
                                 value={pageData.authCheck}

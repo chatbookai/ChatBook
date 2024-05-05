@@ -286,7 +286,8 @@ export async function initChatBookDb() {
                 expiredTime TEXT not null,
                 authCheck TEXT not null,
                 lastAccessTime TEXT not null,
-                userId INTEGER not null default 0
+                userId INTEGER not null default 0,
+                language TEXT not null default 'en'
             );
         `);
         db.run(`

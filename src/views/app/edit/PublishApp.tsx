@@ -76,7 +76,7 @@ const PublishApp = (props: any) => {
 
   const columns: GridColDef[] = [
     {
-      flex: 0.1,
+      flex: 0.15,
       minWidth: 50,
       field: 'name',
       headerName: `${t(`Name`)}`,
@@ -92,7 +92,7 @@ const PublishApp = (props: any) => {
       }
     },
     {
-      flex: 0.1,
+      flex: 0.08,
       minWidth: 100,
       field: 'maxToken',
       headerName: `${t(`maxToken`)}`,
@@ -108,7 +108,7 @@ const PublishApp = (props: any) => {
       }
     },
     {
-      flex: 0.1,
+      flex: 0.08,
       minWidth: 100,
       field: 'returnReference',
       headerName: `${t(`returnReference`)}`,
@@ -123,7 +123,7 @@ const PublishApp = (props: any) => {
       }
     },
     {
-      flex: 0.1,
+      flex: 0.08,
       minWidth: 100,
       field: 'ipLimitPerMinute',
       headerName: `${t(`ipLimitPerMinute`)}`,
@@ -149,6 +149,21 @@ const PublishApp = (props: any) => {
           <Typography noWrap variant='body2' >
             {row.expiredTime}
             {row.lastAccessTime}
+          </Typography>
+        )
+      }
+    },
+    {
+      flex: 0.08,
+      minWidth: 100,
+      field: 'language',
+      headerName: `${t(`Language`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: any) => {
+        return (
+          <Typography noWrap variant='body2' >
+            {row.language}
           </Typography>
         )
       }

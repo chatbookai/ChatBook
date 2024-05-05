@@ -7,6 +7,7 @@ import { useTheme } from '@mui/material/styles'
 
 // ** Hooks
 import { useSettings } from 'src/@core/hooks/useSettings'
+import IdNotExist from 'src/pages/404IdNotExist'
 
 // ** Chat App Components Imports
 import LeftApp from 'src/views/app/edit/LeftApp'
@@ -109,7 +110,7 @@ const EditApp = (props: any) => {
 
   return (
     <Fragment>
-      {auth.user && auth.user.email ?
+      {auth.user && auth.user.email && app && app._id ?
       <Box
         className='app-chat'
         sx={{
@@ -164,6 +165,11 @@ const EditApp = (props: any) => {
         }
 
       </Box>
+      :
+      null
+      }
+      {auth.user && auth.user.email && app && !app._id ?
+      <IdNotExist id={id} module={'Ai Chat Module For App && User'}/>
       :
       null
       }

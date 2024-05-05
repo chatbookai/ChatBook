@@ -97,7 +97,6 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     const idFilter = filterString(id)
     const userIdFilter = Number(userId)
     
-
     const PublishRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT appId, userId from publish where _id = ?`, [idFilter]) as any[];
     console.log("PublishRS", PublishRS)
     if(PublishRS && PublishRS[0] && PublishRS[0].appId)  {
@@ -113,7 +112,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       return Template
     }
     else {
-      return 
+      return {}
     }
   }
 
@@ -215,6 +214,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       Params._id = getNanoid(32)
       Params.name = filterString(Params.name)
       Params.maxToken = filterString(Params.maxToken)
+      Params.language = filterString(Params.language)
       Params.returnReference = filterString(Params.returnReference)
       Params.ipLimitPerMinute = filterString(Params.ipLimitPerMinute)
       Params.expiredTime = filterString(Params.expiredTime)
@@ -232,8 +232,8 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
         return {"status":"ok", "msg":"Update Success"}
       }
       else {
-        const insertSetting = db.prepare('INSERT OR IGNORE INTO publish (_id, appId, name, maxToken, returnReference, ipLimitPerMinute, expiredTime, authCheck, userId, lastAccessTime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-        insertSetting.run(Params._id, Params.appId, Params.name, Params.maxToken, Params.returnReference, Params.ipLimitPerMinute, Params.expiredTime, Params.authCheck, Params.userId, '');
+        const insertSetting = db.prepare('INSERT OR IGNORE INTO publish (_id, appId, name, maxToken, returnReference, ipLimitPerMinute, expiredTime, authCheck, userId, lastAccessTime, language) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+        insertSetting.run(Params._id, Params.appId, Params.name, Params.maxToken, Params.returnReference, Params.ipLimitPerMinute, Params.expiredTime, Params.authCheck, Params.userId, '', Params.language);
         insertSetting.finalize();
         return {"status":"ok", "msg":"Add Success"}
       }
@@ -249,14 +249,15 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       Params._id = filterString(Params._id)
       Params.name = filterString(Params.name)
       Params.maxToken = filterString(Params.maxToken)
+      Params.language = filterString(Params.language)
       Params.returnReference = filterString(Params.returnReference)
       Params.ipLimitPerMinute = filterString(Params.ipLimitPerMinute)
       Params.expiredTime = filterString(Params.expiredTime)
       Params.authCheck = filterString(Params.authCheck)
       Params.userId = filterString(Params.userId)
       Params.appId = filterString(Params.appId)
-      const updateSetting = db.prepare('update publish set name = ?, maxToken = ?, returnReference = ?, ipLimitPerMinute = ?, expiredTime = ? where _id = ? and appId = ? and userId = ?');
-      updateSetting.run(Params.name, Params.maxToken, Params.returnReference, Params.ipLimitPerMinute, Params.expiredTime, Params._id, Params.appId, Params.userId);
+      const updateSetting = db.prepare('update publish set name = ?, maxToken = ?, returnReference = ?, ipLimitPerMinute = ?, expiredTime = ? , language = ? where _id = ? and appId = ? and userId = ?');
+      updateSetting.run(Params.name, Params.maxToken, Params.returnReference, Params.ipLimitPerMinute, Params.expiredTime, Params.language, Params._id, Params.appId, Params.userId);
       updateSetting.finalize();
       return {"status":"ok", "msg":"Update Success"}
     }

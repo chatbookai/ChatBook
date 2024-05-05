@@ -7,8 +7,8 @@ import { useTheme } from '@mui/material/styles'
 
 // ** Hooks
 import { useSettings } from 'src/@core/hooks/useSettings'
-
 import ChatIndex from 'src/views/app/chat/ChatIndex'
+import IdNotExist from 'src/pages/404IdNotExist'
 
 // ** Axios Imports
 import axios from 'axios'
@@ -68,6 +68,11 @@ const ChatAnonymous = () => {
           >
             {app && app.id ?
             <ChatIndex app={app} />
+            :
+            null
+            }
+            {app && !app.id ?
+            <IdNotExist id={id} module={'Ai Chat Module For Public'}/>
             :
             null
             }

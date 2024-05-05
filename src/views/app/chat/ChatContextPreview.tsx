@@ -1,5 +1,5 @@
 // ** React Imports
-import { Fragment, useEffect } from 'react'
+import { useRef, Fragment, useEffect } from 'react'
 
 import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
@@ -18,8 +18,14 @@ import Typography from '@mui/material/Typography'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close';
 import Card from '@mui/material/Card'
-import CardContent from '@mui/material/CardContent'
 import ReactMarkdown from 'react-markdown'
+import { styled } from '@mui/material/styles'
+import PerfectScrollbarComponent, { ScrollBarProps } from 'react-perfect-scrollbar'
+
+const PerfectScrollbar = styled(PerfectScrollbarComponent)<ScrollBarProps & { ref: Ref<unknown> }>(({ theme }) => ({
+    padding: theme.spacing(3, 5, 3, 3)
+  }))
+
 
 const ChatContextPreview = (props: any) => {
     // ** Props
@@ -33,27 +39,28 @@ const ChatContextPreview = (props: any) => {
         CheckPermission(auth, router, false)
     }, [auth, router])
 
+    const chatArea = useRef(null)
+
     return (
         <Dialog fullWidth open={contextPreviewOpen} onClose={
             () => { setContextPreviewOpen( false ) }
         }>
-            <DialogTitle>
-                <Box display="flex" alignItems="center">
-                    <Box position={'absolute'} right={'5px'} top={'1px'}>
-                        <IconButton size="small" edge="end" onClick={
-                            () => { setContextPreviewOpen( false ) }
-                        } aria-label="close">
+            <DialogTitle sx={{mx:1, p:2, pb:1}}>
+            <Box display="flex" alignItems="center" justifyContent="space-between">
+                <Typography>{t('Chat Log Preview') as string}</Typography>
+                <Box>
+                    <IconButton size="small" edge="end" onClick={() => { setContextPreviewOpen( false ) }} aria-label="close">
                         <CloseIcon />
-                        </IconButton>
-                    </Box>
+                    </IconButton>
                 </Box>
+            </Box>
+
             </DialogTitle>
-            <DialogContent>
-            <Fragment>
-                <Grid item xs={12}>
-                    <Card sx={{mt: 2}}>
-                        <CardContent sx={{px: 3, py: 0, m: 0}}>
-                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'space-between', pt: 4, m: 0 }}>
+            <PerfectScrollbar ref={chatArea} options={{ wheelPropagation: false, suppressScrollX: true }}>
+                <Fragment>
+                    <Grid item xs={12}>
+                        <Card>
+                            <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'space-between', pt: 4, px: 4, m: 0 }}>
                                 <Typography sx={{ fontSize: '0.875rem' }}>
                                     {t('System')}
                                 </Typography>
@@ -61,17 +68,15 @@ const ChatContextPreview = (props: any) => {
                                     <ReactMarkdown>{GetSystemPromptFromAppValue.replace('\n', '  \n')}</ReactMarkdown>
                                 </Typography>
                             </Box>
-                        </CardContent>
-                    </Card>
-                </Grid>
-                {contextPreviewData && contextPreviewData.map((item: any, index: number)=>{
+                        </Card>
+                    </Grid>
+                    {contextPreviewData && contextPreviewData.map((item: any, index: number)=>{
 
-                    return (
-                        <Fragment key={index}>
-                            <Grid item xs={12}>
-                                <Card sx={{mt: 2}}>
-                                    <CardContent sx={{px: 3, py: 0, m: 0}}>
-                                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'space-between', pt: 4, m: 0 }}>
+                        return (
+                            <Fragment key={index}>
+                                <Grid item xs={12}>
+                                    <Card sx={{mt: 2}}>
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'space-between', pt: 4, px: 4, m: 0 }}>
                                             <Typography sx={{ fontSize: '0.875rem' }}>
                                             {t('Human')}
                                             </Typography>
@@ -79,13 +84,11 @@ const ChatContextPreview = (props: any) => {
                                                 <ReactMarkdown>{item[0].replace('\n', '  \n')}</ReactMarkdown>
                                             </Typography>
                                         </Box>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                            <Grid item xs={12}>
-                                <Card sx={{mt: 2}}>
-                                    <CardContent sx={{px: 3, py: 0, m: 0}}>
-                                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'space-between', pt: 4, m: 0 }}>
+                                    </Card>
+                                </Grid>
+                                <Grid item xs={12}>
+                                    <Card sx={{mt: 2}}>
+                                        <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', justifyContent: 'space-between', pt: 4, px: 4, m: 0 }}>
                                             <Typography sx={{ fontSize: '0.875rem' }}>
                                                 {t('AI')}
                                             </Typography>
@@ -93,16 +96,13 @@ const ChatContextPreview = (props: any) => {
                                                 <ReactMarkdown>{item[1].replace('\n', '  \n')}</ReactMarkdown>
                                             </Typography>
                                         </Box>
-                                    </CardContent>
-                                </Card>
-                            </Grid>
-                        </Fragment>
-                    )
-                })}
-            </Fragment>
-            </DialogContent>
-            <DialogActions>
-            </DialogActions>
+                                    </Card>
+                                </Grid>
+                            </Fragment>
+                        )
+                    })}
+                </Fragment>
+            </PerfectScrollbar>
         </Dialog>
     )
 }

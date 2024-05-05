@@ -275,30 +275,28 @@ const ChatLog = (props: any) => {
         >
           {isSender ?
           <Box display="flex" alignItems="center" justifyContent="right" borderRadius="8px" p={0} mb={1} >
-            <ToggleButtonGroup exclusive value={'left'} size='small' aria-label='text alignment'>
-              <Tooltip title={t('Copy')}>
-                <IconButton aria-label='capture screenshot' color='secondary' size='small' onClick={()=>{
-                  navigator.clipboard.writeText(item.messages[0].msg);
-                  toast.success(t('Copied success') as string, { duration: 1000 })
-                }}>
-                  <Icon icon='material-symbols:file-copy-outline-rounded' fontSize='inherit' />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title={t('ReGenerate')}>
-                <IconButton aria-label='capture screenshot' color='secondary' size='small' onClick={()=>{
-                  handleSendMsg(item.messages[0].msg)
-                }}>
-                  <Icon icon='mdi:refresh' fontSize='inherit' />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title={t('Delete')}>
-                <IconButton aria-label='capture screenshot' color='secondary' size='small' onClick={()=>{
-                  handleDeleteOneChatLogById(item.messages[0].chatlogId)
-                }}>
-                  <Icon icon='mdi:trash-outline' fontSize='inherit' />
-                </IconButton>
-              </Tooltip>
-            </ToggleButtonGroup>
+            <Tooltip title={t('Copy')}>
+              <IconButton aria-label='capture screenshot' color='secondary' size='small' onClick={()=>{
+                navigator.clipboard.writeText(item.messages[0].msg);
+                toast.success(t('Copied success') as string, { duration: 1000 })
+              }}>
+                <Icon icon='material-symbols:file-copy-outline-rounded' fontSize='inherit' />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={t('ReGenerate')}>
+              <IconButton aria-label='capture screenshot' color='secondary' size='small' onClick={()=>{
+                handleSendMsg(item.messages[0].msg)
+              }}>
+                <Icon icon='mdi:refresh' fontSize='inherit' />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title={t('Delete')}>
+              <IconButton aria-label='capture screenshot' color='secondary' size='small' onClick={()=>{
+                handleDeleteOneChatLogById(item.messages[0].chatlogId)
+              }}>
+                <Icon icon='mdi:trash-outline' fontSize='inherit' />
+              </IconButton>
+            </Tooltip>
             <CustomAvatar
               skin='light'
               color={'primary'}
@@ -332,9 +330,8 @@ const ChatLog = (props: any) => {
             >
               {app.name}
             </CustomAvatar>
-            {sendButtonDisable ?
+            {sendButtonDisable == true && index == ChatItemMsgList.length - 1  ?
             <Fragment>
-              
               <Typography
                 sx={{
                   boxShadow: 1,
@@ -349,13 +346,13 @@ const ChatLog = (props: any) => {
                 >
                   <CircularProgress color='success' size={10} sx={{mr: 1}}/>
                   {t('AI Chat')}
-                </Typography>
+              </Typography>
             </Fragment>
             :
             null
             }
-            {sendButtonDisable == false && index > 0 ?
-            <ToggleButtonGroup exclusive value={'left'} size='small' aria-label='text alignment'>
+            {(sendButtonDisable == true && index < ChatItemMsgList.length - 1) || (sendButtonDisable == false && index > 0) ?
+            <Fragment>
               <Tooltip title={t('Copy')}>
                 <IconButton aria-label='capture screenshot' color='secondary' size='small' onClick={()=>{
                   navigator.clipboard.writeText(item.messages[0].msg);
@@ -365,7 +362,7 @@ const ChatLog = (props: any) => {
                 </IconButton>
               </Tooltip>
               <TextToSpeech text={item.messages[0].msg} AudioType='alloy' app={app}/>
-            </ToggleButtonGroup>
+            </Fragment>
             :
             null
             }
@@ -374,7 +371,7 @@ const ChatLog = (props: any) => {
           }
 
           <Box className='chat-body' sx={{ maxWidth: ['calc(100% - 5.75rem)', '100%', '100%'] }}>
-            {item.messages.map((chat: ChatLogChatType, ChatIndex: number, ChatMsgList: any[]) => {
+            {item.messages.map((chat: ChatLogChatType, ChatIndex: number) => {
               let ChatMsgType = 'Chat'
               let ChatMsgContent: any
               if(chat.msg.includes('"type":"image"')) {
@@ -398,7 +395,7 @@ const ChatLog = (props: any) => {
                           borderRadius: 1,
                           width: 'fit-content',
                           fontSize: '0.875rem',
-                          p: theme => theme.spacing(0.5, 2, 0.5, 3),
+                          p: theme => theme.spacing(0.1, 2, 0.1, 3),
                           ml: isSender ? 'auto' : undefined,
                           borderTopLeftRadius: !isSender ? 0 : undefined,
                           borderTopRightRadius: isSender ? 0 : undefined,

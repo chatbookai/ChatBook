@@ -97,11 +97,10 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     const idFilter = filterString(id)
     const userIdFilter = Number(userId)
     
-    const PublishRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT appId, userId from publish where _id = ?`, [idFilter]) as any[];
-    console.log("PublishRS", PublishRS)
-    if(PublishRS && PublishRS[0] && PublishRS[0].appId)  {
-      const appid = PublishRS[0].appId
-      const userId = PublishRS[0].userId
+    const PublishApp: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from publish where _id = ?`, [idFilter]) as any[];
+    if(PublishApp && PublishApp[0] && PublishApp[0].appId)  {
+      const appid = PublishApp[0].appId
+      const userId = PublishApp[0].userId
       const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT data from app where _id = ? and userId = ? `, [appid, userId]) as any[];
       let Template: any = {}
       if(SettingRS)  {
@@ -109,7 +108,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
           Template = JSON.parse(Item.data)
         })
       }
-      return Template
+      return {...Template, PublishApp: PublishApp[0]}
     }
     else {
       return {}

@@ -48,7 +48,14 @@ const AppChat = (props: any) => {
   useEffect(() => {
     if(app._id) {
         setChatId('ChatApp')
-        setChatName('ChatApp')
+        if(app && app.PublishApp && app.PublishApp.name) {
+          setChatName(app.PublishApp.name)
+          setChatId(app.PublishApp._id)
+        }
+        else {
+          setChatName(app.name)
+          setChatId(app._id)
+        }
         const WelcomeText = GetWelcomeTextFromApp(app)
         console.log("WelcomeText", WelcomeText)
         getChatLogList(app._id, WelcomeText)

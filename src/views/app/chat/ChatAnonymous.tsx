@@ -31,12 +31,15 @@ const ChatAnonymous = () => {
     const { id } = router.query
     useEffect(() => {
       CheckPermission(auth, router, false)
-      i18n.changeLanguage('zh')
     }, [])
 
     const getMyApp = async function (id: string) {
         if (auth && auth.user && id) {
           const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getappbypublishid/', {publishId: id}, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+          if(RS && RS.PublishApp && RS.PublishApp.appId) {
+            i18n.changeLanguage(RS.PublishApp.language)
+          }
+          console.log("RSRSRSRS", RS)
           setApp(RS)
         }
     }

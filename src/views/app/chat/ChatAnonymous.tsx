@@ -81,7 +81,7 @@ const ChatAnonymous = () => {
             }}
           >
             {app && app.id ?
-            <ChatIndex app={app} userType={'Anonymous'}/>
+            <ChatIndex app={app} userType={'Anonymous'} publishId={id}/>
             :
             null
             }

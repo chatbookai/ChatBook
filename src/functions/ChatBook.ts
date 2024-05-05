@@ -228,7 +228,7 @@ export function ChatChatInit(MsgList: any, PromptTemplate: string) {
             }
         })
     }
-    console.log("MsgList", MsgList)
+
     MsgList.map((Item: any)=>{
         ChatLogList.push({
             "message": Item.send,
@@ -256,7 +256,7 @@ export function ChatChatInit(MsgList: any, PromptTemplate: string) {
             }
           })
     })
-    console.log("MsgList", MsgList)
+
     window.localStorage.setItem(ChatChat, JSON.stringify(ChatLogList))
 
     return ChatLogList
@@ -311,7 +311,7 @@ export async function ChatAiAudioV1(Message: string, Token: string, voice: strin
       
 }
 
-export async function ChatAiOutputV1(_id: string, Message: string, Token: string, UserId: number | string, chatId: number | string, appId: string, setProcessingMessage:any, template: string, setFinishedMessage:any, userType: string) {
+export async function ChatAiOutputV1(_id: string, Message: string, Token: string, UserId: number | string, chatId: number | string, appId: string, publishId: string, setProcessingMessage:any, template: string, setFinishedMessage:any, userType: string) {
     const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []
     const History: any = []
@@ -335,7 +335,7 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
                 Authorization: userType=='User' ? Token : anonymousUserId,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ question: Message, history: History, appId: appId, template: template, _id}),
+            body: JSON.stringify({ question: Message, history: History, appId: appId, publishId, template: template, _id}),
             });
             if (!response.body) {
             throw new Error('Response body is not readable as a stream');

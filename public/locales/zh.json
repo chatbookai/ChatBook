@@ -516,7 +516,8 @@
   "Id Not Found":"没有找到ID",
   "Back to Home": "返回首页",
   "Module":"模块",
-  "We couldn't find this id you are looking for.":"我们找不到您正在寻找的这个 ID。"
+  "We couldn't find this id you are looking for.":"我们找不到您正在寻找的这个 ID。",
+  "Chat Log Preview":"对话日志预览"
   
         
 }

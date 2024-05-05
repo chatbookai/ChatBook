@@ -129,7 +129,7 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function chatChatOpenAI(_id: string, res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string, appId: number) {
+  export async function chatChatOpenAI(_id: string, res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string, appId: string, publishId: string) {
     ChatBookOpenAIStreamResponse = ''
     const startTime = performance.now()
     await initChatBookOpenAIStream(res, knowledgeId)
@@ -155,8 +155,8 @@ let ChatBaiduWenxinModel: any = null
       await chain.call({ input: question});
       const endTime = performance.now()
       const responseTime = Math.round((endTime - startTime) * 100 / 1000) / 100   
-      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (_id, send, Received, userId, timestamp, source, history, responseTime, appId) VALUES (?,?,?,?,?,?,?,?,?)');
-      insertChatLog.run(_id, question, ChatBookOpenAIStreamResponse, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), responseTime, appId);
+      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (_id, send, Received, userId, timestamp, source, history, responseTime, appId, publishId) VALUES (?,?,?,?,?,?,?,?,?,?)');
+      insertChatLog.run(_id, question, ChatBookOpenAIStreamResponse, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), responseTime, appId, publishId);
       insertChatLog.finalize();
     }
     catch(error: any) {

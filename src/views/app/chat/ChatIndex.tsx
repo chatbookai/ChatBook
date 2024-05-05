@@ -34,7 +34,7 @@ const AppChat = (props: any) => {
   const { t } = useTranslation()
   const auth = useAuth()
   const router = useRouter()
-  const { app, userType } = props
+  const { app, userType, publishId } = props
 
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(1)
   const [chatId, setChatId] = useState<number | string>(-1)
@@ -242,23 +242,20 @@ const AppChat = (props: any) => {
       setStore(storeInit)
       setHistoryCounter(ChatChatListValue.length)
     }
-    else {
-      setSendButtonDisable(true)
-      setSendButtonLoading(false)
-      setSendButtonText(t('Login first') as string)
-    }
   }, [refreshChatCounter, processingMessage, auth])
 
   useEffect(() => {
-    const ChatChatNameListData: string[] = ChatChatNameList()
-    if(ChatChatNameListData.length == 0) {
-      setRefreshChatCounter(refreshChatCounter + 1)
+    if(t)   {
+      const ChatChatNameListData: string[] = ChatChatNameList()
+      if(ChatChatNameListData.length == 0) {
+        setRefreshChatCounter(refreshChatCounter + 1)
+      }
+      setSendButtonText(t("Send") as string)
+      setSendInputText(t("Your message...") as string)    
+      const GetSystemPromptFromAppValueTemp = GetSystemPromptFromApp(app)
+      setGetSystemPromptFromAppValue(GetSystemPromptFromAppValueTemp)
     }
-    setSendButtonText(t("Send") as string)
-    setSendInputText(t("Your message...") as string)    
-    const GetSystemPromptFromAppValueTemp = GetSystemPromptFromApp(app)
-    setGetSystemPromptFromAppValue(GetSystemPromptFromAppValueTemp)
-  }, [])
+  }, [t])
 
   const GetSystemPromptFromApp = (app: any) => {
     const AiNode = app.modules.filter((item: any)=>item.type == 'chatNode')
@@ -310,7 +307,7 @@ const AppChat = (props: any) => {
       ChatChatInput(_id, Obj.send, Obj.message, userId, 0, [])
       setRefreshChatCounter(refreshChatCounter + 1)
       const startTime = performance.now()
-      const ChatAiOutputV1Status = await ChatAiOutputV1(_id, Obj.message, authorization, userId, chatId, app.id, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage, userType)
+      const ChatAiOutputV1Status = await ChatAiOutputV1(_id, Obj.message, authorization, userId, chatId, app.id, publishId, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage, userType)
       const endTime = performance.now();
       setResponseTime(endTime - startTime);
       if(ChatAiOutputV1Status) {

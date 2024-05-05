@@ -21,13 +21,11 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
 
-// ** Icon Imports
-import Icon from 'src/@core/components/icon'
-
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 import { isMobile } from 'src/configs/functions'
 import { CheckPermission } from 'src/functions/ChatBook'
+import { formatTimestamp } from 'src/configs/functions'
 
 const ChatlogApp = (props: any) => {
   // ** Hook
@@ -57,7 +55,7 @@ const ChatlogApp = (props: any) => {
 
   const fetchData = async function (paginationModel: any) {
     if (auth && auth.user && appId) {
-      const RS = await axios.get(authConfig.backEndApiChatBook + '/api/chatlogbyapp/' + appId + '/' + paginationModel.page + '/' + paginationModel.pageSize, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' }, params: { } }).then(res=>res.data)
+      const RS = await axios.get(authConfig.backEndApiChatBook + '/api/chatlogstaticbyapp/' + appId + '/' + paginationModel.page + '/' + paginationModel.pageSize, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json' }, params: { } }).then(res=>res.data)
       console.log("RS", RS, "appId", appId)
       setStore(RS)  
     }
@@ -69,9 +67,9 @@ const ChatlogApp = (props: any) => {
 
   const columns: GridColDef[] = [
     {
-      flex: 0.1,
+      flex: 1,
       minWidth: 50,
-      field: 'name',
+      field: 'publishId',
       headerName: `${t(`Name`)}`,
       sortable: false,
       filterable: false,
@@ -79,102 +77,56 @@ const ChatlogApp = (props: any) => {
         
         return (
           <Typography noWrap variant='body2' >
-            {row.name}
+            {row.publishName}
           </Typography>
         )
       }
     },
     {
-      flex: 0.1,
+      flex: 1,
       minWidth: 100,
-      field: 'maxToken',
-      headerName: `${t(`maxToken`)}`,
+      field: 'userId',
+      headerName: `${t(`userId`)}`,
       sortable: false,
       filterable: false,
       renderCell: ({ row }: any) => {
         
         return (
           <Typography noWrap variant='body2' >
-            {row.maxToken}
+            {row.userId}
           </Typography>
         )
       }
     },
     {
-      flex: 0.1,
+      flex: 0.8,
       minWidth: 100,
-      field: 'returnReference',
-      headerName: `${t(`returnReference`)}`,
+      field: 'chatCount',
+      headerName: `${t(`chatCount`)}`,
       sortable: false,
       filterable: false,
       renderCell: ({ row }: any) => {
         return (
           <Typography noWrap variant='body2' >
-            {row.returnReference}
+            {row.chatCount}
           </Typography>
         )
       }
     },
     {
-      flex: 0.1,
+      flex: 0.8,
       minWidth: 100,
-      field: 'ipLimitPerMinute',
-      headerName: `${t(`ipLimitPerMinute`)}`,
+      field: 'timestamp',
+      headerName: `${t(`Date`)}`,
       sortable: false,
       filterable: false,
       renderCell: ({ row }: any) => {
         return (
           <Typography noWrap variant='body2' >
-            {row.ipLimitPerMinute}
+            {formatTimestamp(row.timestamp)}
           </Typography>
         )
       }
-    },
-    {
-      flex: 0.1,
-      minWidth: 100,
-      field: 'expiredTime',
-      headerName: `${t(`expiredTime`)}`,
-      sortable: false,
-      filterable: false,
-      renderCell: ({ row }: any) => {
-        return (
-          <Typography noWrap variant='body2' >
-            {row.expiredTime}
-            {row.lastAccessTime}
-          </Typography>
-        )
-      }
-    },
-    {
-      flex: 0.16,
-      minWidth: 130,
-      sortable: false,
-      field: 'actions',
-      headerName: t('Actions') as string,
-      renderCell: ({ row }: any) => (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Button sx={{ my: 3, mr: 5 }} size="small" variant='outlined' onClick={
-                        () => {  }
-                    }>
-            {t("BeginUsing")}
-          </Button>
-          <Tooltip title={t('Edit')}>
-            <IconButton size='small' onClick={
-                        () => { setPageData( () => ({ ...row, openEdit: true, FormAction: 'editpublish', FormTitle: 'Edit', FormSubmit: 'Save', FormTitleIcon: '/imgs/modal/shareFill.svg' }) ) }
-                    }>
-              <Icon icon='mdi:edit-outline' fontSize={20} />
-            </IconButton>
-          </Tooltip>
-          <Tooltip title={t('Delete')}>
-            <IconButton size='small' onClick={
-                        () => { setPageData( () => ({ ...row, openDelete: true, FormAction: 'deletepublish', FormTitle: 'Delete', FormSubmit: 'Confirm', FormTitleIcon: '/imgs/modal/shareFill.svg' }) ) }
-                    }>
-              <Icon icon='mdi:delete-outline' fontSize={20} />
-            </IconButton>
-          </Tooltip>
-        </Box>
-      )
     }
   ]
 

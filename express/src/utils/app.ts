@@ -158,7 +158,43 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
     return RS;
   }
+
+  export async function getChatlogStaticPageByApp(appId: string, pageid: number, pagesize: number) {
+    const appIdFileter = filterString(appId)
+    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+    const From = pageidFiler * pagesizeFiler;
+    console.log("pageidFiler", pageidFiler)
+    console.log("pagesizeFiler", pagesizeFiler)
+
+    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(DISTINCT userid) as totalRecords FROM chatlog WHERE appId = ?", [appIdFileter]);
+    const RecordsTotal: number = Records ? Records.NUM : 0;  
+    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`select id, userid, count(*) as chatCount, publishId, timestamp from chatlog where appId = ? group by userid order by timestamp desc limit ? OFFSET ?`, [appIdFileter, pagesizeFiler, From]) as any[];
+
+    const allPublishIdList: string[] = RecordsAll.map((item: any)=> item.publishId)
+    const allPublishIdListNotNull = allPublishIdList.filter(item => item!=null && item!='')
+    const RecordsAllPublish: any[] = await (getDbRecordALL as SqliteQueryFunction)(`select name, _id from publish where _id IN (${allPublishIdListNotNull.map(() => '?').join(', ')})`, [...allPublishIdListNotNull]) as any[];
+    const RecordsAllPublishMap: any = {}
+    RecordsAllPublish.map((item: any)=>{
+      RecordsAllPublishMap[item._id] = item.name
+    })
+    console.log("RecordsAllPublish", RecordsAllPublishMap)
+
+    const RecordsAllFilter = RecordsAll.map((item: any)=>{
+      return {...item, publishName: RecordsAllPublishMap[item.publishId] || ''}
+    })
     
+    const RS: any = {};
+    RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
+    RS['data'] = RecordsAllFilter;
+    RS['from'] = From;
+    RS['pageid'] = pageidFiler;
+    RS['pagesize'] = pagesizeFiler;
+    RS['total'] = RecordsTotal;
+
+    return RS;
+  }
+  
   export async function getPublishsPageByApp(appId: string, pageid: number, pagesize: number, userId: number) {
     const appIdFileter = filterString(appId)
     const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;

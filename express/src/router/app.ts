@@ -2,7 +2,7 @@
   import express, { Request, Response } from 'express';
 
   import { checkUserToken } from '../utils/user';
-  import { addApp, editApp, deleteApp, getApp, getAppPage, addPublish, editPublish, deletePublish, getPublish, getPublishsPageByApp, getPublishsAll, getChatlogPageByApp, getChatLogByAppIdAndUserId, deleteUserLogByAppId, deleteUserLogByChatlogId, getAppByPublishId } from '../utils/app';
+  import { addApp, editApp, deleteApp, getApp, getAppPage, addPublish, editPublish, deletePublish, getPublish, getPublishsPageByApp, getPublishsAll, getChatlogPageByApp, getChatLogByAppIdAndUserId, deleteUserLogByAppId, deleteUserLogByChatlogId, getAppByPublishId, getChatlogStaticPageByApp } from '../utils/app';
   import { getLLMSSetting } from '../utils/utils';
   import { GenereateAudioUsingTTS } from '../utils/llms';
  
@@ -104,13 +104,26 @@
     res.end();
   });
 
-  
   app.get('/api/chatlogbyapp/:appId/:pageid/:pagesize', async (req: Request, res: Response) => {
     const { appId, pageid, pagesize } = req.params;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
         const getChatlogPageData: any = await getChatlogPageByApp(appId, Number(pageid), Number(pagesize), checkUserTokenData.data.id);
+        res.status(200).json(getChatlogPageData);
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+    }
+    res.end();
+  });
+
+  app.get('/api/chatlogstaticbyapp/:appId/:pageid/:pagesize', async (req: Request, res: Response) => {
+    const { appId, pageid, pagesize } = req.params;
+    const { authorization } = req.headers;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
+        const getChatlogPageData: any = await getChatlogStaticPageByApp(appId, Number(pageid), Number(pagesize));
         res.status(200).json(getChatlogPageData);
     }
     else {

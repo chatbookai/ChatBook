@@ -47,23 +47,6 @@ const AppChat = (props: any) => {
     CheckPermission(auth, router, false)
   }, [])
 
-  useEffect(() => {
-    if(app._id) {
-        setChatId('ChatApp')
-        if(app && app.PublishApp && app.PublishApp.name) {
-          setChatName(app.PublishApp.name)
-          setChatId(app.PublishApp._id)
-        }
-        else {
-          setChatName(app.name)
-          setChatId(app._id)
-        }
-        const WelcomeText = GetWelcomeTextFromApp(app)
-        console.log("WelcomeText", WelcomeText)
-        getChatLogList(app._id, WelcomeText)
-    }
-  }, [app])
-
   const getChatLogList = async function (appId: string, appTemplate: string) {
     let userId = null
     let authorization = null
@@ -117,6 +100,7 @@ const AppChat = (props: any) => {
     }
     if(userId) {
       DeleteChatChat()
+      DeleteChatChatHistory(userId, chatId, app.id)
       const selectedChat = {
         "chat": {
             "id": userId,
@@ -135,7 +119,11 @@ const AppChat = (props: any) => {
         "selectedChat": selectedChat
       }
       setStore(storeInit)
-      DeleteChatChatHistory(userId, chatId, app.id)
+
+      //Set system prompt
+      const ChatChatInitList = ChatChatInit([], GetWelcomeTextFromAppValue)
+      setHistoryCounter(0)
+      setRefreshChatCounter(0)
       
       const data: any = {appId: app._id, userType: userType}
       const RS = await axios.post(authConfig.backEndApiChatBook + '/api/app/chatlog/clear/', data, { 
@@ -145,13 +133,11 @@ const AppChat = (props: any) => {
         } 
       }).then(res=>res.data)
       if(RS && RS.status == 'ok') { 
-        setRefreshChatCounter(refreshChatCounter + 1)
         toast.success(t(RS.msg) as string, { duration: 2500, position: 'top-center' })
       }
       else {
         toast.error(t(RS.msg) as string, { duration: 2500, position: 'top-center' })
       }
-      setHistoryCounter(0)
     }
   }
 
@@ -189,6 +175,7 @@ const AppChat = (props: any) => {
   const [responseTime, setResponseTime] = useState<number | null>(null);
   const [GetSystemPromptFromAppValue, setGetSystemPromptFromAppValue] = useState<string>("");
   const [GetModelFromAppValue, setGetModelFromAppValue] = useState<string>("");
+  const [GetWelcomeTextFromAppValue, setGetWelcomeTextFromAppValue] = useState<string>("");
   
   const lastChat = {
     "message": processingMessage,
@@ -246,7 +233,7 @@ const AppChat = (props: any) => {
   }, [refreshChatCounter, processingMessage, auth])
 
   useEffect(() => {
-    if(t)   {
+    if(t && app && app._id)   {
       const ChatChatNameListData: string[] = ChatChatNameList()
       if(ChatChatNameListData.length == 0) {
         setRefreshChatCounter(refreshChatCounter + 1)
@@ -256,8 +243,22 @@ const AppChat = (props: any) => {
       const GetSystemPromptFromAppValueTemp = GetSystemPromptFromApp(app)
       setGetSystemPromptFromAppValue(GetSystemPromptFromAppValueTemp)
       setGetModelFromAppValue(GetModelFromApp(app))
+      const GetWelcomeTextFromAppTemp = GetWelcomeTextFromApp(app)
+      setGetWelcomeTextFromAppValue(GetWelcomeTextFromAppTemp)
+      getChatLogList(app._id, GetWelcomeTextFromAppTemp)
+
+      setChatId('ChatApp')
+      if(app && app.PublishApp && app.PublishApp.name) {
+        setChatName(app.PublishApp.name)
+        setChatId(app.PublishApp._id)
+      }
+      else {
+        setChatName(app.name)
+        setChatId(app._id)
+      }
+
     }
-  }, [t])
+  }, [t, app])
 
   const GetSystemPromptFromApp = (app: any) => {
     const AiNode = app.modules.filter((item: any)=>item.type == 'chatNode')

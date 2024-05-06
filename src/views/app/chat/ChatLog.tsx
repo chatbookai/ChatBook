@@ -12,7 +12,6 @@ import CardMedia from '@mui/material/CardMedia'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
 import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
 import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
 import IconButton from '@mui/material/IconButton'
@@ -51,16 +50,14 @@ const LinkStyled = styled(Link)(({ theme }) => ({
   color: theme.palette.success.main
 }))
 
-const SystemPromptTemplate = ({text}: any) => {
+const SystemPromptTemplate = ({text, handleSendMsg}: any) => {
 
   const handleClick = (event: any, keyword: string) => {
     event.preventDefault();
-    // 在这里处理点击事件，比如跳转到相应页面或执行相关操作
-    console.log(`用户点击了：${keyword}`);
+    handleSendMsg(keyword)
   };
 
   const replaceKeywordsWithLinks = (text: string) => {
-    // 匹配中括号内的文字，并替换为超链接
     const replacedText = text.split(/(\[.*?\])/).map((part, index) => {
       if (part.startsWith('[') && part.endsWith(']')) {
         const keyword = part.slice(1, -1);
@@ -73,9 +70,10 @@ const SystemPromptTemplate = ({text}: any) => {
           </ListItem>
         );
       }
+
       return part;
     });
-    console.log("text.split(/(\[.*?\])/)", text.split(/(\[.*?\])/))
+
     return replacedText;
   };
 
@@ -188,8 +186,6 @@ const ChatLog = (props: any) => {
 
   // ** Ref
   const chatArea = useRef(null)
-
-  console.log("rowInMsg IN ChatLog", rowInMsg)
 
   // ** Scroll to chat bottom
   const scrollToBottom = () => {
@@ -442,7 +438,7 @@ const ChatLog = (props: any) => {
                         }}
                         >
                           { /\[.*?\]/.test(chat.msg) ?
-                            <SystemPromptTemplate text={chat.msg}/>
+                            <SystemPromptTemplate text={chat.msg} handleSendMsg={handleSendMsg}/>
                           :
                             <ReactMarkdown>{chat.msg.replace('\n', '  \n')}</ReactMarkdown>
                           }
@@ -481,7 +477,7 @@ const ChatLog = (props: any) => {
                             :
                             null
                             }
-                          </Box>
+                        </Box>
                       </div>
                       :
                       null

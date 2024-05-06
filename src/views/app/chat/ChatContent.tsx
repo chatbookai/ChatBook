@@ -105,7 +105,7 @@ const ChatContent = (props: any) => {
                   </Box>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                  <Button size="small" onClick={()=>ClearButtonClick()} disabled={historyCounter==0?true:false}>{t('Clear')}({historyCounter})</Button>
+                  <Button size="small" onClick={()=>ClearButtonClick()} disabled={historyCounter<=1?true:false}>{t('Clear')}({historyCounter})</Button>
                 </Box>
               </Box>
 

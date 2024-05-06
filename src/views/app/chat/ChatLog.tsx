@@ -11,6 +11,8 @@ import ReactMarkdown from 'react-markdown'
 import CardMedia from '@mui/material/CardMedia'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
+import ListItem from '@mui/material/ListItem';
+import ListItemText from '@mui/material/ListItemText';
 import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
 import IconButton from '@mui/material/IconButton'
@@ -46,8 +48,46 @@ const PerfectScrollbar = styled(PerfectScrollbarComponent)<ScrollBarProps & { re
 
 const LinkStyled = styled(Link)(({ theme }) => ({
   textDecoration: 'none',
-  color: theme.palette.primary.main
+  color: theme.palette.success.main
 }))
+
+const SystemPromptTemplate = ({text}: any) => {
+
+  const handleClick = (event: any, keyword: string) => {
+    event.preventDefault();
+    // 在这里处理点击事件，比如跳转到相应页面或执行相关操作
+    console.log(`用户点击了：${keyword}`);
+  };
+
+  const replaceKeywordsWithLinks = (text: string) => {
+    // 匹配中括号内的文字，并替换为超链接
+    const replacedText = text.split(/(\[.*?\])/).map((part, index) => {
+      if (part.startsWith('[') && part.endsWith(']')) {
+        const keyword = part.slice(1, -1);
+        return (
+          <ListItem key={index}>
+            <Typography variant="body1" style={{ marginRight: '8px' }}>•</Typography>
+            <LinkStyled href="#" onClick={(event: any) => handleClick(event, keyword)}>
+              {keyword}
+            </LinkStyled>
+          </ListItem>
+        );
+      }
+      return part;
+    });
+    return replacedText;
+  };
+
+  //const text = '你好，我是知识库助手，请不要忘记选择知识库噢~[你是谁]你好: [如何使用]';
+  const processedText = replaceKeywordsWithLinks(text);
+
+  return (
+    <Box sx={{ pt: 3 }}>
+      {processedText}
+    </Box>
+  );
+};
+
 
 const TextToSpeech = ({ text, AudioType, app, userType }: any) => {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -402,7 +442,7 @@ const ChatLog = (props: any) => {
                           backgroundColor: isSender ? 'primary.main' : 'background.paper'
                         }}
                         >
-                          <ReactMarkdown>{chat.msg.replace('\n', '  \n')}</ReactMarkdown>
+                          <SystemPromptTemplate text={chat.msg.replace('\n', '  \n')}/>
                         </Typography>
                         <Box
                             sx={{
@@ -533,10 +573,10 @@ const ChatLog = (props: any) => {
 
   return (
     <Fragment>
-    <Box sx={{ height: `calc(100% - 6.2rem - ${inputMsgHeight}rem)` }}>
-      <ScrollWrapper hidden={hidden}>{renderChats()}</ScrollWrapper>
-    </Box>
-    <ChatContextPreview contextPreviewOpen={contextPreviewOpen} setContextPreviewOpen={setContextPreviewOpen} contextPreviewData={contextPreviewData} GetSystemPromptFromAppValue={GetSystemPromptFromAppValue}/>
+      <Box sx={{ height: `calc(100% - 6.2rem - ${inputMsgHeight}rem)` }}>
+        <ScrollWrapper hidden={hidden}>{renderChats()}</ScrollWrapper>
+      </Box>
+      <ChatContextPreview contextPreviewOpen={contextPreviewOpen} setContextPreviewOpen={setContextPreviewOpen} contextPreviewData={contextPreviewData} GetSystemPromptFromAppValue={GetSystemPromptFromAppValue}/>
     </Fragment>
   )
 }

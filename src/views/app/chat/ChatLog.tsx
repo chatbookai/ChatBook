@@ -11,6 +11,7 @@ import ReactMarkdown from 'react-markdown'
 import CardMedia from '@mui/material/CardMedia'
 import Link from 'next/link'
 import toast from 'react-hot-toast'
+import Avatar from '@mui/material/Avatar'
 import ListItem from '@mui/material/ListItem';
 import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
@@ -173,7 +174,7 @@ const TextToSpeech = ({ text, AudioType, app, userType }: any) => {
 const ChatLog = (props: any) => {
   // ** Props
   const { t } = useTranslation()
-  const { data, hidden, chatName, app, rowInMsg, maxRows, sendButtonDisable, GetSystemPromptFromAppValue, handleDeleteOneChatLogById, sendMsg, store, userType } = props
+  const { data, hidden, chatName, app, rowInMsg, maxRows, sendButtonDisable, GetSystemPromptFromAppValue, handleDeleteOneChatLogById, sendMsg, store, userType, questionGuide, GetQuestionGuideFromAppValue } = props
 
   const handleSendMsg = (msg: string) => {
     if (store && store.selectedChat && msg.trim().length) {
@@ -442,42 +443,66 @@ const ChatLog = (props: any) => {
                           :
                             <ReactMarkdown>{chat.msg.replace('\n', '  \n')}</ReactMarkdown>
                           }
-                        </Typography>
-                        <Box
-                            sx={{
-                              mt: 1,
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: isSender ? 'flex-end' : 'flex-start'
-                            }}
-                          >
-                            {renderMsgFeedback(isSender, chat.feedback)}
-                            {!isSender && Number(chat.responseTime) > 0 && ( (index + 1 == ChatItemMsgList.length && !sendButtonDisable) || (index + 1 < ChatItemMsgList.length))?
-                            <Box display="flex" alignItems="center" justifyContent="left" borderRadius="8px" p={0} mb={1} >
-                                <Tooltip title={t('ClickViewContentPreview')}>
-                                  <Button color='success' size="small" style={{ whiteSpace: 'nowrap' }} onClick={()=>{
-                                    const historyAll: any[] = [...chat.history]
-                                    historyAll.push([chat.question, chat.msg])
-                                    setContextPreviewOpen(true)
-                                    setContextPreviewData(historyAll)
-                                  }}>
-                                    {t('ContextCount')}({(chat.history.length+1)*2+1})
-                                    </Button>
-                                </Tooltip>
-                                <Tooltip title={t('ModuleRunningTime')}>
-                                  <Button color='error' size="small" style={{ whiteSpace: 'nowrap' }} disableTouchRipple disableRipple>{chat.responseTime}S</Button>
-                                </Tooltip>
-                                <Tooltip title={t('ClickViewDetailFlow')}>
-                                  <Button color='warning' size="small" style={{ whiteSpace: 'nowrap' }}>{t('ViewDetail')}</Button>
-                                </Tooltip>
-                                <Button color='info' size="small" disabled style={{ whiteSpace: 'nowrap' }}>
-                                {chat.time ? new Date(Number(chat.time)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) : null}
-                                </Button>
+                          {GetQuestionGuideFromAppValue && !isSender && index == ChatItemMsgList.length - 1 && index>0 && questionGuide && questionGuide.length > 0 ?
+                            <Box>
+                              <Box display="flex" alignItems="center">
+                                <Avatar src={'/imgs/module/cq.png'} sx={{ mr: 2.5, width: 26, height: 26 }} />
+                                {t('QuestionGuide')}
+                              </Box>
+                              {questionGuide && questionGuide.length > 0 && questionGuide.map((question: string, index: number)=>{
+
+                                return (
+                                  <ListItem key={index} sx={{m: 0, p: 0, pt: 0}}>
+                                    <Typography sx={{mr: 3, my: 0.5, ml: 5  }}>•</Typography>
+                                    <LinkStyled href="#" onClick={(event: any) => {
+                                      handleSendMsg(question)
+                                    }}>
+                                      {question}
+                                    </LinkStyled>
+                                  </ListItem>
+                                )
+                              })}
                             </Box>
-                            :
-                            null
-                            }
-                        </Box>
+                          :
+                          null
+                          }
+                          <Box
+                              sx={{
+                                mt: 1,
+                                ml: -2.5,
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: isSender ? 'flex-end' : 'flex-start'
+                              }}
+                            >
+                              {!isSender && Number(chat.responseTime) > 0 && ( (index + 1 == ChatItemMsgList.length && !sendButtonDisable) || (index + 1 < ChatItemMsgList.length))?
+                              <Box display="flex" alignItems="center" justifyContent="left" borderRadius="8px" p={0} mb={1} >
+                                  <Tooltip title={t('ClickViewContentPreview')}>
+                                    <Button color='success' size="small" style={{ whiteSpace: 'nowrap' }} onClick={()=>{
+                                      const historyAll: any[] = [...chat.history]
+                                      historyAll.push([chat.question, chat.msg])
+                                      setContextPreviewOpen(true)
+                                      setContextPreviewData(historyAll)
+                                    }}>
+                                      {t('ContextCount')}({(chat.history.length+1)*2+1})
+                                      </Button>
+                                  </Tooltip>
+                                  <Tooltip title={t('ModuleRunningTime')}>
+                                    <Button color='error' size="small" style={{ whiteSpace: 'nowrap' }} disableTouchRipple disableRipple>{chat.responseTime}S</Button>
+                                  </Tooltip>
+                                  <Tooltip title={t('ClickViewDetailFlow')}>
+                                    <Button color='warning' size="small" style={{ whiteSpace: 'nowrap' }}>{t('ViewDetail')}</Button>
+                                  </Tooltip>
+                                  <Button color='info' size="small" disabled style={{ whiteSpace: 'nowrap' }}>
+                                  {chat.time ? new Date(Number(chat.time)).toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true }) : null}
+                                  </Button>
+                              </Box>
+                              :
+                              null
+                              }
+                          </Box>
+                        </Typography>
+                        
                       </div>
                       :
                       null

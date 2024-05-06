@@ -176,6 +176,8 @@ const AppChat = (props: any) => {
   const [GetSystemPromptFromAppValue, setGetSystemPromptFromAppValue] = useState<string>("");
   const [GetModelFromAppValue, setGetModelFromAppValue] = useState<string>("");
   const [GetWelcomeTextFromAppValue, setGetWelcomeTextFromAppValue] = useState<string>("");
+  const [GetQuestionGuideFromAppValue, setGetQuestionGuideFromAppValue] = useState<boolean>(false);
+  const [questionGuide, setQuestionGuide] = useState<any>()
   
   const lastChat = {
     "message": processingMessage,
@@ -239,13 +241,19 @@ const AppChat = (props: any) => {
         setRefreshChatCounter(refreshChatCounter + 1)
       }
       setSendButtonText(t("Send") as string)
-      setSendInputText(t("Your message...") as string)    
+      setSendInputText(t("Your message...") as string)  
+
       const GetSystemPromptFromAppValueTemp = GetSystemPromptFromApp(app)
       setGetSystemPromptFromAppValue(GetSystemPromptFromAppValueTemp)
+
       setGetModelFromAppValue(GetModelFromApp(app))
+
       const GetWelcomeTextFromAppTemp = GetWelcomeTextFromApp(app)
       setGetWelcomeTextFromAppValue(GetWelcomeTextFromAppTemp)
       getChatLogList(app._id, GetWelcomeTextFromAppTemp)
+
+      setGetQuestionGuideFromAppValue(GetQuestionGuideFromApp(app))
+      
 
       setChatId('ChatApp')
       if(app && app.PublishApp && app.PublishApp.name) {
@@ -303,6 +311,21 @@ const AppChat = (props: any) => {
     return ''
   }
 
+  const GetQuestionGuideFromApp = (app: any) => {
+    const AiNode = app.modules.filter((item: any)=>item.type == 'userGuide')
+    if(AiNode && AiNode[0] && AiNode[0].data && AiNode[0].data.inputs) {
+      console.log("GetQuestionGuideFromApp", AiNode)
+      const systemPromptList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'questionGuide')
+      if(systemPromptList && systemPromptList[0] && systemPromptList[0]['value']) {
+        const systemPromptText = systemPromptList[0]['value']
+
+        return systemPromptText
+      }
+    }
+
+    return ''
+  }
+
 
   const sendMsg = async (Obj: any) => {
     let userId = null
@@ -315,7 +338,7 @@ const AppChat = (props: any) => {
       userId = anonymousUserId
       authorization = anonymousUserId
     }
-    if(userId) {
+    if(userId && t) {
       setSendButtonDisable(true)
       setSendButtonLoading(true)
       setSendButtonText(t("Sending") as string)
@@ -324,7 +347,7 @@ const AppChat = (props: any) => {
       ChatChatInput(_id, Obj.send, Obj.message, userId, 0, [])
       setRefreshChatCounter(refreshChatCounter + 1)
       const startTime = performance.now()
-      const ChatAiOutputV1Status = await ChatAiOutputV1(_id, Obj.message, authorization, userId, chatId, app.id, publishId, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage, userType)
+      const ChatAiOutputV1Status = await ChatAiOutputV1(_id, Obj.message, authorization, userId, chatId, app.id, publishId, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage, userType, true, setQuestionGuide, t('questionGuideTemplate'))
       const endTime = performance.now();
       setResponseTime(endTime - startTime);
       if(ChatAiOutputV1Status) {
@@ -382,6 +405,8 @@ const AppChat = (props: any) => {
         handleDeleteOneChatLogById={handleDeleteOneChatLogById}
         userType={userType}
         GetModelFromAppValue={GetModelFromAppValue}
+        questionGuide={questionGuide}
+        GetQuestionGuideFromAppValue={GetQuestionGuideFromAppValue}
       />
       </Box>
     </Fragment>

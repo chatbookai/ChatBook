@@ -311,7 +311,7 @@ export async function ChatAiAudioV1(Message: string, Token: string, voice: strin
       
 }
 
-export async function ChatAiOutputV1(_id: string, Message: string, Token: string, UserId: number | string, chatId: number | string, appId: string, publishId: string, setProcessingMessage:any, template: string, setFinishedMessage:any, userType: string) {
+export async function ChatAiOutputV1(_id: string, Message: string, Token: string, UserId: number | string, chatId: number | string, appId: string, publishId: string, setProcessingMessage:any, template: string, setFinishedMessage:any, userType: string, allowQuestionGuide: boolean, setQuestionGuide: any, questionGuideTemplate: string) {
     const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []
     const History: any = []
@@ -326,7 +326,7 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
     try {
         setProcessingMessage('')
         console.log("chatId", chatId)
-        if(true)  {
+        if(chatId && UserId)  {
             const anonymousUserId = getAnonymousUserId()
             const startTime = performance.now()
             const response = await fetch(authConfig.backEndApiChatBook + `/api/` + (userType=='User' ? 'ChatApp' : 'ChatAppAnonymous'), {
@@ -335,7 +335,7 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
                 Authorization: userType=='User' ? Token : anonymousUserId,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ question: Message, history: History, appId: appId, publishId, template: template, _id}),
+            body: JSON.stringify({ question: Message, history: History, appId: appId, publishId, template: template, _id, allowChatLog: 1}),
             });
             if (!response.body) {
             throw new Error('Response body is not readable as a stream');
@@ -347,6 +347,7 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
                 const text = new TextDecoder('utf-8').decode(value);
                 setProcessingMessage((prevText: string) => prevText + text);
                 responseText = responseText + text;
+                setQuestionGuide(null)
                 if (done) {
                     setProcessingMessage('')
                     break;
@@ -359,6 +360,31 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
                 ChatChatInput(_id, Message, responseText, 999999, responseTime, History)
                 ChatChatHistoryInput(_id, Message, responseText, UserId, chatId, appId, responseTime, History)
                 setFinishedMessage(responseText);
+
+                //allowQuestionGuide
+                if(allowQuestionGuide) {
+                    const url = authConfig.backEndApiChatBook + '/api/' + (userType === 'User' ? 'ChatApp' : 'ChatAppAnonymous');
+                    const headers = {
+                        Authorization: userType === 'User' ? Token : anonymousUserId,
+                        'Content-Type': 'application/json',
+                    };
+                    History.push([Message, responseText])
+                    console.log("HistoryHistory", History)
+                    const questionGuideTemplate = '你是一个AI智能助手，可以回答和解决我的问题。请结合前面的对话记录，帮我生成 3 个问题，引导我继续提问。问题的长度应小于20个字符，要求使用UTF-8编码，按 JSON 格式返回: ["问题1", "问题2", "问题3"]'
+                    const data = {
+                                question: questionGuideTemplate,
+                                history: History,
+                                appId: appId,
+                                publishId: publishId,
+                                template: template,
+                                _id: _id,
+                                allowChatLog: 0
+                            };
+                    const response = await axios.post(url, data, { headers: headers }).then(res=>res.data);
+                    if(response) {
+                        setQuestionGuide(response)
+                    }
+                }
         
                 return true
             }
@@ -379,7 +405,7 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
       
 }
 
-export function ChatChatHistoryInput(chatlogId: string, question: string, answer: string, UserId: number, knowledgeId: number | string, appId: string, responseTime: number, History: any[]) {
+export function ChatChatHistoryInput(chatlogId: string, question: string, answer: string, UserId: number | string, knowledgeId: number | string, appId: string, responseTime: number, History: any[]) {
     console.log("ChatChatHistoryList", question, answer, UserId)
 	const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatHistoryList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : {}

@@ -188,6 +188,7 @@ const AppChat = (props: any) => {
   const [finishedMessage, setFinishedMessage] = useState("")
   const [responseTime, setResponseTime] = useState<number | null>(null);
   const [GetSystemPromptFromAppValue, setGetSystemPromptFromAppValue] = useState<string>("");
+  const [GetModelFromAppValue, setGetModelFromAppValue] = useState<string>("");
   
   const lastChat = {
     "message": processingMessage,
@@ -254,6 +255,7 @@ const AppChat = (props: any) => {
       setSendInputText(t("Your message...") as string)    
       const GetSystemPromptFromAppValueTemp = GetSystemPromptFromApp(app)
       setGetSystemPromptFromAppValue(GetSystemPromptFromAppValueTemp)
+      setGetModelFromAppValue(GetModelFromApp(app))
     }
   }, [t])
 
@@ -265,6 +267,20 @@ const AppChat = (props: any) => {
         const systemPromptText = systemPromptList[0]['value']
 
         return systemPromptText
+      }
+    }
+    
+    return ''
+  }
+
+  const GetModelFromApp = (app: any) => {
+    const AiNode = app.modules.filter((item: any)=>item.type == 'chatNode')
+    if(AiNode && AiNode[0] && AiNode[0].data && AiNode[0].data.inputs) {
+      const modelList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'model')
+      if(modelList && modelList[0] && modelList[0]['value']) {
+        const modelText = modelList[0]['value']
+
+        return modelText
       }
     }
     
@@ -364,6 +380,7 @@ const AppChat = (props: any) => {
         GetSystemPromptFromAppValue={GetSystemPromptFromAppValue}
         handleDeleteOneChatLogById={handleDeleteOneChatLogById}
         userType={userType}
+        GetModelFromAppValue={GetModelFromAppValue}
       />
       </Box>
     </Fragment>

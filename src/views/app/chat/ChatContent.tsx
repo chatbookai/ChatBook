@@ -30,7 +30,8 @@ const ChatContent = (props: any) => {
     app,
     GetSystemPromptFromAppValue,
     handleDeleteOneChatLogById,
-    userType
+    userType,
+    GetModelFromAppValue
   } = props
 
   const { t } = useTranslation()
@@ -92,14 +93,15 @@ const ChatContent = (props: any) => {
                         sx={{ width: '2rem', height: '2rem' }}
                       />
                     </Badge>
-                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                    <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                       <Typography sx={{ fontWeight: 500, fontSize: '0.875rem' }}>
                         {chatName}
                       </Typography>
-                      <Typography variant='caption' sx={{ color: 'text.disabled' }}>
-                        {app.model}
+                      <Typography variant='caption' sx={{ color: 'primary.secondary', marginLeft: '8px' }}>
+                        {GetModelFromAppValue}
                       </Typography>
                     </Box>
+
                   </Box>
                 </Box>
                 <Box sx={{ display: 'flex', alignItems: 'center' }}>

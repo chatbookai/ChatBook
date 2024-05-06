@@ -19,17 +19,10 @@ import { useTranslation } from 'react-i18next'
 
 import Grid from '@mui/material/Grid'
 import Dialog from '@mui/material/Dialog'
-import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
-import Fade, { FadeProps } from '@mui/material/Fade'
 import DialogContent from '@mui/material/DialogContent'
-import Divider from '@mui/material/Divider'
 import Container from '@mui/material/Container'
-import CardContent from '@mui/material/CardContent'
 import CircularProgress from '@mui/material/CircularProgress'
-import FavoriteIcon from '@mui/icons-material/Favorite'
-import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder'
-import VisibilityIcon from '@mui/icons-material/Visibility'
 
 const ChatAnonymous = () => {
     // ** States
@@ -39,7 +32,7 @@ const ChatAnonymous = () => {
     // ** Hooks
     const { t, i18n } = useTranslation()
     const theme = useTheme()
-    const { settings } = useSettings()
+    const { settings, saveSettings } = useSettings()
     const router = useRouter()
     const { id } = router.query
 
@@ -50,6 +43,8 @@ const ChatAnonymous = () => {
           i18n.changeLanguage(RS.PublishApp.language)
           setShow(false)
           setApp(RS)
+          saveSettings({ ...settings, pageTitle: RS.name })
+          console.log("settings", settings)
         }
       }
     }

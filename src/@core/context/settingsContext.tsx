@@ -21,11 +21,13 @@ export type Settings = {
   navCollapsed: boolean
   themeColor: ThemeColor
   contentWidth: ContentWidth
+  pageTitle: string
   layout?: 'vertical' | 'horizontal'
   lastLayout?: 'vertical' | 'horizontal'
   verticalNavToggleType: VerticalNavToggle
   toastPosition?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right'
 }
+
 
 export type PageSpecificSettings = {
   skin?: Skin
@@ -65,6 +67,7 @@ const initialSettings: Settings = {
   appBarBlur: themeConfig.appBarBlur,
   navCollapsed: themeConfig.navCollapsed,
   contentWidth: themeConfig.contentWidth,
+  pageTitle: themeConfig.templateName,
   toastPosition: themeConfig.toastPosition,
   verticalNavToggleType: themeConfig.verticalNavToggleType,
   appBar: themeConfig.layout === 'horizontal' && themeConfig.appBar === 'hidden' ? 'fixed' : themeConfig.appBar

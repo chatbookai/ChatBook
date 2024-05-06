@@ -24,7 +24,7 @@ const BlankLayoutAppBar = () => {
   // ** Hooks & Vars
   const theme = useTheme()
   const { settings } = useSettings()
-  const { skin } = settings
+  const { skin, pageTitle } = settings
 
   return (
     <AppBar
@@ -112,7 +112,7 @@ const BlankLayoutAppBar = () => {
               textTransform: 'capitalize'
             }}
           >
-            {themeConfig.templateName}
+            {pageTitle}
           </Typography>
         </LinkStyled>
       </Toolbar>

@@ -10,7 +10,7 @@ import { styled, useTheme } from '@mui/material/styles'
 import { LayoutProps } from 'src/@core/layouts/types'
 
 // ** Theme Config Import
-import themeConfig from 'src/configs/themeConfig'
+import { useSettings } from 'src/@core/hooks/useSettings'
 
 interface Props {
   hidden: LayoutProps['hidden']
@@ -33,6 +33,9 @@ const AppBarContent = (props: Props) => {
 
   // ** Hooks
   const theme = useTheme()
+
+  const { settings } = useSettings()
+  const { pageTitle } = settings
 
   return (
     <Box sx={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -107,7 +110,7 @@ const AppBarContent = (props: Props) => {
               lineHeight: 'normal',
             }}
           >
-            {themeConfig.templateName}
+            {pageTitle}
           </Typography>
         </LinkStyled>
       )}

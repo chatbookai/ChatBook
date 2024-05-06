@@ -46,6 +46,9 @@ import ReactHotToast from 'src/@core/styles/libs/react-hot-toast'
 // ** Utils Imports
 import { createEmotionCache } from 'src/@core/utils/create-emotion-cache'
 
+// ** Theme Config Import
+import { useSettings } from 'src/@core/hooks/useSettings'
+
 // ** Prismjs Styles
 import 'prismjs'
 import 'prismjs/themes/prism-tomorrow.css'
@@ -112,14 +115,17 @@ const App = (props: ExtendedAppProps) => {
 
   const aclAbilities = Component.acl ?? defaultACLObj
 
+  const { settings } = useSettings()
+  const { pageTitle } = settings
+
   return (
     <Provider store={store}>
       <CacheProvider value={emotionCache}>
         <Head>
-          <title>{`${themeConfig.templateName} - Chat Book AI `}</title>
+          <title>{`${pageTitle} - Chat Book AI `}</title>
           <meta
             name='description'
-            content={`${themeConfig.templateName} - Chat Book AI `}
+            content={`${pageTitle} - Chat Book AI `}
           />
           <meta name='keywords' content='Chat Book AI , Chat Book AI ' />
           <meta name='viewport' content='initial-scale=1, width=device-width' />

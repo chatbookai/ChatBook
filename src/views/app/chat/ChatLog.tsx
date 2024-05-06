@@ -65,8 +65,8 @@ const SystemPromptTemplate = ({text}: any) => {
       if (part.startsWith('[') && part.endsWith(']')) {
         const keyword = part.slice(1, -1);
         return (
-          <ListItem key={index}>
-            <Typography variant="body1" style={{ marginRight: '8px' }}>•</Typography>
+          <ListItem key={index} sx={{m: 0, p: 0, pt: 0}}>
+            <Typography sx={{mr: 3, my: 0.5  }}>•</Typography>
             <LinkStyled href="#" onClick={(event: any) => handleClick(event, keyword)}>
               {keyword}
             </LinkStyled>
@@ -75,6 +75,7 @@ const SystemPromptTemplate = ({text}: any) => {
       }
       return part;
     });
+    console.log("text.split(/(\[.*?\])/)", text.split(/(\[.*?\])/))
     return replacedText;
   };
 
@@ -82,7 +83,7 @@ const SystemPromptTemplate = ({text}: any) => {
   const processedText = replaceKeywordsWithLinks(text);
 
   return (
-    <Box sx={{ pt: 3 }}>
+    <Box sx={{ pt: 2 }}>
       {processedText}
     </Box>
   );
@@ -422,8 +423,6 @@ const ChatLog = (props: any) => {
                 ChatMsgContent = JSON.parse(chat.msg)
               }
 
-              //console.log("chatchatchat",chat)
-
               return (
                 <Box key={ChatIndex} sx={{ '&:not(:last-of-type)': { mb: 3 } }}>
                     {ChatMsgType == "Chat" ?
@@ -442,7 +441,11 @@ const ChatLog = (props: any) => {
                           backgroundColor: isSender ? 'primary.main' : 'background.paper'
                         }}
                         >
-                          <SystemPromptTemplate text={chat.msg.replace('\n', '  \n')}/>
+                          { /\[.*?\]/.test(chat.msg) ?
+                            <SystemPromptTemplate text={chat.msg}/>
+                          :
+                            <ReactMarkdown>{chat.msg.replace('\n', '  \n')}</ReactMarkdown>
+                          }
                         </Typography>
                         <Box
                             sx={{

@@ -36,6 +36,7 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
 
   const [LLMModel, setLLMModel] = useState<any>({LLMModelOpen: false, 
                                                 model: 'gpt-3.5-turbo', 
+                                                name: 'Chatgpt-3.5',
                                                 quoteMaxToken: 2, 
                                                 maxContext: 16000,
                                                 functionCall: true,
@@ -64,6 +65,15 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
         }
       })
     }
+    const LLMNode: any = app.modules[2].data.inputs
+    if(LLMNode) {
+      LLMNode.map((itemNode: any)=>{
+        if(itemNode.key == 'model') {
+          console.log("setLLMModel Default", itemNode)
+          setLLMModel( () => ({ ...itemNode.LLMModel, LLMModelOpen: false }) );
+        }
+      })
+    }
   }, [])
 
   useEffect(() => {
@@ -81,6 +91,20 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
       setApp(appNew)
     }
   }, [chatNodeData])
+
+  const handleAiModelChange = (index: number, LLMModel: any) => {
+    setChatNodeData((prevState: any)=>{
+      const updatedInputs = [...prevState.inputs]; 
+      const ItemData: any = updatedInputs[index];
+      const updatedItemData: any = {  ...ItemData, value: LLMModel.model, LLMModel };
+      updatedInputs[index] = updatedItemData;
+      const newState = { ...prevState, inputs: updatedInputs };
+
+      console.log("updatedItemData", updatedItemData, LLMModel.model)
+
+      return newState;
+    })
+  }
 
   const handleTTSChange = (index: number, value: string, speed: number) => {
     setUserGuideData((prevState: any)=>{
@@ -110,12 +134,14 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
                                 {item && item.required && <span style={{ paddingTop: '9px', color: 'red', marginLeft: '3px' }}>*</span>}
                                 </Box>
                                 <Button size="small" onClick={
-                                      () => { setLLMModel( (prevState: any) => ({ ...prevState, LLMModelOpen: true }) ) }
+                                      () => { 
+                                        setLLMModel( (prevState: any) => ({ ...prevState, LLMModelOpen: true }) ) 
+                                      }
                                     }>
                                       {LLMModel.model}
                                 </Button>
                               </Box>
-                              <LLMModelModel LLMModel={LLMModel} setLLMModel={setLLMModel} ModelData={item} />
+                              <LLMModelModel LLMModel={LLMModel} setLLMModel={setLLMModel} ModelData={item} handleAiModelChange={handleAiModelChange} index={index}/>
                             </Grid>
                           </Fragment>
                           :

@@ -28,7 +28,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 const LLMModel = (props: any) => {
     // ** Props
-    const {LLMModel, setLLMModel, ModelData } = props
+    const {LLMModel, setLLMModel, ModelData, handleAiModelChange, index } = props
 
     // ** Hook
     const { t } = useTranslation()
@@ -211,7 +211,10 @@ const LLMModel = (props: any) => {
                 {t("Close")}
                 </Button>
                 <Button size="small" variant='contained' onClick={
-                    () => { setLLMModel( (prevState: any) => ({ ...prevState, LLMModelOpen: false }) ) }
+                    () => { 
+                        setLLMModel( (prevState: any) => ({ ...prevState, LLMModelOpen: false }) ) 
+                        handleAiModelChange(index, LLMModel)
+                    }
                 }>
                 {t("Confirm")}
                 </Button>

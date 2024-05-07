@@ -135,7 +135,19 @@ export const allNodesData: any = {
                       "valueType": "string",
                       "showTargetInApp": false,
                       "showTargetInPlugin": false,
-                      "value": "gpt-3.5-turbo"
+                      "value": "gpt-3.5-turbo",
+                      "LLMModel": {
+                        LLMModelOpen: false, 
+                        model: 'gpt-3.5-turbo', 
+                        name: 'Chatgpt-3.5',
+                        quoteMaxToken: 2, 
+                        maxContext: 16000,
+                        functionCall: true,
+                        temperature: 0,
+                        maxResponse: 4000,
+                        maxChatHistories: 6,
+                        charsPointsPrice: 2
+                      }
                   },
                   {
                       "key": "temperature",

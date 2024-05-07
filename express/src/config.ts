@@ -48,9 +48,9 @@ export const llms = {
         "defaultConfig": {}
       },
       {
-        "model": "gpt-4-vision-preview",
-        "name": "gpt-4-vision",
-        "avatar": "/imgs/model/openai.svg",
+        "model": "gemini-pro",
+        "name": "Gemini",
+        "avatar": "/imgs/model/google.png",
         "maxContext": 128000,
         "maxResponse": 4000,
         "quoteMaxToken": 100000,

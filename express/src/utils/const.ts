@@ -59,54 +59,9 @@ export const MenuListAdmin = [
     sectionTitle: 'Settings'
   },
   {
-    title: 'Knowledge Base',
-    icon: 'carbon:ibm-watson-knowledge-studio',
-    path: '/knowledge'
-  },
-  {
-    title: 'Settings',
-    icon: 'mingcute:openai-fill',
-    path: '/settings'
-  },
-  {
-    title: 'Template',
-    icon: 'tabler:template',
-    path: '/template'
-  },
-  {
-    title: 'Upload Files',
-    icon: 'material-symbols:backup',
-    path: '/upload'
-  },
-  {
-    title: 'File Parse Process',
-    icon: 'clarity:process-on-vm-line',
-    path: '/files'
-  },
-  {
-    title: 'Chat Setting',
-    icon: 'mingcute:openai-fill',
-    path: '/settings/llms'
-  },
-  {
-    title: 'Agents Setting',
-    icon: 'mingcute:openai-fill',
-    path: '/settings/agents'
-  },
-  {
     title: 'User Manage',
     icon: 'mdi:users',
     path: '/settings/users'
-  },
-  {
-    title: 'User Logs',
-    icon: 'icon-park-outline:upload-logs',
-    path: '/settings/userlogs'
-  },
-  {
-    title: 'System Logs',
-    icon: 'mdi:web-sync',
-    path: '/logs'
   }
 ]
 
@@ -124,7 +79,7 @@ export const MenuListUser = [
   {
     title: 'Chat',
     icon: 'mdi:message-outline',
-    path: '/chat'
+    path: '/chat/chat'
   },
   {
     title: 'Store',

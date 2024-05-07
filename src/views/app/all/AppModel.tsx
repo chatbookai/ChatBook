@@ -119,7 +119,7 @@ const AppModel = (props: any) => {
                             sx={{cursor: 'pointer'}}
                           >
                             <Box display="flex" alignItems="center">
-                              <Avatar src={item.avatar || authConfig.logo} sx={{ mr: 3, width: 35, height: 35 }} />
+                            <Avatar src={authConfig.backEndApiChatBook + '/api/avatarforapp/' + item.avatar} sx={{ mr: 3, width: 35, height: 35 }} />
                               <Typography 
                                   sx={{
                                       fontWeight: 500,
@@ -155,12 +155,12 @@ const AppModel = (props: any) => {
                             <Typography variant='caption'>{item.intro}</Typography>
                           </Box>
                           <Box position="absolute" bottom={0} left={1} m={1} px={0.8}>
-                            <Button disabled variant="text" size="small" startIcon={<Icon icon={item.permission == 'private' ? 'ri:git-repository-private-line' : 'material-symbols:share'} />} >
+                            <Button  variant="text" size="small" startIcon={<Icon icon={item.permission == 'private' ? 'ri:git-repository-private-line' : 'material-symbols:share'} />} >
                               {t(item.permission)}
                             </Button>
                           </Box>
                           <Box position="absolute" bottom={0} right={1} m={1} px={0.8}>
-                            <Button disabled variant="text" size="small" startIcon={<Icon icon='material-symbols:chat-outline' />} >
+                            <Button  variant="text" size="small" startIcon={<Icon icon='material-symbols:chat-outline' />} >
                               {t('Chat')}
                             </Button>
                           </Box>

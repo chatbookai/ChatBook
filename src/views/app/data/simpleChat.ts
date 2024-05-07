@@ -53,7 +53,7 @@ export const simpleChat: any = {
                       "type": "hidden",
                       "valueType": "any",
                       "label": "Tts",
-                      "value": "disabled",
+                      "value": "Disabled",
                       "speed": 1,
                       "showTargetInApp": false,
                       "showTargetInPlugin": false,

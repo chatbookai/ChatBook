@@ -89,7 +89,7 @@ const SystemPromptTemplate = ({text, handleSendMsg}: any) => {
 };
 
 
-const TextToSpeech = ({ text, AudioType, app, userType }: any) => {
+const TextToSpeech = ({ text, AudioType, app, userType, GetTTSFromAppValue }: any) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioFilesCache, setAudioFilesCache] = useState<any>({})
 
@@ -99,7 +99,7 @@ const TextToSpeech = ({ text, AudioType, app, userType }: any) => {
   const auth = useAuth()
 
   const beginPlaying = async () => {
-    if (!isPlaying && AudioType == 'Broswer') {
+    if (!isPlaying && AudioType == 'AudioBrowser') {
       setIsPlaying(true);
       const utterance = new SpeechSynthesisUtterance(text);
       utterance.lang = 'zh-CN';
@@ -107,7 +107,7 @@ const TextToSpeech = ({ text, AudioType, app, userType }: any) => {
       synth.speak(utterance);
     }
 
-    if (!isPlaying && AudioType != 'Broswer' && auth && auth.user && auth.user.token) {
+    if (!isPlaying && AudioType != 'AudioBrowser' && AudioType != 'Disabled' && auth && auth.user && auth.user.token) {
       setIsPlaying(true);
       if(audioFilesCache[text] == null)    {
         const ChatAiAudioV1Status: any = await ChatAiAudioV1(text, auth.user.token, AudioType, app._id, userType)
@@ -174,13 +174,15 @@ const TextToSpeech = ({ text, AudioType, app, userType }: any) => {
 const ChatLog = (props: any) => {
   // ** Props
   const { t } = useTranslation()
-  const { data, hidden, chatName, app, rowInMsg, maxRows, sendButtonDisable, GetSystemPromptFromAppValue, handleDeleteOneChatLogById, sendMsg, store, userType, questionGuide, GetQuestionGuideFromAppValue } = props
+  const { data, hidden, chatName, app, rowInMsg, maxRows, sendButtonDisable, GetSystemPromptFromAppValue, handleDeleteOneChatLogById, sendMsg, store, userType, questionGuide, GetQuestionGuideFromAppValue, GetTTSFromAppValue } = props
 
   const handleSendMsg = (msg: string) => {
     if (store && store.selectedChat && msg.trim().length) {
       sendMsg({ ...store.selectedChat, message: msg, template: '' })
     }
   }
+
+  console.log("GetTTSFromAppValue", GetTTSFromAppValue)
 
   const [contextPreviewOpen, setContextPreviewOpen] = useState<boolean>(false)
   const [contextPreviewData, setContextPreviewData] = useState<any[]>([])
@@ -398,7 +400,12 @@ const ChatLog = (props: any) => {
                   <Icon icon='material-symbols:file-copy-outline-rounded' fontSize='inherit' />
                 </IconButton>
               </Tooltip>
-              <TextToSpeech text={item.messages[0].msg} AudioType='alloy' app={app} userType={userType}/>
+              {GetTTSFromAppValue && GetTTSFromAppValue.value && GetTTSFromAppValue.value !='Disabled' ? 
+              <TextToSpeech text={item.messages[0].msg} AudioType={GetTTSFromAppValue.value} app={app} userType={userType} GetTTSFromAppValue={GetTTSFromAppValue}/>
+              :
+              null
+              }
+              
             </Fragment>
             :
             null

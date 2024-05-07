@@ -178,6 +178,9 @@ const AppChat = (props: any) => {
   const [GetWelcomeTextFromAppValue, setGetWelcomeTextFromAppValue] = useState<string>("");
   const [GetQuestionGuideFromAppValue, setGetQuestionGuideFromAppValue] = useState<boolean>(false);
   const [questionGuide, setQuestionGuide] = useState<any>()
+  const [GetTTSFromAppValue, setGetTTSFromAppValue] = useState<any>();
+  
+
   
   const lastChat = {
     "message": processingMessage,
@@ -253,7 +256,7 @@ const AppChat = (props: any) => {
       getChatLogList(app._id, GetWelcomeTextFromAppTemp)
 
       setGetQuestionGuideFromAppValue(GetQuestionGuideFromApp(app))
-      
+      setGetTTSFromAppValue(GetTTSFromApp(app))
 
       setChatId('ChatApp')
       if(app && app.PublishApp && app.PublishApp.name) {
@@ -324,6 +327,21 @@ const AppChat = (props: any) => {
     }
 
     return ''
+  }
+
+  const GetTTSFromApp = (app: any) => {
+    const AiNode = app.modules.filter((item: any)=>item.type == 'userGuide')
+    if(AiNode && AiNode[0] && AiNode[0].data && AiNode[0].data.inputs) {
+      console.log("GetQuestionGuideFromApp", AiNode)
+      const GetTTSFromAppList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'tts')
+      if(GetTTSFromAppList && GetTTSFromAppList[0] && GetTTSFromAppList[0]['value']) {
+        const GetTTSFromAppText = GetTTSFromAppList[0]
+
+        return GetTTSFromAppText
+      }
+    }
+
+    return null
   }
 
 
@@ -407,6 +425,7 @@ const AppChat = (props: any) => {
         GetModelFromAppValue={GetModelFromAppValue}
         questionGuide={questionGuide}
         GetQuestionGuideFromAppValue={GetQuestionGuideFromAppValue}
+        GetTTSFromAppValue={GetTTSFromAppValue}
       />
       </Box>
     </Fragment>

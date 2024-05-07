@@ -179,15 +179,15 @@ const AppModel = (props: any) => {
                               router.push('/app/edit/' + item._id)
                             }}
                             >
-                            <Typography variant='caption'>{item.intro}</Typography>
+                            <Typography variant='body2'>{item.intro}</Typography>
                           </Box>
                           <Box position="absolute" bottom={0} left={1} m={1} px={0.8}>
-                            <Button disabled variant="text" size="small" startIcon={<Icon icon={item.permission == 'private' ? 'ri:git-repository-private-line' : 'material-symbols:share'} />} >
+                            <Button  variant="text" size="small" startIcon={<Icon icon={item.permission == 'private' ? 'ri:git-repository-private-line' : 'material-symbols:share'} />} >
                               {t(item.permission)}
                             </Button>
                           </Box>
                           <Box position="absolute" bottom={0} right={1} m={1} px={0.8}>
-                            <Button disabled variant="text" size="small" startIcon={<Icon icon='material-symbols:chat-outline' />} >
+                            <Button  variant="text" size="small" startIcon={<Icon icon='material-symbols:chat-outline' />} >
                               {t('Chat')}
                             </Button>
                           </Box>

@@ -352,116 +352,128 @@ export const allNodesData: any = {
             "intro": "Classify question intro",
             "inputs": [
                 {
-                "key": "switch",
-                "type": "hidden",
-                "label": "",
-                "description": "Trigger",
-                "valueType": "any",
-                "showTargetInApp": true,
-                "showTargetInPlugin": true,
-                "connected": false
+                  "key": "switch",
+                  "type": "hidden",
+                  "label": "",
+                  "description": "Trigger",
+                  "valueType": "any",
+                  "showTargetInApp": true,
+                  "showTargetInPlugin": true,
+                  "connected": false
                 },
                 {
-                "key": "model",
-                "type": "selectLLMModel",
-                "label": "aiModel",
-                "required": true,
-                "valueType": "string",
-                "showTargetInApp": false,
-                "showTargetInPlugin": false,
-                "llmModelType": "classify",
-                "value": "gpt-3.5-turbo",
-                "connected": false
+                  "key": "model",
+                  "type": "selectLLMModel",
+                  "label": "aiModel",
+                  "required": true,
+                  "valueType": "string",
+                  "showTargetInApp": false,
+                  "showTargetInPlugin": false,
+                  "llmModelType": "classify",
+                  "value": "gpt-3.5-turbo",
+                  "connected": false,
+                  "LLMModel": {
+                    LLMModelOpen: false, 
+                    model: 'gpt-3.5-turbo', 
+                    name: 'Chatgpt-3.5',
+                    quoteMaxToken: 2, 
+                    maxContext: 16000,
+                    functionCall: true,
+                    temperature: 0,
+                    maxResponse: 4000,
+                    maxChatHistories: 6,
+                    charsPointsPrice: 2
+                  }
                 },
                 {
-                "key": "systemPrompt",
-                "type": "textarea",
-                "max": 3000,
-                "valueType": "string",
-                "label": "Background",
-                "description": "Background help",
-                "placeholder": "Classify background",
-                "showTargetInApp": true,
-                "showTargetInPlugin": true,
-                "connected": false
+                  "key": "systemPrompt",
+                  "type": "textarea",
+                  "max": 3000,
+                  "valueType": "string",
+                  "label": "Background",
+                  "description": "Background help",
+                  "placeholder": "Classify background",
+                  "showTargetInApp": true,
+                  "showTargetInPlugin": true,
+                  "connected": false
                 },
                 {
-                "key": "history",
-                "type": "numberInput",
-                "label": "chat history",
-                "required": true,
-                "min": 0,
-                "max": 30,
-                "valueType": "chatHistory",
-                "value": 6,
-                "showTargetInApp": true,
-                "showTargetInPlugin": true,
-                "connected": false
+                  "key": "history",
+                  "type": "numberInput",
+                  "label": "chat history",
+                  "required": true,
+                  "min": 0,
+                  "max": 30,
+                  "valueType": "chatHistory",
+                  "value": 6,
+                  "showTargetInApp": true,
+                  "showTargetInPlugin": true,
+                  "connected": false
                 },
                 {
-                "key": "userChatInput",
-                "type": "systemInput",
-                "label": "",
-                "required": true,
-                "valueType": "string",
-                "showTargetInApp": true,
-                "showTargetInPlugin": true,
-                "toolDescription": "user question",
-                "connected": true
+                  "key": "userChatInput",
+                  "type": "systemInput",
+                  "label": "",
+                  "required": true,
+                  "valueType": "string",
+                  "showTargetInApp": true,
+                  "showTargetInPlugin": true,
+                  "toolDescription": "user question",
+                  "connected": true
                 },
                 {
-                "key": "classifyQuestion",
-                "type": "classifyQuestion",
-                "valueType": "any",
-                "label": "",
-                "value": [
-                    {
-                    "value": "打招呼",
-                    "key": "1"
-                    },
-                    {
-                    "value": "关于 xxx 的问题",
-                    "key": "2"
-                    },
-                    {
-                    "value": "其他问题",
-                    "key": "3"
-                    },
-                    {
-                    "value": "",
-                    "key": "4"
-                    }
-                ],
-                "showTargetInApp": false,
-                "showTargetInPlugin": false,
-                "connected": false
+                  "key": "classifyQuestion",
+                  "type": "classifyQuestion",
+                  "valueType": "any",
+                  "label": "",
+                  "value": [
+                      {
+                      "value": "打招呼",
+                      "key": "1"
+                      },
+                      {
+                      "value": "关于 xxx 的问题",
+                      "key": "2"
+                      },
+                      {
+                      "value": "其他问题",
+                      "key": "3"
+                      },
+                      {
+                      "value": "",
+                      "key": "4"
+                      }
+                  ],
+                  "showTargetInApp": false,
+                  "showTargetInPlugin": false,
+                  "connected": false
                 }
             ],
             "outputs": [
                 {
-                "key": "userChatInput",
-                "label": "user question",
-                "type": "hidden",
-                "valueType": "string",
-                "targets": []
+                  "key": "userChatInput",
+                  "label": "user question",
+                  "type": "hidden",
+                  "valueType": "string",
+                  "targets": []
                 },
                 {
-                "key": "wqre",
-                "label": "",
-                "type": "hidden",
-                "targets": []
+                  "key": "wqre",
+                  "label": "",
+                  "type": "hidden",
+                  "targets": []
                 },
                 {
-                "key": "sdfa",
-                "label": "",
-                "type": "hidden",
-                "targets": []
+                  "key": "sdfa",
+                  "label": "",
+                  "type": "hidden",
+                  "targets": []
                 },
                 {
-                "key": "agex",
-                "label": "",
-                "type": "hidden",
-                "targets": []
+                  "key": "agex",
+                  "label": "",
+                  "type": "hidden",
+                  "targets": []
                 }
             ],
             "moduleId": "classifyQuestion_1"
@@ -502,7 +514,19 @@ export const allNodesData: any = {
                   "showTargetInPlugin": false,
                   "llmModelType": "extractFields",
                   "value": "gpt-3.5-turbo",
-                  "connected": false
+                  "connected": false,
+                  "LLMModel": {
+                    LLMModelOpen: false, 
+                    model: 'gpt-3.5-turbo', 
+                    name: 'Chatgpt-3.5',
+                    quoteMaxToken: 2, 
+                    maxContext: 16000,
+                    functionCall: true,
+                    temperature: 0,
+                    maxResponse: 4000,
+                    maxChatHistories: 6,
+                    charsPointsPrice: 2
+                  }
                 },
                 {
                   "key": "description",

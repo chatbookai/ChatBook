@@ -71,6 +71,39 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
     setIsOpen(false);
   };
 
+  const handleAiModelChange = (index: number, LLMModel: any) => {
+    setNodes((prevState: any)=>{
+      const nodesNew = prevState.map((itemNode: any)=>{
+        if(itemNode.data.id == data.id) {
+          const targetNode = { ...itemNode }
+          const ItemData = targetNode.data.inputs[index]
+          targetNode.data.inputs[index] = { ...ItemData, value: LLMModel.model, LLMModel }
+          console.log("targetNode", targetNode)
+
+          return targetNode
+        }
+        else {
+
+          return itemNode
+        }
+      })
+
+      return nodesNew;
+    })
+  }
+
+  useEffect(() => {
+    const LLMNode: any[] = data.inputs
+    if(LLMNode) {
+      LLMNode.map((itemNode: any)=>{
+        if(itemNode.key == 'model') {
+          console.log("setLLMModel Default", itemNode)
+          setLLMModel( () => ({ ...itemNode.LLMModel, LLMModelOpen: false }) );
+        }
+      })
+    }
+  }, [])
+
   const handleRenameNode = (nodeId: string) => {
     const updatedNodes = nodes.map((node: any) => {
       if (node.id == nodeId) {
@@ -360,7 +393,7 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                                       {LLMModel.model}
                                 </Button>
                               </Box>
-                              <LLMModelModel LLMModel={LLMModel} setLLMModel={setLLMModel} ModelData={item} />
+                              <LLMModelModel LLMModel={LLMModel} setLLMModel={setLLMModel} ModelData={item} handleAiModelChange={handleAiModelChange} index={index}/>
                             </Grid>
                           </Fragment>
                           :

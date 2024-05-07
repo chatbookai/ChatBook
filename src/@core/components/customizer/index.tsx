@@ -244,20 +244,6 @@ const Customizer = () => {
               Layout
             </Typography>
 
-            {/* Content Width */}
-            <Box sx={{ mb: 4 }}>
-              <Typography>Content Width</Typography>
-              <RadioGroup
-                row
-                value={contentWidth}
-                onChange={e => handleChange('contentWidth', e.target.value as Settings['contentWidth'])}
-                sx={{ '& .MuiFormControlLabel-label': { fontSize: '.875rem', color: 'text.secondary' } }}
-              >
-                <FormControlLabel value='full' label='Full' control={<Radio />} />
-                <FormControlLabel value='boxed' label='Boxed' control={<Radio />} />
-              </RadioGroup>
-            </Box>
-
             {/* AppBar */}
             <Box sx={{ mb: 4 }}>
               <Typography>AppBar Type</Typography>
@@ -275,30 +261,6 @@ const Customizer = () => {
               </RadioGroup>
             </Box>
 
-            {/* Footer */}
-            <Box sx={{ mb: 4 }}>
-              <Typography>Footer Type</Typography>
-              <RadioGroup
-                row
-                value={footer}
-                onChange={e => handleChange('footer', e.target.value as Settings['footer'])}
-                sx={{ '& .MuiFormControlLabel-label': { fontSize: '.875rem', color: 'text.secondary' } }}
-              >
-                <FormControlLabel value='fixed' label='Fixed' control={<Radio />} />
-                <FormControlLabel value='static' label='Static' control={<Radio />} />
-                <FormControlLabel value='hidden' label='Hidden' control={<Radio />} />
-              </RadioGroup>
-            </Box>
-
-            {/* AppBar Blur */}
-            <Box sx={{ mb: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Typography>AppBar Blur</Typography>
-              <Switch
-                name='appBarBlur'
-                checked={appBarBlur}
-                onChange={e => handleChange('appBarBlur', e.target.checked)}
-              />
-            </Box>
           </CustomizerSpacing>
 
           <Divider sx={{ m: '0 !important' }} />
@@ -330,29 +292,6 @@ const Customizer = () => {
               </Box>
             )}
 
-            {/* Menu Collapsed */}
-            {navHidden || layout === 'horizontal' ? null : (
-              <Box sx={{ mb: 4, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Typography>Menu Collapsed</Typography>
-                <Switch
-                  name='navCollapsed'
-                  checked={navCollapsed}
-                  onChange={e => handleChange('navCollapsed', e.target.checked)}
-                />
-              </Box>
-            )}
-
-            {/* Menu Hidden */}
-            {layout === 'horizontal' && appBar === 'hidden' ? null : (
-              <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <Typography>Menu Hidden</Typography>
-                <Switch
-                  name='navHidden'
-                  checked={navHidden}
-                  onChange={e => handleChange('navHidden', e.target.checked)}
-                />
-              </Box>
-            )}
           </CustomizerSpacing>
         </PerfectScrollbar>
       </Drawer>

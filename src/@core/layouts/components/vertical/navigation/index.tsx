@@ -189,6 +189,9 @@ const Navigation = (props: Props) => {
               : null}
           </ScrollWrapper>
         </Box>
+        <Box sx={{ position: 'absolute', bottom: 5, left: 5, width: '100%', overflow: 'hidden' }}>
+          用户信息
+        </Box>
         {afterNavMenuContent && afterVerticalNavMenuContentPosition === 'fixed'
           ? afterNavMenuContent(navMenuContentProps)
           : null}

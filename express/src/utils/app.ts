@@ -48,8 +48,8 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       Params.type = filterString(Params.type)
       Params.flowGroup = filterString(Params.flowGroup || '')
       Params.permission = filterString(Params.permission)
-      Params.data = filterString(JSON.stringify(Params.data))
-      const updateSetting = db.prepare('update app set teamId = ?, name = ?, intro = ?, avatar = ?, type = ?, flowGroup = ?, permission = ?, data = ?where _id = ?');
+      Params.data = filterString(Params.data)
+      const updateSetting = db.prepare('update app set teamId = ?, name = ?, intro = ?, avatar = ?, type = ?, flowGroup = ?, permission = ?, data = ? where _id = ?');
       updateSetting.run(Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.flowGroup, Params.permission, Params.data, Params._id);
       updateSetting.finalize();
       return {"status":"ok", "msg":"Update Success"}
@@ -81,12 +81,13 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     const idFilter = filterString(id)
     const userIdFilter = Number(userId)
     
-    const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT data from app where _id = ? and userId = ? `, [idFilter, userIdFilter]) as any[];
+    const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT data, avatar, name, intro, type, flowGroup, permission from app where _id = ? and userId = ? `, [idFilter, userIdFilter]) as any[];
     
     let Template: any = {}
     if(SettingRS)  {
       SettingRS.map((Item: any)=>{
-        Template = JSON.parse(Item.data)
+        const TemplateTemp = JSON.parse(Item.data)
+        Template = {...TemplateTemp, avatar: Item.avatar, name: Item.name, intro: Item.intro, type: Item.type, flowGroup: Item.flowGroup, permission: Item.permission}
       })
     }
   

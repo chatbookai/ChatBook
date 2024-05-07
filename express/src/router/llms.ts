@@ -4,7 +4,7 @@
   import { checkUserToken } from '../utils/user';
 
   import { getLLMSSetting, uploadfiles, uploadfilesInsertIntoDb, filterString } from '../utils/utils';
-  import { outputImage, outputImageOrigin, outputAudio, chatChatBaiduWenxin, chatChatGemini, chatChatGeminiMindMap, chatChatOpenAI, chatKnowledgeOpenAI, GenereateImageUsingDallE2, GenereateAudioUsingTTS, parseFiles } from '../utils/llms';
+  import { outputImage, outputImageOrigin, outputAvatarForApp, outputAudio, chatChatBaiduWenxin, chatChatGemini, chatChatGeminiMindMap, chatChatOpenAI, chatKnowledgeOpenAI, GenereateImageUsingDallE2, GenereateAudioUsingTTS, parseFiles } from '../utils/llms';
   import { llms } from '../config';
 
   const app = express();
@@ -206,6 +206,12 @@
   app.get('/api/image/:file', async (req: Request, res: Response) => {
     const { file } = req.params;
     outputImage(res, file);
+
+  });
+
+  app.get('/api/avatarforapp/:file', async (req: Request, res: Response) => {
+    const { file } = req.params;
+    outputAvatarForApp(res, file);
 
   });
 

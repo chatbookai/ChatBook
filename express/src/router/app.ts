@@ -3,7 +3,7 @@
 
   import { checkUserToken } from '../utils/user';
   import { addApp, editApp, deleteApp, getApp, getAppPage, addPublish, editPublish, deletePublish, getPublish, getPublishsPageByApp, getPublishsAll, getChatlogPageByApp, getChatLogByAppIdAndUserId, deleteUserLogByAppId, deleteUserLogByChatlogId, getAppByPublishId, getChatlogStaticPageByApp } from '../utils/app';
-  import { getLLMSSetting } from '../utils/utils';
+  import { getLLMSSetting, uploadavatar } from '../utils/utils';
   import { GenereateAudioUsingTTS } from '../utils/llms';
  
   const app = express();
@@ -22,12 +22,16 @@
     res.end();
   });
 
-  app.post('/api/editapp', async (req: Request, res: Response) => {
+  app.post('/api/editapp', uploadavatar().array('avatar', 1),  async (req: Request, res: Response) => {
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        console.log("checkUserTokenData editapp", checkUserTokenData)
-        const editAppData: any = await editApp({...req.body, userId: checkUserTokenData.data.id});
+        console.log("editapp uploadedFiles", req.files)
+        let originalAvatar = req.body.avatar
+        if(req.files && Array.isArray(req.files) && req.files[0] && req.files[0].filename) {
+          originalAvatar = req.files[0].filename
+        }
+        const editAppData: any = await editApp({...req.body, userId: checkUserTokenData.data.id, avatar: originalAvatar});
         res.status(200).json(editAppData);
     }
     else {

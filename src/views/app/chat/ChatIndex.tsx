@@ -302,7 +302,7 @@ const AppChat = (props: any) => {
       console.log("WelcomeText", AiNode)
       const systemPromptList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'welcomeText')
       if(systemPromptList && systemPromptList[0] && systemPromptList[0]['value']) {
-        const systemPromptText = systemPromptList[0]['value']
+        const systemPromptText = t(systemPromptList[0]['value'])
 
         return systemPromptText
       }

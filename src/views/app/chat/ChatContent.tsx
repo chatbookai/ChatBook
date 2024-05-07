@@ -7,6 +7,7 @@ import MuiAvatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
+import authConfig from 'src/configs/auth'
 
 // ** Custom Components Import
 import ChatLog from './ChatLog'
@@ -90,7 +91,7 @@ const ChatContent = (props: any) => {
                       }
                     >
                       <MuiAvatar
-                        src={app.avatar}
+                        src={authConfig.backEndApiChatBook + '/api/avatarforapp/' + app.avatar}
                         alt={chatName}
                         sx={{ width: '2rem', height: '2rem' }}
                       />

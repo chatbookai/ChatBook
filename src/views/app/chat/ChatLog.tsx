@@ -361,7 +361,7 @@ const ChatLog = (props: any) => {
                 fontSize: '0.875rem',
               }}
               {...{
-                src: app.avatar? app.avatar : '/images/avatars/1.png',
+                src: app.avatar? authConfig.backEndApiChatBook + '/api/avatarforapp/' + app.avatar : '/images/avatars/1.png',
                 alt: chatName
               }}
             >

@@ -1,12 +1,11 @@
 // ** React Imports
-import { Fragment, useEffect, ReactNode } from 'react'
+import { Fragment, useEffect, ReactNode, useState } from 'react'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
-import Avatar from '@mui/material/Avatar'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import CardContent from '@mui/material/CardContent'
@@ -15,12 +14,15 @@ import MenuItem from '@mui/material/MenuItem'
 import InputLabel from '@mui/material/InputLabel'
 import FormControl from '@mui/material/FormControl'
 import TextField2 from 'src/context/TextField2'
+import { styled } from '@mui/material/styles'
+import authConfig from 'src/configs/auth'
 
 // ** Axios Imports
 import { useRouter } from 'next/router'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
+import { useDropzone } from 'react-dropzone'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
@@ -42,7 +44,7 @@ const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: bool
 
 const SimpleEdit = (props: any) => {
   // ** Props
-  const { app, setApp, handleEditApp, handleDeleteApp, isDisabledButton, deleteOpen, setDeleteOpen } = props
+  const { app, setApp, handleEditApp, handleDeleteApp, isDisabledButton, deleteOpen, setDeleteOpen, avatarFiles, setAvatarFiles } = props
   
   // ** Hook
   const { t } = useTranslation()
@@ -56,9 +58,29 @@ const SimpleEdit = (props: any) => {
     console.log("app", app)
   }, [app])
 
-  // ** State
+  // Styled component for the upload image inside the dropzone area
+  const Img = styled('img')(({ theme }) => ({
+    [theme.breakpoints.up('md')]: {
+        marginRight: theme.spacing(15.75)
+    },
+    [theme.breakpoints.down('md')]: {
+        marginBottom: theme.spacing(4)
+    },
+    [theme.breakpoints.down('sm')]: {
+        width: 38
+    }
+  }))
 
-   
+  const { getRootProps: getRootPropsAvatar, getInputProps: getInputPropsAvatar } = useDropzone({
+    multiple: false,
+    accept: {
+      'image/*': ['.png', '.jpg', '.jpeg']
+    },
+    onDrop: (acceptedFiles: File[]) => {
+        setAvatarFiles(acceptedFiles.map((file: File) => Object.assign(file)))
+    }
+  })
+
   const hidden = false;
   
   return (
@@ -71,18 +93,15 @@ const SimpleEdit = (props: any) => {
                         <Card sx={{ border: theme => `1px solid ${theme.palette.divider}`, my: 1, ml: 3, mr: 3, p: 2 }}>
                             <CardContent>
                                 <Grid container spacing={5}>
-                                    <Grid container item xs={12}>
-                                        <Grid item xs={5}>
-                                            <Typography variant='h6' sx={{ ml: 3, mb: 1 }}>
+                                    <Typography sx={{ p: 0, m: 0, mt: 0, fontSize: '0.8rem', textAlign: 'right' }}>
+                                        Id: {`${t(app?._id || '')}`}
+                                    </Typography>
+                                    <Grid item xs={12} sx={{m: 0, p: 0}}>
+                                        <Typography variant='h6' sx={{ ml: 0, mb: 0 }}>
                                             {`${t(app?.name || '')}`}
-                                            </Typography>
-                                        </Grid>
-                                        <Grid item xs={7} textAlign='right'>
-                                            <Typography sx={{ mr: 3, mb: 1, mt: 2, fontSize: '0.8rem' }}>
-                                            Id:{`${t(app?._id || '')}`}
-                                            </Typography>
-                                        </Grid>
+                                        </Typography>
                                     </Grid>
+
                                     <Grid item xs={12}>
                                         <Button variant='outlined' sx={{mr: 1}} size="small" startIcon={<Icon icon='mingcute:file-export-fill' />} onClick={()=>{
                                             router.push('/app/chat/' + app?._id)
@@ -101,15 +120,18 @@ const SimpleEdit = (props: any) => {
                                         </Button>
                                     </Grid>
                                     <Grid item xs={2}>
-                                        <Avatar
-                                            src={app.avatar}
-                                            alt={app.name}
-                                            sx={{
-                                            width: 38,
-                                            height: 38,
-                                            mr: 2
-                                            }}
-                                        />
+                                        <Box {...getRootPropsAvatar({ className: 'dropzone' })} sx={{width: '38px', height: '38px', cursor: 'pointer'}}>
+                                            <input {...getInputPropsAvatar()} />
+                                            {avatarFiles && avatarFiles.length ? (
+                                                <Box  sx={{ alignItems: 'center'}}>
+                                                    <Img alt={`${t(`Upload Avatar image`)}`} src={URL.createObjectURL(avatarFiles[0] as any)} sx={{width: '100%', borderRadius: '25px'}}/>
+                                                </Box>
+                                            ) : (
+                                                <Box sx={{alignItems: 'center'}}>
+                                                    <Img alt={`${t(`Upload Avatar image`)}`} src={authConfig.backEndApiChatBook + '/api/avatarforapp/' + app.avatar} sx={{width: '100%', borderRadius: '25px'}}/>
+                                                </Box>
+                                            )}
+                                        </Box>
                                     </Grid>
                                     <Grid item xs={6}>
                                         <TextField

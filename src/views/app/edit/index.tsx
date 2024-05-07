@@ -32,6 +32,7 @@ const EditApp = (props: any) => {
   const [app, setApp] = useState<any>(null)
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
   const [deleteOpen, setDeleteOpen] = useState<boolean>(false) 
+  const [avatarFiles, setAvatarFiles] = useState<File[]>([])
 
   const { menuid } = props
 
@@ -62,8 +63,35 @@ const EditApp = (props: any) => {
         updateTime: String(new Date(Date.now()).toLocaleString()),
         mode: 'simple'
       }
-      const PostParams = {name: appNew.name, _id: appNew._id, teamId: appNew.teamId, intro: appNew.intro, avatar: appNew.avatar, type: appNew.type, flowGroup: appNew.flowGroup, permission: appNew.permission, data: appNew}
-      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/editapp', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+      const formData = new FormData();
+      formData.append('name', appNew.name);
+      formData.append('_id', appNew._id);
+      formData.append('teamId', appNew.teamId);
+      formData.append('intro', appNew.intro);
+      formData.append('avatar', appNew.avatar); // Assuming appNew.avatar is the File object of the image
+      formData.append('type', appNew.type);
+      formData.append('flowGroup', appNew.flowGroup);
+      formData.append('permission', appNew.permission);
+      formData.append('data', JSON.stringify(appNew)); // Assuming appNew is an object
+
+      // Now you can append the image file(s) to the formData
+      avatarFiles.forEach((file: any) => {
+        formData.append(`avatar`, file);
+      });
+
+      const FormSubmit: any = await axios.post(
+        authConfig.backEndApiChatBook + '/api/editapp',
+        formData,
+        {
+          headers: {
+            Authorization: auth.user.token,
+            'Content-Type': 'multipart/form-data', // Important: Use multipart/form-data for file uploads
+          },
+        }
+      ).then(res => res.data);
+
+      //const PostParams = {name: appNew.name, _id: appNew._id, teamId: appNew.teamId, intro: appNew.intro, avatar: appNew.avatar, type: appNew.type, flowGroup: appNew.flowGroup, permission: appNew.permission, data: appNew}
+      //const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/editapp', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit", FormSubmit)
       setIsDisabledButton(false)
       if(FormSubmit?.status == "ok") {
@@ -133,7 +161,7 @@ const EditApp = (props: any) => {
         
         {menuid == 'edit' && app?._id?
         <Fragment>
-          <SimpleEdit app={app} setApp={setApp} handleEditApp={handleEditApp} handleDeleteApp={handleDeleteApp} isDisabledButton={isDisabledButton} deleteOpen={deleteOpen} setDeleteOpen={setDeleteOpen}/>
+          <SimpleEdit app={app} setApp={setApp} handleEditApp={handleEditApp} handleDeleteApp={handleDeleteApp} isDisabledButton={isDisabledButton} deleteOpen={deleteOpen} setDeleteOpen={setDeleteOpen} avatarFiles={avatarFiles} setAvatarFiles={setAvatarFiles}/>
           <ChatIndex app={app} userType={'User'}/>
         </Fragment>
         :

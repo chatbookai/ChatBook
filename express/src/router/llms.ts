@@ -83,12 +83,14 @@
   app.post('/api/ChatApp', async (req: Request, res: Response) => {
     const { question, history, template, appId, _id, publishId, allowChatLog } = req.body;
     const { authorization } = req.headers;
-    const knowledgeId = 'ChatGPT3.5'
+    //const knowledgeId = 'ChatGPT3.5'
+    const knowledgeId = 'ChatGPT4'
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         const getLLMSSettingData = await getLLMSSetting(knowledgeId);
         if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
           await chatChatOpenAI(_id, res, knowledgeId, checkUserTokenData.data.id, question, history, template, appId, publishId || '', allowChatLog);
+          //await chatChatGemini(_id, res, knowledgeId, checkUserTokenData.data.id, question, history, template, appId, publishId || '', allowChatLog);
           res.end();
         }
         else {
@@ -122,14 +124,13 @@
   });
   
   app.post('/api/ChatGemini', async (req: Request, res: Response) => {
-    const { knowledgeId, question, history, template, appId } = req.body;
+    const { knowledgeId, question, history, template, appId, publishId, _id, allowChatLog} = req.body;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         const getLLMSSettingData = await getLLMSSetting(knowledgeId);   
         if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
-          await chatChatGemini(res, knowledgeId, checkUserTokenData.data.id, question, history, template, appId);
-          res.end();
+          await chatChatGemini(_id, res, knowledgeId, checkUserTokenData.data.id, question, history, template, appId, publishId || '', allowChatLog);
         }
         else {        
           res.status(200).json({"status":"error", "msg":"Not set API_KEY", "data": null});

@@ -443,7 +443,7 @@ const ChatLog = (props: any) => {
                           :
                             <ReactMarkdown>{chat.msg.replace('\n', '  \n')}</ReactMarkdown>
                           }
-                          {GetQuestionGuideFromAppValue && !isSender && index == ChatItemMsgList.length - 1 && index>0 && questionGuide && questionGuide.length > 0 ?
+                          {GetQuestionGuideFromAppValue && !isSender && index == ChatItemMsgList.length - 1 && index>0 && questionGuide && Array.isArray(questionGuide) && questionGuide.length > 0 ?
                             <Box>
                               <Box display="flex" alignItems="center">
                                 <Avatar src={'/imgs/module/cq.png'} sx={{ mr: 2.5, width: 26, height: 26 }} />

@@ -303,6 +303,170 @@ let ChatBaiduWenxinModel: any = null
 
     return serializedDocs.join(separator);
   }
+
+  export async function initChatBookGeminiStream(res: Response, knowledgeId: number | string) {
+    getLLMSSettingData = await getLLMSSetting(knowledgeId);
+    const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
+    const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
+    if(OPENAI_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
+      process.env.GOOGLE_API_KEY = OPENAI_API_KEY
+      ChatGeminiModel = new ChatGoogleGenerativeAI({
+          modelName: getLLMSSettingData.ModelName ?? "gemini-pro",
+          maxOutputTokens: 2048,
+          safetySettings: [
+            {
+              category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+              threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+            },
+          ],
+      });
+      pinecone = new Pinecone({apiKey: PINECONE_API_KEY,});
+    }
+    else {
+      res.write("Not set API_KEY");
+      res.end();
+    }
+  }
+
+  export async function chatChatGemini(_id: string, res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number) {
+    await initChatBookGeminiStream(res, knowledgeId)
+
+    const pastMessages: any[] = []
+    if(template && template!='') {
+      pastMessages.push(new SystemMessage(template))
+    }
+    if(history && history.length > 0) {
+      history.map((Item) => {
+        if(Item[0]) {
+          pastMessages.push(new HumanMessage(Item[0]))
+        }
+        if(Item[1]) {
+          pastMessages.push(new AIMessage(Item[1]))
+        }
+      })
+    }
+    pastMessages.push(new HumanMessage(question))
+
+    try {
+      const startTime = performance.now()
+      const res3 = await ChatGeminiModel.stream(pastMessages);
+      let response = '';
+      for await (const chunk of res3) {
+          console.log(chunk.content);
+          res.write(chunk.content);
+          response = response + chunk.content
+      }
+      const endTime = performance.now()
+      const responseTime = Math.round((endTime - startTime) * 100 / 1000) / 100   
+      if(allowChatLog == 1)   {
+        const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (_id, send, Received, userId, timestamp, source, history, responseTime, appId, publishId) VALUES (?,?,?,?,?,?,?,?,?,?)');
+        insertChatLog.run(_id, question, response, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), responseTime, appId, publishId);
+        insertChatLog.finalize();
+      }
+    }
+    catch(error: any) {
+      console.log("chatChatGemini error", error.message)
+      res.write(error.message)
+    }
+    res.end();
+  }
+
+  export async function chatChatGeminiMindMap(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string, appId: number) {
+    await initChatBookGeminiStream(res, knowledgeId)
+    const TextPrompts = template && template != '' ? template : "\n 要求生成一份PPT的大纲,以行业总结性报告的形式显现,生成15-20页左右,每一页3-6个要点,每一个要点字数在10-30之间,返回格式为Markdown,标题格式使用: **标题名称** 的形式表达."
+    const input2 = [
+        new HumanMessage({
+          content: [
+            {
+              type: "text",
+              text: question + TextPrompts,
+            },
+          ],
+        }),
+      ];
+    try {
+      const res3 = await ChatGeminiModel.stream(input2);
+      let response = '';
+      for await (const chunk of res3) {
+          //console.log(chunk.content);
+          res.write(chunk.content);
+          response = response + chunk.content
+      }
+      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (send, Received, userId, timestamp, source, history, appId) VALUES (?,?,?,?,?,?,?)');
+      insertChatLog.run(question, response, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), appId);
+      insertChatLog.finalize();
+    }
+    catch(error: any) {
+      console.log("chatChatGemini error", error.message)
+      res.write(error.message)
+    }
+    res.end();
+  }
+
+  export async function initChatBookBaiduWenxinStream(res: Response, knowledgeId: number | string) {
+    getLLMSSettingData = await getLLMSSetting(knowledgeId);
+    const BAIDU_API_KEY = getLLMSSettingData.OPENAI_API_KEY ?? "1AWXpm1Cd8lbxmAaFoPR0dNx";
+    const BAIDU_SECRET_KEY = getLLMSSettingData.OPENAI_API_BASE ?? "TQy5sT9Mz4xKn0tR8h7W6LxPWIUNnXqq";
+    const OPENAI_Temperature = 1;
+    if(BAIDU_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
+      process.env.BAIDU_API_KEY = BAIDU_API_KEY
+      process.env.BAIDU_SECRET_KEY = BAIDU_SECRET_KEY
+      try {
+        ChatBaiduWenxinModel = new ChatBaiduWenxin({
+          modelName: getLLMSSettingData.ModelName ?? "ERNIE-Bot-4", // Available models: ERNIE-Bot, ERNIE-Bot-turbo, ERNIE-Bot-4
+          temperature: OPENAI_Temperature,
+          baiduApiKey: process.env.BAIDU_API_KEY, // In Node.js defaults to process.env.BAIDU_API_KEY
+          baiduSecretKey: process.env.BAIDU_SECRET_KEY, // In Node.js defaults to process.env.BAIDU_SECRET_KEY
+        });
+      }
+      catch(error) {
+        console.log("initChatBookBaiduWenxinStream ChatBaiduWenxinModel:", error)
+      }
+      pinecone = new Pinecone({apiKey: PINECONE_API_KEY,});
+    }
+    else {
+      res.write("Not set API_KEY");
+      res.end();
+    }
+  }
+
+  export async function chatChatBaiduWenxin(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string, appId: number) {
+    await initChatBookBaiduWenxinStream(res, knowledgeId);
+    if(!ChatBaiduWenxinModel) {
+      res.end();
+      return
+    }
+    try {
+      const pastMessages: any[] = []
+      if(template && template!='') {
+        pastMessages.push(new SystemMessage(template))
+      }
+      if(history && history.length > 0) {
+        history.map((Item) => {
+          if(Item[0]) {
+            pastMessages.push(new HumanMessage(Item[0]))
+          }
+          if(Item[1]) {
+            pastMessages.push(new AIMessage(Item[1]))
+          }
+        })
+      }
+      pastMessages.push(new HumanMessage(question))
+      const response = await ChatBaiduWenxinModel.call(pastMessages);
+      console.log("response", response.content);
+      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (send, Received, userId, timestamp, source, history, appId) VALUES (?,?,?,?,?,?,?)');
+      insertChatLog.run(question, response.content, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), appId);
+      insertChatLog.finalize();
+
+      return response.content;
+    }
+    catch(error: any) {
+      console.log("chatChatOpenAI error", error.message)
+      return error.message;
+    }    
+  }
+
+  
   
   export async function debug(res: Response, knowledgeId: number | string) {
     await initChatBookOpenAIStream(res, knowledgeId)
@@ -619,7 +783,6 @@ let ChatBaiduWenxinModel: any = null
       await Promise.all(RecordsAll.map(async (FileItem: any)=>{
         const KnowledgeItemId = FileItem.knowledgeId
         await initChatBookOpenAI(KnowledgeItemId)
-        console.log("parseFiles getLLMSSettingData", getLLMSSettingData)
         if(getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "")    {
             console.log("KnowledgeItemId", KnowledgeItemId)
             console.log("process.env.OPENAI_BASE_URL", process.env.OPENAI_BASE_URL)
@@ -676,163 +839,6 @@ let ChatBaiduWenxinModel: any = null
     } catch (error: any) {
       log('parseFiles Failed to ingest your data', error);
     }
-  }
-
-  export async function initChatBookGeminiStream(res: Response, knowledgeId: number | string) {
-    getLLMSSettingData = await getLLMSSetting(knowledgeId);
-    const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
-    const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
-    if(OPENAI_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
-      process.env.GOOGLE_API_KEY = OPENAI_API_KEY
-      ChatGeminiModel = new ChatGoogleGenerativeAI({
-          modelName: getLLMSSettingData.ModelName ?? "gemini-pro",
-          maxOutputTokens: 2048,
-          safetySettings: [
-            {
-              category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-              threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-            },
-          ],
-      });
-      pinecone = new Pinecone({apiKey: PINECONE_API_KEY,});
-    }
-    else {
-      res.write("Not set API_KEY");
-      res.end();
-    }
-  }
-
-  export async function chatChatGemini(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string, appId: number) {
-    await initChatBookGeminiStream(res, knowledgeId)
-
-    const pastMessages: any[] = []
-    if(template && template!='') {
-      pastMessages.push(new SystemMessage(template))
-    }
-    if(history && history.length > 0) {
-      history.map((Item) => {
-        if(Item[0]) {
-          pastMessages.push(new HumanMessage(Item[0]))
-        }
-        if(Item[1]) {
-          pastMessages.push(new AIMessage(Item[1]))
-        }
-      })
-    }
-    pastMessages.push(new HumanMessage(question))
-
-    try {
-      const res3 = await ChatGeminiModel.stream(pastMessages);
-      let response = '';
-      for await (const chunk of res3) {
-          //console.log(chunk.content);
-          res.write(chunk.content);
-          response = response + chunk.content
-      }
-      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (send, Received, userId, timestamp, source, history, appId) VALUES (?,?,?,?,?,?,?)');
-      insertChatLog.run(question, response, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), appId);
-      insertChatLog.finalize();
-    }
-    catch(error: any) {
-      console.log("chatChatGemini error", error.message)
-      res.write(error.message)
-    }
-    res.end();
-  }
-
-  export async function chatChatGeminiMindMap(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string, appId: number) {
-    await initChatBookGeminiStream(res, knowledgeId)
-    const TextPrompts = template && template != '' ? template : "\n 要求生成一份PPT的大纲,以行业总结性报告的形式显现,生成15-20页左右,每一页3-6个要点,每一个要点字数在10-30之间,返回格式为Markdown,标题格式使用: **标题名称** 的形式表达."
-    const input2 = [
-        new HumanMessage({
-          content: [
-            {
-              type: "text",
-              text: question + TextPrompts,
-            },
-          ],
-        }),
-      ];
-    try {
-      const res3 = await ChatGeminiModel.stream(input2);
-      let response = '';
-      for await (const chunk of res3) {
-          //console.log(chunk.content);
-          res.write(chunk.content);
-          response = response + chunk.content
-      }
-      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (send, Received, userId, timestamp, source, history, appId) VALUES (?,?,?,?,?,?,?)');
-      insertChatLog.run(question, response, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), appId);
-      insertChatLog.finalize();
-    }
-    catch(error: any) {
-      console.log("chatChatGemini error", error.message)
-      res.write(error.message)
-    }
-    res.end();
-  }
-
-  export async function initChatBookBaiduWenxinStream(res: Response, knowledgeId: number | string) {
-    getLLMSSettingData = await getLLMSSetting(knowledgeId);
-    const BAIDU_API_KEY = getLLMSSettingData.OPENAI_API_KEY ?? "1AWXpm1Cd8lbxmAaFoPR0dNx";
-    const BAIDU_SECRET_KEY = getLLMSSettingData.OPENAI_API_BASE ?? "TQy5sT9Mz4xKn0tR8h7W6LxPWIUNnXqq";
-    const OPENAI_Temperature = 1;
-    if(BAIDU_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
-      process.env.BAIDU_API_KEY = BAIDU_API_KEY
-      process.env.BAIDU_SECRET_KEY = BAIDU_SECRET_KEY
-      try {
-        ChatBaiduWenxinModel = new ChatBaiduWenxin({
-          modelName: getLLMSSettingData.ModelName ?? "ERNIE-Bot-4", // Available models: ERNIE-Bot, ERNIE-Bot-turbo, ERNIE-Bot-4
-          temperature: OPENAI_Temperature,
-          baiduApiKey: process.env.BAIDU_API_KEY, // In Node.js defaults to process.env.BAIDU_API_KEY
-          baiduSecretKey: process.env.BAIDU_SECRET_KEY, // In Node.js defaults to process.env.BAIDU_SECRET_KEY
-        });
-      }
-      catch(error) {
-        console.log("initChatBookBaiduWenxinStream ChatBaiduWenxinModel:", error)
-      }
-      pinecone = new Pinecone({apiKey: PINECONE_API_KEY,});
-    }
-    else {
-      res.write("Not set API_KEY");
-      res.end();
-    }
-  }
-
-  export async function chatChatBaiduWenxin(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string, appId: number) {
-    await initChatBookBaiduWenxinStream(res, knowledgeId);
-    if(!ChatBaiduWenxinModel) {
-      res.end();
-      return
-    }
-    try {
-      const pastMessages: any[] = []
-      if(template && template!='') {
-        pastMessages.push(new SystemMessage(template))
-      }
-      if(history && history.length > 0) {
-        history.map((Item) => {
-          if(Item[0]) {
-            pastMessages.push(new HumanMessage(Item[0]))
-          }
-          if(Item[1]) {
-            pastMessages.push(new AIMessage(Item[1]))
-          }
-        })
-      }
-      pastMessages.push(new HumanMessage(question))
-      const response = await ChatBaiduWenxinModel.call(pastMessages);
-      console.log("response", response.content);
-      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (send, Received, userId, timestamp, source, history, appId) VALUES (?,?,?,?,?,?,?)');
-      insertChatLog.run(question, response.content, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), appId);
-      insertChatLog.finalize();
-
-      return response.content;
-    }
-    catch(error: any) {
-      console.log("chatChatOpenAI error", error.message)
-      return error.message;
-    }    
   }
 
 

@@ -66,20 +66,39 @@ const NewApp = ({ NewOpen, setNewOpen, handleAddApp, AppNewForm, setAppNewForm }
                         }}
                     />
                 </Grid>
+                <Grid item sx={{pt: 0}} xs={12}>
+                    <Box display="flex" mb={1} alignItems="center">
+                        <Typography sx={{pb: 1}}>{t('groupOne') as string}</Typography>
+                        <span style={{ paddingTop: '5px', color: 'red', marginLeft: '3px' }}>*</span>
+                    </Box>
+                    <TextField
+                        size='small'
+                        InputProps={{ inputProps: { min: 0, max: 100 } }}
+                        value={AppNewForm.groupOne || 'General'}
+                        sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
+                        onChange={(e: any) => {
+                            setAppNewForm((prevState: any)=>({
+                                ...prevState,
+                                groupOne: e.target.value as string
+                            }))
+                            console.log("e.target.value", e.target.value);
+                        }}
+                    />
+                </Grid>
                 <Grid item sx={{pt: 1}} xs={12}>
                     <Box display="flex" mb={1} alignItems="center">
-                        <Typography sx={{pb: 1}}>{t('Group') as string}</Typography>
+                        <Typography sx={{pb: 1}}>{t('groupTwo') as string}</Typography>
                         <span style={{ paddingTop: '5px', color: 'red', marginLeft: '3px' }}>*</span>
                     </Box>
                     <Select 
                         size="small" 
-                        value={AppNewForm.flowGroup}
+                        value={AppNewForm.groupTwo}
                         fullWidth
                         onChange={(e: any) => {
                             if(e.target.value != null) {
                                 setAppNewForm((prevState: any)=>({
                                     ...prevState,
-                                    flowGroup: e.target.value as string
+                                    groupTwo: e.target.value as string
                                 }))
                             }
                         }}

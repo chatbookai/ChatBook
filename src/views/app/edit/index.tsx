@@ -70,7 +70,7 @@ const EditApp = (props: any) => {
       formData.append('intro', appNew.intro);
       formData.append('avatar', appNew.avatar); // Assuming appNew.avatar is the File object of the image
       formData.append('type', appNew.type);
-      formData.append('flowGroup', appNew.flowGroup);
+      formData.append('groupTwo', appNew.groupTwo);
       formData.append('permission', appNew.permission);
       formData.append('data', JSON.stringify(appNew)); // Assuming appNew is an object
 
@@ -90,7 +90,7 @@ const EditApp = (props: any) => {
         }
       ).then(res => res.data);
 
-      //const PostParams = {name: appNew.name, _id: appNew._id, teamId: appNew.teamId, intro: appNew.intro, avatar: appNew.avatar, type: appNew.type, flowGroup: appNew.flowGroup, permission: appNew.permission, data: appNew}
+      //const PostParams = {name: appNew.name, _id: appNew._id, teamId: appNew.teamId, intro: appNew.intro, avatar: appNew.avatar, type: appNew.type, groupTwo: appNew.groupTwo, permission: appNew.permission, data: appNew}
       //const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/editapp', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit", FormSubmit)
       setIsDisabledButton(false)

@@ -11,6 +11,6 @@ export default {
   storageTokenKeyName: 'ChatBookAccessToken',
   userInfoTokenKeyName: 'ChatBookUserToken',
   onTokenExpiration: 'ChatBookRefreshToken',
-  logo: '/images/chives.png'
+  logo: 'avatar.png'
 }
 

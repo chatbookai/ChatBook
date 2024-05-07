@@ -137,7 +137,7 @@ const MyApp = () => {
   }, [app]); 
 
   const [NewOpen, setNewOpen] = useState<boolean>(false);
-  const [AppNewForm, setAppNewForm] = useState<any>({name: t('My App'), flowType: 'simpleChat', flowGroup: "Default"})
+  const [AppNewForm, setAppNewForm] = useState<any>({name: t('My App'), flowType: 'simpleChat', groupTwo: "Default"})
 
   useEffect(() => {
     setAppNewForm((prevState: any)=>({
@@ -162,7 +162,7 @@ const MyApp = () => {
           updateTime: String(new Date(Date.now()).toLocaleString())
         }
       }
-      const PostParams = {name: AppNewForm.name, _id: simpleChatNew._id, teamId: simpleChatNew.teamId, intro: simpleChatNew.intro, avatar: simpleChatNew.avatar, type: simpleChatNew.type, flowGroup: AppNewForm.flowGroup, permission: simpleChatNew.permission, data: simpleChatNew}
+      const PostParams = {name: AppNewForm.name, _id: simpleChatNew._id, teamId: simpleChatNew.teamId, intro: simpleChatNew.intro, avatar: simpleChatNew.avatar, type: simpleChatNew.type, groupOne: AppNewForm.groupOne, groupTwo: AppNewForm.groupTwo, permission: simpleChatNew.permission, data: simpleChatNew}
       const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/addapp', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit", FormSubmit)
       if(FormSubmit && FormSubmit.status == 'ok' && code)  {

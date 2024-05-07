@@ -258,11 +258,13 @@ export async function initChatBookDb() {
                 intro TEXT not null,
                 avatar TEXT not null,
                 type TEXT not null,
-                flowGroup TEXT not null,
+                groupOne TEXT not null default '通用',
+                groupTwo TEXT not null default '写作',
                 permission TEXT not null,
                 data TEXT not null,
                 status INTEGER not null default 1,
                 userId INTEGER not null default 0,
+                language TEXT not null default 'en',
                 UNIQUE(_id)
             );
         `);

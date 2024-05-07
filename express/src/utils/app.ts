@@ -23,12 +23,14 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       Params.intro = filterString(Params.intro)
       Params.avatar = filterString(Params.avatar)
       Params.type = filterString(Params.type)
-      Params.flowGroup = filterString(Params.flowGroup)
+      Params.groupOne = filterString(Params.groupOne)
+      Params.groupTwo = filterString(Params.groupTwo)
       Params.permission = filterString(Params.permission)
+      Params.language = filterString(Params.language)
       Params.data = filterString(JSON.stringify(Params.data))
   
-      const insertSetting = db.prepare('INSERT OR IGNORE INTO app (_id, teamId, name, intro, avatar, type, flowGroup, permission, data, status, userId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-      insertSetting.run(Params._id, Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.flowGroup, Params.permission, Params.data, 1, Params.userId);
+      const insertSetting = db.prepare('INSERT OR IGNORE INTO app (_id, teamId, name, intro, avatar, type, groupTwo, groupOne, permission, data, status, userId, language) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+      insertSetting.run(Params._id, Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.groupOne, Params.groupTwo, Params.permission, Params.data, 1, Params.userId, Params.language);
       insertSetting.finalize();
       return {"status":"ok", "msg":"Add Success"}
     }
@@ -46,11 +48,13 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       Params.intro = filterString(Params.intro)
       Params.avatar = filterString(Params.avatar)
       Params.type = filterString(Params.type)
-      Params.flowGroup = filterString(Params.flowGroup || '')
+      Params.groupOne = filterString(Params.groupOne || '')
+      Params.groupTwo = filterString(Params.groupTwo || '')
       Params.permission = filterString(Params.permission)
+      Params.language = filterString(Params.language)
       Params.data = filterString(Params.data)
-      const updateSetting = db.prepare('update app set teamId = ?, name = ?, intro = ?, avatar = ?, type = ?, flowGroup = ?, permission = ?, data = ? where _id = ?');
-      updateSetting.run(Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.flowGroup, Params.permission, Params.data, Params._id);
+      const updateSetting = db.prepare('update app set teamId = ?, name = ?, intro = ?, avatar = ?, type = ?, groupOne = ?, groupTwo = ?, permission = ?, data = ?, language = ? where _id = ?');
+      updateSetting.run(Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.groupOne, Params.groupTwo, Params.permission, Params.data, Params.language, Params._id);
       updateSetting.finalize();
       return {"status":"ok", "msg":"Update Success"}
     }
@@ -81,13 +85,13 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     const idFilter = filterString(id)
     const userIdFilter = Number(userId)
     
-    const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT data, avatar, name, intro, type, flowGroup, permission from app where _id = ? and userId = ? `, [idFilter, userIdFilter]) as any[];
+    const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT data, avatar, name, intro, type, groupTwo, permission from app where _id = ? and userId = ? `, [idFilter, userIdFilter]) as any[];
     
     let Template: any = {}
     if(SettingRS)  {
       SettingRS.map((Item: any)=>{
         const TemplateTemp = JSON.parse(Item.data)
-        Template = {...TemplateTemp, avatar: Item.avatar, name: Item.name, intro: Item.intro, type: Item.type, flowGroup: Item.flowGroup, permission: Item.permission}
+        Template = {...TemplateTemp, avatar: Item.avatar, name: Item.name, intro: Item.intro, type: Item.type, groupTwo: Item.groupTwo, permission: Item.permission}
       })
     }
   

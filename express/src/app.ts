@@ -8,16 +8,17 @@ import { join } from 'path';
 
 import { initChatBookDbExec } from './utils/db';
 import { debug, parseFiles } from './utils/llms';
-import { downloadVideoFromAPI } from './utils/stability';
+
+//import { downloadVideoFromAPI } from './utils/Backup/stability';
 
 import userRouter from './router/user'
 import llmsRouter from './router/llms'
 import utilsRouter from './router/utils'
-import stabilityRouter from './router/stability'
-import getimgRouter from './router/getimg'
 import appRouter from './router/app'
 import datasetRouter from './router/dataset'
 
+//import stabilityRouter from './router/Backup/stability'
+//import getimgRouter from './router/Backup/getimg'
 //import seaartRouter from './router/seaart'
 
 //Start Express Server
@@ -35,18 +36,18 @@ initChatBookDbExec()
 cron.schedule('*/1 * * * *', () => {
   console.log('Task Begin !');
   parseFiles();
-  downloadVideoFromAPI();
   console.log('Task End !');
+  //downloadVideoFromAPI();
 });
 
 app.use('/', userRouter);
 app.use('/', llmsRouter);
 app.use('/', utilsRouter);
-app.use('/', getimgRouter);
-app.use('/', stabilityRouter);
 app.use('/', appRouter);
 app.use('/', datasetRouter);
 
+//app.use('/', getimgRouter);
+//app.use('/', stabilityRouter);
 //app.use('/', seaartRouter);
 
 app.get('/api/debug', async (req: Request, res: Response) => {

@@ -1,9 +1,9 @@
   // app.ts
   import express, { Request, Response } from 'express';
 
-  import { checkUserToken, checkUserTokenXWE, checkUserTokenXWENotCostAmount } from '../utils/user';
+  import { checkUserToken, checkUserTokenXWE, checkUserTokenXWENotCostAmount } from '../../utils/user';
 
-  import { getUserImagesSeaArt, getUserImagesAll, generateImageSeaArt, getTokenSeaArt, checkImageProcessSeaArt, outputImageSeaArt } from '../utils/seaart';
+  import { getUserImagesSeaArt, getUserImagesAll, generateImageSeaArt, getTokenSeaArt, checkImageProcessSeaArt, outputImageSeaArt } from '../../utils/Backup/seaart';
 
   const app = express();
   

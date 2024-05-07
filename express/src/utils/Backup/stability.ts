@@ -1,13 +1,13 @@
 import { Request, Response } from 'express';
 import axios from 'axios'
 import * as fs from 'fs'
-import { DataDir } from './const'
+import { DataDir } from '../const'
 import sharp from 'sharp';
 
 import path from 'path'
-import { db, getDbRecord, getDbRecordALL } from './db'
-import { timestampToDate, isFile, filterNegativePrompt } from './utils'
-import { compressImageForImage } from './llms'
+import { db, getDbRecord, getDbRecordALL } from '../db'
+import { timestampToDate, isFile, filterNegativePrompt } from '../utils'
+import { compressImageForImage } from '../llms'
 import FormData from "form-data"
 
 const STABILITY_API_SECRET_KEY_IMAGE = process.env.STABILITY_API_KEY_IMAGE

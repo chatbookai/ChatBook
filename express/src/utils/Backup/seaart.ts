@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import axios from 'axios'
 import * as fs from 'fs'
-import { DataDir } from './const'
+import { DataDir } from '../const'
 
 import path from 'path'
-import { db, getDbRecord, getDbRecordALL } from './db'
-import { timestampToDate, isFile } from './utils'
+import { db, getDbRecord, getDbRecordALL } from '../db'
+import { timestampToDate, isFile } from '../utils'
 import sharp from 'sharp'
 
 type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;

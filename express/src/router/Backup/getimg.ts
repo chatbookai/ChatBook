@@ -1,9 +1,9 @@
   // app.ts
   import express, { Request, Response } from 'express';
 
-  import { checkUserToken } from '../utils/user';
+  import { checkUserToken } from '../../utils/user';
 
-  import { getModels, getModelDetail, generateImageGetImg, getModelsToGenereateImage, TextToImageALL, TextToImageAllLatentConsistency, Base64ToImg, getUserImagesGetImg, getUserImagesGetImgAll } from '../utils/getimg';
+  import { getModels, getModelDetail, generateImageGetImg, getModelsToGenereateImage, TextToImageALL, TextToImageAllLatentConsistency, Base64ToImg, getUserImagesGetImg, getUserImagesGetImgAll } from '../../utils/Backup/getimg';
 
   const app = express();
 

@@ -26,21 +26,6 @@ Helpful answer in markdown:`
 
 export const MenuListAdmin = [
   {
-    title: 'Dashboards',
-    icon: 'mdi:home-outline',
-    badgeContent: 'new',
-    badgeColor: 'error',
-    path: '/overview'
-  },
-  {
-    sectionTitle: 'Chat'
-  },
-  {
-    title: 'Chat',
-    icon: 'mdi:message-outline',
-    path: '/chat/chat'
-  },
-  {
     title: 'Store',
     icon: 'tabler:apps-filled',
     path: '/store'
@@ -66,21 +51,6 @@ export const MenuListAdmin = [
 ]
 
 export const MenuListUser = [
-  {
-    title: 'Dashboards',
-    icon: 'mdi:home-outline',
-    badgeContent: 'new',
-    badgeColor: 'error',
-    path: '/overview'
-  },
-  {
-    sectionTitle: 'Chat'
-  },
-  {
-    title: 'Chat',
-    icon: 'mdi:message-outline',
-    path: '/chat/chat'
-  },
   {
     title: 'Store',
     icon: 'tabler:apps-filled',

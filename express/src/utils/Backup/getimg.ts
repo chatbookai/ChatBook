@@ -1,9 +1,9 @@
 import axios from 'axios'
 import * as fs from 'fs'
-import { DataDir } from './const'
+import { DataDir } from '../const'
 
-import { db, getDbRecord, getDbRecordALL } from './db'
-import { timestampToDate, filterNegativePrompt } from './utils'
+import { db, getDbRecord, getDbRecordALL } from '../db'
+import { timestampToDate, filterNegativePrompt } from '../utils'
 
 const GETIMG_AI_SECRET_KEY = process.env.GETIMG_AI_SECRET_KEY
 

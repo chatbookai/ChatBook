@@ -244,23 +244,6 @@ const Customizer = () => {
               Layout
             </Typography>
 
-            {/* AppBar */}
-            <Box sx={{ mb: 4 }}>
-              <Typography>AppBar Type</Typography>
-              <RadioGroup
-                row
-                value={appBar}
-                onChange={e => handleChange('appBar', e.target.value as Settings['appBar'])}
-                sx={{ '& .MuiFormControlLabel-label': { fontSize: '.875rem', color: 'text.secondary' } }}
-              >
-                <FormControlLabel value='fixed' label='Fixed' control={<Radio />} />
-                <FormControlLabel value='static' label='Static' control={<Radio />} />
-                {layout === 'horizontal' ? null : (
-                  <FormControlLabel value='hidden' label='Hidden' control={<Radio />} />
-                )}
-              </RadioGroup>
-            </Box>
-
           </CustomizerSpacing>
 
           <Divider sx={{ m: '0 !important' }} />

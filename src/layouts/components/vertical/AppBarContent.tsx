@@ -44,7 +44,7 @@ const AppBarContent = (props: Props) => {
       <Box className='actions-right' sx={{ display: 'flex', alignItems: 'center' }}>
         <LanguageDropdown settings={settings} saveSettings={saveSettings} />
         <ModeToggler settings={settings} saveSettings={saveSettings} />
-      {auth.user && authConfig.productName=="ChatBook" && (
+        {auth.user && authConfig.productName=="ChatBook" && (
           <>
             <UserDropdown settings={settings} />
           </>

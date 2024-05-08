@@ -1,5 +1,5 @@
 // ** React Import
-import { useRef, useState } from 'react'
+import { Fragment, useRef, useState } from 'react'
 
 // ** MUI Imports
 import List from '@mui/material/List'
@@ -12,8 +12,18 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 // ** Type Import
 import { LayoutProps } from 'src/@core/layouts/types'
 
+// ** Components
+import ModeToggler from 'src/@core/layouts/components/shared-components/ModeToggler'
+import UserDropdown from 'src/@core/layouts/components/shared-components/UserDropdown'
+import LanguageDropdown from 'src/@core/layouts/components/shared-components/LanguageDropdown'
+
+// ** Hook Import
+import { useAuth } from 'src/hooks/useAuth'
+import authConfig from 'src/configs/auth'
+
 // ** Theme Config
 import themeConfig from 'src/configs/themeConfig'
+import { useTranslation } from 'react-i18next'
 
 // ** Component Imports
 import Drawer from './Drawer'
@@ -70,7 +80,7 @@ const StyledBoxForShadow = styled(Box)<BoxProps>(({ theme }) => ({
 
 const Navigation = (props: Props) => {
   // ** Props
-  const { hidden, settings, afterNavMenuContent, beforeNavMenuContent, navMenuContent: userNavMenuContent } = props
+  const { hidden, settings, saveSettings, afterNavMenuContent, beforeNavMenuContent, navMenuContent: userNavMenuContent } = props
 
   // ** States
   const [navHover, setNavHover] = useState<boolean>(false)
@@ -79,6 +89,9 @@ const Navigation = (props: Props) => {
 
   // ** Ref
   const shadowRef = useRef(null)
+
+  const auth = useAuth()
+  const { t, i18n } = useTranslation()
 
   // ** Var
   const { navCollapsed } = settings
@@ -189,8 +202,20 @@ const Navigation = (props: Props) => {
               : null}
           </ScrollWrapper>
         </Box>
-        <Box sx={{ position: 'absolute', bottom: 5, left: 5, width: '100%', overflow: 'hidden' }}>
-          用户信息
+        <Box className='actions-right' sx={{ position: 'absolute', bottom: 110, left: 0, width: '100%', overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
+          {auth.user && authConfig.productName=="ChatBook" && (
+            <Box sx={{mr: 1}}>
+              <UserDropdown settings={settings} />
+            </Box>
+          )}
+        </Box>
+        <Box className='actions-right' sx={{ position: 'absolute', bottom: 60, left: 7, width: '100%', overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
+          <LanguageDropdown settings={settings} saveSettings={saveSettings} />
+          {t('Language')}
+        </Box>
+        <Box className='actions-right' sx={{ position: 'absolute', bottom: 10, left: 7, width: '100%', overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
+          <ModeToggler settings={settings} saveSettings={saveSettings} />
+          {t('Light')}
         </Box>
         {afterNavMenuContent && afterVerticalNavMenuContentPosition === 'fixed'
           ? afterNavMenuContent(navMenuContentProps)

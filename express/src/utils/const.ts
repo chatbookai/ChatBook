@@ -31,6 +31,14 @@ export const MenuListAdmin = [
     path: '/store'
   },
   {
+    title: 'Chat',
+    icon: 'material-symbols:chat-outline',
+    path: '/chat'
+  },
+  {
+    sectionTitle: 'My App'
+  },
+  {
     title: 'App',
     icon: 'icon-park-outline:application-two',
     path: '/app/my'
@@ -41,12 +49,17 @@ export const MenuListAdmin = [
     path: '/dataset/my'
   },
   {
+    title: 'Account',
+    icon: 'mdi:user-box-outline',
+    path: '/account'
+  },
+  {
     sectionTitle: 'Settings'
   },
   {
-    title: 'User Manage',
-    icon: 'mdi:users',
-    path: '/settings/users'
+    title: 'System',
+    icon: 'mdi:settings-outline',
+    path: '/system'
   }
 ]
 
@@ -57,6 +70,14 @@ export const MenuListUser = [
     path: '/store'
   },
   {
+    title: 'Chat',
+    icon: 'material-symbols:chat-outline',
+    path: '/chat'
+  },
+  {
+    sectionTitle: 'My App'
+  },
+  {
     title: 'App',
     icon: 'icon-park-outline:application-two',
     path: '/app/my'
@@ -65,5 +86,10 @@ export const MenuListUser = [
     title: 'Dataset',
     icon: 'mdi:database',
     path: '/dataset/my'
+  },
+  {
+    title: 'Account',
+    icon: 'mdi:user-box-outline',
+    path: '/account'
   }
 ]

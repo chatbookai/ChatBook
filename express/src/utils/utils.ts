@@ -21,7 +21,7 @@ export function enableDir(directoryPath: string): void {
       fs.mkdirSync(directoryPath, { recursive: true });
     } 
     catch (err: any) {
-      log(`Error creating directory ${directoryPath}: ${err.message}`);
+      console.log(`Error creating directory ${directoryPath}: ${err.message}`);
       throw err;
     }
   }
@@ -54,7 +54,7 @@ export async function setOpenAISetting(Params: any) {
     insertSetting.finalize();
   }
   catch (error: any) {
-    log('Error setOpenAISetting:', error.message);
+    console.log('Error setOpenAISetting:', error.message);
   }
 
   return {"status":"ok", "msg":"Update Success"}
@@ -87,7 +87,7 @@ export async function setTemplate(Params: any) {
     insertSetting.finalize();
   }
   catch (error: any) {
-    log('Error setOpenAISetting:', error.message);
+    console.log('Error setTemplate:', error.message);
   }
 
   return {"status":"ok", "msg":"Update Success"}
@@ -132,7 +132,7 @@ export async function addKnowledge(Params: any) {
     }
   }
   catch (error: any) {
-    log('Error setOpenAISetting:', error.message);
+    console.log('Error setOpenAISetting:', error.message);
   }
 
   return {"status":"ok", "msg":"Update Success"}
@@ -148,7 +148,7 @@ export async function setKnowledge(Params: any) {
     updateSetting.finalize();
   }
   catch (error: any) {
-    log('Error setOpenAISetting:', error.message);
+    console.log('Error setOpenAISetting:', error.message);
   }
 
   return {"status":"ok", "msg":"Update Success"}
@@ -163,7 +163,7 @@ export function uploadfiles() {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
       const FileNameNew = file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase();
       cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase());
-      log("uploadfiles FileNameNew", FileNameNew)
+      console.log("uploadfiles FileNameNew", FileNameNew)
     },
   });
   const upload = multer({ storage: storage });
@@ -180,7 +180,7 @@ export function uploadavatar() {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
       const FileNameNew = file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase();
       cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase());
-      log("uploadavatar FileNameNew", FileNameNew)
+      console.log("uploadavatar FileNameNew", FileNameNew)
     },
   });
   const upload = multer({ storage: storage });
@@ -197,7 +197,7 @@ export function uploadImageForVideo() {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
       const FileNameNew = file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase();
       cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase());
-      log("uploadImageForVideo FileNameNew", FileNameNew)
+      console.log("uploadImageForVideo FileNameNew", FileNameNew)
     },
   });
   const upload = multer({ storage: storage });
@@ -214,7 +214,7 @@ export function uploadImageForImageGenerateImage() {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
       const FileNameNew = file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase();
       cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase());
-      log("uploadImageForImageGenerateImage FileNameNew", FileNameNew)
+      console.log("uploadImageForImageGenerateImage FileNameNew", FileNameNew)
     },
   });
   const upload = multer({ storage: storage });
@@ -413,19 +413,17 @@ export function timestampToDate(timestamp: number | string) {
   return `${year}-${month}-${day}`;
 }
 
-export async function log(Action1: string | any, Action2: string | any='', Action3: string | any='', Action4: string | any='', Action5: string | any='', Action6: string | any='', Action7: string | any='', Action8: string | any='', Action9: string | any='', Action10: string | any='') {
-  const userId = 0
+export async function log(appId: string, publishId: string, userId: string, Action1: string | any, Action2: string | any='', Action3: string | any='', Action4: string | any='', Action5: string | any='', Action6: string | any='', Action7: string | any='', Action8: string | any='', Action9: string | any='', Action10: string | any='') {
   const currentDate = new Date();
   const currentDateTime = currentDate.toLocaleString();
   const content = JSON.stringify(Action1) +" "+ JSON.stringify(Action2) +" "+ JSON.stringify(Action3) +" "+ JSON.stringify(Action4) +" "+ JSON.stringify(Action5) +" "+ JSON.stringify(Action6) +" "+ JSON.stringify(Action7) +" "+ JSON.stringify(Action8) +" "+ JSON.stringify(Action9) +" "+ JSON.stringify(Action10);
-  const insertStat = db.prepare('INSERT OR REPLACE INTO logs (datetime, content, knowledgeId, userId) VALUES (? ,? ,? ,?)');
-  insertStat.run(currentDateTime, content, 0, userId);
+  const insertStat = db.prepare('INSERT OR REPLACE INTO logs (datetime, content, appId, publishId, userId) VALUES (? ,? ,? ,? ,?)');
+  insertStat.run(currentDateTime, content, appId, publishId, userId);
   insertStat.finalize();
   console.log(userId, Action1, Action2, Action3, Action4, Action5, Action6, Action7, Action8, Action9, Action10)
 }
 
 export async function deleteLog() {
-  
   const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT MAX(id) AS NUM FROM logs");
   const MaxId: number = Records ? Records.NUM : 0;
   if(MaxId > 1000) {
@@ -434,6 +432,20 @@ export async function deleteLog() {
     DeleteLog.run(DeleteId);
     DeleteLog.finalize();
   }
+}
+
+export async function clearShortLogs() {
+  const DeleteLog = db.prepare("delete from logs where length(content) < 50");
+  DeleteLog.run();
+  DeleteLog.finalize();
+  return {"status":"ok", "msg":"Deleted Success"}
+}
+
+export async function clearAllLogs() {
+  const DeleteLog = db.prepare("delete from logs");
+  DeleteLog.run();
+  DeleteLog.finalize();
+  return {"status":"ok", "msg":"Deleted Success"}
 }
 
 export async function deleteUserLogByKnowledgeId(knowledgeId: number | string, userId: number) {
@@ -465,13 +477,13 @@ export function calculateFileHashSync(filePath: string) {
 export function readFile(Dir: string, FileName: string, Mark: string, OpenFormat: any) {
   const filePath = DataDir + '/' + Dir + '/' + FileName;
   if(isFile(filePath)) {
-    log("filePath", filePath)
+    console.log("filePath", filePath)
     const data = fs.readFileSync(filePath, OpenFormat);
 
     return data;
   }
   else {
-    log("[" + Mark + "] Error read file:", filePath);
+    console.log("[" + Mark + "] Error read file:", filePath);
 
     return null;
   }
@@ -487,14 +499,14 @@ export function writeFile(Dir: string, FileName: string, FileContent: string, Ma
     return true;
   } 
   catch (err) {
-    log("[" + Mark + "] Error writing to file:", err);
+    console.log("[" + Mark + "] Error writing to file:", err);
 
     return false;
   }
 }
 
 export function filterString(input: number | string | undefined) {
-  log("filterString input:", input)
+  console.log("filterString input:", input)
   if(input == undefined)              {
 
     return '';
@@ -516,12 +528,12 @@ export function copyFileSync(source: string, destination: string) {
   try {
     const content = fs.readFileSync(source);
     fs.writeFileSync(destination, content);
-    log('0', 'File copied successfully!');
+    console.log('0', 'File copied successfully!');
 
     return true;
   } 
   catch (error: any) {
-    log('0', 'Error copying file:', error);
+    console.log('0', 'Error copying file:', error);
 
     return false;
   }
@@ -765,7 +777,7 @@ export async function addAgent(Params: any) {
     }
   }
   catch (error: any) {
-    log('Error setOpenAISetting:', error.message);
+    console.log('Error setOpenAISetting:', error.message);
     return {"status":"error", "msg":error.message}
   }
 }
@@ -781,7 +793,7 @@ export async function editAgent(Params: any) {
     updateSetting.finalize();
   }
   catch (error: any) {
-    log('Error setOpenAISetting:', error.message);
+    console.log('Error setOpenAISetting:', error.message);
   }
 
   return {"status":"ok", "msg":"Update Success"}

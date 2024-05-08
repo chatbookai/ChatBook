@@ -12,7 +12,7 @@
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        console.log("checkUserTokenData addapp", checkUserTokenData)
+        //console.log("checkUserTokenData addapp", checkUserTokenData)
         const addAppData: any = await addApp({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(addAppData);
     }
@@ -44,7 +44,7 @@
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        console.log("checkUserTokenData app", checkUserTokenData)
+        //console.log("checkUserTokenData app", checkUserTokenData)
         const editAppData: any = await deleteApp({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(editAppData);
     }
@@ -59,7 +59,7 @@
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') && req.body.appId) {
-        console.log("checkUserTokenData app", checkUserTokenData)
+        //console.log("checkUserTokenData app", checkUserTokenData)
         const getAppData: any = await getApp(req.body.appId, checkUserTokenData.data.id);
         res.status(200).json(getAppData);
     }
@@ -168,7 +168,7 @@
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        console.log("checkUserTokenData addpublish", checkUserTokenData)
+        //console.log("checkUserTokenData addpublish", checkUserTokenData)
         const addPublishData: any = await addPublish({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(addPublishData);
     }
@@ -182,7 +182,7 @@
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        console.log("checkUserTokenData editpublish", checkUserTokenData)
+        //console.log("checkUserTokenData editpublish", checkUserTokenData)
         const editPublishData: any = await editPublish({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(editPublishData);
     }
@@ -196,7 +196,7 @@
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        console.log("checkUserTokenData deletepublish", checkUserTokenData)
+        //console.log("checkUserTokenData deletepublish", checkUserTokenData)
         const deletePublishData: any = await deletePublish({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(deletePublishData);
     }

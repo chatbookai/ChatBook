@@ -35,7 +35,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       return {"status":"ok", "msg":"Add Success"}
     }
     catch (error: any) {
-      log('Error setOpenAISetting:', error.message);
+      log(Params._id, 'addApp', Params.userId, 'Error setOpenAISetting:', error.message);
       return {"status":"error", "msg":error.message}
     }
   }
@@ -59,7 +59,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       return {"status":"ok", "msg":"Update Success"}
     }
     catch (error: any) {
-      log('Error setOpenAISetting:', error.message);
+      log(Params._id, 'editApp', Params.userId, 'Error setOpenAISetting:', error.message);
       return {"status":"error", "msg":error.message}
     }
 
@@ -75,7 +75,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       return {"status":"ok", "msg":"Delete Success"}
     }
     catch (error: any) {
-      log('Error setOpenAISetting:', error.message);
+      log(Params._id, 'deleteApp', Params.userId, 'Error setOpenAISetting:', error.message);
       return {"status":"error", "msg":error.message}
     }
   
@@ -278,7 +278,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       }
     }
     catch (error: any) {
-      log('Error setOpenAISetting:', error.message);
+      log(Params._id, 'addPublish', Params.userId, 'Error addPublish:', error.message);
       return {"status":"error", "msg":error.message}
     }
   }
@@ -301,7 +301,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       return {"status":"ok", "msg":"Update Success"}
     }
     catch (error: any) {
-      log('Error setOpenAISetting:', error.message);
+      log(Params._id, 'editPublish', Params.userId,'Error editPublish:', error.message);
       return {"status":"error", "msg":error.message}
     }
     
@@ -315,11 +315,10 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const updateSetting = db.prepare('delete from publish where _id = ? and appId = ? and userId = ?');
       updateSetting.run(Params._id, Params.appId, Params.userId);
       updateSetting.finalize();
-      log('Error Params:', Params);
       return {"status":"ok", "msg":"Delete Success"}
     }
     catch (error: any) {
-      log('Error setOpenAISetting:', error.message);
+      log(Params._id, 'deletePublish', Params.userId,'Error deletePublish:', error.message);
       return {"status":"error", "msg":error.message}
     }  
     

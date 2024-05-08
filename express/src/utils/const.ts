@@ -59,7 +59,7 @@ export const MenuListAdmin = [
   {
     title: 'System',
     icon: 'mdi:settings-outline',
-    path: '/system'
+    path: '/system/system'
   }
 ]
 

@@ -235,10 +235,8 @@
   }
 
   export async function changeUserDetail(token: string, data: any) {
-    console.log("data", data)
     const checkUserTokenData: any = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
-      console.log("checkUserTokenData", checkUserTokenData)
       const updateSetting = db.prepare('update user set firstname = ?, lastname = ?, organization = ?, mobile = ?, address = ?, state = ?, country = ?, language = ? where email = ?');
       updateSetting.run(data.firstname, data.lastname, data.organization, data.mobile, data.address, data.state, data.country, data.language, checkUserTokenData.data.email);
       updateSetting.finalize();
@@ -252,10 +250,8 @@
   }
 
   export async function changeUserStatus(token: string, data: any) {
-    console.log("data", data)
     const checkUserTokenData: any = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
-      console.log("checkUserTokenData", checkUserTokenData)
       const updateSetting = db.prepare('update user set user_status = ? where id = ?');
       updateSetting.run(data.user_status, data.id);
       updateSetting.finalize();
@@ -288,7 +284,7 @@
         insertUser.finalize();
     }
     catch (error: any) {
-      log('Error registerUser:', error.message);
+      console.log('Error registerUser:', error.message);
     }
 
     return {"status":"ok", "msg":"Register user successful"}
@@ -401,7 +397,6 @@
     console.log("data", data)
     const checkUserTokenData: any = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user' && data && data.id && data.status != null)) {
-      console.log("checkUserTokenData", checkUserTokenData)
       if(data.status == '1') {
         const updateSetting = db.prepare('update userimages set favorite = favorite + 1 where id = ?');
         updateSetting.run(data.id);
@@ -426,7 +421,6 @@
     console.log("data", data)
     const checkUserTokenData: any = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user' && data && data.id && data.status != null)) {
-      console.log("checkUserTokenData", checkUserTokenData)
       if(data.status == '1') {
         const updateSetting = db.prepare('update uservideos set favorite = favorite + 1 where id = ?');
         updateSetting.run(data.id);

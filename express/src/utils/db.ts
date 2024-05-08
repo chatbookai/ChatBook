@@ -59,8 +59,9 @@ export async function initChatBookDb() {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 datetime TEXT not null,
                 content TEXT not null,
-                knowledgeId INTEGER not null,
-                userId INTEGER not null
+                appId TEXT not null,
+                publishId TEXT not null,
+                userId TEXT not null
             );
         `);
         db.run(`

@@ -15,7 +15,6 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
   export async function addDataset(Params: any) {
     try{
-      console.log("ParamsParamsParamsParamsParams", Params)
       Params._id = filterString(Params._id)
       Params.name = filterString(Params.name)
       Params.intro = filterString(Params.intro)
@@ -29,11 +28,10 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const insertSetting = db.prepare('INSERT OR IGNORE INTO dataset (_id, teamId, name, intro, avatar, type, vectorModel, singleDataUpLimit, fileDealModel, permission, createTime, userId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
       insertSetting.run(Params._id, Params._id, Params.name, Params.intro, Params.avatar, Params.type, Params.vectorModel, Params.singleDataUpLimit, Params.fileDealModel, Params.permission, 'createTime', Params.userId);
       insertSetting.finalize();
-      log('Error Params:', Params);
       return {"status":"ok", "msg":"Add Success"}
     }
     catch (error: any) {
-      log('Error setOpenAISetting:', error.message);
+      log(Params._id, 'addDataset', Params.userId, 'Error addDataset:', error.message);
       return {"status":"error", "msg":error.message}
     }
   }
@@ -55,7 +53,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       return {"status":"ok", "msg":"Update Success"}
     }
     catch (error: any) {
-      log('Error setOpenAISetting:', error.message);
+      log(Params._id, 'editDataset', Params.userId, 'Error editDataset:', error.message);
       return {"status":"error", "msg":error.message}
     }
   
@@ -71,7 +69,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       return {"status":"ok", "msg":"Delete Success"}
     }
     catch (error: any) {
-      log('Error setOpenAISetting:', error.message);
+      log(Params._id, 'deleteDataset', Params.userId, 'Error deleteDataset:', error.message);
       return {"status":"error", "msg":error.message}
     }
   
@@ -192,7 +190,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       }
     }
     catch (error: any) {
-      log('Error setOpenAISetting:', error.message);
+      log(Params._id, 'addCollection', Params.userId, 'Error addCollection:', error.message);
       return {"status":"error", "msg":error.message}
     }
   }
@@ -214,7 +212,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       return {"status":"ok", "msg":"Update Success"}
     }
     catch (error: any) {
-      log('Error setOpenAISetting:', error.message);
+      log(Params._id, 'editCollection', Params.userId, 'Error editCollection:', error.message);
       return {"status":"error", "msg":error.message}
     }
 
@@ -228,11 +226,10 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const updateSetting = db.prepare('delete from collection where _id = ? and datasetId = ? and userId = ?');
       updateSetting.run(Params._id, Params.datasetId, Params.userId);
       updateSetting.finalize();
-      log('Error Params:', Params);
       return {"status":"ok", "msg":"Delete Success"}
     }
     catch (error: any) {
-      log('Error setOpenAISetting:', error.message);
+      log(Params._id, 'deleteCollection', Params.userId, 'Error deleteCollection:', error.message);
       return {"status":"error", "msg":error.message}
     }
     

@@ -492,7 +492,7 @@ const ChatLog = (props: any) => {
                                       setContextPreviewData(historyAll)
                                     }}>
                                       {t('ContextCount')}({(chat.history.length+1)*2+1})
-                                      </Button>
+                                    </Button>
                                   </Tooltip>
                                   <Tooltip title={t('ModuleRunningTime')}>
                                     <Button color='error' size="small" style={{ whiteSpace: 'nowrap' }} disableTouchRipple disableRipple>{chat.responseTime}S</Button>

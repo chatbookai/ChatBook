@@ -120,7 +120,7 @@ let ChatBaiduWenxinModel: any = null
         pinecone = new Pinecone({apiKey: PINECONE_API_KEY,});
       }
       catch(Error: any) {
-        log("initChatBookOpenAIStream Error", Error)
+        log('initChatBookOpenAIStream', 'initChatBookOpenAIStream', 'initChatBookOpenAIStream', "initChatBookOpenAIStream Error", Error)
       }
     }
     else {
@@ -177,12 +177,6 @@ let ChatBaiduWenxinModel: any = null
     const CONDENSE_TEMPLATE: string | unknown = await GetSetting("CONDENSE_TEMPLATE", knowledgeId, userId);
     const QA_TEMPLATE: string | unknown = await GetSetting("QA_TEMPLATE", knowledgeId, userId);
 
-    log("Chat pinecone", pinecone)
-    log("Chat knowledgeId", knowledgeId)
-    log("Chat CONDENSE_TEMPLATE", CONDENSE_TEMPLATE)
-    log("Chat QA_TEMPLATE", QA_TEMPLATE)
-    log("Chat PINECONE_INDEX_NAME", PINECONE_INDEX_NAME)
-    
     if (!question) {
       return { message: 'No question in the request' };
     }
@@ -197,7 +191,6 @@ let ChatBaiduWenxinModel: any = null
       /* create vectorstore */
 
       const PINECONE_NAME_SPACE_USE = PINECONE_NAME_SPACE + '_' + String(knowledgeId)
-      log("Chat PINECONE_NAME_SPACE_USE", PINECONE_NAME_SPACE_USE)
 
       const embeddings = new OpenAIEmbeddings({openAIApiKey:getLLMSSettingData.OPENAI_API_KEY});
       
@@ -248,7 +241,6 @@ let ChatBaiduWenxinModel: any = null
       return { text: response, sourceDocuments };
     } 
     catch (error: any) {
-      log('Error Chat:', error);
 
       return { error: error.message || 'Something went wrong' };
     }
@@ -603,14 +595,13 @@ let ChatBaiduWenxinModel: any = null
           const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (send, Received, userId, timestamp, source, history) VALUES (?,?,?,?,?,?)');
           insertChatLog.run(question, JSON.stringify(generatedImageTS), userId, Date.now(), JSON.stringify([]), JSON.stringify([]));
           insertChatLog.finalize();
-          log('Generated Image:', generatedImageTS);
           
           await compressPng(ShortFileName);
 
           return generatedImageTS;
         }
         else {
-          log('Error generating image:', generatedImage);
+          console.log('Error generating image:', generatedImage);
 
           return {generatedImage};
         }
@@ -618,7 +609,7 @@ let ChatBaiduWenxinModel: any = null
         
       } 
       catch (error) {
-        log('Error generating image:', error);
+        console.log('Error generating image:', error);
 
         return {error};
       }
@@ -665,12 +656,12 @@ let ChatBaiduWenxinModel: any = null
         //const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (send, Received, userId, timestamp, source, history, responseTime, appId) VALUES (?,?,?,?,?,?,?,?)');
         //insertChatLog.run(question, JSON.stringify(generatedAudioTS), userId, DateNow, JSON.stringify([]), JSON.stringify([]), responseTime, appId);
         //insertChatLog.finalize();
-        log('Generated Audio:', generatedAudioTS);
+        console.log('Generated Audio:', generatedAudioTS);
 
         return generatedAudioTS;
       } 
       catch (error) {
-        log('Error generating Audio:', error);
+        console.log('Error generating Audio:', error);
 
         return {error};
       }
@@ -805,8 +796,6 @@ let ChatBaiduWenxinModel: any = null
         const KnowledgeItemId = FileItem.knowledgeId
         await initChatBookOpenAI(KnowledgeItemId)
         if(getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "")    {
-            console.log("KnowledgeItemId", KnowledgeItemId)
-            console.log("process.env.OPENAI_BASE_URL", process.env.OPENAI_BASE_URL)
             const pdfFilePath = DataDir + '/uploadfiles/' + FileItem.newName;
             if(isFile(pdfFilePath))   {
               const pdfLoader = new PDFLoader(pdfFilePath);
@@ -817,9 +806,6 @@ let ChatBaiduWenxinModel: any = null
                 chunkOverlap: 200,
               });
               const SplitterDocs = await textSplitter.splitDocuments(rawDoc);
-              log("parseFiles rawDocs docs count: ", rawDoc.length)
-              log("parseFiles textSplitter docs count: ", SplitterDocs.length)
-              log('parseFiles creating vector store begin ...');
               
               const embeddings = new OpenAIEmbeddings({openAIApiKey: getLLMSSettingData.OPENAI_API_KEY});
               const index = pinecone.Index(PINECONE_INDEX_NAME);  
@@ -830,7 +816,7 @@ let ChatBaiduWenxinModel: any = null
                 namespace: PINECONE_NAME_SPACE_USE,
                 textKey: 'text',
               });
-              log('parseFiles creating vector store finished', PINECONE_NAME_SPACE_USE);
+              console.log('parseFiles creating vector store finished', PINECONE_NAME_SPACE_USE);
 
               const UpdateFileParseStatus = db.prepare('update files set status = ? where id = ?');
               UpdateFileParseStatus.run(1, FileItem.id);
@@ -838,12 +824,12 @@ let ChatBaiduWenxinModel: any = null
               const destinationFilePath = path.join(DataDir + '/parsedfiles/', FileItem.newName);
               fs.rename(DataDir + '/uploadfiles/' + FileItem.newName, destinationFilePath, (err) => {
                 if (err) {
-                  log('parseFiles Error moving file:', err, FileItem.newName);
+                  console.log('parseFiles Error moving file:', err, FileItem.newName);
                 } else {
-                  log('parseFiles File moved successfully.', FileItem.newName);
+                  console.log('parseFiles File moved successfully.', FileItem.newName);
                 }
               });
-              log('parseFiles change the files status finished', FileItem);
+              console.log('parseFiles change the files status finished', FileItem);
             }
             else {
 
@@ -858,7 +844,7 @@ let ChatBaiduWenxinModel: any = null
       }))
 
     } catch (error: any) {
-      log('parseFiles Failed to ingest your data', error);
+      console.log('parseFiles Failed to ingest your data', error);
     }
   }
 

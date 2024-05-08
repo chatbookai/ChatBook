@@ -44,7 +44,6 @@ const ChatAnonymous = () => {
           setShow(false)
           setApp(RS)
           saveSettings({ ...settings, pageTitle: RS.name })
-          console.log("settings", settings)
         }
       }
     }
@@ -80,12 +79,12 @@ const ChatAnonymous = () => {
             :
             null
             }
-            {app && !app.id ?
+            {app == null ?
             <IdNotExist id={id} module={'Ai Chat Module For Public'}/>
             :
             null
             }
-            {!app ?
+            {app !== null ?
             <Dialog
               open={show}
               onClose={() => setShow(false)}

@@ -32,6 +32,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const insertSetting = db.prepare('INSERT OR IGNORE INTO app (_id, teamId, name, intro, avatar, type, groupTwo, groupOne, permission, data, status, userId, language, createtime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
       insertSetting.run(Params._id, Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.groupOne, Params.groupTwo, Params.permission, Params.data, 1, Params.userId, Params.language, Date.now());
       insertSetting.finalize();
+      log(Params._id, 'addApp', Params.userId, 'Success addApp:', JSON.stringify(Params));
       return {"status":"ok", "msg":"Add Success"}
     }
     catch (error: any) {
@@ -56,6 +57,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const updateSetting = db.prepare('update app set teamId = ?, name = ?, intro = ?, avatar = ?, type = ?, groupOne = ?, groupTwo = ?, permission = ?, data = ?, language = ? where _id = ?');
       updateSetting.run(Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.groupOne, Params.groupTwo, Params.permission, Params.data, Params.language, Params._id);
       updateSetting.finalize();
+      log(Params._id, 'editApp', Params.userId, 'Success editApp:', JSON.stringify(Params));
       return {"status":"ok", "msg":"Update Success"}
     }
     catch (error: any) {
@@ -80,6 +82,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const updateSetting = db.prepare('update app set teamId = ?, name = ?, intro = ?, avatar = ?, groupOne = ?, groupTwo = ?, permission = ?, language = ? where _id = ?');
       updateSetting.run(Params.teamId, Params.name, Params.intro, Params.avatar, Params.groupOne, Params.groupTwo, Params.permission, Params.language, Params._id);
       updateSetting.finalize();
+      log(Params._id, 'editAppById', Params.userId, 'Success editAppById:', JSON.stringify(Params));
       return {"status":"ok", "msg":"Update Success"}
     }
     catch (error: any) {
@@ -96,6 +99,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const deleteSetting = db.prepare('delete from app where _id = ? and userId = ?');
       deleteSetting.run(Params._id, Params.userId);
       deleteSetting.finalize();
+      log(Params._id, 'deleteApp', Params.userId, 'Success deleteApp:', JSON.stringify(Params));
       return {"status":"ok", "msg":"Delete Success"}
     }
     catch (error: any) {
@@ -111,10 +115,11 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const deleteSetting = db.prepare('delete from app where _id = ? and id = ?');
       deleteSetting.run(Params._id, Params.id);
       deleteSetting.finalize();
+      log(Params._id, 'deleteAppById', Params.userId, 'Success deleteAppById:', JSON.stringify(Params));
       return {"status":"ok", "msg":"Delete Success", Params}
     }
     catch (error: any) {
-      log(Params._id, 'deleteApp', Params.userId, 'Error deleteApp:', error.message);
+      log(Params._id, 'deleteAppById', Params.userId, 'Error deleteAppById:', error.message);
       return {"status":"error", "msg":error.message}
     }
   }
@@ -371,6 +376,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
         const insertSetting = db.prepare('INSERT OR IGNORE INTO publish (_id, appId, name, maxToken, returnReference, ipLimitPerMinute, expiredTime, authCheck, userId, lastAccessTime, language) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
         insertSetting.run(Params._id, Params.appId, Params.name, Params.maxToken, Params.returnReference, Params.ipLimitPerMinute, Params.expiredTime, Params.authCheck, Params.userId, '', Params.language);
         insertSetting.finalize();
+        log(Params._id, 'addPublish', Params.userId, 'Success addPublish:', JSON.stringify(Params));
         return {"status":"ok", "msg":"Add Success"}
       }
     }
@@ -395,6 +401,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const updateSetting = db.prepare('update publish set name = ?, maxToken = ?, returnReference = ?, ipLimitPerMinute = ?, expiredTime = ? , language = ? where _id = ? and appId = ? and userId = ?');
       updateSetting.run(Params.name, Params.maxToken, Params.returnReference, Params.ipLimitPerMinute, Params.expiredTime, Params.language, Params._id, Params.appId, Params.userId);
       updateSetting.finalize();
+      log(Params._id, 'editPublish', Params.userId, 'Success editPublish:', JSON.stringify(Params));
       return {"status":"ok", "msg":"Update Success"}
     }
     catch (error: any) {
@@ -412,6 +419,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const updateSetting = db.prepare('delete from publish where _id = ? and appId = ? and userId = ?');
       updateSetting.run(Params._id, Params.appId, Params.userId);
       updateSetting.finalize();
+      log(Params._id, 'deletePublish', Params.userId, 'Success deletePublish:', JSON.stringify(Params));
       return {"status":"ok", "msg":"Delete Success"}
     }
     catch (error: any) {
@@ -461,16 +469,18 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return RS;
   }
 
-  export async function deleteUserLogByAppId(appId: string, userId: number) {
+  export async function deleteUserLogByAppId(appId: string, userId: string) {
     const UpdateChatLog = db.prepare("update chatlog set current = 0 where appId = ? and userId = ?");
     UpdateChatLog.run(appId, userId);
     UpdateChatLog.finalize();
+    log(appId, 'deleteUserLogByAppId', userId, 'Success deleteUserLogByAppId:', JSON.stringify([]));
     return {"status":"ok", "msg":"Clear History Success"}
   }
 
-  export async function deleteUserLogByChatlogId(appId: string, userId: number, id: number) {
+  export async function deleteUserLogByChatlogId(appId: string, userId: string, id: number) {
     const UpdateChatLog = db.prepare("delete from chatlog where appId = ? and userId = ? and _id = ?");
     UpdateChatLog.run(appId, userId, id);
     UpdateChatLog.finalize();
+    log(appId, 'deleteUserLogByChatlogId', userId, 'Success deleteUserLogByChatlogId:', JSON.stringify([]));
     return {"status":"ok", "msg":"Delete Success"}
   }

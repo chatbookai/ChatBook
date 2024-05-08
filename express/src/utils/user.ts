@@ -306,6 +306,7 @@
       const insertUser = db.prepare('INSERT INTO user (email, username, password, language, createtime, firstname, lastname, organization, mobile, address, country) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
       insertUser.run(data.email, data.username, hashedPassword, data.language || 'en', Date.now(), data.firstname || '', data.lastname || '', data.organization || '', data.mobile || '', data.address || '', data.country || '');
       insertUser.finalize();
+      log(data.email, 'addUser', data.username, 'Success addUser:', JSON.stringify(data));
 
       return {"status":"ok", "msg":"Add Success"}
     }
@@ -321,6 +322,7 @@
       const updateSetting = db.prepare('update user set firstname = ?, lastname = ?, organization = ?, mobile = ?, address = ?, state = ?, country = ?, language = ? where email = ?');
       updateSetting.run(data.firstname, data.lastname, data.organization, data.mobile, data.address, data.state, data.country, data.language, data.email);
       updateSetting.finalize();
+      log(data.email, 'editUser', data.username, 'Success editUser:', JSON.stringify(data));
 
       return {"status":"ok", "msg":"Change user information successful"}
     }
@@ -336,6 +338,7 @@
       const deleteSetting = db.prepare('delete from user where email = ? and username = ?');
       deleteSetting.run(data.email, data.username);
       deleteSetting.finalize();
+      log(data.email, 'deleteUser', data.username, 'Success deleteUser:', JSON.stringify(data));
 
       return {"status":"ok", "msg":"Delete Success"}
     }
@@ -538,6 +541,7 @@
       const insertUser = db.prepare('INSERT OR REPLACE INTO useragents (userId, appId, createtime) VALUES (?, ?, ?)');
       insertUser.run(checkUserTokenData.data.id, data.appId, Date.now());
       insertUser.finalize();
+
       return {"status":"ok", "msg":"Add agent successful"}
     }
     else {

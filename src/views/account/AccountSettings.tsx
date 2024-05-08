@@ -24,11 +24,11 @@ import { useTranslation } from 'react-i18next'
 import { PricingPlanType } from 'src/@core/components/plan-details/types'
 
 // ** Demo Tabs Imports
-import TabAccount from 'src/views/pages/account-settings/TabAccount'
-import TabBilling from 'src/views/pages/account-settings/TabBilling'
-import TabSecurity from 'src/views/pages/account-settings/TabSecurity'
-import TabConnections from 'src/views/pages/account-settings/TabConnections'
-import TabNotifications from 'src/views/pages/account-settings/TabNotifications'
+import TabAccount from 'src/views/account/TabAccount'
+import TabBilling from 'src/views/account/TabBilling'
+import TabSecurity from 'src/views/account/TabSecurity'
+import TabConnections from 'src/views/account/TabConnections'
+import TabNotifications from 'src/views/account/TabNotifications'
 
 const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({
   '& .MuiTabs-indicator': {

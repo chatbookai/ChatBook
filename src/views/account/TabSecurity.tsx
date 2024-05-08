@@ -18,7 +18,7 @@ import TableContainer from '@mui/material/TableContainer'
 import Icon from 'src/@core/components/icon'
 
 // ** Demo Components
-import ChangePasswordCard from 'src/views/pages/account-settings/security/ChangePasswordCard'
+import ChangePasswordCard from 'src/views/account/security/ChangePasswordCard'
 
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
@@ -61,8 +61,6 @@ const TabSecurity = () => {
   BrowserTypeIcon['iPhone'] = "mdi:cellphone"
   BrowserTypeIcon['Android'] = "mdi:android"
   BrowserTypeIcon['MacOS'] = "mdi:apple"
-
-
 
   return (
     <Fragment>

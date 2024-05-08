@@ -51,7 +51,7 @@ export const MenuListAdmin = [
   {
     title: 'Account',
     icon: 'mdi:user-box-outline',
-    path: '/account'
+    path: '/user/account'
   },
   {
     sectionTitle: 'Settings'
@@ -90,6 +90,6 @@ export const MenuListUser = [
   {
     title: 'Account',
     icon: 'mdi:user-box-outline',
-    path: '/account'
+    path: '/user/account'
   }
 ]

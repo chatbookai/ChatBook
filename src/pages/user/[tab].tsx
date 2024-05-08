@@ -2,7 +2,7 @@
 import { GetStaticProps, GetStaticPaths, GetStaticPropsContext, InferGetStaticPropsType } from 'next/types'
 
 // ** Demo Components Imports
-import AccountSettings from 'src/views/pages/account-settings/AccountSettings'
+import AccountSettings from 'src/views/account/AccountSettings'
 
 const AccountSettingsTab = ({ tab, apiPricingPlanData }: InferGetStaticPropsType<typeof getStaticProps>) => {
   return <AccountSettings tab={tab} apiPricingPlanData={apiPricingPlanData} />

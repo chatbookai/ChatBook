@@ -134,6 +134,7 @@ const ChangePasswordCard = () => {
                   render={({ field: { value, onChange } }) => (
                     <OutlinedInput
                       value={value}
+                      size='small'
                       label={`${t('Current Password')}`}
                       onChange={onChange}
                       id='input-current-password'
@@ -172,6 +173,7 @@ const ChangePasswordCard = () => {
                   render={({ field: { value, onChange } }) => (
                     <OutlinedInput
                       value={value}
+                      size='small'
                       label={`${t('New Password')}`}
                       onChange={onChange}
                       id='input-new-password'
@@ -208,6 +210,7 @@ const ChangePasswordCard = () => {
                   render={({ field: { value, onChange } }) => (
                     <OutlinedInput
                       value={value}
+                      size='small'
                       label={`${t('Confirm New Password')}`}
                       onChange={onChange}
                       id='input-confirm-new-password'

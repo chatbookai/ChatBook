@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid'
 import { PricingPlanType } from 'src/@core/components/plan-details/types'
 
 // ** Demo Components
-import CurrentPlanCard from 'src/views/pages/account-settings/billing/CurrentPlanCard'
+import CurrentPlanCard from 'src/views/account/billing/CurrentPlanCard'
 
 const TabBilling = ({ apiPricingPlanData }: { apiPricingPlanData: PricingPlanType[] }) => {
   return (

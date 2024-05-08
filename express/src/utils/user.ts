@@ -389,11 +389,16 @@
     console.log("pageidFiler", pageidFiler)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from user ");
-    const RecordsTotal: number = Records ? Records.NUM : 0;
-
+    let Records: any = null;
     let RecordsAll: any[] = []
     if(data) {
+      Records = await (getDbRecord as SqliteQueryFunction)(`
+                      SELECT COUNT(*) AS NUM
+                      FROM user 
+                      WHERE email LIKE '%' || ? || '%' 
+                      AND username LIKE '%' || ? || '%' 
+                      AND mobile LIKE '%' || ? || '%' 
+                    `, [data.email || '', data.username || '', data.mobile || ''])
       RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`
                       SELECT id, email, username, firstname, lastname, organization, role, mobile, address, state, zipcode, country, language, timezone, nickname, birthday, avatar, mobile_status, google_auth, github_auth, user_type, user_status, createtime 
                       FROM user 
@@ -405,10 +410,11 @@
                     `, [data.email || '', data.username || '', data.mobile || '', pagesizeFiler, From]) || [];
     }
     else {
+      Records = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from user ");
       RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`SELECT id, email, username, firstname, lastname, organization, role, mobile, address, state, zipcode, country, language, timezone, nickname, birthday, avatar, mobile_status, google_auth, github_auth, user_type, user_status, createtime FROM user ORDER BY id DESC LIMIT ? OFFSET ? `, [pagesizeFiler, From]) || [];
     }
+    const RecordsTotal: number = Records ? Records.NUM : 0;
     
-
     const RS: any = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
     RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');

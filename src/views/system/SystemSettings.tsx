@@ -27,7 +27,7 @@ import { PricingPlanType } from 'src/@core/components/plan-details/types'
 import TabSystem from 'src/views/system/TabSystem'
 import TabUsers from 'src/views/system/users/Users'
 import TabLogs from 'src/views/system/TabLogs'
-import TabApplications from 'src/views/system/TabApplications'
+import TabApplications from 'src/views/system/applications/Applications'
 import TabNotifications from 'src/views/system/TabNotifications'
 
 const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({
@@ -50,7 +50,7 @@ const TabList = styled(MuiTabList)<TabListProps>(({ theme }) => ({
   }
 }))
 
-const AccountSettings = ({ tab, apiPricingPlanData }: { tab: string; apiPricingPlanData: PricingPlanType[] }) => {
+const AccountSettings = ({ tab }: { tab: string }) => {
   // ** State
   const [activeTab, setActiveTab] = useState<string>(tab)
   const [isLoading, setIsLoading] = useState<boolean>(false)

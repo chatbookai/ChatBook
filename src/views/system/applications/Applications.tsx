@@ -13,6 +13,7 @@ import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Switch from '@mui/material/Switch'
+import Avatar from '@mui/material/Avatar'
 import Tooltip from '@mui/material/Tooltip'
 import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
@@ -39,10 +40,10 @@ import { useTranslation } from 'react-i18next'
 import { isMobile } from 'src/configs/functions'
 import { CheckPermission } from 'src/functions/ChatBook'
 
-import UsersNewEdit from './UsersNewEdit'
-import UsersDelete from './UsersDelete'
+import ApplicationsNewEdit from './ApplicationsNewEdit'
+import ApplicationsDelete from './ApplicationsDelete'
 
-const Users = () => {
+const Applications = () => {
   // ** Hook
   const { t } = useTranslation()
   const auth = useAuth()
@@ -58,15 +59,15 @@ const Users = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 15 })
   const [store, setStore] = useState<any>(null);
-  const [userStatus, setUserStatus] = useState<any>({});
-  const [search, setSearch] = useState<any>({ email:'', mobile: '', username: ''});
+  const [Applicationstatus, setApplicationstatus] = useState<any>({});
+  const [search, setSearch] = useState<any>({ name:'', intro: ''});
 
   useEffect(() => {
     CheckPermission(auth, router, false)
   }, [])
 
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
-  const [pageData, setPageData] = useState<any>({FormAction: 'adduser', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg', openEdit: false, openDelete: false })
+  const [pageData, setPageData] = useState<any>({FormAction: 'addapp', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg', openEdit: false, openDelete: false })
   
   const [counter, setCounter] = useState<number>(0)
 
@@ -83,13 +84,13 @@ const Users = () => {
   const fetchData = async function (paginationModel: any) {
     if (auth && auth.user) {
       const data: any = {...search, pageid: paginationModel.page, pagesize: paginationModel.pageSize}
-      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/user/getusers', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getapppageall/' + paginationModel.page + '/' + paginationModel.pageSize, data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       if(RS && RS.data) {
-        const userStatusNew = userStatus
+        const ApplicationstatusNew = Applicationstatus
         RS.data.map((Item: any)=>{
-          userStatusNew[Item.id] = Item.user_status
+          ApplicationstatusNew[Item.id] = Item.user_status
         })
-        setUserStatus(userStatusNew)
+        setApplicationstatus(ApplicationstatusNew)
       }
       if(RS && RS.status && RS.status=='error' && RS.msg=='Token is invalid') {
         CheckPermission(auth, router, true)
@@ -98,28 +99,28 @@ const Users = () => {
     }
   }
 
-  const getUserInfoByEmail = async function (email: string) {
+  const getAppById = async function (_id: string, id: string) {
     if (auth && auth.user) {
-      const data: any = {email}
-      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/user/getuserbyid', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      const data: any = {appId: _id, id: id}
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getappbyid', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       setIsDisabledButton(false)
       return RS
     }
   }
 
-  const handleUserStatus = async function (id: number, user_status: number) {
+  const handleApplicationstatus = async function (id: number, user_status: number) {
     if (auth && auth.user) {
       const data: any = {user_status: user_status, id:id}
-      axios.post(authConfig.backEndApiChatBook + '/api/user/setuserstatus', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} })
+      axios.post(authConfig.backEndApiChatBook + '/api/setApplicationstatus', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} })
     }
   }
 
   const handleSwitchChange = (id: number, checked: boolean) => {
-    setUserStatus((prevUserStatus: any) => {
-      const newUserStatus = { ...prevUserStatus, [id]: checked ? 1 : 0 };
-      handleUserStatus(id, newUserStatus[id]);
+    setApplicationstatus((prevApplicationstatus: any) => {
+      const newApplicationstatus = { ...prevApplicationstatus, [id]: checked ? 1 : 0 };
+      handleApplicationstatus(id, newApplicationstatus[id]);
       
-      return newUserStatus;
+      return newApplicationstatus;
     });
   };
 
@@ -145,17 +146,17 @@ const Users = () => {
       }
     },
     {
-      flex: 0.3,
+      flex: 0.25,
       minWidth: 100,
-      field: 'Email',
-      headerName: `${t(`Email`)}`,
+      field: 'name',
+      headerName: `${t(`Name`)}`,
       sortable: false,
       filterable: false,
       renderCell: ({ row }: any) => {
         
         return (
           <Typography noWrap variant='body2'>
-            {row.email}
+            {row.name}
           </Typography>
         )
       }
@@ -163,14 +164,14 @@ const Users = () => {
     {
       flex: 0.25,
       minWidth: 100,
-      field: 'Username',
-      headerName: `${t(`Username`)}`,
+      field: 'Intro',
+      headerName: `${t(`Intro`)}`,
       sortable: false,
       filterable: false,
       renderCell: ({ row }: any) => {
         return (
           <Typography noWrap variant='body2'>
-            {row.username}
+            {row.intro}
           </Typography>
         )
       }
@@ -178,14 +179,47 @@ const Users = () => {
     {
       flex: 0.15,
       minWidth: 100,
-      field: 'Role',
-      headerName: `${t(`Role`)}`,
+      field: 'Avatar',
+      headerName: `${t(`Avatar`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: any) => {
+        return (
+          <Avatar src={authConfig.backEndApiChatBook + '/api/avatarforapp/' + row.avatar} variant="rounded" sx={{ width: '38px', height: '38px', borderRadius: '25px'}} />
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      minWidth: 100,
+      field: 'Group',
+      headerName: `${t(`Group`)}`,
+      sortable: false,
+      filterable: false,
+      renderCell: ({ row }: any) => {
+        return (
+          <Box style={{ display: 'flex', flexDirection: 'column' }}>
+            <Typography noWrap variant='body2'>
+              {row.groupOne}
+            </Typography>
+            <Typography noWrap variant='body2'>
+              {row.groupTwo}
+            </Typography>
+          </Box>
+        )
+      }
+    },
+    {
+      flex: 0.15,
+      minWidth: 100,
+      field: 'permission',
+      headerName: `${t(`Permission`)}`,
       sortable: false,
       filterable: false,
       renderCell: ({ row }: any) => {
         return (
           <Typography noWrap variant='body2'>
-            {row.role}
+            {row.permission}
           </Typography>
         )
       }
@@ -193,32 +227,14 @@ const Users = () => {
     {
       flex: 0.15,
       minWidth: 100,
-      field: 'Access',
-      headerName: `${t(`Access`)}`,
-      sortable: false,
-      filterable: false,
-      renderCell: ({ row }: any) => {
-        return (
-          <Switch checked={userStatus[row.id] == 1} onChange={(e: any)=>{
-              e.preventDefault();
-              const checked = e.target.checked;
-              handleSwitchChange(row.id, checked);
-            }} 
-          />
-        )
-      }
-    },
-    {
-      flex: 0.15,
-      minWidth: 100,
-      field: 'Mobile',
-      headerName: `${t(`Mobile`)}`,
+      field: 'userId',
+      headerName: `${t(`userId`)}`,
       sortable: false,
       filterable: false,
       renderCell: ({ row }: any) => {
         return (
           <Typography noWrap variant='body2'>
-            {row.mobile}
+            {row.userId}
           </Typography>
         )
       }
@@ -249,9 +265,9 @@ const Users = () => {
           <Tooltip title={t('Edit')}>
             <IconButton size='small' onClick={
                         async () => { 
-                          const RS: any = await getUserInfoByEmail(row.email)
-                          if(RS && RS['status'] == 'ok') {
-                            setPageData( () => ({ ...RS.data, openEdit: true, FormAction: 'edituser', FormTitle: 'Edit', FormSubmit: 'Save', FormTitleIcon: '/imgs/modal/shareFill.svg' }) )
+                          const RS: any = await getAppById(row._id, row.id)
+                          if(RS && RS['name']) {
+                            setPageData( () => ({ ...RS, ...row, openEdit: true, FormAction: 'editapp', FormTitle: 'Edit', FormSubmit: 'Save', FormTitleIcon: '/imgs/modal/shareFill.svg' }) )
                           }
                          }
                     }>
@@ -260,7 +276,7 @@ const Users = () => {
           </Tooltip>
           <Tooltip title={t('Delete')}>
             <IconButton size='small' onClick={
-                        () => { setPageData( () => ({ ...row, openDelete: true, FormAction: 'deleteuser', FormTitle: 'Delete', FormSubmit: 'Confirm', FormTitleIcon: '/imgs/modal/shareFill.svg' }) ) }
+                        () => { setPageData( () => ({ ...row, openDelete: true, FormAction: 'deleteappbyid', FormTitle: 'Delete', FormSubmit: 'Confirm', FormTitleIcon: '/imgs/modal/shareFill.svg' }) ) }
                     }>
               <Icon icon='mdi:delete-outline' fontSize={20} />
             </IconButton>
@@ -274,7 +290,7 @@ const Users = () => {
 
     if (auth && auth.user && pageData && pageData.FormAction) {
       setIsDisabledButton(true)
-      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/user/' + pageData.FormAction, pageData, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/' + pageData.FormAction, pageData, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit:", FormSubmit)
       if(FormSubmit?.status == "ok") {
           toast.success(t(FormSubmit.msg) as string, { duration: 4000, position: 'top-center' })
@@ -316,25 +332,25 @@ const Users = () => {
                     <Box sx={{ml: 2, mt: 2}}>
                       <FormControl  sx={{ m: 1 }}>
                         <Controller
-                          name='email'
+                          name='name'
                           control={control}
                           rules={{ required: true }}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField 
                               size='small'
                               autoFocus
-                              label={`${t('Email')}`}
+                              label={`${t('Name')}`}
                               value={value}
                               onBlur={onBlur}
                               onChange={(e)=>{
                                 onChange()
-                                setValue('email', e.target.value)
+                                setValue('name', e.target.value)
                                 setSearch((prevState: any)=>{
-                                  const New = {...prevState, email: e.target.value}
+                                  const New = {...prevState, name: e.target.value}
                                   return New
                                 })
                               }}
-                              error={Boolean(errors.email)}
+                              error={Boolean(errors.name)}
                               placeholder=''
                             />
                           )}
@@ -342,62 +358,31 @@ const Users = () => {
                       </FormControl>
                       <FormControl  sx={{ m: 1 }}>
                         <Controller
-                          name='username'
+                          name='intro'
                           control={control}
                           rules={{ required: true }}
                           render={({ field: { value, onChange, onBlur } }) => (
                             <TextField 
                               size='small'
                               autoFocus
-                              label={`${t('Username')}`}
+                              label={`${t('Intro')}`}
                               value={value}
                               onBlur={onBlur}
                               onChange={(e)=>{
                                 onChange()
-                                setValue('username', e.target.value)
+                                setValue('intro', e.target.value)
                                 setSearch((prevState: any)=>{
-                                  const New = {...prevState, username: e.target.value}
+                                  const New = {...prevState, intro: e.target.value}
                                   return New
                                 })
                               }}
-                              error={Boolean(errors.username)}
-                              placeholder=''
-                            />
-                          )}
-                        />
-                      </FormControl>
-                      <FormControl  sx={{ m: 1 }}>
-                        <Controller
-                          name='mobile'
-                          control={control}
-                          rules={{ required: true }}
-                          render={({ field: { value, onChange, onBlur } }) => (
-                            <TextField 
-                              size='small'
-                              autoFocus
-                              label={`${t('Mobile')}`}
-                              value={value}
-                              onBlur={onBlur}
-                              onChange={(e)=>{
-                                onChange()
-                                setValue('mobile', e.target.value)
-                                setSearch((prevState: any)=>{
-                                  const New = {...prevState, mobile: e.target.value}
-                                  return New
-                                })
-                              }}
-                              error={Boolean(errors.mobile)}
+                              error={Boolean(errors.intro)}
                               placeholder=''
                             />
                           )}
                         />
                       </FormControl>
                     </Box>
-                    <Button sx={{ my: 3, mr: 5 }} size="small" variant='outlined' onClick={
-                        () => { setPageData( () => ({ openEdit: true, FormAction: 'adduser', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg' }) ) }
-                    }>
-                    {t("Add")}
-                    </Button>
                 </Grid>
                 <DataGrid
                     autoHeight
@@ -414,8 +399,8 @@ const Users = () => {
                     onPaginationModelChange={setPaginationModel}
                     disableColumnMenu={true}
                 />
-                <UsersNewEdit pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit} isDisabledButton={isDisabledButton}/>
-                <UsersDelete pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit} isDisabledButton={isDisabledButton}/>
+                <ApplicationsNewEdit pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit} isDisabledButton={isDisabledButton}/>
+                <ApplicationsDelete pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit} isDisabledButton={isDisabledButton}/>
                 
             </Grid>
           </Card>
@@ -431,5 +416,5 @@ const Users = () => {
   )
 }
 
-export default Users
+export default Applications
 

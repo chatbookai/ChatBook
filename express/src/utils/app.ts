@@ -29,13 +29,13 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       Params.language = filterString(Params.language)
       Params.data = filterString(JSON.stringify(Params.data))
   
-      const insertSetting = db.prepare('INSERT OR IGNORE INTO app (_id, teamId, name, intro, avatar, type, groupTwo, groupOne, permission, data, status, userId, language) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-      insertSetting.run(Params._id, Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.groupOne, Params.groupTwo, Params.permission, Params.data, 1, Params.userId, Params.language);
+      const insertSetting = db.prepare('INSERT OR IGNORE INTO app (_id, teamId, name, intro, avatar, type, groupTwo, groupOne, permission, data, status, userId, language, createtime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+      insertSetting.run(Params._id, Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.groupOne, Params.groupTwo, Params.permission, Params.data, 1, Params.userId, Params.language, Date.now());
       insertSetting.finalize();
       return {"status":"ok", "msg":"Add Success"}
     }
     catch (error: any) {
-      log(Params._id, 'addApp', Params.userId, 'Error setOpenAISetting:', error.message);
+      log(Params._id, 'addApp', Params.userId, 'Error addApp:', error.message);
       return {"status":"error", "msg":error.message}
     }
   }
@@ -59,12 +59,36 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       return {"status":"ok", "msg":"Update Success"}
     }
     catch (error: any) {
-      log(Params._id, 'editApp', Params.userId, 'Error setOpenAISetting:', error.message);
+      log(Params._id, 'editApp', Params.userId, 'Error editApp:', error.message);
       return {"status":"error", "msg":error.message}
     }
 
   }
-  
+
+  export async function editAppById(Params: any) {
+    try{
+      Params._id = filterString(Params._id)
+      Params.teamId = filterString(Params.teamId)
+      Params.name = filterString(Params.name)
+      Params.intro = filterString(Params.intro)
+      Params.avatar = filterString(Params.avatar)
+      Params.type = filterString(Params.type)
+      Params.groupOne = filterString(Params.groupOne || '')
+      Params.groupTwo = filterString(Params.groupTwo || '')
+      Params.permission = filterString(Params.permission)
+      Params.language = filterString(Params.language)
+      const updateSetting = db.prepare('update app set teamId = ?, name = ?, intro = ?, avatar = ?, groupOne = ?, groupTwo = ?, permission = ?, language = ? where _id = ?');
+      updateSetting.run(Params.teamId, Params.name, Params.intro, Params.avatar, Params.groupOne, Params.groupTwo, Params.permission, Params.language, Params._id);
+      updateSetting.finalize();
+      return {"status":"ok", "msg":"Update Success"}
+    }
+    catch (error: any) {
+      log(Params._id, 'editAppById', Params.userId, 'Error editAppById:', error.message);
+      return {"status":"error", "msg":error.message}
+    }
+
+  }
+
   export async function deleteApp(Params: any) {
     try{
       Params._id = filterString(Params.appId)
@@ -75,10 +99,24 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       return {"status":"ok", "msg":"Delete Success"}
     }
     catch (error: any) {
-      log(Params._id, 'deleteApp', Params.userId, 'Error setOpenAISetting:', error.message);
+      log(Params._id, 'deleteApp', Params.userId, 'Error deleteApp:', error.message);
       return {"status":"error", "msg":error.message}
     }
+  }
   
+  export async function deleteAppById(Params: any) {
+    try{
+      Params._id = filterString(Params._id)
+      Params.id = filterString(Params.id)
+      const deleteSetting = db.prepare('delete from app where _id = ? and id = ?');
+      deleteSetting.run(Params._id, Params.id);
+      deleteSetting.finalize();
+      return {"status":"ok", "msg":"Delete Success", Params}
+    }
+    catch (error: any) {
+      log(Params._id, 'deleteApp', Params.userId, 'Error deleteApp:', error.message);
+      return {"status":"error", "msg":error.message}
+    }
   }
   
   export async function getApp(id: string, userId: string) {
@@ -86,6 +124,23 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     const userIdFilter = Number(userId)
     
     const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT data, avatar, name, intro, type, groupTwo, permission from app where _id = ? and userId = ? `, [idFilter, userIdFilter]) as any[];
+    
+    let Template: any = {}
+    if(SettingRS)  {
+      SettingRS.map((Item: any)=>{
+        const TemplateTemp = JSON.parse(Item.data)
+        Template = {...TemplateTemp, avatar: Item.avatar, name: Item.name, intro: Item.intro, type: Item.type, groupTwo: Item.groupTwo, permission: Item.permission}
+      })
+    }
+  
+    return Template
+  }
+
+  export async function getAppById(_id: string, id: string) {
+    const _idFilter = filterString(_id)
+    const idFilter = filterString(id)
+    
+    const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT data, avatar, name, intro, type, groupTwo, permission from app where _id = ? and id = ? `, [_idFilter, idFilter]) as any[];
     
     let Template: any = {}
     if(SettingRS)  {
@@ -129,6 +184,48 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from app where userId = ?", [userId]);
     const RecordsTotal: number = Records ? Records.NUM : 0;  
     const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from app where userId = ? order by id desc limit ? OFFSET ? `, [userId, pagesizeFiler, From]) as any[];
+    
+    const RS: any = {};
+    RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
+    RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
+    RS['from'] = From;
+    RS['pageid'] = pageidFiler;
+    RS['pagesize'] = pagesizeFiler;
+    RS['total'] = RecordsTotal;
+
+    return RS;
+  }
+
+  export async function getAppPageAll(pageid: number, pagesize: number, data: any) {
+    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+    const From = pageidFiler * pagesizeFiler;
+    console.log("getAppPageAll************", data)
+    console.log("pagesizeFiler", pagesizeFiler)
+
+    let Records: any = null;
+    let RecordsAll: any[] = []
+    if(data) {
+      Records = await (getDbRecord as SqliteQueryFunction)(`
+                      SELECT COUNT(*) AS NUM
+                      FROM app 
+                      WHERE name LIKE '%' || ? || '%' 
+                      AND intro LIKE '%' || ? || '%' 
+                    `, [data.name || '', data.intro || ''])
+      RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`
+                      SELECT *
+                      FROM app 
+                      WHERE name LIKE '%' || ? || '%' 
+                      AND intro LIKE '%' || ? || '%' 
+                      ORDER BY id DESC 
+                      LIMIT ? OFFSET ?
+                    `, [data.name || '', data.intro || '', pagesizeFiler, From]) || [];
+    }
+    else {
+      Records = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from app ", []);
+      RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from app  order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]) as any[];
+    }
+    const RecordsTotal: number = Records ? Records.NUM : 0;  
     
     const RS: any = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);

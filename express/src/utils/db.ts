@@ -266,6 +266,7 @@ export async function initChatBookDb() {
                 status INTEGER not null default 1,
                 userId INTEGER not null default 0,
                 language TEXT not null default 'en',
+                createtime INTEGER not null default 0,
                 UNIQUE(_id)
             );
         `);

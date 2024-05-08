@@ -25,7 +25,7 @@ import { PricingPlanType } from 'src/@core/components/plan-details/types'
 
 // ** Demo Tabs Imports
 import TabSystem from 'src/views/system/TabSystem'
-import TabUsers from 'src/views/system/TabUsers'
+import TabUsers from 'src/views/system/users/Users'
 import TabLogs from 'src/views/system/TabLogs'
 import TabApplications from 'src/views/system/TabApplications'
 import TabNotifications from 'src/views/system/TabNotifications'

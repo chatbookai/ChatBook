@@ -522,7 +522,10 @@
   "questionGuideTemplate": "你是一个AI智能助手, 可以回答和解决我的问题. 请结合前面的对话记录, 帮我生成 3 个问题, 引导我继续提问. 问题的长度应小于20个字符, 按 JSON 格式返回: ['问题1', '问题2', '问题3'], 要求使用UTF-8编码.",
   "System": "系统",
   "Clear Short Logs": "删除短日志",
-  "Clear All Logs": "删除全部日志"
+  "Clear All Logs": "删除全部日志",
+  "Access": "访问",
+  "User": "用户",
+  "Application": "应用"
 
   
 }

@@ -1,7 +1,7 @@
   // app.ts
   import express, { Request, Response, NextFunction } from 'express';
 
-  import { checkUserPassword, registerUser, changeUserPasswordByToken, changeUserDetail, changeUserStatus, checkUserToken, getUsers, getUserLogsAll, getUserLogs, getOneUserByToken, updateUserImageFavorite, updateUserVideoFavorite, refreshUserToken, addUserAgent, deleteUserAgent, getUserAgents, getMyAgents } from '../utils/user';
+  import { checkUserPassword, registerUser, changeUserPasswordByToken, changeUserDetail, changeUserStatus, checkUserToken, getUsers, getUserLogsAll, getUserLogs, getOneUserByToken, getUserByEmail, updateUserImageFavorite, updateUserVideoFavorite, refreshUserToken, addUserAgent, deleteUserAgent, getUserAgents, getMyAgents, addUser, editUser, deleteUser } from '../utils/user';
 
   const app = express();
 
@@ -68,10 +68,45 @@
     res.end();
   });
   
+  app.post('/api/user/getuserbyid', async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const { email } = req.body;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
+        const getUserLogsData = await getUserByEmail(email);
+        res.status(200).json(getUserLogsData);
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+    }
+    res.end();
+  });
+  
   app.post('/api/user/setuserstatus', async (req: Request, res: Response) => {
     const { authorization } = req.headers;
     const changeUserStatusData = await changeUserStatus(authorization as string, req.body);
     res.status(200).json(changeUserStatusData);
+    res.end();
+  });
+
+  app.post('/api/user/adduser', async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const addUserData = await addUser(authorization as string, req.body);
+    res.status(200).json(addUserData);
+    res.end();
+  });
+
+  app.post('/api/user/edituser', async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const editUserData = await editUser(authorization as string, req.body);
+    res.status(200).json(editUserData);
+    res.end();
+  });
+
+  app.post('/api/user/deleteuser', async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const deleteUserData = await deleteUser(authorization as string, req.body);
+    res.status(200).json(deleteUserData);
     res.end();
   });
   

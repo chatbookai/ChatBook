@@ -290,6 +290,61 @@
     return {"status":"ok", "msg":"Register user successful"}
   }
 
+  export async function addUser(token: string, data: any) {
+    const checkUserTokenData: any = await checkUserToken(token);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin' && data && data.email && data.username) {
+      
+      const getOneUserData1: any = await getOneUser(data.email);
+      if(getOneUserData1) {
+        return {"status":"error", "msg":"This email have used before"}
+      }
+      const getOneUserData2: any = await getOneUser(data.username);
+      if(getOneUserData2) {
+        return {"status":"error", "msg":"This username have used before"}
+      }
+      const hashedPassword = await hashPassword('123654aA');
+      const insertUser = db.prepare('INSERT INTO user (email, username, password, language, createtime, firstname, lastname, organization, mobile, address, country) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
+      insertUser.run(data.email, data.username, hashedPassword, data.language || 'en', Date.now(), data.firstname || '', data.lastname || '', data.organization || '', data.mobile || '', data.address || '', data.country || '');
+      insertUser.finalize();
+
+      return {"status":"ok", "msg":"Add Success"}
+    }
+    else {
+
+      return {"status":"error", "msg":"Token is invalid in addUser"}
+    }
+  }
+
+  export async function editUser(token: string, data: any) {
+    const checkUserTokenData: any = await checkUserToken(token);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
+      const updateSetting = db.prepare('update user set firstname = ?, lastname = ?, organization = ?, mobile = ?, address = ?, state = ?, country = ?, language = ? where email = ?');
+      updateSetting.run(data.firstname, data.lastname, data.organization, data.mobile, data.address, data.state, data.country, data.language, data.email);
+      updateSetting.finalize();
+
+      return {"status":"ok", "msg":"Change user information successful"}
+    }
+    else {
+
+      return {"status":"error", "msg":"Token is invalid in editUser"}
+    }
+  }
+
+  export async function deleteUser(token: string, data: any) {
+    const checkUserTokenData: any = await checkUserToken(token);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin' && data && data.email && data.username) {
+      const deleteSetting = db.prepare('delete from user where email = ? and username = ?');
+      deleteSetting.run(data.email, data.username);
+      deleteSetting.finalize();
+
+      return {"status":"ok", "msg":"Delete Success"}
+    }
+    else {
+
+      return {"status":"error", "msg":"Token is invalid in deleteUser"}
+    }
+  }
+
   export async function getOneUser(email: string) {
     const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT * from user where email = ? ", [email]);
  
@@ -312,6 +367,18 @@
     else {
 
       return {"status":"error", "msg":"Token is invalid in getOneUserByToken", "data": null}
+    }
+  }
+
+  export async function getUserByEmail(email: string) {
+    const getUserByEmailData: any = await getOneUser(email);
+    if(getUserByEmailData) {
+
+      return {"status":"ok", "msg":"Get one user information", "data": {...getUserByEmailData, password:''}}
+    }
+    else {       
+
+      return {"status":"error", "msg":"User not exist", "data": null}
     }
   }
 

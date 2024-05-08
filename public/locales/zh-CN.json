@@ -525,7 +525,9 @@
   "Clear All Logs": "删除全部日志",
   "Access": "访问",
   "User": "用户",
-  "Application": "应用"
+  "Application": "应用",
+  "Enable Search":"启用搜索",
+  "Disable Search":"禁用搜索"
 
   
 }

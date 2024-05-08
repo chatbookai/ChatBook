@@ -14,9 +14,15 @@ import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
 import Switch from '@mui/material/Switch'
 import Tooltip from '@mui/material/Tooltip'
+import TextField from '@mui/material/TextField'
 import IconButton from '@mui/material/IconButton'
 import Typography from '@mui/material/Typography'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import FormControl from '@mui/material/FormControl'
+
+import * as yup from 'yup'
+import { useForm, Controller } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 // ** Next Import
 import { useRouter } from 'next/router'
@@ -53,6 +59,7 @@ const Users = () => {
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 15 })
   const [store, setStore] = useState<any>(null);
   const [userStatus, setUserStatus] = useState<any>({});
+  const [search, setSearch] = useState<any>({ email:'', mobile: ''});
 
   useEffect(() => {
     CheckPermission(auth, router, false)
@@ -60,7 +67,7 @@ const Users = () => {
 
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
   const [pageData, setPageData] = useState<any>({FormAction: 'adduser', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg', openEdit: false, openDelete: false })
-
+  
   const [counter, setCounter] = useState<number>(0)
 
   useEffect(() => {
@@ -285,6 +292,19 @@ const Users = () => {
 
   }
 
+  const schema = yup.object().shape({
+  })
+  const {
+    control,
+    setError,
+    formState: { errors },
+    setValue
+  } = useForm({
+    defaultValues: search,
+    mode: 'onBlur',
+    resolver: yupResolver(schema)
+  })
+
   return (
     <Fragment>
       {auth.user && auth.user.email ?
@@ -294,7 +314,65 @@ const Users = () => {
           <Card>
             <Grid container>
                 <Grid item xs={12} lg={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Typography sx={{ my: 3, ml: 5 }}>{t('Users')}</Typography>
+                    <Box sx={{ml: 2, mt: 2}}>
+                      <FormControl  sx={{ mb: 1 }}>
+                        <Controller
+                          name='email'
+                          control={control}
+                          rules={{ required: true }}
+                          render={({ field: { value, onChange, onBlur } }) => (
+                            <TextField 
+                              size='small'
+                              autoFocus
+                              label={`${t('Email')}`}
+                              value={value}
+                              onBlur={onBlur}
+                              onChange={onChange}
+                              error={Boolean(errors.email)}
+                              placeholder=''
+                            />
+                          )}
+                        />
+                      </FormControl>
+                      <FormControl  sx={{ ml: 2, mb: 1 }}>
+                        <Controller
+                          name='username'
+                          control={control}
+                          rules={{ required: true }}
+                          render={({ field: { value, onChange, onBlur } }) => (
+                            <TextField 
+                              size='small'
+                              autoFocus
+                              label={`${t('Username')}`}
+                              value={value}
+                              onBlur={onBlur}
+                              onChange={onChange}
+                              error={Boolean(errors.username)}
+                              placeholder=''
+                            />
+                          )}
+                        />
+                      </FormControl>
+                      <FormControl  sx={{ ml: 2, mb: 1 }}>
+                        <Controller
+                          name='mobile'
+                          control={control}
+                          rules={{ required: true }}
+                          render={({ field: { value, onChange, onBlur } }) => (
+                            <TextField 
+                              size='small'
+                              autoFocus
+                              label={`${t('Mobile')}`}
+                              value={value}
+                              onBlur={onBlur}
+                              onChange={onChange}
+                              error={Boolean(errors.mobile)}
+                              placeholder=''
+                            />
+                          )}
+                        />
+                      </FormControl>
+                    </Box>
                     <Button sx={{ my: 3, mr: 5 }} size="small" variant='outlined' onClick={
                         () => { setPageData( () => ({ openEdit: true, FormAction: 'adduser', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg' }) ) }
                     }>

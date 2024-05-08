@@ -138,7 +138,7 @@ const TabLogs = () => {
         <Grid item xs={12}>
           <Card>
           <Box sx={{ display: 'flex', alignItems: 'center', m: 2, p: 2 }}>
-            <Typography noWrap variant='h6'>
+            <Typography noWrap>
               {t(`System Logs`)}
             </Typography>
             <Button color='success' size="small" style={{ whiteSpace: 'nowrap' }} sx={{ml: 2}}

@@ -382,7 +382,7 @@
     }
   }
 
-  export async function getUsers(pageid: number, pagesize: number) {
+  export async function getUsers(pageid: number, pagesize: number, data: any) {
     const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
     const From = pageidFiler * pagesizeFiler;
@@ -392,7 +392,22 @@
     const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from user ");
     const RecordsTotal: number = Records ? Records.NUM : 0;
 
-    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT id, email, username, firstname, lastname, organization, role, mobile, address, state, zipcode, country, language, timezone, nickname, birthday, avatar, mobile_status, google_auth, github_auth, user_type, user_status, createtime FROM user ORDER BY id DESC LIMIT ? OFFSET ? `, [pagesizeFiler, From]) || [];
+    let RecordsAll: any[] = []
+    if(data) {
+      RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`
+                      SELECT id, email, username, firstname, lastname, organization, role, mobile, address, state, zipcode, country, language, timezone, nickname, birthday, avatar, mobile_status, google_auth, github_auth, user_type, user_status, createtime 
+                      FROM user 
+                      WHERE email LIKE '%' || ? || '%' 
+                      AND username LIKE '%' || ? || '%' 
+                      AND mobile LIKE '%' || ? || '%' 
+                      ORDER BY id DESC 
+                      LIMIT ? OFFSET ?
+                    `, [data.email || '', data.username || '', data.mobile || '', pagesizeFiler, From]) || [];
+    }
+    else {
+      RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`SELECT id, email, username, firstname, lastname, organization, role, mobile, address, state, zipcode, country, language, timezone, nickname, birthday, avatar, mobile_status, google_auth, github_auth, user_type, user_status, createtime FROM user ORDER BY id DESC LIMIT ? OFFSET ? `, [pagesizeFiler, From]) || [];
+    }
+    
 
     const RS: any = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);

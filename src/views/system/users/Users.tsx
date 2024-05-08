@@ -59,7 +59,7 @@ const Users = () => {
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 15 })
   const [store, setStore] = useState<any>(null);
   const [userStatus, setUserStatus] = useState<any>({});
-  const [search, setSearch] = useState<any>({ email:'', mobile: ''});
+  const [search, setSearch] = useState<any>({ email:'', mobile: '', username: ''});
 
   useEffect(() => {
     CheckPermission(auth, router, false)
@@ -78,11 +78,11 @@ const Users = () => {
   useEffect(() => {
     fetchData(paginationModel)
     console.log("isMobileData", isMobileData, id)
-  }, [paginationModel])
+  }, [paginationModel, search])
 
   const fetchData = async function (paginationModel: any) {
     if (auth && auth.user) {
-      const data: any = {pageid: paginationModel.page, pagesize: paginationModel.pageSize}
+      const data: any = {...search, pageid: paginationModel.page, pagesize: paginationModel.pageSize}
       const RS = await axios.post(authConfig.backEndApiChatBook + '/api/user/getusers', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       if(RS && RS.data) {
         const userStatusNew = userStatus
@@ -296,9 +296,8 @@ const Users = () => {
   })
   const {
     control,
-    setError,
-    formState: { errors },
-    setValue
+    setValue,
+    formState: { errors }
   } = useForm({
     defaultValues: search,
     mode: 'onBlur',
@@ -315,7 +314,7 @@ const Users = () => {
             <Grid container>
                 <Grid item xs={12} lg={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
                     <Box sx={{ml: 2, mt: 2}}>
-                      <FormControl  sx={{ mb: 1 }}>
+                      <FormControl  sx={{ m: 1 }}>
                         <Controller
                           name='email'
                           control={control}
@@ -327,14 +326,21 @@ const Users = () => {
                               label={`${t('Email')}`}
                               value={value}
                               onBlur={onBlur}
-                              onChange={onChange}
+                              onChange={(e)=>{
+                                onChange()
+                                setValue('email', e.target.value)
+                                setSearch((prevState: any)=>{
+                                  const New = {...prevState, email: e.target.value}
+                                  return New
+                                })
+                              }}
                               error={Boolean(errors.email)}
                               placeholder=''
                             />
                           )}
                         />
                       </FormControl>
-                      <FormControl  sx={{ ml: 2, mb: 1 }}>
+                      <FormControl  sx={{ m: 1 }}>
                         <Controller
                           name='username'
                           control={control}
@@ -346,14 +352,21 @@ const Users = () => {
                               label={`${t('Username')}`}
                               value={value}
                               onBlur={onBlur}
-                              onChange={onChange}
+                              onChange={(e)=>{
+                                onChange()
+                                setValue('username', e.target.value)
+                                setSearch((prevState: any)=>{
+                                  const New = {...prevState, username: e.target.value}
+                                  return New
+                                })
+                              }}
                               error={Boolean(errors.username)}
                               placeholder=''
                             />
                           )}
                         />
                       </FormControl>
-                      <FormControl  sx={{ ml: 2, mb: 1 }}>
+                      <FormControl  sx={{ m: 1 }}>
                         <Controller
                           name='mobile'
                           control={control}
@@ -365,7 +378,14 @@ const Users = () => {
                               label={`${t('Mobile')}`}
                               value={value}
                               onBlur={onBlur}
-                              onChange={onChange}
+                              onChange={(e)=>{
+                                onChange()
+                                setValue('mobile', e.target.value)
+                                setSearch((prevState: any)=>{
+                                  const New = {...prevState, mobile: e.target.value}
+                                  return New
+                                })
+                              }}
                               error={Boolean(errors.mobile)}
                               placeholder=''
                             />

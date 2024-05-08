@@ -59,7 +59,7 @@
     const { pageid, pagesize } = req.body;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
-        const getUserLogsData = await getUsers(Number(pageid), Number(pagesize));
+        const getUserLogsData = await getUsers(Number(pageid), Number(pagesize), req.body);
         res.status(200).json(getUserLogsData);
     }
     else {

@@ -1,8 +1,7 @@
 // ** MUI Imports
 import React, { Fragment } from 'react';
-import { styled } from '@mui/material/styles'
 import Typography from '@mui/material/Typography'
-import Box, { BoxProps } from '@mui/material/Box'
+import Box from '@mui/material/Box'
 
 // ** Icon Imports
 import IconButton from '@mui/material/IconButton'

@@ -6,7 +6,6 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 
 // ** MUI Imports
 import Radio from '@mui/material/Radio'
-import Switch from '@mui/material/Switch'
 import Divider from '@mui/material/Divider'
 import { styled } from '@mui/material/styles'
 import IconButton from '@mui/material/IconButton'
@@ -82,14 +81,9 @@ const Customizer = () => {
   const {
     mode,
     skin,
-    appBar,
-    footer,
     layout,
     navHidden,
-    appBarBlur,
     themeColor,
-    navCollapsed,
-    contentWidth,
     verticalNavToggleType
   } = settings
 

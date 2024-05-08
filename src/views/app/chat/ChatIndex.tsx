@@ -121,7 +121,7 @@ const AppChat = (props: any) => {
       setStore(storeInit)
 
       //Set system prompt
-      const ChatChatInitList = ChatChatInit([], GetWelcomeTextFromAppValue)
+      ChatChatInit([], GetWelcomeTextFromAppValue)
       setHistoryCounter(0)
       setRefreshChatCounter(0)
       

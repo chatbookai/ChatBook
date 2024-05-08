@@ -94,7 +94,6 @@ const AuthProvider = ({ children }: Props) => {
     }
     else {
       setUser({'loading': '1', id: -1, email: '-1@-1', token: 'token'} as UserDataType)
-      //router.push('/store00000')
     }
   }, [])
 

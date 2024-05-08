@@ -1,9 +1,6 @@
 // ** React Imports
 import { useState, useEffect, Fragment } from 'react'
 
-// ** Next Imports
-import Button from '@mui/material/Button'
-
 // ** Axios Imports
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
@@ -12,7 +9,6 @@ import authConfig from 'src/configs/auth'
 import Box from '@mui/material/Box'
 import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
-import Switch from '@mui/material/Switch'
 import Avatar from '@mui/material/Avatar'
 import Tooltip from '@mui/material/Tooltip'
 import TextField from '@mui/material/TextField'
@@ -104,25 +100,10 @@ const Applications = () => {
       const data: any = {appId: _id, id: id}
       const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getappbyid', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       setIsDisabledButton(false)
+
       return RS
     }
   }
-
-  const handleApplicationstatus = async function (id: number, user_status: number) {
-    if (auth && auth.user) {
-      const data: any = {user_status: user_status, id:id}
-      axios.post(authConfig.backEndApiChatBook + '/api/setApplicationstatus', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} })
-    }
-  }
-
-  const handleSwitchChange = (id: number, checked: boolean) => {
-    setApplicationstatus((prevApplicationstatus: any) => {
-      const newApplicationstatus = { ...prevApplicationstatus, [id]: checked ? 1 : 0 };
-      handleApplicationstatus(id, newApplicationstatus[id]);
-      
-      return newApplicationstatus;
-    });
-  };
 
   useEffect(() => {
     setIsLoading(false)
@@ -347,6 +328,7 @@ const Applications = () => {
                                 setValue('name', e.target.value)
                                 setSearch((prevState: any)=>{
                                   const New = {...prevState, name: e.target.value}
+
                                   return New
                                 })
                               }}
@@ -373,6 +355,7 @@ const Applications = () => {
                                 setValue('intro', e.target.value)
                                 setSearch((prevState: any)=>{
                                   const New = {...prevState, intro: e.target.value}
+
                                   return New
                                 })
                               }}

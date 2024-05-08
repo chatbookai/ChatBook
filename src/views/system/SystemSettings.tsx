@@ -20,9 +20,6 @@ import CircularProgress from '@mui/material/CircularProgress'
 import Icon from 'src/@core/components/icon'
 import { useTranslation } from 'react-i18next'
 
-// ** Types
-import { PricingPlanType } from 'src/@core/components/plan-details/types'
-
 // ** Demo Tabs Imports
 import TabSystem from 'src/views/system/TabSystem'
 import TabUsers from 'src/views/system/users/Users'

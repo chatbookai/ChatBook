@@ -1,5 +1,5 @@
 // ** React Import
-import { Fragment, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 // ** MUI Imports
 import List from '@mui/material/List'
@@ -91,7 +91,7 @@ const Navigation = (props: Props) => {
   const shadowRef = useRef(null)
 
   const auth = useAuth()
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
 
   // ** Var
   const { navCollapsed } = settings

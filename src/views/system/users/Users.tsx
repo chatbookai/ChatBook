@@ -103,6 +103,7 @@ const Users = () => {
       const data: any = {email}
       const RS = await axios.post(authConfig.backEndApiChatBook + '/api/user/getuserbyid', data, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
       setIsDisabledButton(false)
+
       return RS
     }
   }
@@ -331,6 +332,7 @@ const Users = () => {
                                 setValue('email', e.target.value)
                                 setSearch((prevState: any)=>{
                                   const New = {...prevState, email: e.target.value}
+
                                   return New
                                 })
                               }}
@@ -357,6 +359,7 @@ const Users = () => {
                                 setValue('username', e.target.value)
                                 setSearch((prevState: any)=>{
                                   const New = {...prevState, username: e.target.value}
+
                                   return New
                                 })
                               }}
@@ -383,6 +386,7 @@ const Users = () => {
                                 setValue('mobile', e.target.value)
                                 setSearch((prevState: any)=>{
                                   const New = {...prevState, mobile: e.target.value}
+                                  
                                   return New
                                 })
                               }}

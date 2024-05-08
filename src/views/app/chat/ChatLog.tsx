@@ -62,6 +62,7 @@ const SystemPromptTemplate = ({text, handleSendMsg}: any) => {
     const replacedText = text.split(/(\[.*?\])/).map((part, index) => {
       if (part.startsWith('[') && part.endsWith(']')) {
         const keyword = part.slice(1, -1);
+
         return (
           <ListItem key={index} sx={{m: 0, p: 0, pt: 0}}>
             <Typography sx={{mr: 3, my: 0.5  }}>•</Typography>
@@ -89,7 +90,7 @@ const SystemPromptTemplate = ({text, handleSendMsg}: any) => {
 };
 
 
-const TextToSpeech = ({ text, AudioType, app, userType, GetTTSFromAppValue }: any) => {
+const TextToSpeech = ({ text, AudioType, app, userType }: any) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [audioFilesCache, setAudioFilesCache] = useState<any>({})
 
@@ -262,32 +263,6 @@ const ChatLog = (props: any) => {
     })
 
     return formattedChatLog
-  }
-
-  const renderMsgFeedback = (isSender: boolean, feedback: MsgFeedbackType) => {
-    if (isSender) {
-      if (feedback.isSent && !feedback.isDelivered) {
-        return (
-          <Box component='span' sx={{ display: 'inline-flex', '& svg': { mr: 2, color: 'text.secondary' } }}>
-            <Icon icon='mdi:check' fontSize='1rem' />
-          </Box>
-        )
-      } else if (feedback.isSent && feedback.isDelivered) {
-        return (
-          <Box
-            component='span'
-            sx={{
-              display: 'inline-flex',
-              '& svg': { mr: 2, color: feedback.isSeen ? 'success.main' : 'text.secondary' }
-            }}
-          >
-            <Icon icon='mdi:check-all' fontSize='1rem' />
-          </Box>
-        )
-      } else {
-        return null
-      }
-    }
   }
 
   useEffect(() => {

@@ -4,7 +4,7 @@
   import { checkUserToken } from '../utils/user';
 
   import { getLLMSSetting, uploadfiles, uploadfilesInsertIntoDb, filterString } from '../utils/utils';
-  import { outputImage, outputImageOrigin, outputAvatarForApp, outputAudio, chatChatBaiduWenxin, chatChatGemini, chatChatGeminiMindMap, chatChatOpenAI, chatKnowledgeOpenAI, GenereateImageUsingDallE2, GenereateAudioUsingTTS, parseFiles } from '../utils/llms';
+  import { outputImage, outputImageOrigin, outputAvatarForApp, outputAudio, chatChatBaiduWenxin, chatChatGemini, chatChatGeminiMindMap, chatChatOpenAI, chatChatDeepSeek, chatKnowledgeOpenAI, GenereateImageUsingDallE2, GenereateAudioUsingTTS, parseFiles } from '../utils/llms';
   import { llms } from '../config';
 
   const app = express();
@@ -83,24 +83,24 @@
   app.post('/api/ChatApp', async (req: Request, res: Response) => {
     const { question, history, template, appId, _id, publishId, allowChatLog } = req.body;
     const { authorization } = req.headers;
-    //const knowledgeId = 'ChatGPT3.5'
-    const knowledgeId = 'ChatGPT4'
+    const knowledgeId = 'ChatGPT3.5'
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         const getLLMSSettingData = await getLLMSSetting(knowledgeId);
         if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
-          await chatChatOpenAI(_id, res, knowledgeId, checkUserTokenData.data.id, question, history, template, appId, publishId || '', allowChatLog);
-          //await chatChatGemini(_id, res, knowledgeId, checkUserTokenData.data.id, question, history, template, appId, publishId || '', allowChatLog);
-          res.end();
+          //await chatChatOpenAI(_id, res, knowledgeId, checkUserTokenData.data.id, question, history, template, appId, publishId || '', allowChatLog); res.end();
+          //await chatChatGemini(_id, res, knowledgeId, checkUserTokenData.data.id, question, history, template, appId, publishId || '', allowChatLog); res.end();
+          await chatChatDeepSeek(_id, res, knowledgeId, checkUserTokenData.data.id, question, history, template, appId, publishId || '', allowChatLog);
         }
         else {
           res.status(200).json({"status":"error", "msg":"Not set API_KEY", "data": null});
+          res.end();
         }
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+        res.end();
     }
-    res.end();
   });
 
   app.post('/api/ChatAppAnonymous', async (req: Request, res: Response) => {
@@ -110,17 +110,18 @@
     if(authorization && authorization.length == 32) {
         const getLLMSSettingData = await getLLMSSetting(knowledgeId);
         if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
-          await chatChatOpenAI(_id, res, knowledgeId, authorization, question, history, template, appId, publishId || '', allowChatLog);
-          res.end();
+          //await chatChatOpenAI(_id, res, knowledgeId, authorization, question, history, template, appId, publishId || '', allowChatLog);
+          await chatChatDeepSeek(_id, res, knowledgeId, authorization, question, history, template, appId, publishId || '', allowChatLog);
         }
         else {
           res.status(200).json({"status":"error", "msg":"Not set API_KEY", "data": null});
+          res.end();
         }
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+        res.end();
     }
-    res.end();
   });
   
   app.post('/api/ChatGemini', async (req: Request, res: Response) => {

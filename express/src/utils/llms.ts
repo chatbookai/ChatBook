@@ -32,6 +32,8 @@ import { PineconeStore } from '@langchain/community/vectorstores/pinecone';
 import { Pinecone } from '@pinecone-database/pinecone';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 
+import https from 'https';
+
 /*
 import { DirectoryLoader } from 'langchain/document_loaders/fs/directory';
 import { TextLoader } from 'langchain/document_loaders/fs/text';
@@ -166,6 +168,89 @@ let ChatBaiduWenxinModel: any = null
       res.write(error.message)
     }    
     res.end();
+  }
+
+
+
+  export async function chatChatDeepSeek(_id: string, res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number) {
+    const pastMessages: any[] = [];
+    if (template && template !== '') {
+        pastMessages.push({ "role": "system", "content": template });
+    }
+    if (history && history.length > 0) {
+        history.forEach((Item) => {
+            if (Item[0]) {
+                pastMessages.push({ "role": "user", "content": Item[0] });
+            }
+            if (Item[1]) {
+                pastMessages.push({ "role": "assistant", "content": Item[1] });
+            }
+        });
+    }
+    pastMessages.push({ "role": "user", "content": question });
+
+    const apiKey = 'sk-12fc4b01d7e24ab7b90af43c107f5bf9';
+    
+    let options = {
+      'method': 'POST',
+      'hostname': 'api.deepseek.com',
+      'path': '/chat/completions',
+      'headers': {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Authorization': 'Bearer ' + apiKey
+      },
+      'maxRedirects': 20
+    };
+    
+    const reqFromAi = https.request(options, (resFromAi) => {
+      let chunks: any[] = [];
+      resFromAi.setEncoding('utf8');
+      resFromAi.on("data", (chunk) => {
+        if( chunk && chunk != 'data: [DONE]' && chunk != 'data: [DONE]\n' && !chunk.startsWith('data: [DONE]') )  {
+          const cleanedChunk = chunk.replace(/^data: /, '');
+          try {
+            const chunkData = JSON.parse(cleanedChunk);
+            if (chunkData && chunkData.choices && Array.isArray(chunkData.choices)) {
+              chunkData.choices.forEach((choice: any) => {
+                  const ReplayContent = choice?.delta?.content
+                  if(ReplayContent != null) {
+                    //console.log('Received choice:', ReplayContent);
+                    chunks.push(ReplayContent);
+                    res.write(ReplayContent)
+                  }
+              });
+            }
+          }
+          catch (error) {
+            console.error('chatChatDeepSeek Error parsing JSON:', error);
+          }
+        }
+      });
+      resFromAi.on("end", () => {
+        console.log("body.toString()", chunks.join(''));
+        res.end();
+      });
+      resFromAi.on("error", (error) => {
+        console.error("chatChatDeepSeek Error", error);
+        res.end();
+      });
+    });    
+    let postData = JSON.stringify({
+      "messages": pastMessages,
+      "model": "deepseek-chat",
+      "frequency_penalty": 0,
+      "max_tokens": 2048,
+      "presence_penalty": 0,
+      "stop": null,
+      "stream": true,
+      "temperature": 1,
+      "top_p": 1,
+      "logprobs": false,
+      "top_logprobs": null
+    });    
+    reqFromAi.write(postData);    
+    reqFromAi.end();
   }
 
   export async function chatKnowledgeOpenAI(res: Response, knowledgeId: number | string, userId: number, question: string, history: any[], appId: number) {

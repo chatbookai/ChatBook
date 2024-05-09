@@ -382,7 +382,17 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
                             };
                     const response = await axios.post(url, data, { headers: headers }).then(res=>res.data);
                     if(response) {
-                        setQuestionGuide(response)
+                        let JsonText = response.trim()
+                        if (JsonText.startsWith('```json') && JsonText.endsWith('```')) {
+                            JsonText = response.substring(8, response.length - 3);
+                            const JsonTextList = JSON.parse(JsonText)
+                            setQuestionGuide(JsonTextList)
+                            console.log("JsonTextList......", JsonTextList)
+                        }
+                        else {
+                            setQuestionGuide(JsonText)
+                        }
+                        console.log("JsonText......", JsonText)
                     }
                 }
         

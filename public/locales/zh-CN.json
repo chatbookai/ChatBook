@@ -527,7 +527,8 @@
   "User": "用户",
   "Application": "应用",
   "Enable Search":"启用搜索",
-  "Disable Search":"禁用搜索"
+  "Disable Search":"禁用搜索",
+  "Generating, please wait...":"正在生成中,请等待..."
 
   
 }

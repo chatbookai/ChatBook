@@ -173,6 +173,7 @@ let ChatBaiduWenxinModel: any = null
 
 
   export async function chatChatDeepSeek(_id: string, res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number) {
+    const startTime = performance.now()
     const pastMessages: any[] = [];
     if (template && template !== '') {
         pastMessages.push({ "role": "system", "content": template });
@@ -202,55 +203,69 @@ let ChatBaiduWenxinModel: any = null
       },
       'maxRedirects': 20
     };
-    
-    const reqFromAi = https.request(options, (resFromAi) => {
-      let chunks: any[] = [];
-      resFromAi.setEncoding('utf8');
-      resFromAi.on("data", (chunk) => {
-        if( chunk && chunk != 'data: [DONE]' && chunk != 'data: [DONE]\n' && !chunk.startsWith('data: [DONE]') )  {
-          const cleanedChunk = chunk.replace(/^data: /, '');
-          try {
-            const chunkData = JSON.parse(cleanedChunk);
-            if (chunkData && chunkData.choices && Array.isArray(chunkData.choices)) {
-              chunkData.choices.forEach((choice: any) => {
-                  const ReplayContent = choice?.delta?.content
-                  if(ReplayContent != null) {
-                    //console.log('Received choice:', ReplayContent);
-                    chunks.push(ReplayContent);
-                    res.write(ReplayContent)
-                  }
-              });
+    try {
+      const reqFromAi = https.request(options, (resFromAi) => {
+        let chunks: any[] = [];
+        resFromAi.setEncoding('utf8');
+        resFromAi.on("data", (chunk) => {
+          if( chunk && chunk != 'data: [DONE]' && chunk != 'data: [DONE]\n' && !chunk.startsWith('data: [DONE]') )  {
+            const cleanedChunk = chunk.replace(/^data: /, '');
+            try {
+              const chunkData = JSON.parse(cleanedChunk);
+              if (chunkData && chunkData.choices && Array.isArray(chunkData.choices)) {
+                chunkData.choices.forEach((choice: any) => {
+                    const ReplayContent = choice?.delta?.content
+                    if(ReplayContent != null) {
+                      //console.log('Received choice:', ReplayContent);
+                      chunks.push(ReplayContent);
+                      res.write(ReplayContent)
+                    }
+                });
+              }
+            }
+            catch (error) {
+              console.error('chatChatDeepSeek Error parsing JSON:', error);
             }
           }
-          catch (error) {
-            console.error('chatChatDeepSeek Error parsing JSON:', error);
+        });
+        resFromAi.on("end", () => {
+          console.log("body.toString()", chunks.join(''));
+          const StreamResponse = chunks.join('')
+          const endTime = performance.now()
+          const responseTime = Math.round((endTime - startTime) * 100 / 1000) / 100   
+          if(allowChatLog == 1)   {
+            const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (_id, send, Received, userId, timestamp, source, history, responseTime, appId, publishId) VALUES (?,?,?,?,?,?,?,?,?,?)');
+            insertChatLog.run(_id, question, StreamResponse, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), responseTime, appId, publishId);
+            insertChatLog.finalize();
           }
-        }
-      });
-      resFromAi.on("end", () => {
-        console.log("body.toString()", chunks.join(''));
-        res.end();
-      });
-      resFromAi.on("error", (error) => {
-        console.error("chatChatDeepSeek Error", error);
-        res.end();
-      });
-    });    
-    let postData = JSON.stringify({
-      "messages": pastMessages,
-      "model": "deepseek-chat",
-      "frequency_penalty": 0,
-      "max_tokens": 2048,
-      "presence_penalty": 0,
-      "stop": null,
-      "stream": true,
-      "temperature": 1,
-      "top_p": 1,
-      "logprobs": false,
-      "top_logprobs": null
-    });    
-    reqFromAi.write(postData);    
-    reqFromAi.end();
+          res.end();
+        });
+        resFromAi.on("error", (error) => {
+          console.error("chatChatDeepSeek Error", error);
+          res.end();
+        });
+      });    
+      let postData = JSON.stringify({
+        "messages": pastMessages,
+        "model": "deepseek-chat",
+        "frequency_penalty": 0,
+        "max_tokens": 2048,
+        "presence_penalty": 0,
+        "stop": null,
+        "stream": true,
+        "temperature": 1,
+        "top_p": 1,
+        "logprobs": false,
+        "top_logprobs": null
+      });    
+      reqFromAi.write(postData);    
+      reqFromAi.end();
+
+    }
+    catch(error: any) {
+      console.log("chatChatDeepSeek error", error.message)
+      res.write(error.message)
+    }
   }
 
   export async function chatKnowledgeOpenAI(res: Response, knowledgeId: number | string, userId: number, question: string, history: any[], appId: number) {

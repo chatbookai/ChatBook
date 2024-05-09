@@ -369,8 +369,11 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
                         'Content-Type': 'application/json',
                     };
                     History.push([Message, responseText])
-                    console.log("HistoryHistory", History)
-                    const questionGuideTemplate = '你是一个AI智能助手，可以回答和解决我的问题。请结合前面的对话记录，帮我生成 3 个问题，引导我继续提问。问题的长度应小于20个字符，要求使用UTF-8编码，按 JSON 格式返回: ["问题1", "问题2", "问题3"]'
+                    console.log("questionGuideTemplate", questionGuideTemplate)
+
+                    //questionGuideTemplate define by zh-CN.json language etc files
+                    //const questionGuideTemplate = '你是一个AI智能助手，可以回答和解决我的问题。请结合前面的对话记录，帮我生成 3 个问题，引导我继续提问。问题的长度应小于20个字符，要求使用UTF-8编码，按 JSON 格式返回: ["问题1", "问题2", "问题3"]'
+                    setQuestionGuide(['Generating, please wait...'])
                     const data = {
                                 question: questionGuideTemplate,
                                 history: History,
@@ -382,10 +385,11 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
                             };
                     const response = await axios.post(url, data, { headers: headers }).then(res=>res.data);
                     if(response) {
-                        let JsonText = response.trim()
-                        if (JsonText.startsWith('```json') && JsonText.endsWith('```')) {
-                            JsonText = response.substring(8, response.length - 3);
-                            const JsonTextList = JSON.parse(JsonText)
+                        let JsonText = response
+                        if (JsonText.startsWith(' ```json')) {
+                            JsonText = response.substring(8, JsonText.length);
+                            const JsonTextArray = JsonText.split('```')
+                            const JsonTextList = JSON.parse(JsonTextArray[0].trim())
                             setQuestionGuide(JsonTextList)
                             console.log("JsonTextList......", JsonTextList)
                         }

@@ -1,5 +1,5 @@
 // ** React Imports
-import { useRef, useEffect, Ref, ReactNode, Fragment, useState } from 'react'
+import { useRef, useEffect, Ref, ReactNode, Fragment, useState, memo } from 'react'
 import { saveAs } from 'file-saver';
 
 // ** MUI Imports
@@ -183,7 +183,7 @@ const ChatLog = (props: any) => {
     }
   }
 
-  console.log("GetTTSFromAppValue", GetTTSFromAppValue)
+  console.log("questionGuide", questionGuide)
 
   const [contextPreviewOpen, setContextPreviewOpen] = useState<boolean>(false)
   const [contextPreviewData, setContextPreviewData] = useState<any[]>([])
@@ -425,22 +425,27 @@ const ChatLog = (props: any) => {
                           :
                             <ReactMarkdown>{chat.msg.replace('\n', '  \n')}</ReactMarkdown>
                           }
-                          {GetQuestionGuideFromAppValue && !isSender && index == ChatItemMsgList.length - 1 && index>0 && questionGuide && Array.isArray(questionGuide) && questionGuide.length > 0 ?
+                          {GetQuestionGuideFromAppValue && !isSender && index == ChatItemMsgList.length - 1 && index>0 && questionGuide ?
                             <Box>
                               <Box display="flex" alignItems="center">
                                 <Avatar src={'/imgs/module/cq.png'} sx={{ mr: 2.5, width: 26, height: 26 }} />
                                 {t('QuestionGuide')}
                               </Box>
-                              {questionGuide && questionGuide.length > 0 && questionGuide.map((question: string, index: number)=>{
+                              {questionGuide && questionGuide.length > 0 && Array.isArray(questionGuide) && questionGuide.map((question: string, index: number)=>{
 
                                 return (
                                   <ListItem key={index} sx={{m: 0, p: 0, pt: 0}}>
                                     <Typography sx={{mr: 3, my: 0.5, ml: 5  }}>•</Typography>
-                                    <LinkStyled href="#" onClick={(event: any) => {
+                                    {question != 'Generating, please wait...' ?
+                                    <LinkStyled href="#" onClick={() => {
                                       handleSendMsg(question)
                                     }}>
                                       {question}
                                     </LinkStyled>
+                                    :
+                                    <Typography sx={{my: 0.5  }} variant='body2'>{t(question)}</Typography>
+                                    }
+                                    
                                   </ListItem>
                                 )
                               })}
@@ -587,4 +592,4 @@ const ChatLog = (props: any) => {
   )
 }
 
-export default ChatLog
+export default memo(ChatLog)

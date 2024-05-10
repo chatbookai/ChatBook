@@ -61,9 +61,11 @@ const EditDataSet = (props: any) => {
       const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/editdataset', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
       console.log("FormSubmit", FormSubmit)
       setIsDisabledButton(false)
-      toast.success(t('Update success') as string, {
-        duration: 2000
-      })
+      if(FormSubmit?.status == "ok") {
+        toast.success(t(FormSubmit.msg) as string, {
+          duration: 2000
+        })
+      }
     }
   }
 

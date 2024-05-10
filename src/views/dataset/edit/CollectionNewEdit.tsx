@@ -31,6 +31,7 @@ import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import useBgColor, { UseBgColorType } from 'src/@core/hooks/useBgColor'
+import TextField2 from 'src/context/TextField2'
 
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
 
@@ -228,7 +229,7 @@ const CollectionNewEdit = (props: any) => {
                             <InputLabel id='demo-dialog-select-label'>{t("Collection Name")}</InputLabel>
                         </Grid>
                         <Grid item xs={9} sx={{pt: 6, pl: 2}}>
-                            <TextField
+                            <TextField2
                                 size="small"
                                 value={pageData.CollectionName}
                                 sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
@@ -246,7 +247,7 @@ const CollectionNewEdit = (props: any) => {
                             <InputLabel id='demo-dialog-select-label'>{t("Collection Content")}</InputLabel>
                         </Grid>
                         <Grid item xs={9} sx={{pt: 6, pl: 2}}>
-                            <TextField
+                            <TextField2
                                 multiline
                                 fullWidth
                                 rows={9}
@@ -281,7 +282,7 @@ const CollectionNewEdit = (props: any) => {
                             <InputLabel id='demo-dialog-select-label'>{t("Link name")}</InputLabel>
                         </Grid>
                         <Grid item xs={9} sx={{pt: 6, pl: 2}}>
-                            <TextField
+                            <TextField2
                                 multiline
                                 fullWidth
                                 rows={9}
@@ -302,7 +303,7 @@ const CollectionNewEdit = (props: any) => {
                             <InputLabel id='demo-dialog-select-label'>{t("Selector")}</InputLabel>
                         </Grid>
                         <Grid item xs={9} sx={{pt: 6, pl: 2}}>
-                            <TextField
+                            <TextField2
                                 size="small"
                                 value={pageData.Selector}
                                 sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
@@ -405,7 +406,7 @@ const CollectionNewEdit = (props: any) => {
                                                         </Tooltip>
                                                     </Grid>
                                                     <Grid item xs={9} sx={{pt: 6, pl: 2}}>
-                                                        <TextField
+                                                        <TextField2
                                                             size="small"
                                                             type="number"
                                                             value={pageData.IdealChunkLength}
@@ -426,7 +427,7 @@ const CollectionNewEdit = (props: any) => {
                                                         </Tooltip>
                                                     </Grid>
                                                     <Grid item xs={9} sx={{pt: 6, pl: 2}}>
-                                                        <TextField
+                                                        <TextField2
                                                             size="small"
                                                             value={pageData.CustomSplitChar}
                                                             sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}

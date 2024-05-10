@@ -13,10 +13,12 @@ import Tooltip from '@mui/material/Tooltip'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import RadioGroup from '@mui/material/RadioGroup'
 import InputLabel from '@mui/material/InputLabel'
+import Typography from '@mui/material/Typography'
 import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Icon from 'src/@core/components/icon'
 import IconButton from '@mui/material/IconButton'
+import TextField2 from 'src/context/TextField2'
 
 
 const ConfigApp = (props: any) => {
@@ -40,7 +42,9 @@ const ConfigApp = (props: any) => {
                             <InputLabel sx={{pt: 6}}>{t("Dataset")} ID</InputLabel>
                         </Grid>
                         <Grid item xs={8} sx={{pt: 6, pl: 2}}>
+                            <Typography variant='body1'>
                             {app._id}
+                            </Typography>
                         </Grid>
                     </Grid>
                 </Grid>
@@ -60,7 +64,7 @@ const ConfigApp = (props: any) => {
                             <InputLabel sx={{pt: 6}}>{t("Name")}</InputLabel>
                         </Grid>
                         <Grid item xs={8} sx={{pt: 6, pl: 2}}>
-                            <TextField
+                            <TextField2
                                 size="small"
                                 value={app.name}
                                 sx={{ width: '100%', resize: 'both', '& .MuiInputBase-input': { fontSize: '0.875rem' } }}
@@ -108,7 +112,7 @@ const ConfigApp = (props: any) => {
                             <InputLabel sx={{pt: 6}}>{t("Intro")}</InputLabel>
                         </Grid>
                         <Grid item xs={8} sx={{pt: 6, pl: 2}}>
-                            <TextField
+                            <TextField2
                                 size="small"
                                 multiline
                                 rows={6}

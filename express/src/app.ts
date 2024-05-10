@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 import { join } from 'path';
 
 import { initChatBookDbExec } from './utils/db';
-import { debug, parseFiles } from './utils/llms';
+import { parseFiles } from './utils/llms';
 
 //import { downloadVideoFromAPI } from './utils/Backup/stability';
 
@@ -49,11 +49,6 @@ app.use('/', datasetRouter);
 //app.use('/', getimgRouter);
 //app.use('/', stabilityRouter);
 //app.use('/', seaartRouter);
-
-app.get('/api/debug', async (req: Request, res: Response) => {
-  await debug(res, "ChatGPT4");
-  res.end();
-});
 
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
   // 处理身份验证错误

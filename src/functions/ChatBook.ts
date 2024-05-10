@@ -385,18 +385,8 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
                             };
                     const response = await axios.post(url, data, { headers: headers }).then(res=>res.data);
                     if(response) {
-                        let JsonText = response
-                        if (JsonText.startsWith(' ```json')) {
-                            JsonText = response.substring(8, JsonText.length);
-                            const JsonTextArray = JsonText.split('```')
-                            const JsonTextList = JSON.parse(JsonTextArray[0].trim())
-                            setQuestionGuide(JsonTextList)
-                            console.log("JsonTextList......", JsonTextList)
-                        }
-                        else {
-                            setQuestionGuide(JsonText)
-                        }
-                        console.log("JsonText......", JsonText)
+                        setQuestionGuide(response)
+                        console.log("Array.isArray(questionGuide)", response)
                     }
                 }
         
@@ -420,7 +410,8 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
 }
 
 export function ChatChatHistoryInput(chatlogId: string, question: string, answer: string, UserId: number | string, knowledgeId: number | string, appId: string, responseTime: number, History: any[]) {
-    console.log("ChatChatHistoryList", question, answer, UserId)
+    
+    //console.log("ChatChatHistoryList", question, answer, UserId)
 	const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatHistoryList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : {}
     if(ChatChatHistoryList && ChatChatHistoryList[UserId] && ChatChatHistoryList[UserId][knowledgeId] && ChatChatHistoryList[UserId][knowledgeId][appId]) {

@@ -57,11 +57,15 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
 const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
 const PINECONE_ENVIRONMENT = process.env.PINECONE_ENVIRONMENT;
 const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME;
 const PINECONE_NAME_SPACE = process.env.PINECONE_NAME_SPACE;
+const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL;
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+    
 
 let getLLMSSettingData: any = null
 let ChatOpenAIModel: any = null
@@ -95,20 +99,55 @@ let ChatBaiduWenxinModel: any = null
   }
 
   export async function initChatBookOpenAIStream(res: Response, knowledgeId: number | string) {
-    getLLMSSettingData = await getLLMSSetting(knowledgeId);
-    const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
-    const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
-    const OPENAI_Temperature = getLLMSSettingData.Temperature;
-    if(OPENAI_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
-      if(OPENAI_API_BASE && OPENAI_API_BASE !='' && OPENAI_API_BASE.length > 16) {
-        process.env.OPENAI_BASE_URL = OPENAI_API_BASE
-        process.env.OPENAI_API_KEY = OPENAI_API_KEY
+    
+  }
+
+  export async function ChatApp(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number) {
+
+    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT * from app where _id = ?", [appId]);
+    const AppDataText: string = Records ? Records.data : null;  
+    const app: any = JSON.parse(AppDataText)
+    if(app && app.modules) {
+      const AiNode = app.modules.filter((item: any)=>item.type == 'chatNode')
+      if(AiNode && AiNode[0] && AiNode[0].data && AiNode[0].data.inputs) {
+        const modelList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'model')
+        if(modelList && modelList[0] && modelList[0]['value']) {
+          const modelName = modelList[0]['value']
+          switch(modelName) {
+            case 'gpt-3.5-turbo':
+              await chatChatOpenAI(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog);
+              break;
+            case 'gemini-pro':
+              await chatChatDeepSeek(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog);
+              break;
+            case 'DeepSeek':
+              await chatChatDeepSeek(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog);
+              break;
+          }
+        }
+        else {
+          console.log("Can not found ai modelName...")
+        }
       }
+      else {
+        console.log("Can not found ai chatNode...")
+      }
+    }
+    else {
+      console.log("Can not found ai app data...")
+    }
+
+  }
+
+  export async function chatChatOpenAI(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number) {
+    ChatBookOpenAIStreamResponse = ''
+    const startTime = performance.now()
+    if(OPENAI_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
       try{
         ChatOpenAIModel = new ChatOpenAI({ 
-          modelName: getLLMSSettingData.ModelName ?? "gpt-3.5-turbo",
+          modelName: "gpt-3.5-turbo",
           openAIApiKey: OPENAI_API_KEY, 
-          temperature: Number(OPENAI_Temperature),
+          temperature: Number(0.5),
           streaming: true,
           callbacks: [
             {
@@ -123,18 +162,14 @@ let ChatBaiduWenxinModel: any = null
       }
       catch(Error: any) {
         log('initChatBookOpenAIStream', 'initChatBookOpenAIStream', 'initChatBookOpenAIStream', "initChatBookOpenAIStream Error", Error)
+        return 
       }
     }
     else {
       res.write("Not set API_KEY in initChatBookOpenAIStream");
       res.end();
+      return 
     }
-  }
-
-  export async function chatChatOpenAI(_id: string, res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number) {
-    ChatBookOpenAIStreamResponse = ''
-    const startTime = performance.now()
-    await initChatBookOpenAIStream(res, knowledgeId)
     const pastMessages: any[] = []
     if(template && template!='') {
       pastMessages.push(new SystemMessage(template))
@@ -161,6 +196,7 @@ let ChatBaiduWenxinModel: any = null
         const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (_id, send, Received, userId, timestamp, source, history, responseTime, appId, publishId) VALUES (?,?,?,?,?,?,?,?,?,?)');
         insertChatLog.run(_id, question, ChatBookOpenAIStreamResponse, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), responseTime, appId, publishId);
         insertChatLog.finalize();
+        console.log("chatChatOpenAI: ", question, ChatBookOpenAIStreamResponse)
       }
     }
     catch(error: any) {
@@ -170,9 +206,7 @@ let ChatBaiduWenxinModel: any = null
     res.end();
   }
 
-
-
-  export async function chatChatDeepSeek(_id: string, res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number) {
+  export async function chatChatDeepSeek(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number) {
     const startTime = performance.now()
     const pastMessages: any[] = [];
     if (template && template !== '') {
@@ -268,7 +302,8 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function chatKnowledgeOpenAI(res: Response, knowledgeId: number | string, userId: number, question: string, history: any[], appId: number) {
+  export async function chatKnowledgeOpenAI(res: Response, userId: number, question: string, history: any[], appId: number) {
+    const knowledgeId = ''
     await initChatBookOpenAIStream(res, knowledgeId)
     if(!ChatOpenAIModel) {
       res.end();
@@ -420,9 +455,9 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function chatChatGemini(_id: string, res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number) {
+  export async function chatChatGemini(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number) {
+    const knowledgeId = ''
     await initChatBookGeminiStream(res, knowledgeId)
-
     const pastMessages: any[] = []
     if(template && template!='') {
       pastMessages.push(new SystemMessage(template))
@@ -463,7 +498,8 @@ let ChatBaiduWenxinModel: any = null
     res.end();
   }
 
-  export async function chatChatGeminiMindMap(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string, appId: number) {
+  export async function chatChatGeminiMindMap(res: Response, userId: string, question: string, history: any[], template: string, appId: number) {
+    const knowledgeId = ''
     await initChatBookGeminiStream(res, knowledgeId)
     const TextPrompts = template && template != '' ? template : "\n 要求生成一份PPT的大纲,以行业总结性报告的形式显现,生成15-20页左右,每一页3-6个要点,每一个要点字数在10-30之间,返回格式为Markdown,标题格式使用: **标题名称** 的形式表达."
     const input2 = [
@@ -522,7 +558,8 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function chatChatBaiduWenxin(res: Response, knowledgeId: number | string, userId: string, question: string, history: any[], template: string, appId: number) {
+  export async function chatChatBaiduWenxin(res: Response, userId: string, question: string, history: any[], template: string, appId: number) {
+    const knowledgeId = ''
     await initChatBookBaiduWenxinStream(res, knowledgeId);
     if(!ChatBaiduWenxinModel) {
       res.end();
@@ -556,30 +593,6 @@ let ChatBaiduWenxinModel: any = null
       console.log("chatChatOpenAI error", error.message)
       return error.message;
     }    
-  }
-
-  
-  
-  export async function debug(res: Response, knowledgeId: number | string) {
-    await initChatBookOpenAIStream(res, knowledgeId)
-    if(!ChatOpenAIModel) {
-      res.end();
-      return
-    }
-    const pastMessages = [
-      new HumanMessage("what is Bitcoin?"),
-      new AIMessage("Nice to meet you, Jonas!"),
-    ];
-    
-    const memory = new BufferMemory({
-      chatHistory: new ChatMessageHistory(pastMessages),
-    });
-
-    const chain = new ConversationChain({ llm: ChatOpenAIModel, memory: memory });
-
-    const res2 = await chain.call({ input: "您使用的是哪个模型?" });
-    console.log({ res2 });
-    
   }
 
   export async function debug_agent(res: Response, knowledgeId: number | string) {
@@ -654,7 +667,8 @@ let ChatBaiduWenxinModel: any = null
 
   }
 
-  export async function GenereateImageUsingDallE2(res: Response, knowledgeId: number | string, userId: string, question: string, size='1024x1024') {
+  export async function GenereateImageUsingDallE2(res: Response, userId: string, question: string, size='1024x1024') {
+    const knowledgeId = ''
     getLLMSSettingData = await getLLMSSetting(knowledgeId);    
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE ?? "https://api.openai.com/v1";
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;    

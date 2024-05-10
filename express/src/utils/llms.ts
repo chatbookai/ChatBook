@@ -102,7 +102,7 @@ let ChatBaiduWenxinModel: any = null
     
   }
 
-  export async function ChatApp(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number) {
+  export async function ChatApp(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number) {
 
     const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT * from app where _id = ?", [appId]);
     const AppDataText: string = Records ? Records.data : null;  
@@ -115,13 +115,13 @@ let ChatBaiduWenxinModel: any = null
           const modelName = modelList[0]['value']
           switch(modelName) {
             case 'gpt-3.5-turbo':
-              await chatChatOpenAI(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog);
+              await chatChatOpenAI(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
               break;
             case 'gemini-pro':
-              await chatChatDeepSeek(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog);
+              await chatChatDeepSeek(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
               break;
             case 'DeepSeek':
-              await chatChatDeepSeek(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog);
+              await chatChatDeepSeek(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
               break;
           }
         }
@@ -139,7 +139,7 @@ let ChatBaiduWenxinModel: any = null
 
   }
 
-  export async function chatChatOpenAI(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number) {
+  export async function chatChatOpenAI(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number) {
     ChatBookOpenAIStreamResponse = ''
     const startTime = performance.now()
     if(OPENAI_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
@@ -147,7 +147,7 @@ let ChatBaiduWenxinModel: any = null
         ChatOpenAIModel = new ChatOpenAI({ 
           modelName: "gpt-3.5-turbo",
           openAIApiKey: OPENAI_API_KEY, 
-          temperature: Number(0.5),
+          temperature: Number(temperature || 0.5),
           streaming: true,
           callbacks: [
             {
@@ -206,7 +206,7 @@ let ChatBaiduWenxinModel: any = null
     res.end();
   }
 
-  export async function chatChatDeepSeek(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number) {
+  export async function chatChatDeepSeek(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number) {
     const startTime = performance.now()
     const pastMessages: any[] = [];
     if (template && template !== '') {
@@ -291,7 +291,7 @@ let ChatBaiduWenxinModel: any = null
         "top_p": 1,
         "logprobs": false,
         "top_logprobs": null
-      });    
+      });
       reqFromAi.write(postData);    
       reqFromAi.end();
 

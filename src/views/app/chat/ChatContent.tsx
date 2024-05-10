@@ -35,7 +35,8 @@ const ChatContent = (props: any) => {
     GetModelFromAppValue,
     questionGuide,
     GetQuestionGuideFromAppValue,
-    GetTTSFromAppValue
+    GetTTSFromAppValue,
+    setStopMsg
   } = props
 
   const { t } = useTranslation()
@@ -119,7 +120,7 @@ const ChatContent = (props: any) => {
                 <ChatLog hidden={hidden} data={{}} chatId={chatId} chatName={chatName} app={app} rowInMsg={rowInMsg} maxRows={maxRows} sendButtonDisable={sendButtonDisable} GetSystemPromptFromAppValue={GetSystemPromptFromAppValue} handleDeleteOneChatLogById={handleDeleteOneChatLogById} sendMsg={sendMsg} store={store} userType={userType} questionGuide={questionGuide} GetQuestionGuideFromAppValue={GetQuestionGuideFromAppValue} GetTTSFromAppValue={GetTTSFromAppValue}/>
               }
 
-              <SendMsgForm store={store} sendMsg={sendMsg} sendButtonDisable={sendButtonDisable} sendButtonLoading={sendButtonLoading} sendButtonText={sendButtonText} sendInputText={sendInputText} rowInMsg={rowInMsg} handleSetRowInMsg={handleSetRowInMsg} maxRows={maxRows} />
+              <SendMsgForm store={store} sendMsg={sendMsg} sendButtonDisable={sendButtonDisable} sendButtonLoading={sendButtonLoading} sendButtonText={sendButtonText} sendInputText={sendInputText} rowInMsg={rowInMsg} handleSetRowInMsg={handleSetRowInMsg} maxRows={maxRows} setStopMsg={setStopMsg}/>
 
             </Box>
           )

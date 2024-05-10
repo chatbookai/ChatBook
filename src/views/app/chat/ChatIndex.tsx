@@ -40,6 +40,7 @@ const AppChat = (props: any) => {
   const [chatId, setChatId] = useState<number | string>(-1)
   const [chatName, setChatName] = useState<string>("")
   const [historyCounter, setHistoryCounter] = useState<number>(0)
+  const [stopMsg, setStopMsg] = useState<boolean>(false)
 
   const anonymousUserId: string = getAnonymousUserId()
 
@@ -365,7 +366,7 @@ const AppChat = (props: any) => {
       ChatChatInput(_id, Obj.send, Obj.message, userId, 0, [])
       setRefreshChatCounter(refreshChatCounter + 1)
       const startTime = performance.now()
-      const ChatAiOutputV1Status = await ChatAiOutputV1(_id, Obj.message, authorization, userId, chatId, app.id, publishId, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage, userType, true, setQuestionGuide, t('questionGuideTemplate'))
+      const ChatAiOutputV1Status = await ChatAiOutputV1(_id, Obj.message, authorization, userId, chatId, app.id, publishId, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage, userType, true, setQuestionGuide, t('questionGuideTemplate'), stopMsg, setStopMsg)
       const endTime = performance.now();
       setResponseTime(endTime - startTime);
       if(ChatAiOutputV1Status) {
@@ -426,6 +427,7 @@ const AppChat = (props: any) => {
         questionGuide={questionGuide}
         GetQuestionGuideFromAppValue={GetQuestionGuideFromAppValue}
         GetTTSFromAppValue={GetTTSFromAppValue}
+        setStopMsg={setStopMsg}
       />
       </Box>
     </Fragment>

@@ -16,7 +16,7 @@
   });
   
   app.post('/api/uploadfiles', uploadfiles().array('files', 10), async (req, res) => {
-    uploadfilesInsertIntoDb(req.files as any[], req.body.knowledgeId, '999');
+    uploadfilesInsertIntoDb(req.files as any[], req.body, '999');
     res.json({"status":"ok", "msg":"Uploaded Success"}).end(); 
   });
   
@@ -40,39 +40,13 @@
     res.end();
   });
   
-  app.post('/api/ChatOpenaiKnowledge', async (req: Request, res: Response) => {
-    const { knowledgeId, question, history, appId } = req.body;
-    const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        const getLLMSSettingData = await getLLMSSetting(knowledgeId);   
-        if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
-          await chatKnowledgeOpenAI(res, checkUserTokenData.data.id, question, history, appId);
-          res.end();
-        }
-        else {        
-          res.status(200).json({"status":"error", "msg":"Not set API_KEY", "data": null});
-        }
-    }
-    else {
-        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
-    }
-    res.end();
-  });
-  
   app.post('/api/ChatOpenai', async (req: Request, res: Response) => {
-    const { knowledgeId, question, history, template, appId, _id, publishId } = req.body;
+    const { question, history, template, appId, _id, publishId, temperature} = req.body;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        const getLLMSSettingData = await getLLMSSetting(knowledgeId);
-        if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
-          await chatChatOpenAI(_id, res, checkUserTokenData.data.id, question, history, template, appId, publishId || '', 1);
-          res.end();
-        }
-        else {
-          res.status(200).json({"status":"error", "msg":"Not set API_KEY", "data": null});
-        }
+        await chatChatOpenAI(_id, res, checkUserTokenData.data.id, question, history, template, appId, publishId || '', 1, temperature);
+        res.end();
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
@@ -81,11 +55,11 @@
   });
 
   app.post('/api/ChatApp', async (req: Request, res: Response) => {
-    const { question, history, template, appId, _id, publishId, allowChatLog } = req.body;
+    const { question, history, template, appId, _id, publishId, allowChatLog, temperature } = req.body;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        await ChatApp(_id, res, checkUserTokenData.data.id, question, history, template, appId, publishId || '', allowChatLog);
+        await ChatApp(_id, res, checkUserTokenData.data.id, question, history, template, appId, publishId || '', allowChatLog, temperature);
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
@@ -94,10 +68,10 @@
   });
 
   app.post('/api/ChatAppAnonymous', async (req: Request, res: Response) => {
-    const { question, history, template, appId, publishId, _id, allowChatLog } = req.body;
+    const { question, history, template, appId, publishId, _id, allowChatLog, temperature } = req.body;
     const { authorization } = req.headers;
     if(authorization && authorization.length == 32) {
-        await ChatApp(_id, res, authorization, question, history, template, appId, publishId || '', allowChatLog);
+        await ChatApp(_id, res, authorization, question, history, template, appId, publishId || '', allowChatLog, temperature);
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
@@ -106,7 +80,7 @@
   });
   
   app.post('/api/ChatGemini', async (req: Request, res: Response) => {
-    const { knowledgeId, question, history, template, appId, publishId, _id, allowChatLog} = req.body;
+    const { question, history, template, appId, publishId, _id, allowChatLog} = req.body;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
@@ -119,7 +93,7 @@
   });
 
   app.post('/api/ChatBaiduwenxin', async (req: Request, res: Response) => {
-    const { knowledgeId, question, history, template, appId } = req.body;
+    const { question, history, template, appId } = req.body;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {

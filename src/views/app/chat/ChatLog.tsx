@@ -183,7 +183,7 @@ const ChatLog = (props: any) => {
     }
   }
 
-  console.log("questionGuide", questionGuide, Array.isArray(questionGuide))
+  //console.log("questionGuide", questionGuide, Array.isArray(questionGuide))
 
   const [contextPreviewOpen, setContextPreviewOpen] = useState<boolean>(false)
   const [contextPreviewData, setContextPreviewData] = useState<any[]>([])

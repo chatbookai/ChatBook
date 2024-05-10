@@ -29,7 +29,7 @@ const Form = styled('form')(({ theme }) => ({
 
 const SendMsgForm = (props: SendMsgComponentType) => {
   // ** Props
-  const { store, sendMsg, sendButtonDisable, sendButtonText, sendInputText, rowInMsg, handleSetRowInMsg, maxRows} = props
+  const { store, sendMsg, sendButtonDisable, sendButtonText, sendInputText, rowInMsg, handleSetRowInMsg, maxRows, setStopMsg} = props
 
   // ** State
   const [msg, setMsg] = useState<string>('')
@@ -107,7 +107,7 @@ const SendMsgForm = (props: SendMsgComponentType) => {
           />
           {sendButtonDisable ?
           <Box sx={{ bottom: 0, right: 0, position: 'absolute', mt: 0.6, whiteSpace: 'nowrap' }} >
-            <CircularProgress size={20} color="inherit" />
+            <CircularProgress size={20} color="inherit"/>
           </Box>
           :
           <Button type='submit' variant='contained' disabled={sendButtonDisable}  sx={{ bottom: 0, right: 0, position: 'absolute', mt: 0.6, whiteSpace: 'nowrap' }} >

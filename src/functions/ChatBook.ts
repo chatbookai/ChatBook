@@ -311,7 +311,8 @@ export async function ChatAiAudioV1(Message: string, Token: string, voice: strin
       
 }
 
-export async function ChatAiOutputV1(_id: string, Message: string, Token: string, UserId: number | string, chatId: number | string, appId: string, publishId: string, setProcessingMessage:any, template: string, setFinishedMessage:any, userType: string, allowQuestionGuide: boolean, setQuestionGuide: any, questionGuideTemplate: string) {
+export async function ChatAiOutputV1(_id: string, Message: string, Token: string, UserId: number | string, chatId: number | string, appId: string, publishId: string, setProcessingMessage: any, template: string, setFinishedMessage: any, userType: string, allowQuestionGuide: boolean, setQuestionGuide: any, questionGuideTemplate: string, stopMsg: boolean, setStopMsg: any) {
+    setStopMsg(false)
     const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []
     const History: any = []
@@ -348,7 +349,7 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
                 setProcessingMessage((prevText: string) => prevText + text);
                 responseText = responseText + text;
                 setQuestionGuide(null)
-                if (done) {
+                if (done || stopMsg) {
                     setProcessingMessage('')
                     break;
                 }
@@ -380,13 +381,13 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
                                 appId: appId,
                                 publishId: publishId,
                                 template: template,
+                                temperature: 0,
                                 _id: _id,
                                 allowChatLog: 0
                             };
                     const response = await axios.post(url, data, { headers: headers }).then(res=>res.data);
                     if(response) {
                         setQuestionGuide(response)
-                        console.log("Array.isArray(questionGuide)", response)
                     }
                 }
         

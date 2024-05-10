@@ -150,6 +150,7 @@ export type SendMsgComponentType = {
   rowInMsg: number
   handleSetRowInMsg: (params: number) => void
   maxRows: number
+  setStopMsg: (params: boolean) => void
 }
 
 export type ChatLogType = {

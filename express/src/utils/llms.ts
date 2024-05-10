@@ -196,7 +196,7 @@ let ChatBaiduWenxinModel: any = null
         const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (_id, send, Received, userId, timestamp, source, history, responseTime, appId, publishId) VALUES (?,?,?,?,?,?,?,?,?,?)');
         insertChatLog.run(_id, question, ChatBookOpenAIStreamResponse, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), responseTime, appId, publishId);
         insertChatLog.finalize();
-        console.log("chatChatOpenAI: ", question, ChatBookOpenAIStreamResponse)
+        console.log("chatChatOpenAI: ", temperature, question, " => ", ChatBookOpenAIStreamResponse)
       }
     }
     catch(error: any) {
@@ -224,8 +224,6 @@ let ChatBaiduWenxinModel: any = null
     }
     pastMessages.push({ "role": "user", "content": question });
 
-    const apiKey = 'sk-12fc4b01d7e24ab7b90af43c107f5bf9';
-    
     let options = {
       'method': 'POST',
       'hostname': 'api.deepseek.com',
@@ -233,7 +231,7 @@ let ChatBaiduWenxinModel: any = null
       'headers': {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
-        'Authorization': 'Bearer ' + apiKey
+        'Authorization': 'Bearer ' + process.env.DEEPSEEK_API_KEY
       },
       'maxRedirects': 20
     };
@@ -272,6 +270,7 @@ let ChatBaiduWenxinModel: any = null
             insertChatLog.run(_id, question, StreamResponse, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), responseTime, appId, publishId);
             insertChatLog.finalize();
           }
+          console.log("chatChatDeepSeek: ", temperature, question, " => ", StreamResponse)
           res.end();
         });
         resFromAi.on("error", (error) => {
@@ -287,7 +286,7 @@ let ChatBaiduWenxinModel: any = null
         "presence_penalty": 0,
         "stop": null,
         "stream": true,
-        "temperature": 1,
+        "temperature": Number(temperature || 0.5),
         "top_p": 1,
         "logprobs": false,
         "top_logprobs": null

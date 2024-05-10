@@ -336,7 +336,7 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
                 Authorization: userType=='User' ? Token : anonymousUserId,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ question: Message, history: History, appId: appId, publishId, template: template, _id, allowChatLog: 1}),
+            body: JSON.stringify({ question: Message, history: History, appId: appId, publishId, template: template, _id, allowChatLog: 1, temperature: 0.6}),
             });
             if (!response.body) {
             throw new Error('Response body is not readable as a stream');
@@ -381,7 +381,7 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
                                 appId: appId,
                                 publishId: publishId,
                                 template: template,
-                                temperature: 0,
+                                temperature: 0.1,
                                 _id: _id,
                                 allowChatLog: 0
                             };

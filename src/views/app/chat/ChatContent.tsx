@@ -103,7 +103,7 @@ const ChatContent = (props: any) => {
                         {chatName}
                       </Typography>
                       <Typography variant='caption' sx={{ color: 'primary.secondary', ml: '8px', pt: 0.4 }}>
-                        {GetModelFromAppValue}
+                        {GetModelFromAppValue?.value}
                       </Typography>
                     </Box>
 

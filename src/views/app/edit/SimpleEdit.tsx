@@ -93,10 +93,12 @@ const SimpleEdit = (props: any) => {
                         <Card sx={{ border: theme => `1px solid ${theme.palette.divider}`, my: 1, ml: 3, mr: 3, p: 2 }}>
                             <CardContent>
                                 <Grid container spacing={5}>
-                                    <Typography sx={{ p: 0, m: 0, mt: 0, fontSize: '0.8rem', textAlign: 'right' }}>
-                                        Id: {`${t(app?._id || '')}`}
-                                    </Typography>
-                                    <Grid item xs={12} sx={{m: 0, p: 0}}>
+                                    <Grid xs={12} sx={{m: 0, p: 0, zIndex: 999}}>
+                                        <Typography sx={{ fontSize: '0.8rem', textAlign: 'right' }}>
+                                            Id: {`${t(app?._id || '')}`}
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12} sx={{m:0, mt: -4, p: 0}}>
                                         <Typography variant='h6' sx={{ ml: 0, mb: 0 }}>
                                             {`${t(app?.name || '')}`}
                                         </Typography>

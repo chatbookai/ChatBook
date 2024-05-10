@@ -311,7 +311,7 @@ export async function ChatAiAudioV1(Message: string, Token: string, voice: strin
       
 }
 
-export async function ChatAiOutputV1(_id: string, Message: string, Token: string, UserId: number | string, chatId: number | string, appId: string, publishId: string, setProcessingMessage: any, template: string, setFinishedMessage: any, userType: string, allowQuestionGuide: boolean, setQuestionGuide: any, questionGuideTemplate: string, stopMsg: boolean, setStopMsg: any) {
+export async function ChatAiOutputV1(_id: string, Message: string, Token: string, UserId: number | string, chatId: number | string, appId: string, publishId: string, setProcessingMessage: any, template: string, setFinishedMessage: any, userType: string, allowQuestionGuide: boolean, setQuestionGuide: any, questionGuideTemplate: string, stopMsg: boolean, setStopMsg: any, GetModelFromAppValue: any) {
     setStopMsg(false)
     const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []
@@ -336,7 +336,7 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
                 Authorization: userType=='User' ? Token : anonymousUserId,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ question: Message, history: History, appId: appId, publishId, template: template, _id, allowChatLog: 1, temperature: 0.6}),
+            body: JSON.stringify({ question: Message, history: History, appId: appId, publishId, template: template, _id, allowChatLog: 1, temperature: GetModelFromAppValue?.LLMModel?.temperature || 0.6}),
             });
             if (!response.body) {
             throw new Error('Response body is not readable as a stream');
@@ -387,7 +387,15 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
                             };
                     const response = await axios.post(url, data, { headers: headers }).then(res=>res.data);
                     if(response) {
-                        setQuestionGuide(response)
+                        if(response && response.length == 3) {
+                            setQuestionGuide(response)
+                        }
+                        else {
+                            let result = extractTextBetween(response, "```json", "```");
+                            const JsonArray = JSON.parse(result)
+                            console.log("responseresponseresponseresponse", JsonArray) 
+                            setQuestionGuide(JsonArray)
+                        }
                     }
                 }
         
@@ -408,6 +416,17 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
         return true
     }
       
+}
+
+function extractTextBetween(text: string, startMarker: string, endMarker: string) {
+    // 创建正则表达式模式，使用非贪婪匹配来获取开始和结束标记之间的文本
+    let regex = new RegExp(`${startMarker}(.*?)${endMarker}`, 's');
+    
+    // 使用正则表达式匹配文本
+    let match = text.match(regex);
+    
+    // 如果匹配成功，返回匹配组中的文本；否则返回原始文本
+    return match ? match[1] : text;
 }
 
 export function ChatChatHistoryInput(chatlogId: string, question: string, answer: string, UserId: number | string, knowledgeId: number | string, appId: string, responseTime: number, History: any[]) {

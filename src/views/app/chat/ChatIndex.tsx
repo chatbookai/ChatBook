@@ -175,7 +175,7 @@ const AppChat = (props: any) => {
   const [finishedMessage, setFinishedMessage] = useState("")
   const [responseTime, setResponseTime] = useState<number | null>(null);
   const [GetSystemPromptFromAppValue, setGetSystemPromptFromAppValue] = useState<string>("");
-  const [GetModelFromAppValue, setGetModelFromAppValue] = useState<string>("");
+  const [GetModelFromAppValue, setGetModelFromAppValue] = useState<any>();
   const [GetWelcomeTextFromAppValue, setGetWelcomeTextFromAppValue] = useState<string>("");
   const [GetQuestionGuideFromAppValue, setGetQuestionGuideFromAppValue] = useState<boolean>(false);
   const [questionGuide, setQuestionGuide] = useState<any>()
@@ -291,9 +291,8 @@ const AppChat = (props: any) => {
     if(AiNode && AiNode[0] && AiNode[0].data && AiNode[0].data.inputs) {
       const modelList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'model')
       if(modelList && modelList[0] && modelList[0]['value']) {
-        const modelText = modelList[0]['value']
 
-        return modelText
+        return modelList[0]
       }
     }
     
@@ -366,7 +365,7 @@ const AppChat = (props: any) => {
       ChatChatInput(_id, Obj.send, Obj.message, userId, 0, [])
       setRefreshChatCounter(refreshChatCounter + 1)
       const startTime = performance.now()
-      const ChatAiOutputV1Status = await ChatAiOutputV1(_id, Obj.message, authorization, userId, chatId, app.id, publishId, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage, userType, true, setQuestionGuide, t('questionGuideTemplate'), stopMsg, setStopMsg)
+      const ChatAiOutputV1Status = await ChatAiOutputV1(_id, Obj.message, authorization, userId, chatId, app.id, publishId, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage, userType, true, setQuestionGuide, t('questionGuideTemplate'), stopMsg, setStopMsg, GetModelFromAppValue)
       const endTime = performance.now();
       setResponseTime(endTime - startTime);
       if(ChatAiOutputV1Status) {

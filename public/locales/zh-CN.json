@@ -519,7 +519,7 @@
   "We couldn't find this id you are looking for.":"我们找不到您正在寻找的这个 ID。",
   "Chat Log Preview":"对话日志预览",
   "Clear History Success": "成功清除历史记录",
-  "questionGuideTemplate": "你是一个AI智能助手, 可以回答和解决我的问题. 请结合前面的对话记录, 帮我生成 3 个问题, 引导我继续提问. 问题的长度应小于20个字符, 三个问题中间使用,符号隔开, 返回格式: [\"问题1\",\"问题2\",\"问题3\"] , 要求使用UTF-8编码, 最多返回三个问题",
+  "questionGuideTemplate": "你是一个AI智能助手, 可以回答和解决我的问题. 请结合前面的对话记录, 帮我生成 3 个问题, 引导我继续提问. 问题的长度应小于20个字符, 三个问题中间使用,符号隔开, 返回JSON格式: [\"问题1\",\"问题2\",\"问题3\"] , 要求使用UTF-8编码, 禁止产生循环数据.",
   "System": "系统",
   "Clear Short Logs": "删除短日志",
   "Clear All Logs": "删除全部日志",

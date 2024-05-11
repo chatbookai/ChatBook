@@ -28,7 +28,7 @@ import { createOpenAIFunctionsAgent } from "langchain/agents";
 import { AgentExecutor } from "langchain/agents";
 
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { PineconeStore } from '@langchain/community/vectorstores/pinecone';
+import { PineconeStore } from "@langchain/pinecone";
 import { Pinecone } from '@pinecone-database/pinecone';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 
@@ -60,12 +60,11 @@ dotenv.config();
 type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
 const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
-const PINECONE_ENVIRONMENT = process.env.PINECONE_ENVIRONMENT;
 const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME;
 const PINECONE_NAME_SPACE = process.env.PINECONE_NAME_SPACE;
 const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-    
+
 
 let getLLMSSettingData: any = null
 let ChatOpenAIModel: any = null
@@ -84,7 +83,7 @@ let ChatBaiduWenxinModel: any = null
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
     const OPENAI_Temperature = getLLMSSettingData.Temperature;
-    if(OPENAI_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
+    if(OPENAI_API_KEY && PINECONE_API_KEY) {
       if(OPENAI_API_BASE && OPENAI_API_BASE !='' && OPENAI_API_BASE.length > 16) {
         process.env.OPENAI_BASE_URL = OPENAI_API_BASE
         process.env.OPENAI_API_KEY = OPENAI_API_KEY
@@ -93,8 +92,8 @@ let ChatBaiduWenxinModel: any = null
         modelName: getLLMSSettingData.ModelName ?? "gpt-3.5-turbo",
         openAIApiKey: OPENAI_API_KEY, 
         temperature: Number(OPENAI_Temperature)
-       });    
-      pinecone = new Pinecone({apiKey: PINECONE_API_KEY,});
+       });
+      pinecone = new Pinecone({apiKey: PINECONE_API_KEY});
     }
   }
 
@@ -142,7 +141,7 @@ let ChatBaiduWenxinModel: any = null
   export async function chatChatOpenAI(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number) {
     ChatBookOpenAIStreamResponse = ''
     const startTime = performance.now()
-    if(OPENAI_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
+    if(OPENAI_API_KEY && PINECONE_API_KEY) {
       try{
         ChatOpenAIModel = new ChatOpenAI({ 
           modelName: "gpt-3.5-turbo",
@@ -435,7 +434,7 @@ let ChatBaiduWenxinModel: any = null
     getLLMSSettingData = await getLLMSSetting(datasetId);
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
-    if(OPENAI_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
+    if(OPENAI_API_KEY && PINECONE_API_KEY) {
       process.env.GOOGLE_API_KEY = OPENAI_API_KEY
       ChatGeminiModel = new ChatGoogleGenerativeAI({
           modelName: getLLMSSettingData.ModelName ?? "gemini-pro",
@@ -536,7 +535,7 @@ let ChatBaiduWenxinModel: any = null
     const BAIDU_API_KEY = getLLMSSettingData.OPENAI_API_KEY ?? "1AWXpm1Cd8lbxmAaFoPR0dNx";
     const BAIDU_SECRET_KEY = getLLMSSettingData.OPENAI_API_BASE ?? "TQy5sT9Mz4xKn0tR8h7W6LxPWIUNnXqq";
     const OPENAI_Temperature = 1;
-    if(BAIDU_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
+    if(BAIDU_API_KEY && PINECONE_API_KEY) {
       process.env.BAIDU_API_KEY = BAIDU_API_KEY
       process.env.BAIDU_SECRET_KEY = BAIDU_SECRET_KEY
       try {
@@ -672,7 +671,7 @@ let ChatBaiduWenxinModel: any = null
     getLLMSSettingData = await getLLMSSetting(datasetId);    
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE ?? "https://api.openai.com/v1";
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;    
-    if(OPENAI_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
+    if(OPENAI_API_KEY && PINECONE_API_KEY) {
       const requestData = {
         model: 'dall-e-2',
         prompt: question,
@@ -926,12 +925,23 @@ let ChatBaiduWenxinModel: any = null
 
   export async function parseFiles() {
     try {
-      const RecordsAll: any[] = await getDbRecordALL(`SELECT * from files where status = '0' order by id asc limit 2`) as any[];
-      await Promise.all(RecordsAll.map(async (FileItem: any)=>{
-        const KnowledgeItemId = FileItem.datasetId
-        await initChatBookOpenAI(KnowledgeItemId)
-        if(getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "")    {
-            const pdfFilePath = DataDir + '/uploadfiles/' + FileItem.newName;
+      const RecordsAll: any[] = await getDbRecordALL(`SELECT * from collection where status = '0' and type ='File' order by id asc limit 1`) as any[];
+      await Promise.all(RecordsAll.map(async (CollectionItem: any)=>{
+        if(OPENAI_API_KEY && PINECONE_API_KEY) {
+          try{
+            ChatOpenAIModel = new ChatOpenAI({ 
+              modelName: "gpt-3.5-turbo",
+              openAIApiKey: OPENAI_API_KEY, 
+              temperature: Number(0.1),
+             });    
+            pinecone = new Pinecone({apiKey: PINECONE_API_KEY});
+          }
+          catch(Error: any) {
+            log('parseFiles', 'parseFiles', 'parseFiles', "parseFiles Error", Error)
+          }
+        }
+        if(ChatOpenAIModel && OPENAI_API_KEY && OPENAI_API_KEY != "")    {
+            const pdfFilePath = DataDir + '/uploadfiles/' + CollectionItem.newName;
             if(isFile(pdfFilePath))   {
               const pdfLoader = new PDFLoader(pdfFilePath);
               const rawDoc = await pdfLoader.load();
@@ -940,37 +950,47 @@ let ChatBaiduWenxinModel: any = null
                 chunkSize: 1000,
                 chunkOverlap: 200,
               });
+              //console.log("pdfFilePath textSplitter", textSplitter)
+
               const SplitterDocs = await textSplitter.splitDocuments(rawDoc);
-              
-              const embeddings = new OpenAIEmbeddings({openAIApiKey: getLLMSSettingData.OPENAI_API_KEY});
-              const index = pinecone.Index(PINECONE_INDEX_NAME);  
-              
-              const PINECONE_NAME_SPACE_USE = PINECONE_NAME_SPACE + '_' + String(KnowledgeItemId)
-              await PineconeStore.fromDocuments(SplitterDocs, embeddings, {
-                pineconeIndex: index,
+              //console.log("pdfFilePath SplitterDocs", SplitterDocs)
+
+              const embeddings = new OpenAIEmbeddings({openAIApiKey: OPENAI_API_KEY});
+              const pineconeIndex = pinecone.index(PINECONE_INDEX_NAME);  
+
+              //console.log("pdfFilePath pineconeIndex", pineconeIndex)
+
+              const PINECONE_NAME_SPACE_USE = PINECONE_NAME_SPACE + '_' + String(CollectionItem._id)
+              //console.log("pdfFilePath PINECONE_NAME_SPACE_USE", PINECONE_NAME_SPACE_USE)
+
+              const fromDocuments = await PineconeStore.fromDocuments(SplitterDocs, embeddings, {
+                pineconeIndex: pineconeIndex,
                 namespace: PINECONE_NAME_SPACE_USE,
+                maxConcurrency: 5,
                 textKey: 'text',
               });
+              console.log("pdfFilePath fromDocuments", fromDocuments)
               console.log('parseFiles creating vector store finished', PINECONE_NAME_SPACE_USE);
 
               const UpdateFileParseStatus = db.prepare('update files set status = ? where id = ?');
-              UpdateFileParseStatus.run(1, FileItem.id);
+              UpdateFileParseStatus.run(1, CollectionItem.id);
               UpdateFileParseStatus.finalize();
-              const destinationFilePath = path.join(DataDir + '/parsedfiles/', FileItem.newName);
-              fs.rename(DataDir + '/uploadfiles/' + FileItem.newName, destinationFilePath, (err) => {
+              const destinationFilePath = path.join(DataDir + '/parsedfiles/', CollectionItem.newName);
+              console.log("destinationFilePath", destinationFilePath)
+              fs.rename(DataDir + '/uploadfiles/' + CollectionItem.newName, destinationFilePath, (err) => {
                 if (err) {
-                  console.log('parseFiles Error moving file:', err, FileItem.newName);
+                  console.log('parseFiles Error moving file:', err, CollectionItem.newName);
                 } else {
-                  console.log('parseFiles File moved successfully.', FileItem.newName);
+                  console.log('parseFiles File moved successfully.', CollectionItem.newName);
                 }
               });
-              console.log('parseFiles change the files status finished', FileItem);
+              console.log('parseFiles change the files status finished', CollectionItem);
             }
             else {
 
               //File Not Exist
               const UpdateFileParseStatus = db.prepare('update files set status = ? where id = ?');
-              UpdateFileParseStatus.run(-1, FileItem.id);
+              UpdateFileParseStatus.run(-1, CollectionItem.id);
               UpdateFileParseStatus.finalize();
             }
             

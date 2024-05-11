@@ -29,6 +29,7 @@
   "dependencies": {
     "@google/generative-ai": "^0.2.0",
     "@langchain/google-genai": "^0.0.8",
+    "@langchain/pinecone": "^0.0.4",
     "@pinecone-database/pinecone": "^2.0.1",
     "@types/express": "^4.17.21",
     "@types/node": "^20.11.14",
@@ -50,6 +51,7 @@
     "pdf-parse": "^1.1.1",
     "sharp": "^0.33.2",
     "useragent": "^2.3.0",
-    "validator": "^13.11.0"
+    "validator": "^13.11.0",
+    "vectordb": "^0.1.19"
   }
 }

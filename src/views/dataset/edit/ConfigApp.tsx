@@ -1,4 +1,4 @@
-import { useEffect, memo, Fragment } from 'react'
+import { useEffect, memo, Fragment, useState } from 'react'
 
 import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
@@ -6,6 +6,7 @@ import { CheckPermission } from 'src/functions/ChatBook'
 import { useTranslation } from 'react-i18next'
 
 // ** MUI Imports
+import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Avatar from '@mui/material/Avatar'
 import Radio from '@mui/material/Radio'
@@ -19,11 +20,14 @@ import Button from '@mui/material/Button'
 import Icon from 'src/@core/components/icon'
 import IconButton from '@mui/material/IconButton'
 import TextField2 from 'src/context/TextField2'
+import { styled } from '@mui/material/styles'
+import { useDropzone } from 'react-dropzone'
+import authConfig from 'src/configs/auth'
 
 
 const ConfigApp = (props: any) => {
     // ** Props
-    const { app, setApp, handleEditDataSet, isDisabledButton, setIsDisabledButton } = props
+    const { app, setApp, handleEditDataSet, isDisabledButton, setIsDisabledButton, avatarFiles, setAvatarFiles } = props
 
     // ** Hook
     const { t } = useTranslation()
@@ -32,6 +36,29 @@ const ConfigApp = (props: any) => {
     useEffect(() => {
         CheckPermission(auth, router, false)
     }, [auth, router])
+
+    // Styled component for the upload image inside the dropzone area
+    const Img = styled('img')(({ theme }) => ({
+        [theme.breakpoints.up('md')]: {
+            marginRight: theme.spacing(15.75)
+        },
+        [theme.breakpoints.down('md')]: {
+            marginBottom: theme.spacing(4)
+        },
+        [theme.breakpoints.down('sm')]: {
+            width: 38
+        }
+    }))
+
+    const { getRootProps: getRootPropsAvatar, getInputProps: getInputPropsAvatar } = useDropzone({
+        multiple: false,
+        accept: {
+        'image/*': ['.png', '.jpg', '.jpeg']
+        },
+        onDrop: (acceptedFiles: File[]) => {
+            setAvatarFiles(acceptedFiles.map((file: File) => Object.assign(file)))
+        }
+    })
 
     return (
         <Fragment>
@@ -54,7 +81,18 @@ const ConfigApp = (props: any) => {
                             <InputLabel sx={{pt: 6}}>{t("Dataset")}{t("Avatar")}</InputLabel>
                         </Grid>
                         <Grid item xs={8} sx={{pt: 6, pl: 2}}>
-                            <Avatar variant="rounded" src='/icons/support/outlink/shareLight.svg' sx={{ width: '2.5rem', height: '2.5rem' }} />
+                            <Box {...getRootPropsAvatar({ className: 'dropzone' })} sx={{width: '38px', height: '38px', cursor: 'pointer'}}>
+                                <input {...getInputPropsAvatar()} />
+                                {avatarFiles && avatarFiles.length ? (
+                                    <Box  sx={{ alignItems: 'center'}}>
+                                        <Img alt={`${t(`Upload Avatar image`)}`} src={URL.createObjectURL(avatarFiles[0] as any)} sx={{width: '100%', borderRadius: '25px'}}/>
+                                    </Box>
+                                ) : (
+                                    <Box sx={{alignItems: 'center'}}>
+                                        <Img alt={`${t(`Upload Avatar image`)}`} src={authConfig.backEndApiChatBook + '/api/avatarfordataset/' + (app.avatar || authConfig.logo)} sx={{width: '100%', borderRadius: '25px'}}/>
+                                    </Box>
+                                )}
+                            </Box>
                         </Grid>
                     </Grid>
                 </Grid>

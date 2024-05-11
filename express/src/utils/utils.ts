@@ -188,6 +188,23 @@ export function uploadavatar() {
   return upload
 }
 
+export function uploadAvatarForDataset() {
+  const storage = multer.diskStorage({
+    destination: (req: any, file: any, cb: any) => {
+      cb(null, DataDir + '/avatarfordataset/'); // 设置上传文件保存的目录
+    },
+    filename: (req: any, file: any, cb: any) => {
+      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+      const FileNameNew = file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase();
+      cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase());
+      console.log("uploadAvatarForDataset FileNameNew", FileNameNew)
+    },
+  });
+  const upload = multer({ storage: storage });
+
+  return upload
+}
+
 export function uploadImageForVideo() {
   const storage = multer.diskStorage({
     destination: (req: any, file: any, cb: any) => {

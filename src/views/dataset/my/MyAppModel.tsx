@@ -152,7 +152,7 @@ const AppModel = (props: any) => {
                           <CardMedia image={`/images/cardmedia/cardmedia-${theme.palette.mode}.png`} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1 }}/>
                           <Box position="absolute" top={10} left={5} m={1} px={0.8} borderRadius={1}>
                             <Box display="flex" alignItems="center">
-                              <Avatar src={item.avatar || authConfig.logo} sx={{ mr: 3, width: 35, height: 35 }} />
+                              <Avatar src={authConfig.backEndApiChatBook + '/api/avatarfordataset/' + (item.avatar || authConfig.logo)} sx={{ mr: 3, width: 35, height: 35 }} />
                               <Typography 
                                   sx={{
                                       fontWeight: 500,

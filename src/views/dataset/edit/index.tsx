@@ -28,6 +28,7 @@ const EditDataSet = (props: any) => {
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
   const [app, setApp] = useState<any>({openDelete: false})
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
+  const [avatarFiles, setAvatarFiles] = useState<File[]>([])
 
   const { menuid } = props
 
@@ -50,15 +51,38 @@ const EditDataSet = (props: any) => {
   }
 
   const handleEditDataSet = async () => {
-    console.log("handleEditDataSet app", app)
+    console.log("handleEditDataSet app", app, avatarFiles)
     setIsDisabledButton(true)
     if (auth && auth.user) {
       const appNew = {
         ...app,
         updateTime: String(new Date(Date.now()).toLocaleString())
       }
-      const PostParams = appNew
-      const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/editdataset', PostParams, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+      
+      const formData = new FormData();
+      for (const key in appNew) {
+        if (appNew.hasOwnProperty(key)) {
+          const value = appNew[key];
+          formData.append(key, value);
+        }
+      }
+
+      // Now you can append the image file(s) to the formData
+      avatarFiles.forEach((file: any) => {
+        formData.append(`avatar`, file);
+      });
+
+      const FormSubmit: any = await axios.post(
+        authConfig.backEndApiChatBook + '/api/editdataset',
+        formData,
+        {
+          headers: {
+            Authorization: auth.user.token,
+            'Content-Type': 'multipart/form-data', // Important: Use multipart/form-data for file uploads
+          },
+        }
+      ).then(res => res.data);
+
       console.log("FormSubmit", FormSubmit)
       setIsDisabledButton(false)
       if(FormSubmit?.status == "ok") {
@@ -127,7 +151,7 @@ const EditDataSet = (props: any) => {
 
         {menuid == 'config' && app && app._id ?
         <Fragment>
-          <ConfigApp app={app} setApp={setApp} handleEditDataSet={handleEditDataSet}/>
+          <ConfigApp app={app} setApp={setApp} handleEditDataSet={handleEditDataSet} avatarFiles={avatarFiles} setAvatarFiles={setAvatarFiles}/>
           <ConfigAppDelete app={app} setApp={setApp} isDisabledButton={isDisabledButton} handleDeleteDataSet={handleDeleteDataSet}/>
         </Fragment>
         :
@@ -136,7 +160,7 @@ const EditDataSet = (props: any) => {
 
         {menuid == 'searchtest' && app && app._id ?
         <Fragment>
-          <ConfigApp app={app} setApp={setApp} handleEditDataSet={handleEditDataSet}/>
+          <ConfigApp app={app} setApp={setApp} handleEditDataSet={handleEditDataSet} avatarFiles={avatarFiles} setAvatarFiles={setAvatarFiles}/>
           <ConfigAppDelete app={app} setApp={setApp} isDisabledButton={isDisabledButton} handleDeleteDataSet={handleDeleteDataSet}/>
         </Fragment>
         :

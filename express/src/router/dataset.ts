@@ -4,6 +4,7 @@
 
   import { checkUserToken } from '../utils/user';
   import { addDataset, editDataset, deleteDataset, getDataset, getDatasetPage, addCollection, editCollection, uploadCollection, deleteCollection, getCollection, getCollectionPageByDataset, getCollectionAll } from '../utils/dataset';
+  import { uploadAvatarForDataset } from '../utils/utils';
  
   const app = express();
 
@@ -21,11 +22,15 @@
     res.end();
   });
 
-  app.post('/api/editdataset', async (req: Request, res: Response) => {
+  app.post('/api/editdataset', uploadAvatarForDataset().array('avatar', 1), async (req: Request, res: Response) => {
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        console.log("checkUserTokenData editdataset", checkUserTokenData)
+        console.log("editdataset uploadedFiles", req.files)
+        if(req.files && Array.isArray(req.files) && req.files[0] && req.files[0].filename) {
+          req.body.avatar = req.files[0].filename
+        }
+        console.log("editdataset originalAvatar", req.body.avatar)
         const editDatasetData: any = await editDataset({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(editDatasetData);
     }

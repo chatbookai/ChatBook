@@ -226,15 +226,38 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const trainingMode = filterString(Params.trainingMode)
       const IdealChunkLength = filterString(Params.IdealChunkLength)
       const CustomSplitChar = filterString(Params.CustomSplitChar)
+      const CollectionName = filterString(Params.CollectionName)
+      const CollectionContent = filterString(Params.CollectionContent)
+      const LinkName = Params.LinkName
       const files = Params.files
-      if (type === 'File' && files && Array.isArray(files)) {
+      if ((type === 'File' || type === 'Table') && files && Array.isArray(files)) {
         const fileNames = files.map((Item: any) => Item.path);
         const placeholders = fileNames.map(() => '?').join(',');
-        const updateSetting = db.prepare(`update files set processWay = ?, trainingMode = ?, IdealChunkLength = ?, CustomSplitChar = ? where datasetId = ? and type = ? and name in (${placeholders})`);
+        const updateSetting = db.prepare(`update collection set processWay = ?, trainingMode = ?, IdealChunkLength = ?, CustomSplitChar = ? where datasetId = ? and type = ? and name in (${placeholders})`);
         updateSetting.run(processWay, trainingMode, IdealChunkLength, CustomSplitChar, datasetId, type, ...fileNames);
         updateSetting.finalize();
       
         return { "status": "ok", "msg": "Update Success" };
+      }
+      else if (type === 'Web' && LinkName) {
+        const LinkNameArray = LinkName.split('\n')
+        console.log("LinkNameArray", LinkNameArray)
+        const insertCollection = db.prepare('INSERT INTO collection (_id, datasetId, type, name, content, suffixName, newName, originalName, fileHash, status, timestamp, userId, data, dataTotal, folder, updateTime, processWay, trainingMode, IdealChunkLength, CustomSplitChar) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+        LinkNameArray.map((Item: string)=>{
+          const _id = getNanoid(32)
+          insertCollection.run(_id, datasetId, type, Item, '', '', _id, Item, '', 0, Date.now(), Number(Params.userId), '', '', '', '', processWay, trainingMode, IdealChunkLength, CustomSplitChar);
+        })
+        insertCollection.finalize();
+      
+        return { "status": "ok", "msg": "Add Success" };
+      }
+      else if (type === 'Text' && CollectionName && CollectionContent) {
+        const insertCollection = db.prepare('INSERT INTO collection (_id, datasetId, type, name, content, suffixName, newName, originalName, fileHash, status, timestamp, userId, data, dataTotal, folder, updateTime, processWay, trainingMode, IdealChunkLength, CustomSplitChar) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+        const _id = getNanoid(32)
+        insertCollection.run(_id, datasetId, type, CollectionName, CollectionContent, '', _id, CollectionName, '', 0, Date.now(), Number(Params.userId), '', '', '', '', processWay, trainingMode, IdealChunkLength, CustomSplitChar);
+        insertCollection.finalize();
+      
+        return { "status": "ok", "msg": "Add Success" };
       }
       else {
         return { "status": "error", "msg": "No File Match" };

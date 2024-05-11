@@ -128,7 +128,7 @@ const maxCountCSV = 10;
 
 const CollectionNewEdit = (props: any) => {
     // ** Props
-    const {pageData, setPageData, handleSubmit, isDisabledButton, uploadProgress, setUploadProgress } = props
+    const {pageData, setPageData, handleSubmit, isDisabledButton, uploadProgress, setUploadProgress, setCounter } = props
     const [activeStep, setActiveStep] = useState<number>(0)
     const bgColors: UseBgColorType = useBgColor()
 
@@ -145,13 +145,14 @@ const CollectionNewEdit = (props: any) => {
       }, [pageData])
     
     const handleStartUpload = async () => {
-        if (auth && auth.user && pageData && pageData.FormAction) {
+        if (auth && auth.user && pageData) {
             console.log("handleStartUpload pageData", pageData)
             const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/uploadcollection', pageData, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
             console.log("FormSubmit:", FormSubmit)
             if(FormSubmit?.status == "ok") {
                 toast.success(t(FormSubmit.msg) as string, { duration: 4000, position: 'top-center' })
-                setPageData({openEdit: false, name: '', type: 'File', files: [], csvs: [], updateTime: 0, status: t('Done'), expiredTime: '', authCheck: '', datasetId: pageData.datasetId})
+                setPageData({openEdit: false, name: '', type: 'File', files: [], csvs: [], trainingMode: 'Chunk Split', processWay: 'Auto process', updateTime: 0, status: t('Done'), expiredTime: '', authCheck: '', datasetId: pageData.datasetId})
+                setCounter((preStatus: number) => preStatus + 1)
             }
             else {
                 toast.error(t(FormSubmit.msg) as string, { duration: 4000, position: 'top-center' })
@@ -217,8 +218,14 @@ const CollectionNewEdit = (props: any) => {
                     <CollectionFilesUploader pageData={pageData} setPageData={setPageData} fileType={fileTypeFile} maxCount={maxCountFile}  type='files' uploadProgress={uploadProgress} setUploadProgress={setUploadProgress}/>
                 </Grid>
                 <Grid container sx={{mt: 4, pr: 3, justifyContent: 'flex-end'}} xs={12}>
-                    <Button size="small" variant='contained' disabled={isDisabledButton} onClick={
-                        () => { setActiveStep(1) }
+                    <Button size="small" variant='contained' disabled={pageData?.files?.length==0} onClick={
+                        () => { 
+                            setActiveStep(1)
+                            setPageData((prevState: any)=>({
+                                ...prevState,
+                                status: t('Waiting')
+                            }))
+                        }
                     }>
                     {t("Next")}
                     </Button>
@@ -235,7 +242,13 @@ const CollectionNewEdit = (props: any) => {
                 </Grid>
                 <Grid container sx={{mt: 4, pr: 3, justifyContent: 'flex-end'}} xs={12}>
                     <Button size="small" variant='contained' disabled={isDisabledButton} onClick={
-                        () => { setActiveStep(1) }
+                        () => { 
+                            setActiveStep(1)
+                            setPageData((prevState: any)=>({
+                                ...prevState,
+                                status: t('Waiting')
+                            }))
+                        }
                     }>
                     {t("Next")}
                     </Button>
@@ -288,7 +301,13 @@ const CollectionNewEdit = (props: any) => {
                 </Grid>
                 <Grid container sx={{mt: 4, pr: 3, justifyContent: 'flex-end'}} xs={12}>
                     <Button size="small" variant='contained' disabled={isDisabledButton} onClick={
-                        () => { setActiveStep(1) }
+                        () => { 
+                            setActiveStep(1)
+                            setPageData((prevState: any)=>({
+                                ...prevState,
+                                status: t('Waiting')
+                            }))
+                        }
                     }>
                     {t("Next")}
                     </Button>
@@ -363,8 +382,14 @@ const CollectionNewEdit = (props: any) => {
                     </Grid>
                 </Grid>
                 <Grid container sx={{mt: 4, pr: 3, justifyContent: 'flex-end'}} xs={12}>
-                    <Button size="small" variant='contained' disabled={isDisabledButton} onClick={
-                        () => { setActiveStep(1) }
+                    <Button size="small" variant='contained' disabled={!(pageData.LinkName && pageData.LinkName!='')} onClick={
+                        () => { 
+                            setActiveStep(1)
+                            setPageData((prevState: any)=>({
+                                ...prevState,
+                                status: t('Waiting')
+                            }))
+                        }
                     }>
                     {t("Next")}
                     </Button>

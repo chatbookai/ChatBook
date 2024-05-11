@@ -80,7 +80,7 @@ const Collection = (props: any) => {
 
   const columns: GridColDef[] = [
     {
-      flex: 0.1,
+      flex: 0.3,
       minWidth: 50,
       field: 'name',
       headerName: `${t(`Name`)}`,
@@ -142,30 +142,16 @@ const Collection = (props: any) => {
       }
     },
     {
-      flex: 0.16,
+      flex: 0.05,
       minWidth: 130,
       sortable: false,
       field: 'actions',
       headerName: t('Actions') as string,
       renderCell: ({ row }: any) => (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Button sx={{ my: 3, mr: 5 }} size="small" variant='outlined' onClick={
-                        () => { 
-                          console.log("Actions row", row)
-                         }
-                    }>
-            {t("BeginUsing")}
-          </Button>
-          <Tooltip title={t('Edit')}>
-            <IconButton size='small' onClick={
-                        () => { setPageData( () => ({ ...row, openEdit: true, FormAction: 'editcollection', FormTitle: 'Edit', FormSubmit: 'Save', FormTitleIcon: '/imgs/modal/shareFill.svg' }) ) }
-                    }>
-              <Icon icon='mdi:edit-outline' fontSize={20} />
-            </IconButton>
-          </Tooltip>
           <Tooltip title={t('Delete')}>
             <IconButton size='small' onClick={
-                        () => { setPageData( () => ({ ...row, openDelete: true, FormAction: 'deletecollection', FormTitle: 'Delete', FormSubmit: 'Confirm', FormTitleIcon: '/imgs/modal/shareFill.svg' }) ) }
+                        () => { setPageData( () => ({ ...row, openEdit: false, openDelete: true, FormAction: 'deletecollection', FormTitle: 'Delete', FormSubmit: 'Confirm', FormTitleIcon: '/imgs/modal/shareFill.svg' }) ) }
                     }>
               <Icon icon='mdi:delete-outline' fontSize={20} />
             </IconButton>
@@ -183,7 +169,7 @@ const Collection = (props: any) => {
       console.log("FormSubmit:", FormSubmit)
       if(FormSubmit?.status == "ok") {
           toast.success(t(FormSubmit.msg) as string, { duration: 4000, position: 'top-center' })
-          setPageData({openEdit: false, name: '', type: 'File', files: [], csvs: [], updateTime: 0, status: 100, expiredTime: '', authCheck: '', datasetId: datasetId})
+          setPageData({openEdit: false, name: '', type: 'File', files: [], csvs: [], trainingMode: 'Chunk Split', processWay: 'Auto process', updateTime: 0, status: 100, expiredTime: '', authCheck: '', datasetId: datasetId})
       }
       else {
           toast.error(t(FormSubmit.msg) as string, { duration: 4000, position: 'top-center' })
@@ -207,11 +193,11 @@ const Collection = (props: any) => {
             {pageData.openEdit == false ?
               <Grid container>
                   <Grid item xs={12} lg={12} sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                      <Typography sx={{ my: 3, ml: 5 }}>{t('Data')}</Typography>
+                      <Typography sx={{ my: 3, ml: 5 }}>{t('Dataset')}</Typography>
                       <Button sx={{ my: 3, mr: 5 }} size="small" variant='outlined' onClick={
                           () => { setPageData( (prevState: any) => ({ ...prevState, openEdit: true, FormAction: 'addcollection', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg' }) ) }
                       }>
-                      {t("Add")}
+                      {t("Add Data Source")}
                       </Button>
                   </Grid>
                   <DataGrid
@@ -232,7 +218,7 @@ const Collection = (props: any) => {
                   <CollectionDelete pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit} isDisabledButton={isDisabledButton}/>
               </Grid>
             : 
-              <CollectionNewEdit pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit} isDisabledButton={isDisabledButton} uploadProgress={uploadProgress} setUploadProgress={setUploadProgress}/>
+              <CollectionNewEdit pageData={pageData} setPageData={setPageData} handleSubmit={handleSubmit} isDisabledButton={isDisabledButton} uploadProgress={uploadProgress} setUploadProgress={setUploadProgress} setCounter={setCounter}/>
             }
 
           </Card>

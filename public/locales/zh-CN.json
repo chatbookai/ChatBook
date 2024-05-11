@@ -528,7 +528,8 @@
   "Application": "应用",
   "Enable Search":"启用搜索",
   "Disable Search":"禁用搜索",
-  "Generating, please wait...":"正在生成中,请等待..."
+  "Generating, please wait...":"正在生成中,请等待...",
+  "Add Data Source": "添加数据源"
 
   
 }

@@ -234,12 +234,12 @@ export async function uploadfilesInsertIntoDb(files: any[], datasetId: string, u
     };
   });
   console.log("filesInfo", filesInfo, datasetId, userId)
-  const insertFiles = db.prepare('INSERT OR IGNORE INTO files (datasetId, type, name, content, suffixName, newName, originalName, fileHash, status, timestamp, userId) VALUES (?,?,?,?,?,?,?,?,?,?,?)');
+  const insertCollection = db.prepare('INSERT OR IGNORE INTO collection (_id, datasetId, type, name, content, suffixName, newName, originalName, fileHash, status, timestamp, userId, data, dataTotal, folder, updateTime) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
   filesInfo.map((Item: any)=>{
     const suffixName = path.extname(Item.originalName).toLowerCase();
-    insertFiles.run(datasetId, 'File', Item.originalName, '', suffixName, Item.newName, Item.originalName, Item.fileHash, 0, Date.now(), Number(userId));
+    insertCollection.run(getNanoid(32), datasetId, 'File', Item.originalName, '', suffixName, Item.newName, Item.originalName, Item.fileHash, 0, Date.now(), Number(userId), '', '', '', '');
   })
-  insertFiles.finalize();
+  insertCollection.finalize();
   
 }
 

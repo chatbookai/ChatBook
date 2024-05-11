@@ -24,8 +24,9 @@ export async function initChatBookDb() {
     
     db.serialize(() => {
         db.run(`
-            CREATE TABLE IF NOT EXISTS files (
+            CREATE TABLE IF NOT EXISTS collection (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                _id TEXT not null,
                 datasetId INTEGER not null,
                 type TEXT not null default 'File',
                 name TEXT not null default '',
@@ -40,7 +41,11 @@ export async function initChatBookDb() {
                 CustomSplitChar TEXT not null default '',
                 status INTEGER not null default 0,
                 timestamp INTEGER not null default 0,
-                userId INTEGER not null
+                userId INTEGER not null,
+                data TEXT not null default '',
+                dataTotal TEXT not null default '',
+                folder TEXT not null default '',
+                updateTime TEXT not null default ''
             );
         `);
         db.run(`
@@ -319,22 +324,6 @@ export async function initChatBookDb() {
             );
         `);
         
-        db.run(`
-            CREATE TABLE IF NOT EXISTS collection (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                _id TEXT not null,
-                datasetId TEXT not null,
-                name TEXT not null,
-                dataTotal TEXT not null default '',
-                updateTime TEXT not null default '',
-                status TEXT not null default '',
-                type TEXT not null default '',
-                source TEXT not null default '',
-                data TEXT not null default '',
-                folder TEXT not null default '',
-                userId INTEGER not null
-            );
-        `);
     });
 }
 

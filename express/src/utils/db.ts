@@ -24,32 +24,21 @@ export async function initChatBookDb() {
     
     db.serialize(() => {
         db.run(`
-            CREATE TABLE IF NOT EXISTS setting (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT KEY not null,
-                content TEXT not null,
-                type TEXT not null,
-                knowledgeId TEXT not null,
-                userId INTEGER not null,
-                UNIQUE(name, userId, knowledgeId)
-            );
-        `);
-        db.run(`insert or ignore into setting (name, content, type, knowledgeId, userId) values('OPENAI_API_BASE','','openaisetting',1,1);`);
-        db.run(`insert or ignore into setting (name, content, type, knowledgeId, userId) values('OPENAI_API_KEY','','openaisetting',1,1);`);
-        db.run(`insert or ignore into setting (name, content, type, knowledgeId, userId) values('Temperature','0.1','openaisetting',1,1);`);
-        db.run(`insert or ignore into setting (name, content, type, knowledgeId, userId) values('ModelName','gpt-3.5-turbo','openaisetting',1,1);`);
-        db.run(`insert or ignore into setting (name, content, type, knowledgeId, userId) values('CONDENSE_TEMPLATE',?,'TEMPLATE',1,1);`, [CONDENSE_TEMPLATE_INIT]);
-        db.run(`insert or ignore into setting (name, content, type, knowledgeId, userId) values('QA_TEMPLATE',?,'TEMPLATE',1,1);`, [QA_TEMPLATE_INIT]);
-        db.run(`
             CREATE TABLE IF NOT EXISTS files (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                knowledgeId INTEGER not null,
+                datasetId INTEGER not null,
+                type TEXT not null default 'File',
+                name TEXT not null default '',
+                content TEXT not null default '',
                 suffixName TEXT not null,
                 newName TEXT UNIQUE not null,
                 originalName TEXT not null,
-                hash TEXT not null,
+                fileHash TEXT not null,
+                trainingMode TEXT not null default '',
+                processWay TEXT not null default '',
+                IdealChunkLength TEXT not null default '',
+                CustomSplitChar TEXT not null default '',
                 status INTEGER not null default 0,
-                summary TEXT not null default '',
                 timestamp INTEGER not null default 0,
                 userId INTEGER not null
             );

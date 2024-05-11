@@ -35,7 +35,7 @@ initChatBookDbExec()
 //Schedule Task for Parse Upload Files
 cron.schedule('*/1 * * * *', () => {
   console.log('Task Begin !');
-  parseFiles();
+  //parseFiles();
   console.log('Task End !');
   //downloadVideoFromAPI();
 });

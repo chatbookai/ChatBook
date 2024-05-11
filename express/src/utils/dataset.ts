@@ -218,6 +218,37 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
   }
 
+  export async function uploadCollection(Params: any) {
+    try{
+      const type = filterString(Params.type)
+      const datasetId = filterString(Params.datasetId)
+      const processWay = filterString(Params.processWay)
+      const trainingMode = filterString(Params.trainingMode)
+      const IdealChunkLength = filterString(Params.IdealChunkLength)
+      const CustomSplitChar = filterString(Params.CustomSplitChar)
+      const files = Params.files
+      if (type === 'File' && files && Array.isArray(files)) {
+        const fileNames = files.map((Item: any) => Item.path);
+        const placeholders = fileNames.map(() => '?').join(',');
+        const updateSetting = db.prepare(`update files set processWay = ?, trainingMode = ?, IdealChunkLength = ?, CustomSplitChar = ? where datasetId = ? and type = ? and name in (${placeholders})`);
+        updateSetting.run(processWay, trainingMode, IdealChunkLength, CustomSplitChar, datasetId, type, ...fileNames);
+        updateSetting.finalize();
+      
+        return { "status": "ok", "msg": "Update Success" };
+      }
+      else {
+        return { "status": "error", "msg": "No File Match" };
+      }
+      
+    }
+    catch (error: any) {
+      log(Params._id, 'editCollection', Params.userId, 'Error editCollection:', error.message);
+      return {"status":"error", "msg":error.message}
+    }
+
+  }
+
+
   export async function deleteCollection(Params: any) {
     try{
       Params._id = filterString(Params._id)

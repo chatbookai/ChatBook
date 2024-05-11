@@ -4,7 +4,7 @@
 
   import { MenuListAdmin, MenuListUser } from '../utils/const';
   import { checkUserToken } from '../utils/user';
-  import { getLogsPage, clearShortLogs, clearAllLogs, getTemplate, getLLMSSetting, getFilesPage, getFilesKnowledgeId, getChatLogByKnowledgeIdAndUserId, addKnowledge, setOpenAISetting, setTemplate, getKnowledgePage, wholeSiteStatics, getAllImages, deleteUserLogByKnowledgeId, getAgentsPage, getAgentsEnabledList, addAgent, editAgent } from '../utils/utils';
+  import { getLogsPage, clearShortLogs, clearAllLogs, getTemplate, getLLMSSetting, getFilesPage, getFilesDatasetId, getChatLogByKnowledgeIdAndUserId, addKnowledge, setOpenAISetting, setTemplate, getKnowledgePage, wholeSiteStatics, getAllImages, deleteUserLogByKnowledgeId, getAgentsPage, getAgentsEnabledList, addAgent, editAgent } from '../utils/utils';
 
   const app = express();
 
@@ -48,12 +48,12 @@
     res.end();
   });
   
-  app.get('/api/chatlog/agent/:knowledgeId/:userId/:pageid/:pagesize', async (req, res) => {
-    const { knowledgeId, userId, pageid, pagesize } = req.params;
+  app.get('/api/chatlog/agent/:datasetId/:userId/:pageid/:pagesize', async (req, res) => {
+    const { datasetId, userId, pageid, pagesize } = req.params;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        const getChatLogByKnowledgeIdAndUserIdData: any = await getChatLogByKnowledgeIdAndUserId(knowledgeId, Number(userId), Number(pageid), Number(pagesize));
+        const getChatLogByKnowledgeIdAndUserIdData: any = await getChatLogByKnowledgeIdAndUserId(datasetId, Number(userId), Number(pageid), Number(pagesize));
         res.status(200).json(getChatLogByKnowledgeIdAndUserIdData);
     }
     else {
@@ -62,12 +62,12 @@
     res.end();
   });
 
-  app.get('/api/chatlog/clear/:userId/:knowledgeId', async (req, res) => {
-    const { userId, knowledgeId } = req.params;
+  app.get('/api/chatlog/clear/:userId/:datasetId', async (req, res) => {
+    const { userId, datasetId } = req.params;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        const deleteUserLogByKnowledgeIdData: any = await deleteUserLogByKnowledgeId(knowledgeId, Number(userId));
+        const deleteUserLogByKnowledgeIdData: any = await deleteUserLogByKnowledgeId(datasetId, Number(userId));
         res.status(200).json(deleteUserLogByKnowledgeIdData);
     }
     else {
@@ -90,12 +90,12 @@
     res.end();
   });
   
-  app.get('/api/files/:knowledgeId/:pageid/:pagesize', async (req: Request, res: Response) => {
-    const { knowledgeId, pageid, pagesize } = req.params;
+  app.get('/api/files/:datasetId/:pageid/:pagesize', async (req: Request, res: Response) => {
+    const { datasetId, pageid, pagesize } = req.params;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
-        const getFilesPageData: any = await getFilesKnowledgeId(knowledgeId, Number(pageid), Number(pagesize));
+        const getFilesPageData: any = await getFilesDatasetId(datasetId, Number(pageid), Number(pagesize));
         res.status(200).json(getFilesPageData);
     }
     else {

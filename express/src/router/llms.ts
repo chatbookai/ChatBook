@@ -16,8 +16,17 @@
   });
   
   app.post('/api/uploadfiles', uploadfiles().array('files', 10), async (req, res) => {
-    uploadfilesInsertIntoDb(req.files as any[], req.body, '999');
-    res.json({"status":"ok", "msg":"Uploaded Success"}).end(); 
+    const datasetId: string = req.body.datasetId
+    const { authorization } = req.headers;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') && datasetId) {
+      uploadfilesInsertIntoDb(req.files as any[], datasetId, checkUserTokenData.data.id);
+      res.json({"status":"ok", "msg":"Uploaded Success"}).end();
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+    }
+    res.end();
   });
   
   app.post('/api/DallE2Openai', async (req: Request, res: Response) => {

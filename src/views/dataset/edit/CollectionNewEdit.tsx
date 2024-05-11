@@ -1,5 +1,7 @@
 import { useEffect, memo, Fragment, useState } from 'react'
 
+import axios from 'axios'
+import authConfig from 'src/configs/auth'
 import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
 import { CheckPermission } from 'src/functions/ChatBook'
@@ -10,6 +12,7 @@ import Stepper from '@mui/material/Stepper'
 import StepLabel from '@mui/material/StepLabel'
 import StepperCustomDot from './StepperCustomDot'
 import StepperWrapper from 'src/@core/styles/mui/stepper'
+
 
 import Radio from '@mui/material/Radio'
 import Divider from '@mui/material/Divider'
@@ -34,6 +37,9 @@ import useBgColor, { UseBgColorType } from 'src/@core/hooks/useBgColor'
 import TextField2 from 'src/context/TextField2'
 
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+
+// ** Third Party Components
+import toast from 'react-hot-toast'
 
 const DataTypesList:any[] = [
     {
@@ -137,7 +143,25 @@ const CollectionNewEdit = (props: any) => {
     useEffect(() => {
         console.log("pageData pageData", pageData, uploadProgress)
       }, [pageData])
-
+    
+    const handleStartUpload = async () => {
+        if (auth && auth.user && pageData && pageData.FormAction) {
+            console.log("handleStartUpload pageData", pageData)
+            const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/uploadcollection', pageData, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res => res.data)
+            console.log("FormSubmit:", FormSubmit)
+            if(FormSubmit?.status == "ok") {
+                toast.success(t(FormSubmit.msg) as string, { duration: 4000, position: 'top-center' })
+                setPageData({openEdit: false, name: '', type: 'File', files: [], csvs: [], updateTime: 0, status: t('Done'), expiredTime: '', authCheck: '', datasetId: pageData.datasetId})
+            }
+            else {
+                toast.error(t(FormSubmit.msg) as string, { duration: 4000, position: 'top-center' })
+                if(FormSubmit && FormSubmit.msg=='Token is invalid') {
+                    CheckPermission(auth, router, true)
+                }
+            }
+        }
+    }
+      
     return (
         <Grid container sx={{m: 3, p: 3}}>
             <Grid item sx={{p: 1}} xs={12}>
@@ -570,7 +594,7 @@ const CollectionNewEdit = (props: any) => {
                                                     <TableCell style={{ width: '80%' }}>{item}</TableCell>
                                                     <TableCell style={{ width: '15%' }}>
                                                         <Button variant='text' disabled>
-                                                        {pageData.status || 'Waiting'}
+                                                        {pageData.status || t('Waiting')}
                                                         </Button>
                                                     </TableCell>
                                                 </TableRow>
@@ -637,7 +661,7 @@ const CollectionNewEdit = (props: any) => {
                     null
                     }
                     <Button size="small" variant='contained' disabled={isDisabledButton} onClick={
-                        () => {  }
+                        () => { handleStartUpload() }
                     }>
                     {t("Start upload")}
                     </Button>

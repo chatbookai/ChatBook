@@ -162,8 +162,7 @@ const CollectionFilesUploader = (props: any) => {
       const uploadFiles = async () => {
         const uploadPromises = files.map(async (file: File) => {
           const formData = new FormData();
-          formData.append('knowledgeId', '1');
-          formData.append('knowledgeName', '1');
+          formData.append('datasetId', pageData.datasetId);
           formData.append('files', file);
           try {
             const FormSubmit: any = await axios.post(authConfig.backEndApiChatBook + '/api/uploadfiles', formData, {

@@ -3,7 +3,7 @@
   import express, { Request, Response } from 'express';
 
   import { checkUserToken } from '../utils/user';
-  import { addDataset, editDataset, deleteDataset, getDataset, getDatasetPage, addCollection, editCollection, deleteCollection, getCollection, getCollectionPageByDataset, getCollectionAll } from '../utils/dataset';
+  import { addDataset, editDataset, deleteDataset, getDataset, getDatasetPage, addCollection, editCollection, uploadCollection, deleteCollection, getCollection, getCollectionPageByDataset, getCollectionAll } from '../utils/dataset';
  
   const app = express();
 
@@ -142,6 +142,20 @@
         console.log("checkUserTokenData deletecollection", checkUserTokenData)
         const deleteCollectionData: any = await deleteCollection({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(deleteCollectionData);
+    }
+    else {
+        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
+    }
+    res.end();
+  });
+
+  app.post('/api/uploadcollection', async (req: Request, res: Response) => {
+    const { authorization } = req.headers;
+    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
+        console.log("checkUserTokenData uploadCollectionData", checkUserTokenData)
+        const uploadCollectionData: any = await uploadCollection({...req.body, userId: checkUserTokenData.data.id});
+        res.status(200).json(uploadCollectionData);
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});

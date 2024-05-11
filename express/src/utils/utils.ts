@@ -8,6 +8,7 @@ import { promisify } from 'util';
 import { DataDir, CONDENSE_TEMPLATE_INIT, QA_TEMPLATE_INIT } from './const';
 import { randomBytes } from 'crypto';
 import { db, getDbRecord, getDbRecordALL } from './db'
+import iconv from 'iconv-lite';
 
 type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
@@ -27,10 +28,10 @@ export function enableDir(directoryPath: string): void {
   }
 }
 
-export async function getLLMSSetting(knowledgeId: number | string) {
-  const knowledgeIdFilter = filterString(knowledgeId)
+export async function getLLMSSetting(datasetId: number | string) {
+  const datasetIdFilter = filterString(datasetId)
   
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT name,content from setting where type='openaisetting' and knowledgeId = ? `, [knowledgeIdFilter]) as any[];
+  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT name,content from setting where type='openaisetting' and datasetId = ? `, [datasetIdFilter]) as any[];
   const OpenAISetting: any = {}
   if(RecordsAll)  {
     RecordsAll.map((Item: any)=>{
@@ -42,15 +43,15 @@ export async function getLLMSSetting(knowledgeId: number | string) {
 }
 
 export async function setOpenAISetting(Params: any) {
-  const knowledgeIdFilter = filterString(Params.knowledgeId)
+  const datasetIdFilter = filterString(Params.datasetId)
   const userIdFilter = filterString(Params.userId)
   try {
-    const insertSetting = db.prepare('INSERT OR REPLACE INTO setting (name, content, type, knowledgeId, userId) VALUES (?, ?, ?, ?, ?)');
-    insertSetting.run('OPENAI_API_BASE', Params.OPENAI_API_BASE, 'openaisetting', knowledgeIdFilter, userIdFilter);
-    insertSetting.run('OPENAI_API_KEY', Params.OPENAI_API_KEY, 'openaisetting', knowledgeIdFilter, userIdFilter);
-    insertSetting.run('Temperature', Params.Temperature, 'openaisetting', knowledgeIdFilter, userIdFilter);
-    insertSetting.run('ModelName', Params.ModelName, 'openaisetting', knowledgeIdFilter, userIdFilter);
-    insertSetting.run('Prompt', Params.Prompt, 'openaisetting', knowledgeIdFilter, userIdFilter);
+    const insertSetting = db.prepare('INSERT OR REPLACE INTO setting (name, content, type, datasetId, userId) VALUES (?, ?, ?, ?, ?)');
+    insertSetting.run('OPENAI_API_BASE', Params.OPENAI_API_BASE, 'openaisetting', datasetIdFilter, userIdFilter);
+    insertSetting.run('OPENAI_API_KEY', Params.OPENAI_API_KEY, 'openaisetting', datasetIdFilter, userIdFilter);
+    insertSetting.run('Temperature', Params.Temperature, 'openaisetting', datasetIdFilter, userIdFilter);
+    insertSetting.run('ModelName', Params.ModelName, 'openaisetting', datasetIdFilter, userIdFilter);
+    insertSetting.run('Prompt', Params.Prompt, 'openaisetting', datasetIdFilter, userIdFilter);
     insertSetting.finalize();
   }
   catch (error: any) {
@@ -60,16 +61,16 @@ export async function setOpenAISetting(Params: any) {
   return {"status":"ok", "msg":"Update Success"}
 }
 
-export async function getTemplate(knowledgeId: number | string, userId: string) {
-  const knowledgeIdFilter = filterString(knowledgeId)
+export async function getTemplate(datasetId: number | string, userId: string) {
+  const datasetIdFilter = filterString(datasetId)
   const userIdFilter = Number(userId)
   
-  const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT name,content from setting where type='TEMPLATE' and knowledgeId = ? and userId = ? `, [knowledgeIdFilter, userIdFilter]) as any[];
+  const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT name,content from setting where type='TEMPLATE' and datasetId = ? and userId = ? `, [datasetIdFilter, userIdFilter]) as any[];
   
   const Template: any = {}
   if(SettingRS)  {
     SettingRS.map((Item: any)=>{
-      Template[Item.name.replace("_" + String(knowledgeIdFilter),"")] = Item.content
+      Template[Item.name.replace("_" + String(datasetIdFilter),"")] = Item.content
     })
   }
 
@@ -78,12 +79,12 @@ export async function getTemplate(knowledgeId: number | string, userId: string) 
 
 export async function setTemplate(Params: any) {
   try{
-    const knowledgeIdFilter = Number(Params.knowledgeId)
+    const datasetIdFilter = Number(Params.datasetId)
     const userIdFilter = Params.userId
     const Templatename = "TEMPLATE"
-    const insertSetting = db.prepare('INSERT OR REPLACE INTO setting (name, content, type, knowledgeId, userId) VALUES (?, ?, ?, ?, ?)');
-    insertSetting.run('CONDENSE_TEMPLATE', Params.CONDENSE_TEMPLATE, Templatename, knowledgeIdFilter, userIdFilter);
-    insertSetting.run('QA_TEMPLATE', Params.QA_TEMPLATE, Templatename, knowledgeIdFilter, userIdFilter);
+    const insertSetting = db.prepare('INSERT OR REPLACE INTO setting (name, content, type, datasetId, userId) VALUES (?, ?, ?, ?, ?)');
+    insertSetting.run('CONDENSE_TEMPLATE', Params.CONDENSE_TEMPLATE, Templatename, datasetIdFilter, userIdFilter);
+    insertSetting.run('QA_TEMPLATE', Params.QA_TEMPLATE, Templatename, datasetIdFilter, userIdFilter);
     insertSetting.finalize();
   }
   catch (error: any) {
@@ -124,7 +125,7 @@ export async function addKnowledge(Params: any) {
         console.log('Last inserted ID:', lastInsertId);
         insertSetting.finalize();
         if(lastInsertId) {
-          const TemplateInfo = {knowledgeId: lastInsertId, CONDENSE_TEMPLATE: CONDENSE_TEMPLATE_INIT, QA_TEMPLATE: QA_TEMPLATE_INIT, userId: userIdFilter}
+          const TemplateInfo = {datasetId: lastInsertId, CONDENSE_TEMPLATE: CONDENSE_TEMPLATE_INIT, QA_TEMPLATE: QA_TEMPLATE_INIT, userId: userIdFilter}
           setTemplate(TemplateInfo)
         }
 
@@ -163,7 +164,6 @@ export function uploadfiles() {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
       const FileNameNew = file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase();
       cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase());
-      console.log("uploadfiles FileNameNew", FileNameNew)
     },
   });
   const upload = multer({ storage: storage });
@@ -222,33 +222,25 @@ export function uploadImageForImageGenerateImage() {
   return upload
 }
 
-export async function uploadfilesInsertIntoDb(files: any[], knowledgeId: number | string, userId: string) {
-  //const originalName = Buffer.from(files[0].originalname, 'hex').toString('utf8');
-  //log("originalName", files[0].originalname)
+export async function uploadfilesInsertIntoDb(files: any[], datasetId: string, userId: string) {
   const filesInfo = files.map((file: any) => {
     const filePath = path.join(DataDir, 'uploadfiles', file.filename);
     const fileHash = calculateFileHashSync(filePath);
-
+    const originalName = iconv.decode(Buffer.from(file.originalname, 'binary'), 'utf-8');
     return {
-      originalName: file.originalname,
+      originalName: originalName,
       newName: file.filename,
-      hash: fileHash,
+      fileHash: fileHash,
     };
   });
-  const insertFiles = db.prepare('INSERT OR IGNORE INTO files (knowledgeId, suffixName, newName, originalName, hash, timestamp, userId) VALUES (?,?,?,?,?,?,?)');
+  console.log("filesInfo", filesInfo, datasetId, userId)
+  const insertFiles = db.prepare('INSERT OR IGNORE INTO files (datasetId, type, name, content, suffixName, newName, originalName, fileHash, status, timestamp, userId) VALUES (?,?,?,?,?,?,?,?,?,?,?)');
   filesInfo.map((Item: any)=>{
     const suffixName = path.extname(Item.originalName).toLowerCase();
-    insertFiles.run(knowledgeId, suffixName, Item.newName, Item.originalName, Item.hash, Date.now(), Number(userId));
+    insertFiles.run(datasetId, 'File', Item.originalName, '', suffixName, Item.newName, Item.originalName, Item.fileHash, 0, Date.now(), Number(userId));
   })
   insertFiles.finalize();
-}
-
-export async function InsertFilesDb(knowledgeId: number | string, originalFilename: string, FileNameNew: string, FileHash: string, userId: string) {
-  console.log("originalFilenameoriginalFilenameoriginalFilename", originalFilename)
-  const insertFiles = db.prepare('INSERT OR IGNORE INTO files (knowledgeId, suffixName, newName, originalName, hash, timestamp, userId) VALUES (?,?,?,?,?,?,?)');
-  const suffixName = path.extname(originalFilename).toLowerCase();
-  insertFiles.run(knowledgeId, suffixName, FileNameNew, originalFilename, FileHash, Date.now(), Number(userId));
-  insertFiles.finalize();
+  
 }
 
 export async function getFilesPage(pageid: number, pagesize: number) {
@@ -290,16 +282,16 @@ export async function getFilesPage(pageid: number, pagesize: number) {
   return RS;
 }
 
-export async function getFilesKnowledgeId(knowledgeId: number | string, pageid: number, pagesize: number) {
-  const KnowledgeIdFiler = Number(knowledgeId) < 0 ? 0 : Number(knowledgeId);
+export async function getFilesDatasetId(datasetId: number | string, pageid: number, pagesize: number) {
+  const KnowledgeIdFiler = Number(datasetId) < 0 ? 0 : Number(datasetId);
   const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
   const From = pageidFiler * pagesizeFiler;
   
   
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from files where knowledgeId = ?", [KnowledgeIdFiler]);
+  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from files where datasetId = ?", [KnowledgeIdFiler]);
   const RecordsTotal: number = Records ? Records.NUM : 0;  
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from files where knowledgeId = ? order by status desc, timestamp desc limit ? OFFSET ? `, [KnowledgeIdFiler, pagesizeFiler, From]) as any[];
+  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from files where datasetId = ? order by status desc, timestamp desc limit ? OFFSET ? `, [KnowledgeIdFiler, pagesizeFiler, From]) as any[];
 
   let RSDATA = []
   if(RecordsAll != undefined) {
@@ -337,8 +329,8 @@ export async function getFilesNotParsed() {
   return RecordsAll;
 }
 
-export async function getChatLogByKnowledgeIdAndUserId(knowledgeId: number | string, userId: number, pageid: number, pagesize: number) {
-  const KnowledgeIdFiler = filterString(knowledgeId);
+export async function getChatLogByKnowledgeIdAndUserId(datasetId: number | string, userId: number, pageid: number, pagesize: number) {
+  const KnowledgeIdFiler = filterString(datasetId);
   const userIdFiler = Number(userId) < 0 ? 0 : Number(userId) || 1;
   const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
@@ -448,17 +440,11 @@ export async function clearAllLogs() {
   return {"status":"ok", "msg":"Deleted Success"}
 }
 
-export async function deleteUserLogByKnowledgeId(knowledgeId: number | string, userId: number) {
+export async function deleteUserLogByKnowledgeId(datasetId: number | string, userId: number) {
   const UpdateChatLog = db.prepare("update chatlog set current = 0 where appId = ? and userId = ?");
-  UpdateChatLog.run(knowledgeId, userId);
+  UpdateChatLog.run(datasetId, userId);
   UpdateChatLog.finalize();
   return {"status":"ok", "msg":"Clear History Success"}
-}
-
-export async function GetSetting(Name: string, knowledgeId: number | string, userId: number) {
-  
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT content FROM setting where name = ? and knowledgeId = ? and userId = ? ", [Name, knowledgeId, userId]);  
-  return Records ? Records.content : '';
 }
 
 export function calculateFileHashSync(filePath: string) {

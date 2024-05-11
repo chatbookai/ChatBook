@@ -50,7 +50,7 @@ import { StringOutputParser } from '@langchain/core/output_parsers';
 
 import { DataDir } from './const';
 import { db, getDbRecord, getDbRecordALL } from './db'
-import { getLLMSSetting, GetSetting, log, isFile, formatDateString, enableDir } from './utils'
+import { getLLMSSetting, log, isFile, formatDateString, enableDir } from './utils'
 
 //.ENV
 import dotenv from 'dotenv';
@@ -79,8 +79,8 @@ let ChatBaiduWenxinModel: any = null
     console.log("PromptTemplate", PromptTemplate)
   }
 
-  export async function initChatBookOpenAI(knowledgeId: number | string) {
-    getLLMSSettingData = await getLLMSSetting(knowledgeId);
+  export async function initChatBookOpenAI(datasetId: number | string) {
+    getLLMSSettingData = await getLLMSSetting(datasetId);
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
     const OPENAI_Temperature = getLLMSSettingData.Temperature;
@@ -98,7 +98,7 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function initChatBookOpenAIStream(res: Response, knowledgeId: number | string) {
+  export async function initChatBookOpenAIStream(res: Response, datasetId: number | string) {
     
   }
 
@@ -303,14 +303,14 @@ let ChatBaiduWenxinModel: any = null
   }
 
   export async function chatKnowledgeOpenAI(res: Response, userId: number, question: string, history: any[], appId: number) {
-    const knowledgeId = ''
-    await initChatBookOpenAIStream(res, knowledgeId)
+    const datasetId = ''
+    await initChatBookOpenAIStream(res, datasetId)
     if(!ChatOpenAIModel) {
       res.end();
       return
     }
-    const CONDENSE_TEMPLATE: string | unknown = await GetSetting("CONDENSE_TEMPLATE", knowledgeId, userId);
-    const QA_TEMPLATE: string | unknown = await GetSetting("QA_TEMPLATE", knowledgeId, userId);
+    const CONDENSE_TEMPLATE: string | unknown = '';
+    const QA_TEMPLATE: string | unknown = '';
 
     if (!question) {
       return { message: 'No question in the request' };
@@ -325,7 +325,7 @@ let ChatBaiduWenxinModel: any = null
   
       /* create vectorstore */
 
-      const PINECONE_NAME_SPACE_USE = PINECONE_NAME_SPACE + '_' + String(knowledgeId)
+      const PINECONE_NAME_SPACE_USE = PINECONE_NAME_SPACE + '_' + String(datasetId)
 
       const embeddings = new OpenAIEmbeddings({openAIApiKey:getLLMSSettingData.OPENAI_API_KEY});
       
@@ -431,8 +431,8 @@ let ChatBaiduWenxinModel: any = null
     return serializedDocs.join(separator);
   }
 
-  export async function initChatBookGeminiStream(res: Response, knowledgeId: number | string) {
-    getLLMSSettingData = await getLLMSSetting(knowledgeId);
+  export async function initChatBookGeminiStream(res: Response, datasetId: number | string) {
+    getLLMSSettingData = await getLLMSSetting(datasetId);
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
     if(OPENAI_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
@@ -456,8 +456,8 @@ let ChatBaiduWenxinModel: any = null
   }
 
   export async function chatChatGemini(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number) {
-    const knowledgeId = ''
-    await initChatBookGeminiStream(res, knowledgeId)
+    const datasetId = ''
+    await initChatBookGeminiStream(res, datasetId)
     const pastMessages: any[] = []
     if(template && template!='') {
       pastMessages.push(new SystemMessage(template))
@@ -499,8 +499,8 @@ let ChatBaiduWenxinModel: any = null
   }
 
   export async function chatChatGeminiMindMap(res: Response, userId: string, question: string, history: any[], template: string, appId: number) {
-    const knowledgeId = ''
-    await initChatBookGeminiStream(res, knowledgeId)
+    const datasetId = ''
+    await initChatBookGeminiStream(res, datasetId)
     const TextPrompts = template && template != '' ? template : "\n 要求生成一份PPT的大纲,以行业总结性报告的形式显现,生成15-20页左右,每一页3-6个要点,每一个要点字数在10-30之间,返回格式为Markdown,标题格式使用: **标题名称** 的形式表达."
     const input2 = [
         new HumanMessage({
@@ -531,8 +531,8 @@ let ChatBaiduWenxinModel: any = null
     res.end();
   }
 
-  export async function initChatBookBaiduWenxinStream(res: Response, knowledgeId: number | string) {
-    getLLMSSettingData = await getLLMSSetting(knowledgeId);
+  export async function initChatBookBaiduWenxinStream(res: Response, datasetId: number | string) {
+    getLLMSSettingData = await getLLMSSetting(datasetId);
     const BAIDU_API_KEY = getLLMSSettingData.OPENAI_API_KEY ?? "1AWXpm1Cd8lbxmAaFoPR0dNx";
     const BAIDU_SECRET_KEY = getLLMSSettingData.OPENAI_API_BASE ?? "TQy5sT9Mz4xKn0tR8h7W6LxPWIUNnXqq";
     const OPENAI_Temperature = 1;
@@ -559,8 +559,8 @@ let ChatBaiduWenxinModel: any = null
   }
 
   export async function chatChatBaiduWenxin(res: Response, userId: string, question: string, history: any[], template: string, appId: number) {
-    const knowledgeId = ''
-    await initChatBookBaiduWenxinStream(res, knowledgeId);
+    const datasetId = ''
+    await initChatBookBaiduWenxinStream(res, datasetId);
     if(!ChatBaiduWenxinModel) {
       res.end();
       return
@@ -595,8 +595,8 @@ let ChatBaiduWenxinModel: any = null
     }    
   }
 
-  export async function debug_agent(res: Response, knowledgeId: number | string) {
-    getLLMSSettingData = await getLLMSSetting(knowledgeId);
+  export async function debug_agent(res: Response, datasetId: number | string) {
+    getLLMSSettingData = await getLLMSSetting(datasetId);
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
     const OPENAI_Temperature = getLLMSSettingData.Temperature;
@@ -668,8 +668,8 @@ let ChatBaiduWenxinModel: any = null
   }
 
   export async function GenereateImageUsingDallE2(res: Response, userId: string, question: string, size='1024x1024') {
-    const knowledgeId = ''
-    getLLMSSettingData = await getLLMSSetting(knowledgeId);    
+    const datasetId = ''
+    getLLMSSettingData = await getLLMSSetting(datasetId);    
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE ?? "https://api.openai.com/v1";
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;    
     if(OPENAI_API_KEY && PINECONE_API_KEY && PINECONE_ENVIRONMENT) {
@@ -700,7 +700,7 @@ let ChatBaiduWenxinModel: any = null
           });
           const data = Buffer.from(response.data);
           const DateNow = Date.now();
-          const ShortFileName = DateNow + '-' + Math.round(Math.random() * 1e9) + '-' + knowledgeId;
+          const ShortFileName = DateNow + '-' + Math.round(Math.random() * 1e9) + '-' + datasetId;
           const FileName = DataDir + "/image/"+ ShortFileName + ".png";
           const generatedImageTS = {...requestData, FileName: FileName, type: 'image', status: 'OK', timestamp: DateNow, ShortFileName: ShortFileName}
           fs.writeFileSync(FileName, data);
@@ -907,7 +907,7 @@ let ChatBaiduWenxinModel: any = null
     try {
       const RecordsAll: any[] = await getDbRecordALL(`SELECT * from files where status = '0' order by id asc limit 2`) as any[];
       await Promise.all(RecordsAll.map(async (FileItem: any)=>{
-        const KnowledgeItemId = FileItem.knowledgeId
+        const KnowledgeItemId = FileItem.datasetId
         await initChatBookOpenAI(KnowledgeItemId)
         if(getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "")    {
             const pdfFilePath = DataDir + '/uploadfiles/' + FileItem.newName;

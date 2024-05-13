@@ -31,28 +31,24 @@ interface EntryWithContext {
     context: string
 }
 
-export async function createEmbeddingsTable(url: string, pages: number) {
-    const lance_db = await connect(DataDir + '/LanceDb/');
+export async function createEmbeddingsTable(WebsiteUrlList: string[], datasetId: string, _id: string) {
+    const lance_db = await connect(DataDir + '/LanceDb/datasetId_' + datasetId + "/" + _id);
   
-    const randomBytes = crypto.randomBytes(10)
-    const hash = crypto.createHash('sha256').update(randomBytes).digest('hex')
-  
-    console.log("createEmbeddingsTable data", OPENAI_API_KEY, hash)
     const embedFunction = new OpenAIEmbeddingFunction('context', OPENAI_API_KEY)
-    const data = contextualize(await getDomObjects(url, pages), 5, 'link')
+    const data = contextualize(await getWebsiteUrlContent(WebsiteUrlList), 5, 'link')
     const batchSize = 500;
   
-    console.log("createEmbeddingsTable data", data)
+    //console.log("createEmbeddingsTable data", data)
     
-    const tbl = await lance_db.createTable(`website-${hash}`, data.slice(0, Math.min(batchSize, data.length)), embedFunction)
+    const tbl = await lance_db.createTable(`website-${_id}`, data.slice(0, Math.min(batchSize, data.length)), embedFunction)
     
     for (var i = batchSize; i < data.length; i += batchSize) {
       await tbl.add(data.slice(i, Math.min(i + batchSize, data.length)))
     }
   
-    console.log('Vectors inserted: ', data.slice(0, Math.min(batchSize, data.length)).length)
+    console.log('Vectors inserted: ', data)
   
-    return tbl.name
+    return {name: tbl.name, data}
 }
   
 // Each article line has a small text column, we include previous lines in order to
@@ -82,24 +78,11 @@ function contextualize(rows: Entry[], contextSize: number, groupColumn: string):
     return data
 }
 
-async function getWebsiteSitemap(url: string, pages: number): Promise<string[]> {
-    const response = await fetch(url, {
-    });
-
-    const $ = load(await response.text());
-
-    const sitemapLinks: string[] = $('loc')
-        .map((index: number, element: Element) => $(element).text().trim())
-        .get();
-
-    return sitemapLinks.slice(0, pages);
-}
-
 async function getEntriesFromLinks(links: string[]): Promise<Entry[]> {
     let allEntries: Entry[] = [];
 
     for (const link of links) {
-        console.log('Scraping', link);
+        console.log('Scraping: ', link);
 
         try {
             const response = await fetch(link, {
@@ -114,22 +97,23 @@ async function getEntriesFromLinks(links: string[]): Promise<Entry[]> {
             $('p').each((index: number, element: Element) => {
                 contentArray.push($(element).text().trim());
             });
-            console.log("contentArray", contentArray)
+            //console.log("contentArray", contentArray)
 
             const title = $('title').text().trim()
-            console.log("title", title)
+            //console.log("title", title)
 
             const content = contentArray
                 .join('\n')
                 .split('\n')
                 .filter(line => line.length > 0)
                 .map(line => ({ link: link, title, text: line }));
-            console.log("content", content)
 
             //console.log('Content:', content)
 
             allEntries = allEntries.concat(content);
-            console.log('allEntries:', allEntries)
+
+            console.log('allEntries.length:', allEntries.length)
+
         } catch (error) {
             console.error(`Error processing ${link}:`, error);
         }
@@ -138,9 +122,8 @@ async function getEntriesFromLinks(links: string[]): Promise<Entry[]> {
     return allEntries;
 }
 
-export async function getDomObjects(url: string, pages: number): Promise<Entry[]> {
-    const sitemapUrls = await getWebsiteSitemap(url, pages);
-    const allEntries = await getEntriesFromLinks(sitemapUrls);
+export async function getWebsiteUrlContent(WebsiteUrlList: string[]): Promise<Entry[]> {
+    const allEntries = await getEntriesFromLinks(WebsiteUrlList);
 
     return allEntries;
 }

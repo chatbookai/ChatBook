@@ -29,7 +29,6 @@ import { createOpenAIFunctionsAgent } from "langchain/agents";
 import { AgentExecutor } from "langchain/agents";
 
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { PineconeStore } from "@langchain/pinecone";
 import { Pinecone } from '@pinecone-database/pinecone';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 
@@ -325,12 +324,11 @@ let ChatBaiduWenxinModel: any = null
   
     // OpenAI recommends replacing newlines with spaces for best results
     const sanitizedQuestion = question.trim().replaceAll('\n', ' ');
-  
+    /*
     try {
       
       const index = pinecone.Index(PINECONE_INDEX_NAME);
   
-      /* create vectorstore */
 
       const PINECONE_NAME_SPACE_USE = PINECONE_NAME_SPACE + '_' + String(datasetId)
 
@@ -386,6 +384,7 @@ let ChatBaiduWenxinModel: any = null
 
       return { error: error.message || 'Something went wrong' };
     }
+    */
   }
 
   export function makeChainOpenAI(retriever: any, CONDENSE_TEMPLATE: string, QA_TEMPLATE: string) {
@@ -603,74 +602,7 @@ let ChatBaiduWenxinModel: any = null
   }
 
   export async function debug_agent(res: Response, datasetId: number | string) {
-    getLLMSSettingData = await getLLMSSetting(datasetId);
-    const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
-    const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
-    const OPENAI_Temperature = getLLMSSettingData.Temperature;
-    if(OPENAI_API_BASE && OPENAI_API_BASE !='' && OPENAI_API_BASE.length > 16) {
-      process.env.OPENAI_BASE_URL = OPENAI_API_BASE
-      process.env.OPENAI_API_KEY = OPENAI_API_KEY
-    }
-    const searchTool = new TavilySearchResults();
     
-    //const toolResult = await searchTool.invoke("郑州天气如何?");    
-    //res.status(200).json(JSON.parse(toolResult));
-    //console.log(toolResult);
-
-    const loader = new CheerioWebBaseLoader("https://docs.smith.langchain.com/overview");
-    const rawDocs = await loader.load();
-    const splitter = new RecursiveCharacterTextSplitter({
-      chunkSize: 1000,
-      chunkOverlap: 200,
-    });
-    const docs = await splitter.splitDocuments(rawDocs);    
-    const vectorstore = await MemoryVectorStore.fromDocuments(
-      docs,
-      new OpenAIEmbeddings({openAIApiKey:getLLMSSettingData.OPENAI_API_KEY})
-    );
-    const retriever = vectorstore.asRetriever();    
-    const retrieverResult = await retriever.getRelevantDocuments(
-      "how to upload a dataset"
-    );
-    console.log("retrieverResult", retrieverResult);
-
-    const retrieverTool = createRetrieverTool(retriever, {
-      name: "langsmith_search",
-      description:
-        "Search for information about LangSmith. For any questions about LangSmith, you must use this tool!",
-    });
-    console.log("retrieverTool", retrieverTool);
-
-    const tools = [searchTool, retrieverTool];
-
-    const prompt = await pull<ChatPromptTemplate>(
-      "hwchase17/openai-functions-agent"
-    );
-    console.log("prompt", prompt);
-
-    const llm = new ChatOpenAI({
-      modelName: getLLMSSettingData.ModelName ?? "gpt-3.5-turbo",
-      openAIApiKey: OPENAI_API_KEY, 
-      temperature: Number(OPENAI_Temperature),
-    });
-
-    const agent = await createOpenAIFunctionsAgent({
-      llm,
-      tools,
-      prompt,
-    });
-    console.log("agent", agent);
-
-    const agentExecutor = new AgentExecutor({
-      agent,
-      tools,
-    });
-    console.log("agentExecutor", agentExecutor);
-
-    const result1 = await agentExecutor.invoke({
-      input: "how can langsmith help with testing?!",
-    });
-    console.log(result1);
 
   }
 
@@ -934,7 +866,7 @@ let ChatBaiduWenxinModel: any = null
 
   export async function parseFiles() {
     try {
-      const RecordsAll: any[] = await getDbRecordALL(`SELECT * from collection where status = '0' and type ='File' order by id asc limit 1`) as any[];
+      const RecordsAll: any[] = await getDbRecordALL(`SELECT * from collection where status = '0' and type ='Web' order by id asc limit 1`) as any[];
       await Promise.all(RecordsAll.map(async (CollectionItem: any)=>{
         if(OPENAI_API_KEY) {
           try{
@@ -949,7 +881,16 @@ let ChatBaiduWenxinModel: any = null
           }
         }
 
-        createEmbeddingsTable("https://hupe1980.github.io/golc/sitemap.xml", 3);
+        const Url = CollectionItem.name
+        if(Url && Url.trim().startsWith('http'))  {
+          const createEmbeddingsTableResult: any = await createEmbeddingsTable([Url.trim()], CollectionItem.datasetId, CollectionItem._id);
+          console.log("createEmbeddingsTableResult", createEmbeddingsTableResult.data)
+          if(createEmbeddingsTableResult && createEmbeddingsTableResult.data) {
+            const UpdateFileParseStatus = db.prepare('update collection set status = ?, content = ? where id = ?');
+            UpdateFileParseStatus.run(1, JSON.stringify(createEmbeddingsTableResult.data) ,CollectionItem.id);
+            UpdateFileParseStatus.finalize();
+          }
+        }
   
         if(ChatOpenAIModel && OPENAI_API_KEY && OPENAI_API_KEY != "" && false)    {
             const pdfFilePath = DataDir + '/uploadfiles/' + CollectionItem.newName;

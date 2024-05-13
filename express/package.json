@@ -20,6 +20,9 @@
     "@types/node-cron": "^3.0.11",
     "@types/useragent": "^2.3.4",
     "@types/validator": "^13.11.8",
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
     "dotenv": "^16.4.1",
     "langchain": "^0.1.11",
     "sqlite3": "^5.1.7",
@@ -27,17 +30,19 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "@langchain/core": "^0.1.27",
+    "@langchain/openai": "^0.0.14",
     "@google/generative-ai": "^0.2.0",
     "@langchain/google-genai": "^0.0.8",
-    "@langchain/pinecone": "^0.0.4",
-    "@pinecone-database/pinecone": "^2.0.1",
     "@types/express": "^4.17.21",
     "@types/node": "^20.11.14",
+    "ai": "^3.1.5",
     "arweave": "^1.14.4",
     "axios": "^1.6.7",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "canvas": "^2.11.2",
+    "cheerio": "^1.0.0-rc.12",
     "cors": "^2.8.5",
     "cron": "^3.1.6",
     "express": "^4.18.2",
@@ -52,6 +57,9 @@
     "sharp": "^0.33.2",
     "useragent": "^2.3.0",
     "validator": "^13.11.0",
-    "vectordb": "^0.1.19"
+    "vectordb": "^0.4.9",
+    "openai": "^4.27.0",
+    "react": "^18",
+    "react-dom": "^18"
   }
 }

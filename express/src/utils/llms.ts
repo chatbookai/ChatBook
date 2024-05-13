@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 
 import * as fs from 'fs'
 import path from 'path'
-import axios from 'axios'
+import axios from 'axios';
+import os from "node:os";
 import sharp from 'sharp';
 
 import { OpenAI } from "openai";
@@ -50,7 +51,14 @@ import { StringOutputParser } from '@langchain/core/output_parsers';
 
 import { DataDir } from './const';
 import { db, getDbRecord, getDbRecordALL } from './db'
-import { getLLMSSetting, log, isFile, formatDateString, enableDir } from './utils'
+import { getLLMSSetting, log, isFile, formatDateString, enableDir, getNanoid } from './utils'
+
+import { LanceDB } from "@langchain/community/vectorstores/lancedb";
+import { TextLoader } from "langchain/document_loaders/fs/text";
+import { connect } from "vectordb";
+
+import { createEmbeddingsTable } from './lancedb';
+
 
 //.ENV
 import dotenv from 'dotenv';
@@ -923,24 +931,27 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
+
   export async function parseFiles() {
     try {
       const RecordsAll: any[] = await getDbRecordALL(`SELECT * from collection where status = '0' and type ='File' order by id asc limit 1`) as any[];
       await Promise.all(RecordsAll.map(async (CollectionItem: any)=>{
-        if(OPENAI_API_KEY && PINECONE_API_KEY) {
+        if(OPENAI_API_KEY) {
           try{
             ChatOpenAIModel = new ChatOpenAI({ 
               modelName: "gpt-3.5-turbo",
               openAIApiKey: OPENAI_API_KEY, 
               temperature: Number(0.1),
-             });    
-            pinecone = new Pinecone({apiKey: PINECONE_API_KEY});
+             });
           }
           catch(Error: any) {
             log('parseFiles', 'parseFiles', 'parseFiles', "parseFiles Error", Error)
           }
         }
-        if(ChatOpenAIModel && OPENAI_API_KEY && OPENAI_API_KEY != "")    {
+
+        createEmbeddingsTable("https://hupe1980.github.io/golc/sitemap.xml", 3);
+  
+        if(ChatOpenAIModel && OPENAI_API_KEY && OPENAI_API_KEY != "" && false)    {
             const pdfFilePath = DataDir + '/uploadfiles/' + CollectionItem.newName;
             if(isFile(pdfFilePath))   {
               const pdfLoader = new PDFLoader(pdfFilePath);
@@ -950,34 +961,40 @@ let ChatBaiduWenxinModel: any = null
                 chunkSize: 1000,
                 chunkOverlap: 200,
               });
-              //console.log("pdfFilePath textSplitter", textSplitter)
 
               const SplitterDocs = await textSplitter.splitDocuments(rawDoc);
               //console.log("pdfFilePath SplitterDocs", SplitterDocs)
 
-              const embeddings = new OpenAIEmbeddings({openAIApiKey: OPENAI_API_KEY});
-              const pineconeIndex = pinecone.index(PINECONE_INDEX_NAME);  
+              const lance_db = await connect(DataDir + '/LanceDb/');
+              const table = await lance_db.createTable("vectors_" + getNanoid(32), [
+                { vector: Array(1536), text: "sample", source: "a" },
+              ]);
+              const vectorStore1 = await LanceDB.fromTexts(
+                ["Hello world", "Bye bye", "hello nice world"],
+                [{ id: 2 }, { id: 1 }, { id: 3 }],
+                new OpenAIEmbeddings(),
+                { table }
+              );
+              console.log("vectorStore1", vectorStore1);
+              const resultOne1 = await vectorStore1.similaritySearch("hello world", 1);
+              console.log("resultOne1", resultOne1);
+              return
 
-              //console.log("pdfFilePath pineconeIndex", pineconeIndex)
+              const vectorStore = await LanceDB.fromDocuments(
+                SplitterDocs,
+                new OpenAIEmbeddings({openAIApiKey: OPENAI_API_KEY}),
+                { table }
+              );
+              const resultOne = await vectorStore.similaritySearch("你是谁?", 3);
+              console.log("resultOne:", resultOne);
 
-              const PINECONE_NAME_SPACE_USE = PINECONE_NAME_SPACE + '_' + String(CollectionItem._id)
-              //console.log("pdfFilePath PINECONE_NAME_SPACE_USE", PINECONE_NAME_SPACE_USE)
-
-              const fromDocuments = await PineconeStore.fromDocuments(SplitterDocs, embeddings, {
-                pineconeIndex: pineconeIndex,
-                namespace: PINECONE_NAME_SPACE_USE,
-                maxConcurrency: 5,
-                textKey: 'text',
-              });
-              console.log("pdfFilePath fromDocuments", fromDocuments)
-              console.log('parseFiles creating vector store finished', PINECONE_NAME_SPACE_USE);
-
+              /*
               const UpdateFileParseStatus = db.prepare('update files set status = ? where id = ?');
               UpdateFileParseStatus.run(1, CollectionItem.id);
               UpdateFileParseStatus.finalize();
               const destinationFilePath = path.join(DataDir + '/parsedfiles/', CollectionItem.newName);
               console.log("destinationFilePath", destinationFilePath)
-              fs.rename(DataDir + '/uploadfiles/' + CollectionItem.newName, destinationFilePath, (err) => {
+              fs.rename(DataDir + '/uploadfiles/' + CollectionItem.newName, destinationFilePath, (err: any) => {
                 if (err) {
                   console.log('parseFiles Error moving file:', err, CollectionItem.newName);
                 } else {
@@ -985,6 +1002,7 @@ let ChatBaiduWenxinModel: any = null
                 }
               });
               console.log('parseFiles change the files status finished', CollectionItem);
+              */
             }
             else {
 

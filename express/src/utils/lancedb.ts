@@ -32,7 +32,7 @@ export interface EntryWithContext {
 }
 
 export async function createEmbeddingsFromList(data: EntryWithContext[], datasetId: string) {
-  const lance_db = await connect(DataDir + '/LanceDb/datasetId_' + datasetId);
+  const lance_db = await connect(DataDir + '/LanceDb/');
 
   const embedFunction = new OpenAIEmbeddingFunction('context', OPENAI_API_KEY)
 

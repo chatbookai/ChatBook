@@ -21,7 +21,6 @@ import { HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
 import { ChatBaiduWenxin } from "@langchain/community/chat_models/baiduwenxin";
 
 import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
-import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { createRetrieverTool } from "langchain/agents/toolkits";
 import { pull } from "langchain/hub";
@@ -31,16 +30,19 @@ import { AgentExecutor } from "langchain/agents";
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { Pinecone } from '@pinecone-database/pinecone';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
-
-import https from 'https';
-
-/*
-import { DirectoryLoader } from 'langchain/document_loaders/fs/directory';
 import { TextLoader } from 'langchain/document_loaders/fs/text';
 import { DocxLoader } from 'langchain/document_loaders/fs/docx';
 import { JSONLoader } from 'langchain/document_loaders/fs/json';
-import { JSONLinesLoader } from 'langchain/document_loaders/fs/json';
 import { CSVLoader } from 'langchain/document_loaders/fs/csv';
+import { GitbookLoader } from "langchain/document_loaders/web/gitbook";
+import { GithubRepoLoader } from "langchain/document_loaders/web/github";
+import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
+
+import https from 'https'; // Used in chatChatDeepSeek
+
+/*
+import { DirectoryLoader } from 'langchain/document_loaders/fs/directory';
+import { JSONLinesLoader } from 'langchain/document_loaders/fs/json';
 import { UnstructuredLoader } from 'langchain/document_loaders/fs/unstructured';
 */
 
@@ -53,10 +55,9 @@ import { db, getDbRecord, getDbRecordALL } from './db'
 import { getLLMSSetting, log, isFile, formatDateString, enableDir, getNanoid } from './utils'
 
 import { LanceDB } from "@langchain/community/vectorstores/lancedb";
-import { TextLoader } from "langchain/document_loaders/fs/text";
 import { connect } from "vectordb";
 
-import { createEmbeddingsTable } from './lancedb';
+import { createEmbeddingsTable, getWebsiteUrlContext } from './lancedb';
 
 
 //.ENV
@@ -863,10 +864,50 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-
+  //此处只做数据转文本操作, 向量化数据在另外一个函数里面.
   export async function parseFiles() {
     try {
-      const RecordsAll: any[] = await getDbRecordALL(`SELECT * from collection where status = '0' and type ='Web' order by id asc limit 1`) as any[];
+      const RecordsAll: any[] = await getDbRecordALL(`SELECT * from collection where id = '36' and status = '0' order by id asc limit 1`) as any[];
+      await Promise.all(RecordsAll.map(async (CollectionItem: any)=>{
+        
+        const filePath = DataDir + '/uploadfiles/' + CollectionItem.newName;
+        if(CollectionItem && CollectionItem.type == 'File' && CollectionItem.suffixName == '.pdf' && isFile(filePath))  {
+          const LoaderData = new PDFLoader(filePath);
+          const rawDoc = await LoaderData.load();
+          const textSplitter = new RecursiveCharacterTextSplitter({
+            chunkSize: 1000,
+            chunkOverlap: 200,
+          });
+          const SplitterDocs = await textSplitter.splitDocuments(rawDoc);
+          console.log("PDFLoader SplitterDocs", SplitterDocs)
+        }
+
+        else if(CollectionItem && CollectionItem.type == 'File' && CollectionItem.suffixName == '.csv' && isFile(filePath))  {
+          const LoaderData = new CSVLoader(filePath);
+          const rawDoc = await LoaderData.load();
+          const textSplitter = new RecursiveCharacterTextSplitter({
+            chunkSize: 1000,
+            chunkOverlap: 200,
+          });
+          const SplitterDocs = await textSplitter.splitDocuments(rawDoc);
+          console.log("CSVLoader SplitterDocs", SplitterDocs)
+        }
+
+        else if(CollectionItem && CollectionItem.type == 'Web' && CollectionItem.name && CollectionItem.name.trim().startsWith('http'))  {
+          const getWebsiteUrlContextData = await getWebsiteUrlContext([CollectionItem.name.trim()]);
+          console.log('getWebsiteUrlContextData docs', getWebsiteUrlContextData);
+        }
+  
+      }))
+
+    } catch (error: any) {
+      console.log('parseFiles Failed to ingest your data', error);
+    }
+  }
+
+  export async function parseFiles1() {
+    try {
+      const RecordsAll: any[] = await getDbRecordALL(`SELECT * from collection where status = '1' and type ='Web' order by id asc limit 1`) as any[];
       await Promise.all(RecordsAll.map(async (CollectionItem: any)=>{
         if(OPENAI_API_KEY) {
           try{
@@ -884,7 +925,7 @@ let ChatBaiduWenxinModel: any = null
         const Url = CollectionItem.name
         if(Url && Url.trim().startsWith('http'))  {
           const createEmbeddingsTableResult: any = await createEmbeddingsTable([Url.trim()], CollectionItem.datasetId, CollectionItem._id);
-          console.log("createEmbeddingsTableResult", createEmbeddingsTableResult.data)
+          //console.log("createEmbeddingsTableResult", createEmbeddingsTableResult.data)
           if(createEmbeddingsTableResult && createEmbeddingsTableResult.data) {
             const UpdateFileParseStatus = db.prepare('update collection set status = ?, content = ? where id = ?');
             UpdateFileParseStatus.run(1, JSON.stringify(createEmbeddingsTableResult.data) ,CollectionItem.id);

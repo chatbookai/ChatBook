@@ -35,25 +35,31 @@ export async function createEmbeddingsTable(WebsiteUrlList: string[], datasetId:
     const lance_db = await connect(DataDir + '/LanceDb/datasetId_' + datasetId + "/" + _id);
   
     const embedFunction = new OpenAIEmbeddingFunction('context', OPENAI_API_KEY)
-    const data = contextualize(await getWebsiteUrlContent(WebsiteUrlList), 5, 'link')
-    const batchSize = 500;
+    const data = contextualize(await getWebsiteUrlContent(WebsiteUrlList), 1, 'link')
+    const batchSize = 1;
   
-    //console.log("createEmbeddingsTable data", data)
-    
-    const tbl = await lance_db.createTable(`website-${_id}`, data.slice(0, Math.min(batchSize, data.length)), embedFunction)
+    //console.log("contextualize data", data.slice(0, Math.min(batchSize, data.length)))
+    const allTableExistsList: string[] = await lance_db.tableNames()
+    console.log("tableNamesData", allTableExistsList)
+
+    //const tableData = allTableExistsList.includes(`website-${_id}`) ? ( await lance_db.openTable(`website-${_id}`, embedFunction) ) : ( await lance_db.createTable(`website-${_id}`, [data[0]], embedFunction) )
+    await lance_db.dropTable(`12website-${_id}`);
+    const tableData = await lance_db.createTable(`12website-${_id}`, data.slice(0, Math.min(batchSize, data.length)), embedFunction)
+    console.log("tableData", tableData)
     
     for (var i = batchSize; i < data.length; i += batchSize) {
-      await tbl.add(data.slice(i, Math.min(i + batchSize, data.length)))
+      await tableData.add(data.slice(i, Math.min(i + batchSize, data.length)))
+      console.log("batchSize i", i)
     }
   
-    console.log('Vectors inserted: ', data)
+    console.log('Vectors inserted: ', data.length, Array.isArray(data))
   
-    return {name: tbl.name, data}
+    return {name: tableData.name, data}
 }
   
 // Each article line has a small text column, we include previous lines in order to
 // have more context information when creating embeddings
-function contextualize(rows: Entry[], contextSize: number, groupColumn: string): EntryWithContext[] {
+export function contextualize(rows: Entry[], contextSize: number, groupColumn: string): EntryWithContext[] {
     const grouped: { [key: string]: any } = []
   
     rows.forEach(row => {
@@ -78,7 +84,7 @@ function contextualize(rows: Entry[], contextSize: number, groupColumn: string):
     return data
 }
 
-async function getEntriesFromLinks(links: string[]): Promise<Entry[]> {
+export async function getWebsiteUrlContent(links: string[]): Promise<Entry[]> {
     let allEntries: Entry[] = [];
 
     for (const link of links) {
@@ -112,7 +118,7 @@ async function getEntriesFromLinks(links: string[]): Promise<Entry[]> {
 
             allEntries = allEntries.concat(content);
 
-            console.log('allEntries.length:', allEntries.length)
+            //console.log('allEntries:', allEntries)
 
         } catch (error) {
             console.error(`Error processing ${link}:`, error);
@@ -122,9 +128,7 @@ async function getEntriesFromLinks(links: string[]): Promise<Entry[]> {
     return allEntries;
 }
 
-export async function getWebsiteUrlContent(WebsiteUrlList: string[]): Promise<Entry[]> {
-    const allEntries = await getEntriesFromLinks(WebsiteUrlList);
-
-    return allEntries;
+export async function getWebsiteUrlContext(links: string[]): Promise<Entry[]> {
+  const data = contextualize(await getWebsiteUrlContent(links), 1, 'link')
+  return data
 }
-  

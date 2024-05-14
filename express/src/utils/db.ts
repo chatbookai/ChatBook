@@ -320,7 +320,8 @@ export async function initChatBookDb() {
                 permission TEXT not null default '',
                 createTime TEXT not null default '',
                 folder TEXT not null default '',
-                userId INTEGER not null
+                userId INTEGER not null,
+                syncStatus INTEGER not null default 0
             );
         `);
         

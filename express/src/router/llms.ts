@@ -6,6 +6,9 @@
   import { getLLMSSetting, uploadfiles, uploadfilesInsertIntoDb, filterString } from '../utils/utils';
   import { outputImage, outputImageOrigin, outputAvatarForApp, outputAvatarForDataset, outputAudio, chatChatBaiduWenxin, chatChatGemini, chatChatGeminiMindMap, chatChatOpenAI, chatChatDeepSeek, chatKnowledgeOpenAI, GenereateImageUsingDallE2, GenereateAudioUsingTTS, parseFilesAndWeb, ChatApp, vectorDdProcess } from '../utils/llms';
   import { llms } from '../config';
+  import { ChatDatasetId } from '../utils/lancedb';
+
+  
 
   const app = express();
 
@@ -18,6 +21,15 @@
   app.get('/api/vectorDdProcess', async (req: Request, res: Response) => {
     vectorDdProcess();
     res.status(200).send("Execute finished, logs in the console or the log page");
+    res.end();
+  });
+
+  app.get('/api/dataset', async (req: Request, res: Response) => {
+
+    const messages = [{role: "user", content: "什么是chivesweave?"}]
+    const datasetId = "website-dMMHgv7ydA3UYV30a93mlnjI13Sblx4q"
+    const ChatDatasetIdData = await ChatDatasetId(messages, datasetId);
+    res.send(ChatDatasetIdData)
     res.end();
   });
   

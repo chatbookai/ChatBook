@@ -1,12 +1,13 @@
 import crypto from 'crypto';
 import { OpenAI } from "openai";
-import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
-import { PromptTemplate, ChatPromptTemplate } from "@langchain/core/prompts";
-import { LanceDB } from "@langchain/community/vectorstores/lancedb";
-import { TextLoader } from "langchain/document_loaders/fs/text";
+import { ChatOpenAI } from "@langchain/openai";
+import { PromptTemplate } from "@langchain/core/prompts";
 import { connect } from "vectordb";
 import { OpenAIEmbeddingFunction } from 'vectordb';
 import { load, type Element } from 'cheerio';
+
+import { Message as VercelChatMessage, StreamingTextResponse } from 'ai'
+import { BytesOutputParser, StringOutputParser } from '@langchain/core/output_parsers';
 
 import { DataDir } from './const';
 import { db, getDbRecord, getDbRecordALL } from './db'
@@ -151,4 +152,169 @@ export async function getWebsiteUrlContent(links: string[]): Promise<Entry[]> {
 export async function getWebsiteUrlContext(links: string[]): Promise<Entry[]> {
   const data = contextualize(await getWebsiteUrlContent(links), 1, 'link')
   return data
+}
+
+
+//检索数据
+
+const REPHRASE_TEMPLATE = `Rephrase the follow-up question to make it a standalone inquiry, maintaining its original language. You'll be provided with a conversation history and a follow-up question.
+
+Instructions:
+1. Review the conversation provided below, including both user and AI messages.
+2. Examine the follow-up question included in the conversation.
+3. Reconstruct the follow-up question to be self-contained, without requiring context from the previous conversation. Ensure it remains in the same language as the original.
+
+Conversation:
+###
+{chatHistory}
+###
+
+User's Follow-Up Question:
+### 
+{input}
+###
+
+Your Response:`
+
+const QA_TEMPLATE = `Based on the information provided below from a website, act as a guide to assist someone navigating through the website.
+
+Instructions:
+1. Review the conversation history and the contextual information extracted from the website.
+2. Assume the role of a helpful agent and respond to the user's input accordingly.
+3. Provide guidance, explanations, or assistance as needed, leveraging the website context to enhance your responses.
+
+Conversation History:
+###
+{chatHistory}
+###
+
+Context from Website:
+###
+{context}
+###
+
+User's Input: 
+###
+{input}
+###
+
+Your Response:`
+
+
+function formatMessage(message: VercelChatMessage) {
+    return `${message.role}: ${message.content}`;
+};
+
+async function rephraseInput(model: ChatOpenAI, chatHistory: string[], input: string) {
+    if (chatHistory.length === 0) return input;
+
+    const rephrasePrompt = PromptTemplate.fromTemplate(REPHRASE_TEMPLATE);
+
+    const stringOutputParser = new StringOutputParser();
+
+    const rephraseChain = rephrasePrompt.pipe(model).pipe(stringOutputParser)
+
+    return rephraseChain.invoke({
+        chatHistory: chatHistory.join('\n'),
+        input,
+    });
+}
+
+async function retrieveContext(query: string, table: string, k = 3): Promise<EntryWithContext[]> {
+    const db = await connect(DataDir + '/LanceDb/')
+    
+    const embedFunction = new OpenAIEmbeddingFunction('context', OPENAI_API_KEY)
+    
+    const tbl = await db.openTable(table, embedFunction)
+    
+    //console.log('Query: ', query)
+    
+    return await tbl
+      .search(query)
+      .select(['link', 'title', 'text', 'context'])
+      .limit(k)
+      .execute() as EntryWithContext[]
+}
+
+export async function ChatDatasetId(messages: any[], datasetId: string) {
+
+    const model = new ChatOpenAI({
+        modelName: "gpt-3.5-turbo",
+        temperature : Number(0.1),
+        openAIApiKey: OPENAI_API_KEY,
+        streaming: true,
+    });
+
+    const maxDocs = 3
+
+    const formattedPreviousMessages = messages.slice(0, -1).map(formatMessage);
+    
+    const currentMessageContent = messages[messages.length - 1].content;
+
+    //console.log("Current message:", currentMessageContent)
+
+    const rephrasedInput = await rephraseInput(model, formattedPreviousMessages, currentMessageContent);
+
+    const context = await (async () => {
+        const result = await retrieveContext(rephrasedInput, datasetId, maxDocs)
+        //console.log("result:", result, "\n")
+        return result.map(c => {
+            if (c.title) return `${c.title}\n${c.context}`
+            return c.context
+        }).join('\n\n---\n\n').substring(0, 3750) // need to make sure our prompt is not larger than max size
+    })()
+    //console.log("Context:", context)
+
+    // Chat models stream message chunks rather than bytes, so this
+    // output parser handles serialization and encoding.
+    
+    const rephrasePrompt = PromptTemplate.fromTemplate(QA_TEMPLATE);
+    const stringOutputParser = new StringOutputParser();
+    const rephraseChain = rephrasePrompt.pipe(model).pipe(stringOutputParser)
+    return rephraseChain.invoke({
+        chatHistory: formattedPreviousMessages.join('\n'),
+        context, 
+        input: rephrasedInput,
+    });
+
+    /*
+    const qaPrompt = PromptTemplate.fromTemplate(QA_TEMPLATE);
+    const outputParser = new BytesOutputParser();
+    const qaChain = qaPrompt.pipe(model).pipe(outputParser);
+    //console.log("qaChain:", qaChain, "\n")
+    const stream = await qaChain.stream({
+        chatHistory: formattedPreviousMessages.join('\n'),
+        context, 
+        input: rephrasedInput,
+    });
+    return new StreamingTextResponse(stream)
+    //以上代码可以在Nextjs中实现流式输出,如果要更换为Node Express中,要如何实现流式输出
+    */
+    /*
+    const qaPrompt = PromptTemplate.fromTemplate(QA_TEMPLATE);
+    const outputParser = new BytesOutputParser();
+    const qaChain = qaPrompt.pipe(model).pipe(outputParser);
+
+    res.setHeader('Content-Type', 'text/plain');
+    res.setHeader('Transfer-Encoding', 'chunked');
+
+    const stream = await qaChain.stream({
+        chatHistory: formattedPreviousMessages.join('\n'),
+        context, 
+        input: rephrasedInput,
+    });
+
+    stream.on('data', (chunk) => {
+        res.write(chunk);
+    });
+
+    stream.on('end', () => {
+        res.end();
+    });
+
+    stream.on('error', (err) => {
+        console.error(err);
+        res.status(500).end('An error occurred');
+    });
+    */
 }

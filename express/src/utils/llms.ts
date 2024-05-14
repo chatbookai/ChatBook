@@ -52,12 +52,12 @@ import { StringOutputParser } from '@langchain/core/output_parsers';
 
 import { DataDir } from './const';
 import { db, getDbRecord, getDbRecordALL } from './db'
-import { getLLMSSetting, log, isFile, formatDateString, enableDir, getNanoid } from './utils'
+import { getLLMSSetting, log, isFile, formatDateString, enableDir, getNanoid, writeFile } from './utils'
 
 import { LanceDB } from "@langchain/community/vectorstores/lancedb";
 import { connect } from "vectordb";
 
-import { createEmbeddingsTable, getWebsiteUrlContext } from './lancedb';
+import { createEmbeddingsFromList, getWebsiteUrlContext, Entry, EntryWithContext } from './lancedb';
 
 
 //.ENV
@@ -865,141 +865,136 @@ let ChatBaiduWenxinModel: any = null
   }
 
   //此处只做数据转文本操作, 向量化数据在另外一个函数里面.
-  export async function parseFiles() {
+  export async function parseFilesAndWeb() {
     try {
-      const RecordsAll: any[] = await getDbRecordALL(`SELECT * from collection where id = '36' and status = '0' order by id asc limit 1`) as any[];
+
+      const RecordsAll: any[] = await getDbRecordALL(`SELECT * from collection where status = '0' order by id asc limit 10`) as any[];
       await Promise.all(RecordsAll.map(async (CollectionItem: any)=>{
         
-        const filePath = DataDir + '/uploadfiles/' + CollectionItem.newName;
-        if(CollectionItem && CollectionItem.type == 'File' && CollectionItem.suffixName == '.pdf' && isFile(filePath))  {
-          const LoaderData = new PDFLoader(filePath);
-          const rawDoc = await LoaderData.load();
-          const textSplitter = new RecursiveCharacterTextSplitter({
-            chunkSize: 1000,
-            chunkOverlap: 200,
-          });
-          const SplitterDocs = await textSplitter.splitDocuments(rawDoc);
-          console.log("PDFLoader SplitterDocs", SplitterDocs)
-        }
-
-        else if(CollectionItem && CollectionItem.type == 'File' && CollectionItem.suffixName == '.csv' && isFile(filePath))  {
-          const LoaderData = new CSVLoader(filePath);
-          const rawDoc = await LoaderData.load();
-          const textSplitter = new RecursiveCharacterTextSplitter({
-            chunkSize: 1000,
-            chunkOverlap: 200,
-          });
-          const SplitterDocs = await textSplitter.splitDocuments(rawDoc);
-          console.log("CSVLoader SplitterDocs", SplitterDocs)
-        }
-
-        else if(CollectionItem && CollectionItem.type == 'Web' && CollectionItem.name && CollectionItem.name.trim().startsWith('http'))  {
+        if(CollectionItem && CollectionItem.type == 'Web' && CollectionItem.name && CollectionItem.name.trim().startsWith('http'))  {
           const getWebsiteUrlContextData = await getWebsiteUrlContext([CollectionItem.name.trim()]);
-          console.log('getWebsiteUrlContextData docs', getWebsiteUrlContextData);
+          //console.log('getWebsiteUrlContextData docs', getWebsiteUrlContextData);
+          const UpdateFileParseStatus = db.prepare('update collection set status = ?, content = ? where id = ?');
+          UpdateFileParseStatus.run(1, JSON.stringify(getWebsiteUrlContextData) ,CollectionItem.id);
+          UpdateFileParseStatus.finalize();
         }
-  
+        else if(CollectionItem && CollectionItem.type == 'File') {
+          const filePath = DataDir + '/uploadfiles/' + CollectionItem.newName;
+          let LoaderData: any = null
+          if(CollectionItem.suffixName == '.pdf' && isFile(filePath))  {
+            LoaderData = new PDFLoader(filePath);
+          }
+          if(CollectionItem.suffixName == '.csv' && isFile(filePath))  {
+            LoaderData = new CSVLoader(filePath);
+          }
+          if(CollectionItem.suffixName == '.txt' && isFile(filePath))  {
+            LoaderData = new TextLoader(filePath);
+          }
+          if(LoaderData)  {
+            const rawDoc = await LoaderData.load();
+            const textSplitter = new RecursiveCharacterTextSplitter({
+              chunkSize: 1000,
+              chunkOverlap: 200,
+            });
+            const SplitterDocs = await textSplitter.splitDocuments(rawDoc);
+            //console.log("PDFLoader SplitterDocs", SplitterDocs)
+            const filePathJson = DataDir + '/parsedfiles/' + CollectionItem.newName + '.json';
+            fs.writeFileSync(filePathJson, JSON.stringify(SplitterDocs));
+            const UpdateFileParseStatus = db.prepare('update collection set status = ?, content = ? where id = ?');
+            UpdateFileParseStatus.run(1, filePathJson, CollectionItem.id);
+            UpdateFileParseStatus.finalize();
+            const UpdateDatasetStatus = db.prepare('update dataset set syncStatus = ? where _id = ?');
+            UpdateDatasetStatus.run(1, CollectionItem.datasetId);
+            UpdateDatasetStatus.finalize();
+            const destinationFilePath = path.join(DataDir + '/parsedfiles/', CollectionItem.newName);
+            console.log("destinationFilePath", destinationFilePath)
+            fs.rename(DataDir + '/uploadfiles/' + CollectionItem.newName, destinationFilePath, (err: any) => {
+              if (err) {
+                console.log('parseFilesAndWeb Error moving file:', err, CollectionItem.newName);
+              } else {
+                console.log('parseFilesAndWeb File moved successfully.', CollectionItem.newName);
+              }
+            });
+          }
+          else {
+            console.log('Not support file type: ', CollectionItem.suffixName);
+          }
+        }
+        else {
+          console.log('Not a File & Web: ', CollectionItem.name);
+        }
+
       }))
 
     } catch (error: any) {
-      console.log('parseFiles Failed to ingest your data', error);
+      console.log('parseFilesAndWeb Failed to ingest your data', error);
     }
   }
 
-  export async function parseFiles1() {
+  export async function vectorDdProcess() {
     try {
-      const RecordsAll: any[] = await getDbRecordALL(`SELECT * from collection where status = '1' and type ='Web' order by id asc limit 1`) as any[];
-      await Promise.all(RecordsAll.map(async (CollectionItem: any)=>{
-        if(OPENAI_API_KEY) {
-          try{
-            ChatOpenAIModel = new ChatOpenAI({ 
-              modelName: "gpt-3.5-turbo",
-              openAIApiKey: OPENAI_API_KEY, 
-              temperature: Number(0.1),
-             });
-          }
-          catch(Error: any) {
-            log('parseFiles', 'parseFiles', 'parseFiles', "parseFiles Error", Error)
-          }
+      const RecordsAll: any[] = await getDbRecordALL(`SELECT * from dataset where syncStatus = '1' limit 1`) as any[];
+      await Promise.all(RecordsAll.map(async (DatasetItem: any)=>{
+        
+        const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from collection where datasetId = ? and status = ? ", [DatasetItem._id, 0]);
+        
+        console.log("Records", Records)
+        if(Records && Records.NUM > 0)    {
+          const UpdateFileParseStatus = db.prepare('update dataset set syncStatus = ? where id = ?');
+          UpdateFileParseStatus.run(0, DatasetItem.id);
+          UpdateFileParseStatus.finalize();
         }
-
-        const Url = CollectionItem.name
-        if(Url && Url.trim().startsWith('http'))  {
-          const createEmbeddingsTableResult: any = await createEmbeddingsTable([Url.trim()], CollectionItem.datasetId, CollectionItem._id);
-          //console.log("createEmbeddingsTableResult", createEmbeddingsTableResult.data)
-          if(createEmbeddingsTableResult && createEmbeddingsTableResult.data) {
-            const UpdateFileParseStatus = db.prepare('update collection set status = ?, content = ? where id = ?');
-            UpdateFileParseStatus.run(1, JSON.stringify(createEmbeddingsTableResult.data) ,CollectionItem.id);
-            UpdateFileParseStatus.finalize();
+        else {
+          //开始处理向量化,每一个表只能新建立一次
+          if(OPENAI_API_KEY) {
+            try{
+              ChatOpenAIModel = new ChatOpenAI({ 
+                modelName: "gpt-3.5-turbo",
+                openAIApiKey: OPENAI_API_KEY, 
+                temperature: Number(0.1),
+               });
+            }
+            catch(Error: any) {
+              log('parseFilesAndWeb', 'parseFilesAndWeb', 'parseFilesAndWeb', "parseFilesAndWeb Error", Error)
+            }
           }
-        }
+          if(ChatOpenAIModel)   {
+            const collectionList: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from collection where datasetId = ?`, [DatasetItem._id]) as any[];
+            //console.log("collectionList", collectionList)
+            const LanceDbData: EntryWithContext[] = [];
+            collectionList.map((CollectionItem: any, CollectionIndex: number)=>{
+              if(CollectionItem.type == 'File' && isFile(CollectionItem.content)) {
+                const FileContent = fs.readFileSync(CollectionItem.content, 'utf8');
+                const Content = JSON.parse(FileContent)
+                Content.map((ContentItem: any, ContentIndex: number)=>{
+                  //console.log("ContentItem", ContentItem.metadata.loc)
+                  //console.log("ContentItem", ContentItem.metadata.pdf)
+                  //console.log("ContentItem", ContentItem.metadata.source)
+                  LanceDbData.push({
+                    link: ContentItem.metadata.source,
+                    title: ContentItem.metadata.source,
+                    text: ContentItem.pageContent,
+                    context: ContentItem.pageContent,
+                  } as EntryWithContext)
+                })
+              }
+            })
+            const createEmbeddingsFromListData = await createEmbeddingsFromList(LanceDbData, DatasetItem._id)
+            if(createEmbeddingsFromListData)  {
+              const UpdateFileParseStatus = db.prepare('update dataset set syncStatus = ? where id = ?');
+              UpdateFileParseStatus.run(2, DatasetItem.id);
+              UpdateFileParseStatus.finalize();
+              console.log("完成数据向量化操作:", createEmbeddingsFromListData)
+            }
+          }
   
-        if(ChatOpenAIModel && OPENAI_API_KEY && OPENAI_API_KEY != "" && false)    {
-            const pdfFilePath = DataDir + '/uploadfiles/' + CollectionItem.newName;
-            if(isFile(pdfFilePath))   {
-              const pdfLoader = new PDFLoader(pdfFilePath);
-              const rawDoc = await pdfLoader.load();
               
-              const textSplitter = new RecursiveCharacterTextSplitter({
-                chunkSize: 1000,
-                chunkOverlap: 200,
-              });
-
-              const SplitterDocs = await textSplitter.splitDocuments(rawDoc);
-              //console.log("pdfFilePath SplitterDocs", SplitterDocs)
-
-              const lance_db = await connect(DataDir + '/LanceDb/');
-              const table = await lance_db.createTable("vectors_" + getNanoid(32), [
-                { vector: Array(1536), text: "sample", source: "a" },
-              ]);
-              const vectorStore1 = await LanceDB.fromTexts(
-                ["Hello world", "Bye bye", "hello nice world"],
-                [{ id: 2 }, { id: 1 }, { id: 3 }],
-                new OpenAIEmbeddings(),
-                { table }
-              );
-              console.log("vectorStore1", vectorStore1);
-              const resultOne1 = await vectorStore1.similaritySearch("hello world", 1);
-              console.log("resultOne1", resultOne1);
-              return
-
-              const vectorStore = await LanceDB.fromDocuments(
-                SplitterDocs,
-                new OpenAIEmbeddings({openAIApiKey: OPENAI_API_KEY}),
-                { table }
-              );
-              const resultOne = await vectorStore.similaritySearch("你是谁?", 3);
-              console.log("resultOne:", resultOne);
-
-              /*
-              const UpdateFileParseStatus = db.prepare('update files set status = ? where id = ?');
-              UpdateFileParseStatus.run(1, CollectionItem.id);
-              UpdateFileParseStatus.finalize();
-              const destinationFilePath = path.join(DataDir + '/parsedfiles/', CollectionItem.newName);
-              console.log("destinationFilePath", destinationFilePath)
-              fs.rename(DataDir + '/uploadfiles/' + CollectionItem.newName, destinationFilePath, (err: any) => {
-                if (err) {
-                  console.log('parseFiles Error moving file:', err, CollectionItem.newName);
-                } else {
-                  console.log('parseFiles File moved successfully.', CollectionItem.newName);
-                }
-              });
-              console.log('parseFiles change the files status finished', CollectionItem);
-              */
-            }
-            else {
-
-              //File Not Exist
-              const UpdateFileParseStatus = db.prepare('update files set status = ? where id = ?');
-              UpdateFileParseStatus.run(-1, CollectionItem.id);
-              UpdateFileParseStatus.finalize();
-            }
-            
-            return
         }
+        
       }))
 
     } catch (error: any) {
-      console.log('parseFiles Failed to ingest your data', error);
+      console.log('vectorDdProcess Failed to ingest your data', error);
     }
   }
 

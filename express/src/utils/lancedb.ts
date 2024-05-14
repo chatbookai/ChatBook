@@ -16,19 +16,39 @@ dotenv.config();
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? ''
 
-interface Entry {
+export interface Entry {
     [x: string]: any
     link: string
     title: string;
     text: string
 }
 
-interface EntryWithContext {
+export interface EntryWithContext {
     [x: string]: any
     link: string
-    title: string;
+    title: string
     text: string
     context: string
+}
+
+export async function createEmbeddingsFromList(data: EntryWithContext[], datasetId: string) {
+  const lance_db = await connect(DataDir + '/LanceDb/datasetId_' + datasetId);
+
+  const embedFunction = new OpenAIEmbeddingFunction('context', OPENAI_API_KEY)
+
+  const allTableExistsList: string[] = await lance_db.tableNames()
+  console.log("createEmbeddingsFromList allTableExistsList", allTableExistsList)
+
+  if(allTableExistsList.includes(`website-${datasetId}`))  {
+    await lance_db.dropTable(`website-${datasetId}`);
+    //console.log("createEmbeddingsFromList dropTable ------------", `website-${datasetId}`)
+  }
+  const tableData = await lance_db.createTable(`website-${datasetId}`, data, embedFunction)
+  console.log("createEmbeddingsFromList tableData", tableData)
+  
+  console.log('createEmbeddingsFromList Vectors inserted: ', data.length, Array.isArray(data))
+
+  return tableData?.name
 }
 
 export async function createEmbeddingsTable(WebsiteUrlList: string[], datasetId: string, _id: string) {
@@ -43,8 +63,8 @@ export async function createEmbeddingsTable(WebsiteUrlList: string[], datasetId:
     console.log("tableNamesData", allTableExistsList)
 
     //const tableData = allTableExistsList.includes(`website-${_id}`) ? ( await lance_db.openTable(`website-${_id}`, embedFunction) ) : ( await lance_db.createTable(`website-${_id}`, [data[0]], embedFunction) )
-    await lance_db.dropTable(`12website-${_id}`);
-    const tableData = await lance_db.createTable(`12website-${_id}`, data.slice(0, Math.min(batchSize, data.length)), embedFunction)
+    //await lance_db.dropTable(`website-${_id}`);
+    const tableData = await lance_db.createTable(`website-${_id}`, data, embedFunction)
     console.log("tableData", tableData)
     
     for (var i = batchSize; i < data.length; i += batchSize) {

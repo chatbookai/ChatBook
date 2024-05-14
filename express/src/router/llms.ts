@@ -4,13 +4,19 @@
   import { checkUserToken } from '../utils/user';
 
   import { getLLMSSetting, uploadfiles, uploadfilesInsertIntoDb, filterString } from '../utils/utils';
-  import { outputImage, outputImageOrigin, outputAvatarForApp, outputAvatarForDataset, outputAudio, chatChatBaiduWenxin, chatChatGemini, chatChatGeminiMindMap, chatChatOpenAI, chatChatDeepSeek, chatKnowledgeOpenAI, GenereateImageUsingDallE2, GenereateAudioUsingTTS, parseFiles, ChatApp } from '../utils/llms';
+  import { outputImage, outputImageOrigin, outputAvatarForApp, outputAvatarForDataset, outputAudio, chatChatBaiduWenxin, chatChatGemini, chatChatGeminiMindMap, chatChatOpenAI, chatChatDeepSeek, chatKnowledgeOpenAI, GenereateImageUsingDallE2, GenereateAudioUsingTTS, parseFilesAndWeb, ChatApp, vectorDdProcess } from '../utils/llms';
   import { llms } from '../config';
 
   const app = express();
 
   app.get('/api/parsefiles', async (req: Request, res: Response) => {
-    parseFiles();
+    parseFilesAndWeb();
+    res.status(200).send("Execute finished, logs in the console or the log page");
+    res.end();
+  });
+
+  app.get('/api/vectorDdProcess', async (req: Request, res: Response) => {
+    vectorDdProcess();
     res.status(200).send("Execute finished, logs in the console or the log page");
     res.end();
   });

@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 import { join } from 'path';
 
 import { initChatBookDbExec } from './utils/db';
-import { parseFiles } from './utils/llms';
+import { parseFilesAndWeb, vectorDdProcess } from './utils/llms';
 
 //import { downloadVideoFromAPI } from './utils/Backup/stability';
 
@@ -35,7 +35,8 @@ initChatBookDbExec()
 //Schedule Task for Parse Upload Files
 cron.schedule('*/10 * * * *', () => {
   console.log('Task Begin !');
-  parseFiles();
+  parseFilesAndWeb();
+  vectorDdProcess();
   console.log('Task End !');
   //downloadVideoFromAPI();
 });

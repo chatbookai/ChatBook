@@ -28,7 +28,6 @@ import { createOpenAIFunctionsAgent } from "langchain/agents";
 import { AgentExecutor } from "langchain/agents";
 
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
-import { Pinecone } from '@pinecone-database/pinecone';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
 import { TextLoader } from 'langchain/document_loaders/fs/text';
 import { DocxLoader } from 'langchain/document_loaders/fs/docx';
@@ -67,9 +66,6 @@ dotenv.config();
 
 type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
-const PINECONE_API_KEY = process.env.PINECONE_API_KEY;
-const PINECONE_INDEX_NAME = process.env.PINECONE_INDEX_NAME;
-const PINECONE_NAME_SPACE = process.env.PINECONE_NAME_SPACE;
 const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
@@ -91,7 +87,7 @@ let ChatBaiduWenxinModel: any = null
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
     const OPENAI_Temperature = getLLMSSettingData.Temperature;
-    if(OPENAI_API_KEY && PINECONE_API_KEY) {
+    if(OPENAI_API_KEY) {
       if(OPENAI_API_BASE && OPENAI_API_BASE !='' && OPENAI_API_BASE.length > 16) {
         process.env.OPENAI_BASE_URL = OPENAI_API_BASE
         process.env.OPENAI_API_KEY = OPENAI_API_KEY
@@ -101,7 +97,6 @@ let ChatBaiduWenxinModel: any = null
         openAIApiKey: OPENAI_API_KEY, 
         temperature: Number(OPENAI_Temperature)
        });
-      pinecone = new Pinecone({apiKey: PINECONE_API_KEY});
     }
   }
 
@@ -121,12 +116,12 @@ let ChatBaiduWenxinModel: any = null
         if(modelList && modelList[0] && modelList[0]['value']) {
           const modelName = modelList[0]['value']
           if(datasetId && Array.isArray(datasetId) && datasetId.length>0) {
-            await chatChatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId);
+            await chatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId);
           }
           else {
             switch(modelName) {
               case 'gpt-3.5-turbo':
-                await chatChatOpenAI(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
+                await chatOpenAI(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
                 break;
               case 'gemini-pro':
                 await chatChatDeepSeek(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
@@ -151,7 +146,7 @@ let ChatBaiduWenxinModel: any = null
 
   }
 
-  export async function chatChatOpenAI(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number) {
+  export async function chatOpenAI(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number) {
     ChatBookOpenAIStreamResponse = ''
     const startTime = performance.now()
     if(OPENAI_API_KEY) {
@@ -172,12 +167,12 @@ let ChatBaiduWenxinModel: any = null
          });    
       }
       catch(Error: any) {
-        log('chatChatOpenAI', 'chatChatOpenAI', 'chatChatOpenAI', "chatChatOpenAI Error", Error)
+        log('chatOpenAI', 'chatOpenAI', 'chatOpenAI', "chatOpenAI Error", Error)
         return 
       }
     }
     else {
-      res.write("Not set API_KEY in chatChatOpenAI");
+      res.write("Not set API_KEY in chatOpenAI");
       res.end();
       return 
     }
@@ -207,17 +202,17 @@ let ChatBaiduWenxinModel: any = null
         const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (_id, send, Received, userId, timestamp, source, history, responseTime, appId, publishId) VALUES (?,?,?,?,?,?,?,?,?,?)');
         insertChatLog.run(_id, question, ChatBookOpenAIStreamResponse, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), responseTime, appId, publishId);
         insertChatLog.finalize();
-        console.log("chatChatOpenAI: ", temperature, question, " => ", ChatBookOpenAIStreamResponse)
+        console.log("chatOpenAI: ", temperature, question, " => ", ChatBookOpenAIStreamResponse)
       }
     }
     catch(error: any) {
-      console.log("chatChatOpenAI error", error.message)
+      console.log("chatOpenAI error", error.message)
       res.write(error.message)
     }    
     res.end();
   }
 
-  export async function chatChatOpenAIDataset(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number, datasetId: string[]) {
+  export async function chatOpenAIDataset(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number, datasetId: string[]) {
     ChatBookOpenAIStreamResponse = ''
     const startTime = performance.now()
     if(OPENAI_API_KEY) {
@@ -290,11 +285,11 @@ let ChatBaiduWenxinModel: any = null
         const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (_id, send, Received, userId, timestamp, source, history, responseTime, appId, publishId) VALUES (?,?,?,?,?,?,?,?,?,?)');
         insertChatLog.run(_id, question, ChatBookOpenAIStreamResponse, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), responseTime, appId, publishId);
         insertChatLog.finalize();
-        console.log("chatChatOpenAIDataset: ", temperature, question, " => ", ChatBookOpenAIStreamResponse)
+        console.log("chatOpenAIDataset: ", temperature, question, " => ", ChatBookOpenAIStreamResponse)
       }
     }
     catch(error: any) {
-      console.log("chatChatOpenAIDataset error", error.message)
+      console.log("chatOpenAIDataset error", error.message)
       res.write(error.message)
     }    
     res.end();
@@ -396,85 +391,6 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function chatKnowledgeOpenAI(res: Response, userId: number, question: string, history: any[], appId: number) {
-    const datasetId = ''
-    await initChatBookOpenAIStream(res, datasetId)
-    if(!ChatOpenAIModel) {
-      res.end();
-      return
-    }
-    const CONDENSE_TEMPLATE: string | unknown = '';
-    const QA_TEMPLATE: string | unknown = '';
-
-    if (!question) {
-      return { message: 'No question in the request' };
-    }
-  
-    // OpenAI recommends replacing newlines with spaces for best results
-    const sanitizedQuestion = question.trim().replaceAll('\n', ' ');
-    /*
-    try {
-      
-      const index = pinecone.Index(PINECONE_INDEX_NAME);
-  
-
-      const PINECONE_NAME_SPACE_USE = PINECONE_NAME_SPACE + '_' + String(datasetId)
-
-      const embeddings = new OpenAIEmbeddings({openAIApiKey:getLLMSSettingData.OPENAI_API_KEY});
-      
-      const vectorStore = await PineconeStore.fromExistingIndex(
-        embeddings,
-        {
-          pineconeIndex: index,
-          textKey: 'text',
-          namespace: PINECONE_NAME_SPACE_USE,
-        },
-      );
-      
-      // Use a callback to get intermediate sources from the middle of the chain
-      let resolveWithDocuments: any;
-      const documentPromise = new Promise((resolve) => {
-        resolveWithDocuments = resolve;
-      });
-
-      const retriever = vectorStore.asRetriever({
-        callbacks: [
-          {
-            handleRetrieverEnd(documents) {
-              resolveWithDocuments(documents);
-            },
-          },
-        ],
-      });
-
-      const chain = makeChainOpenAI(retriever, String(CONDENSE_TEMPLATE), String(QA_TEMPLATE) );
-
-      const pastMessages = history.map((message) => {
-                                    return [`Human: ${message[0]}`, `Assistant: ${message[1]}`].join('\n');
-                                  }).join('\n');
-  
-      // Ask a question using chat history
-      const response = await chain.invoke({
-        question: sanitizedQuestion,
-        chat_history: pastMessages,
-      });
-  
-      const sourceDocuments = await documentPromise;
-
-      const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (send, Received, userId, timestamp, source, history, appId) VALUES (?,?,?,?,?,?,?)');
-      insertChatLog.run(question, response, userId, Date.now(), JSON.stringify(sourceDocuments), JSON.stringify(history), appId);
-      insertChatLog.finalize();
-      res.end();
-
-      return { text: response, sourceDocuments };
-    } 
-    catch (error: any) {
-
-      return { error: error.message || 'Something went wrong' };
-    }
-    */
-  }
-
   export function makeChainOpenAI(retriever: any, CONDENSE_TEMPLATE: string, QA_TEMPLATE: string) {
     const condenseQuestionPrompt = ChatPromptTemplate.fromTemplate(CONDENSE_TEMPLATE);
     const answerPrompt = ChatPromptTemplate.fromTemplate(QA_TEMPLATE);
@@ -529,7 +445,7 @@ let ChatBaiduWenxinModel: any = null
     getLLMSSettingData = await getLLMSSetting(datasetId);
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
-    if(OPENAI_API_KEY && PINECONE_API_KEY) {
+    if(OPENAI_API_KEY) {
       process.env.GOOGLE_API_KEY = OPENAI_API_KEY
       ChatGeminiModel = new ChatGoogleGenerativeAI({
           modelName: getLLMSSettingData.ModelName ?? "gemini-pro",
@@ -541,7 +457,6 @@ let ChatBaiduWenxinModel: any = null
             },
           ],
       });
-      pinecone = new Pinecone({apiKey: PINECONE_API_KEY,});
     }
     else {
       res.write("Not set API_KEY");
@@ -630,7 +545,7 @@ let ChatBaiduWenxinModel: any = null
     const BAIDU_API_KEY = getLLMSSettingData.OPENAI_API_KEY ?? "1AWXpm1Cd8lbxmAaFoPR0dNx";
     const BAIDU_SECRET_KEY = getLLMSSettingData.OPENAI_API_BASE ?? "TQy5sT9Mz4xKn0tR8h7W6LxPWIUNnXqq";
     const OPENAI_Temperature = 1;
-    if(BAIDU_API_KEY && PINECONE_API_KEY) {
+    if(BAIDU_API_KEY) {
       process.env.BAIDU_API_KEY = BAIDU_API_KEY
       process.env.BAIDU_SECRET_KEY = BAIDU_SECRET_KEY
       try {
@@ -644,7 +559,6 @@ let ChatBaiduWenxinModel: any = null
       catch(error) {
         console.log("initChatBookBaiduWenxinStream ChatBaiduWenxinModel:", error)
       }
-      pinecone = new Pinecone({apiKey: PINECONE_API_KEY,});
     }
     else {
       res.write("Not set API_KEY");
@@ -699,7 +613,7 @@ let ChatBaiduWenxinModel: any = null
     getLLMSSettingData = await getLLMSSetting(datasetId);    
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE ?? "https://api.openai.com/v1";
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;    
-    if(OPENAI_API_KEY && PINECONE_API_KEY) {
+    if(OPENAI_API_KEY) {
       const requestData = {
         model: 'dall-e-2',
         prompt: question,

@@ -1,6 +1,6 @@
 
 export type AppSimpleEditFormType = {
-  aiSettings: {
+  AiSettings: {
     model: string;
     systemPrompt?: string | undefined;
     temperature: number;
@@ -258,7 +258,7 @@ export type SettingAIDataType = {
 
 /* ai chat modules props */
 export type AIChatModuleProps = {
-  [ModuleInputKeyEnum.aiModel]: string;
+  [ModuleInputKeyEnum.AiModel]: string;
   [ModuleInputKeyEnum.aiSystemPrompt]?: string;
   [ModuleInputKeyEnum.aiChatTemperature]: number;
   [ModuleInputKeyEnum.aiChatMaxToken]: number;

@@ -68,7 +68,7 @@ const LLMModel = (props: any) => {
                 <Grid item xs={12}>
                     <Grid container alignItems="center">
                         <Grid item xs={4}>
-                            <InputLabel id='demo-dialog-select-label'>{t("aiModel")}</InputLabel>
+                            <InputLabel id='demo-dialog-select-label'>{t("AiModel")}</InputLabel>
                         </Grid>
                         <Grid item xs={8} sx={{pt: 6, pl: 2}}>
                             <Select 

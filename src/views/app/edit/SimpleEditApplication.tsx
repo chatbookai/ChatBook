@@ -72,7 +72,7 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
     const ChatNodeInitial: any = app.modules[2].data.inputs
     if(ChatNodeInitial && t!=null) {
       ChatNodeInitial.map((itemNode: any)=>{
-        if(itemNode.type == 'aiModel') {
+        if(itemNode.type == 'AiModel') {
           console.log("setLLMModel Default", itemNode)
           setLLMModel( () => ({ ...itemNode.LLMModel, LLMModelOpen: false }) );
         }
@@ -173,7 +173,7 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
               {chatNodeData && chatNodeData.inputs && chatNodeData.inputs.length>0 && chatNodeData.inputs.map((item: any, index: number) => {
 
                   return (<Fragment key={`inputs_${index}`}>
-                          {item.type == 'aiModel' ?
+                          {item.type == 'AiModel' ?
                           <Fragment>
                             <Grid item sx={{pt:4}} xs={12}>
                               <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
@@ -242,7 +242,7 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
                           :
                           null}
 
-                          {item.type == 'textarea' ?
+                          {item.type == 'Textarea' ?
                           <Fragment>
                             <Grid item sx={{pt:4}} xs={12}>
                               <Box display="flex" mb={1} alignItems="center">
@@ -275,7 +275,7 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
                           :
                           null}
 
-                          {item.type == 'numberInput' ?
+                          {item.type == 'NumberInput' ?
                           <Fragment>
                             <Grid item sx={{pt:4}} xs={12}>
                               <Box display="flex" mb={1} alignItems="center">
@@ -320,11 +320,11 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
 
                 return (<Fragment key={`inputs_${index}`}>
 
-                        {item.key == 'welcomeText' ?
+                        {item.key == 'WelcomeText' ?
                         <Fragment>
                         <Grid item sx={{pt:4}} xs={12}>
                             <Box display="flex" mb={1} alignItems="center">
-                            <Avatar src={'/icons/core/modules/welcomeText.svg'} variant="rounded" sx={{ width: '32px', height: '32px', '& svg':  {
+                            <Avatar src={'/icons/core/modules/WelcomeText.svg'} variant="rounded" sx={{ width: '32px', height: '32px', '& svg':  {
                                                                 stroke: '#E74694'
                                                                 } }} />
                             <Typography sx={{pl: 2}}>{t(item.label) as string}</Typography>
@@ -354,7 +354,7 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
                         :
                         null}
 
-                        {item.key == 'variables' ?
+                        {item.key == 'Variables' ?
                         <Fragment>
                         <Grid item sx={{pt: 7, pb: 1}} xs={8}>
                             <Box display="flex" mb={1} alignItems="center">
@@ -384,7 +384,7 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
                         :
                         null}
 
-                        {item.key == 'questionGuide' ?
+                        {item.key == 'QuestionGuide' ?
                         <Fragment>
                         <Grid item xs={8}>
                             <Box display="flex" mb={1} alignItems="center">
@@ -422,7 +422,7 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
                         :
                         null}
 
-                        {item.key == 'tts' ?
+                        {item.key == 'TTS' ?
                         <Fragment>
                         <Grid item xs={8}>
                             <Box display="flex" mb={1} alignItems="center">

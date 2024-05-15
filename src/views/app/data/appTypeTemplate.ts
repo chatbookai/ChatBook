@@ -104,7 +104,7 @@ export const appTypeTemplate: {[key: string]: any[]} = {
 
 "System input module": [
     {
-        "templateType": "systemInput",
+        "templateType": "SystemInput",
         "flowType": "questionInput",
         "avatar": "/imgs/module/userChatInput.png",
         "name": "Chat entrance",

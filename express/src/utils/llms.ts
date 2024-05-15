@@ -112,7 +112,7 @@ let ChatBaiduWenxinModel: any = null
     if(app && app.modules) {
       const AiNode = app.modules.filter((item: any)=>item.type == 'chatNode')
       if(AiNode && AiNode[0] && AiNode[0].data && AiNode[0].data.inputs) {
-        const modelList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'aiModel')
+        const modelList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'AiModel')
         if(modelList && modelList[0] && modelList[0]['value']) {
           const modelName = modelList[0]['value']
           if(datasetId && Array.isArray(datasetId) && datasetId.length>0) {

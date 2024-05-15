@@ -22,7 +22,7 @@ export const allNodesData: any = {
               "intro": "userGuideTip",
               "inputs": [
                   {
-                      "key": "welcomeText",
+                      "key": "WelcomeText",
                       "type": "hidden",
                       "valueType": "string",
                       "label": "WelcomeText",
@@ -40,7 +40,7 @@ export const allNodesData: any = {
                       "showTargetInPlugin": false
                   },
                   {
-                      "key": "questionGuide",
+                      "key": "QuestionGuide",
                       "valueType": "boolean",
                       "type": "switch",
                       "label": "QuestionGuide",
@@ -69,7 +69,7 @@ export const allNodesData: any = {
           "type": "questionInput",
           "data": {
               "id": "questionInputNodeInitial_1",
-              "templateType": "systemInput",
+              "templateType": "SystemInput",
               "flowType": "questionInput",
               "avatar": "/imgs/module/userChatInput.svg",
               "name": "Chat entrance",
@@ -77,7 +77,7 @@ export const allNodesData: any = {
               "inputs": [
                   {
                       "key": "userChatInput",
-                      "type": "systemInput",
+                      "type": "SystemInput",
                       "valueType": "string",
                       "label": "user question",
                       "showTargetInApp": false,
@@ -128,9 +128,9 @@ export const allNodesData: any = {
                       "showTargetInPlugin": true
                   },
                   {
-                      "key": "aiModel",
-                      "type": "aiModel",
-                      "label": "aiModel",
+                      "key": "AiModel",
+                      "type": "AiModel",
+                      "label": "AiModel",
                       "required": true,
                       "valueType": "string",
                       "showTargetInApp": false,
@@ -200,7 +200,7 @@ export const allNodesData: any = {
                   },
                   {
                       "key": "systemPrompt",
-                      "type": "textarea",
+                      "type": "Textarea",
                       "max": 3000,
                       "valueType": "string",
                       "label": "NodeChatPrompt",
@@ -211,7 +211,7 @@ export const allNodesData: any = {
                   },
                   {
                       "key": "history",
-                      "type": "numberInput",
+                      "type": "NumberInput",
                       "label": "chat history",
                       "required": true,
                       "min": 0,
@@ -223,7 +223,7 @@ export const allNodesData: any = {
                   },
                   {
                       "key": "userChatInput",
-                      "type": "systemInput",
+                      "type": "SystemInput",
                       "label": "",
                       "required": true,
                       "valueType": "string",
@@ -241,8 +241,8 @@ export const allNodesData: any = {
                       "showTargetInPlugin": true
                   },
                   {
-                      "key": "aiSettings",
-                      "type": "aiSettings",
+                      "key": "AiSettings",
+                      "type": "AiSettings",
                       "label": "",
                       "valueType": "any",
                       "showTargetInApp": false,
@@ -313,7 +313,7 @@ export const allNodesData: any = {
                 },
                 {
                   "key": "text",
-                  "type": "textarea",
+                  "type": "Textarea",
                   "valueType": "any",
                   "label": "Response content",
                   "description": "Response content help",
@@ -362,9 +362,9 @@ export const allNodesData: any = {
                   "connected": false
                 },
                 {
-                  "key": "aiModel",
-                  "type": "aiModel",
-                  "label": "aiModel",
+                  "key": "AiModel",
+                  "type": "AiModel",
+                  "label": "AiModel",
                   "required": true,
                   "valueType": "string",
                   "showTargetInApp": false,
@@ -387,7 +387,7 @@ export const allNodesData: any = {
                 },
                 {
                   "key": "systemPrompt",
-                  "type": "textarea",
+                  "type": "Textarea",
                   "max": 3000,
                   "valueType": "string",
                   "label": "Background",
@@ -399,7 +399,7 @@ export const allNodesData: any = {
                 },
                 {
                   "key": "history",
-                  "type": "numberInput",
+                  "type": "NumberInput",
                   "label": "chat history",
                   "required": true,
                   "min": 0,
@@ -412,7 +412,7 @@ export const allNodesData: any = {
                 },
                 {
                   "key": "userChatInput",
-                  "type": "systemInput",
+                  "type": "SystemInput",
                   "label": "",
                   "required": true,
                   "valueType": "string",
@@ -505,9 +505,9 @@ export const allNodesData: any = {
                   "connected": false
                 },
                 {
-                  "key": "aiModel",
-                  "type": "aiModel",
-                  "label": "aiModel",
+                  "key": "AiModel",
+                  "type": "AiModel",
+                  "label": "AiModel",
                   "required": true,
                   "valueType": "string",
                   "showTargetInApp": false,
@@ -542,7 +542,7 @@ export const allNodesData: any = {
                 },
                 {
                   "key": "history",
-                  "type": "numberInput",
+                  "type": "NumberInput",
                   "label": "chat history",
                   "required": true,
                   "min": 0,

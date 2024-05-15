@@ -289,7 +289,7 @@ const AppChat = (props: any) => {
   const GetModelFromApp = (app: any) => {
     const AiNode = app.modules.filter((item: any)=>item.type == 'chatNode')
     if(AiNode && AiNode[0] && AiNode[0].data && AiNode[0].data.inputs) {
-      const modelList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'aiModel')
+      const modelList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'AiModel')
       if(modelList && modelList[0] && modelList[0]['value']) {
 
         return modelList[0]
@@ -319,7 +319,7 @@ const AppChat = (props: any) => {
     const AiNode = app.modules.filter((item: any)=>item.type == 'userGuide')
     if(AiNode && AiNode[0] && AiNode[0].data && AiNode[0].data.inputs) {
       console.log("WelcomeText", AiNode)
-      const systemPromptList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'welcomeText')
+      const systemPromptList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'WelcomeText')
       if(systemPromptList && systemPromptList[0] && systemPromptList[0]['value']) {
         const systemPromptText = t(systemPromptList[0]['value'])
 
@@ -334,7 +334,7 @@ const AppChat = (props: any) => {
     const AiNode = app.modules.filter((item: any)=>item.type == 'userGuide')
     if(AiNode && AiNode[0] && AiNode[0].data && AiNode[0].data.inputs) {
       console.log("GetQuestionGuideFromApp", AiNode)
-      const systemPromptList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'questionGuide')
+      const systemPromptList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'QuestionGuide')
       if(systemPromptList && systemPromptList[0] && systemPromptList[0]['value']) {
         const systemPromptText = systemPromptList[0]['value']
 

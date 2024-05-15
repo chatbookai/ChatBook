@@ -22,7 +22,7 @@ export const simpleChat: any = {
               "intro": "userGuideTip",
               "inputs": [
                   {
-                      "key": "welcomeText",
+                      "key": "WelcomeText",
                       "type": "hidden",
                       "valueType": "string",
                       "label": "WelcomeText",
@@ -31,7 +31,7 @@ export const simpleChat: any = {
                       "value": "welcomeTextInitial"
                   },
                   {
-                      "key": "variables",
+                      "key": "Variables",
                       "type": "hidden",
                       "valueType": "any",
                       "label": "ModuleVariable",
@@ -40,7 +40,7 @@ export const simpleChat: any = {
                       "showTargetInPlugin": false
                   },
                   {
-                      "key": "questionGuide",
+                      "key": "QuestionGuide",
                       "valueType": "boolean",
                       "type": "switch",
                       "value": true,
@@ -49,7 +49,7 @@ export const simpleChat: any = {
                       "showTargetInPlugin": false
                   },
                   {
-                      "key": "tts",
+                      "key": "TTS",
                       "type": "hidden",
                       "valueType": "any",
                       "label": "Tts",
@@ -72,7 +72,7 @@ export const simpleChat: any = {
           "type": "questionInput",
           "data": {
               "id": "questionInputNodeInitial_1",
-              "templateType": "systemInput",
+              "templateType": "SystemInput",
               "flowType": "questionInput",
               "avatar": "/imgs/module/userChatInput.svg",
               "name": "Chat entrance",
@@ -80,7 +80,7 @@ export const simpleChat: any = {
               "inputs": [
                   {
                       "key": "userChatInput",
-                      "type": "systemInput",
+                      "type": "SystemInput",
                       "valueType": "string",
                       "label": "user question",
                       "showTargetInApp": false,
@@ -122,18 +122,9 @@ export const simpleChat: any = {
               "isTool": true,
               "inputs": [
                   {
-                      "key": "switch",
-                      "type": "hidden",
-                      "label": "",
-                      "description": "Trigger",
-                      "valueType": "any",
-                      "showTargetInApp": true,
-                      "showTargetInPlugin": true
-                  },
-                  {
-                      "key": "aiModel",
-                      "type": "aiModel",
-                      "label": "aiModel",
+                      "key": "AiModel",
+                      "type": "AiModel",
+                      "label": "AiModel",
                       "required": true,
                       "valueType": "string",
                       "showTargetInApp": false,
@@ -153,57 +144,8 @@ export const simpleChat: any = {
                       }
                   },
                   {
-                      "key": "temperature",
-                      "type": "hidden",
-                      "label": "",
-                      "value": 0,
-                      "valueType": "number",
-                      "min": 0,
-                      "max": 10,
-                      "step": 1,
-                      "showTargetInApp": false,
-                      "showTargetInPlugin": false
-                  },
-                  {
-                      "key": "maxToken",
-                      "type": "hidden",
-                      "label": "",
-                      "value": 8000,
-                      "valueType": "number",
-                      "min": 100,
-                      "max": 4000,
-                      "step": 50,
-                      "showTargetInApp": false,
-                      "showTargetInPlugin": false
-                  },
-                  {
-                      "key": "isResponseAnswerText",
-                      "type": "hidden",
-                      "label": "",
-                      "value": true,
-                      "valueType": "boolean",
-                      "showTargetInApp": false,
-                      "showTargetInPlugin": false
-                  },
-                  {
-                      "key": "quoteTemplate",
-                      "type": "hidden",
-                      "label": "",
-                      "valueType": "string",
-                      "showTargetInApp": false,
-                      "showTargetInPlugin": false
-                  },
-                  {
-                      "key": "quotePrompt",
-                      "type": "hidden",
-                      "label": "",
-                      "valueType": "string",
-                      "showTargetInApp": false,
-                      "showTargetInPlugin": false
-                  },
-                  {
                       "key": "systemPrompt",
-                      "type": "textarea",
+                      "type": "Textarea",
                       "max": 3000,
                       "valueType": "string",
                       "value": "",
@@ -215,7 +157,7 @@ export const simpleChat: any = {
                   },
                   {
                       "key": "history",
-                      "type": "numberInput",
+                      "type": "NumberInput",
                       "label": "chat history",
                       "required": true,
                       "min": 0,
@@ -227,7 +169,7 @@ export const simpleChat: any = {
                   },
                   {
                       "key": "userChatInput",
-                      "type": "systemInput",
+                      "type": "SystemInput",
                       "label": "",
                       "required": true,
                       "valueType": "string",
@@ -245,8 +187,8 @@ export const simpleChat: any = {
                       "showTargetInPlugin": true
                   },
                   {
-                      "key": "aiSettings",
-                      "type": "aiSettings",
+                      "key": "AiSettings",
+                      "type": "AiSettings",
                       "label": "",
                       "valueType": "any",
                       "showTargetInApp": false,

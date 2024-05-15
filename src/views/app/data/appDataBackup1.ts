@@ -22,7 +22,7 @@ export const appData: any = {
               "intro": "userGuideTip",
               "inputs": [
                   {
-                      "key": "welcomeText",
+                      "key": "WelcomeText",
                       "type": "hidden",
                       "valueType": "string",
                       "label": "WelcomeText",
@@ -40,7 +40,7 @@ export const appData: any = {
                       "showTargetInPlugin": false
                   },
                   {
-                      "key": "questionGuide",
+                      "key": "QuestionGuide",
                       "valueType": "boolean",
                       "type": "switch",
                       "label": "QuestionGuide",
@@ -69,7 +69,7 @@ export const appData: any = {
           "type": "questionInput",
           "data": {
               "id": "questionInputNodeInitial_1",
-              "templateType": "systemInput",
+              "templateType": "SystemInput",
               "flowType": "questionInput",
               "avatar": "/imgs/module/userChatInput.svg",
               "name": "Chat entrance",
@@ -77,7 +77,7 @@ export const appData: any = {
               "inputs": [
                   {
                       "key": "userChatInput",
-                      "type": "systemInput",
+                      "type": "SystemInput",
                       "valueType": "string",
                       "label": "user question",
                       "showTargetInApp": false,
@@ -128,9 +128,9 @@ export const appData: any = {
                       "showTargetInPlugin": true
                   },
                   {
-                      "key": "aiModel",
+                      "key": "AiModel",
                       "type": "settingLLMModel",
-                      "label": "aiModel",
+                      "label": "AiModel",
                       "required": true,
                       "valueType": "string",
                       "showTargetInApp": false,
@@ -188,7 +188,7 @@ export const appData: any = {
                   },
                   {
                       "key": "systemPrompt",
-                      "type": "textarea",
+                      "type": "Textarea",
                       "max": 3000,
                       "valueType": "string",
                       "label": "NodeChatPrompt",
@@ -199,7 +199,7 @@ export const appData: any = {
                   },
                   {
                       "key": "history",
-                      "type": "numberInput",
+                      "type": "NumberInput",
                       "label": "chat history",
                       "required": true,
                       "min": 0,
@@ -229,8 +229,8 @@ export const appData: any = {
                       "showTargetInPlugin": true
                   },
                   {
-                      "key": "aiSettings",
-                      "type": "aiSettings",
+                      "key": "AiSettings",
+                      "type": "AiSettings",
                       "label": "",
                       "valueType": "any",
                       "showTargetInApp": false,
@@ -328,7 +328,7 @@ export const appTemplates: any[] = [
         },
         inputs: [
           {
-            key: 'welcomeText',
+            key: 'WelcomeText',
             type: 'hidden',
             valueType: 'string',
             label: '',
@@ -337,7 +337,7 @@ export const appTemplates: any[] = [
             connected: false
           },
           {
-            key: 'variables',
+            key: 'Variables',
             type: 'hidden',
             valueType: 'any',
             label: '',
@@ -347,7 +347,7 @@ export const appTemplates: any[] = [
             connected: false
           },
           {
-            key: 'questionGuide',
+            key: 'QuestionGuide',
             valueType: 'boolean',
             type: 'switch',
             label: '',
@@ -379,7 +379,7 @@ export const appTemplates: any[] = [
         inputs: [
           {
             key: 'userChatInput',
-            type: 'systemInput',
+            type: 'SystemInput',
             valueType: 'string',
             label: 'user question',
             showTargetInApp: false,
@@ -423,9 +423,9 @@ export const appTemplates: any[] = [
             connected: false
           },
           {
-            key: 'aiModel',
-            type: 'aiModel',
-            label: 'aiModel',
+            key: 'AiModel',
+            type: 'AiModel',
+            label: 'AiModel',
             required: true,
             valueType: 'string',
             showTargetInApp: false,
@@ -508,8 +508,8 @@ export const appTemplates: any[] = [
             connected: false
           },
           {
-            key: 'aiSettings',
-            type: 'aiSettings',
+            key: 'AiSettings',
+            type: 'AiSettings',
             label: '',
             valueType: 'any',
             showTargetInApp: false,
@@ -518,7 +518,7 @@ export const appTemplates: any[] = [
           },
           {
             key: 'systemPrompt',
-            type: 'textarea',
+            type: 'Textarea',
             label: 'core.ai.Prompt',
             max: 300,
             valueType: 'string',
@@ -532,7 +532,7 @@ export const appTemplates: any[] = [
           },
           {
             key: 'history',
-            type: 'numberInput',
+            type: 'NumberInput',
             label: 'chat history',
             required: true,
             min: 0,
@@ -611,7 +611,7 @@ export const appTemplates: any[] = [
         },
         inputs: [
           {
-            key: 'welcomeText',
+            key: 'WelcomeText',
             type: 'hidden',
             valueType: 'string',
             label: '',
@@ -621,7 +621,7 @@ export const appTemplates: any[] = [
             connected: false
           },
           {
-            key: 'variables',
+            key: 'Variables',
             type: 'hidden',
             valueType: 'any',
             label: '',
@@ -661,7 +661,7 @@ export const appTemplates: any[] = [
             connected: false
           },
           {
-            key: 'questionGuide',
+            key: 'QuestionGuide',
             valueType: 'boolean',
             type: 'switch',
             label: '',
@@ -694,7 +694,7 @@ export const appTemplates: any[] = [
         inputs: [
           {
             key: 'userChatInput',
-            type: 'systemInput',
+            type: 'SystemInput',
             valueType: 'string',
             label: 'user question',
             showTargetInApp: false,
@@ -738,9 +738,9 @@ export const appTemplates: any[] = [
             connected: false
           },
           {
-            key: 'aiModel',
-            type: 'aiModel',
-            label: 'aiModel',
+            key: 'AiModel',
+            type: 'AiModel',
+            label: 'AiModel',
             required: true,
             valueType: 'string',
             showTargetInApp: false,
@@ -823,8 +823,8 @@ export const appTemplates: any[] = [
             connected: false
           },
           {
-            key: 'aiSettings',
-            type: 'aiSettings',
+            key: 'AiSettings',
+            type: 'AiSettings',
             label: '',
             valueType: 'any',
             showTargetInApp: false,
@@ -833,7 +833,7 @@ export const appTemplates: any[] = [
           },
           {
             key: 'systemPrompt',
-            type: 'textarea',
+            type: 'Textarea',
             label: 'core.ai.Prompt',
             max: 300,
             valueType: 'string',
@@ -848,7 +848,7 @@ export const appTemplates: any[] = [
           },
           {
             key: 'history',
-            type: 'numberInput',
+            type: 'NumberInput',
             label: 'chat history',
             required: true,
             min: 0,
@@ -928,17 +928,17 @@ export const appTemplates: any[] = [
         },
         inputs: [
           {
-            "key": "welcomeText",
+            "key": "WelcomeText",
             "type": "hidden",
             "valueType": "string",
-            "label": "welcomeText",
+            "label": "WelcomeText",
             "showTargetInApp": false,
             "showTargetInPlugin": false,
             "connected": false,
             "value": 'welcomeTextInitial'
           },
           {
-            key: 'variables',
+            key: 'Variables',
             type: 'hidden',
             valueType: 'any',
             label: 'core.module.Variable',
@@ -948,7 +948,7 @@ export const appTemplates: any[] = [
             connected: false
           },
           {
-            key: 'questionGuide',
+            key: 'QuestionGuide',
             valueType: 'boolean',
             type: 'switch',
             label: '',
@@ -985,7 +985,7 @@ export const appTemplates: any[] = [
         inputs: [
           {
             key: 'userChatInput',
-            type: 'systemInput',
+            type: 'SystemInput',
             valueType: 'string',
             label: 'user question',
             showTargetInApp: false,
@@ -1031,9 +1031,9 @@ export const appTemplates: any[] = [
             connected: false
           },
           {
-            key: 'aiModel',
+            key: 'AiModel',
             type: 'settingLLMModel',
-            label: 'aiModel',
+            label: 'AiModel',
             required: true,
             valueType: 'string',
             showTargetInApp: false,
@@ -1097,7 +1097,7 @@ export const appTemplates: any[] = [
           },
           {
             key: 'systemPrompt',
-            type: 'textarea',
+            type: 'Textarea',
             max: 3000,
             valueType: 'string',
             label: 'core.ai.Prompt',
@@ -1109,7 +1109,7 @@ export const appTemplates: any[] = [
           },
           {
             key: 'history',
-            type: 'numberInput',
+            type: 'NumberInput',
             label: 'chat history',
             required: true,
             min: 0,
@@ -1404,8 +1404,8 @@ export const appTemplates: any[] = [
             connected: false
           },
           {
-            key: 'aiModel',
-            type: 'aiModel',
+            key: 'AiModel',
+            type: 'AiModel',
             valueType: 'string',
             label: 'Classify model',
             required: true,
@@ -1416,7 +1416,7 @@ export const appTemplates: any[] = [
           },
           {
             key: 'systemPrompt',
-            type: 'textarea',
+            type: 'Textarea',
             valueType: 'string',
             label: 'Background',
             description: 'description.Background',
@@ -1428,7 +1428,7 @@ export const appTemplates: any[] = [
           },
           {
             key: 'history',
-            type: 'numberInput',
+            type: 'NumberInput',
             label: 'chat history',
             required: true,
             min: 0,
@@ -1548,7 +1548,7 @@ export const appTemplates: any[] = [
           },
           {
             key: 'text',
-            type: 'textarea',
+            type: 'Textarea',
             valueType: 'any',
             label: 'Response content',
             description: 'description.Response content',
@@ -1591,7 +1591,7 @@ export const appTemplates: any[] = [
           },
           {
             key: 'text',
-            type: 'textarea',
+            type: 'Textarea',
             valueType: 'any',
             label: 'Response content',
             description: 'description.Response content',
@@ -1634,9 +1634,9 @@ export const appTemplates: any[] = [
             connected: true
           },
           {
-            key: 'aiModel',
-            type: 'aiModel',
-            label: 'aiModel',
+            key: 'AiModel',
+            type: 'AiModel',
+            label: 'AiModel',
             required: true,
             valueType: 'string',
             showTargetInApp: false,
@@ -1700,7 +1700,7 @@ export const appTemplates: any[] = [
           },
           {
             key: 'systemPrompt',
-            type: 'textarea',
+            type: 'Textarea',
             label: 'core.ai.Prompt',
             max: 300,
             valueType: 'string',
@@ -1961,17 +1961,17 @@ export const appTemplates: any[] = [
         },
         inputs: [
           {
-            "key": "welcomeText",
+            "key": "WelcomeText",
             "type": "hidden",
             "valueType": "string",
-            "label": "welcomeText",
+            "label": "WelcomeText",
             "showTargetInApp": false,
             "showTargetInPlugin": false,
             "connected": false,
             "value": "你好，我是电影《星际穿越》 AI 助手，有什么可以帮助你的？\n[导演是谁]\n[剧情介绍]\n[票房分析]"
           },
           {
-            key: 'variables',
+            key: 'Variables',
             type: 'hidden',
             valueType: 'any',
             label: 'core.module.Variable',
@@ -1981,7 +1981,7 @@ export const appTemplates: any[] = [
             connected: false
           },
           {
-            key: 'questionGuide',
+            key: 'QuestionGuide',
             valueType: 'boolean',
             type: 'switch',
             label: '',
@@ -2022,7 +2022,7 @@ export const appTemplates: any[] = [
           },
           {
             key: 'text',
-            type: 'textarea',
+            type: 'Textarea',
             valueType: 'any',
             label: 'Response content',
             description: 'description.Response content',

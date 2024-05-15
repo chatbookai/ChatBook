@@ -110,11 +110,11 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
 
                 return (<Fragment key={`inputs_${index}`}>
 
-                        {item.key == 'welcomeText' ?
+                        {item.key == 'WelcomeText' ?
                         <Fragment>
                           <Grid item sx={{pt:4}} xs={12}>
                             <Box display="flex" mb={1} alignItems="center">
-                              <Avatar src={'/icons/core/modules/welcomeText.svg'} variant="rounded" sx={{ width: '32px', height: '32px', '& svg':  {
+                              <Avatar src={'/icons/core/modules/WelcomeText.svg'} variant="rounded" sx={{ width: '32px', height: '32px', '& svg':  {
                                                                 stroke: '#E74694'
                                                                 } }} />
                               <Typography sx={{pl: 2}}>{t(item.label) as string}</Typography>
@@ -153,7 +153,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                         :
                         null}
 
-                        {item.key == 'variables' ?
+                        {item.key == 'Variables' ?
                         <Fragment>
                           <Grid item sx={{pt: 7, pb: 1}} xs={12}>
                             <Box display="flex" mb={1} alignItems="center">
@@ -179,7 +179,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                         :
                         null}
 
-                        {item.key == 'questionGuide' ?
+                        {item.key == 'QuestionGuide' ?
                         <Fragment>
                           <Grid item xs={12}>
                             <Box display="flex" mb={1} alignItems="center">
@@ -222,7 +222,7 @@ const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) =>
                         :
                         null}
 
-                        {item.key == 'tts' ?
+                        {item.key == 'TTS' ?
                         <Fragment>
                           <Grid item xs={12}>
                             <Box display="flex" mb={1} alignItems="center">

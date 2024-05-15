@@ -143,7 +143,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
     const ChatNodeInitial: any = data.inputs
     if(ChatNodeInitial && t!=null) {
       ChatNodeInitial.map((itemNode: any)=>{
-        if(itemNode.type == 'aiModel') {
+        if(itemNode.type == 'AiModel') {
           console.log("setLLMModel Default", itemNode)
           setLLMModel( () => ({ ...itemNode.LLMModel, LLMModelOpen: false }) );
         }
@@ -353,7 +353,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
               {data && data.inputs && data.inputs.length>0 && data.inputs.map((item: any, index: number) => {
 
                   return (<Fragment key={`inputs_${index}`}>
-                          {item.type == 'aiModel' ?
+                          {item.type == 'AiModel' ?
                           <Fragment>
                             <Grid item sx={{pt:4}} xs={12}>
                               <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
@@ -420,7 +420,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                           :
                           null}
 
-                          {item.type == 'textarea' ?
+                          {item.type == 'Textarea' ?
                           <Fragment>
                             <Grid item sx={{pt:4}} xs={12}>
                               <Box display="flex" mb={1} alignItems="center">
@@ -477,7 +477,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                           :
                           null}
 
-                          {item.type == 'numberInput' ?
+                          {item.type == 'NumberInput' ?
                           <Fragment>
                             <Grid item sx={{pt:4}} xs={12}>
                               <Box display="flex" mb={1} alignItems="center">
@@ -523,7 +523,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                           :
                           null}
 
-                          {item.type == 'systemInput' ?
+                          {item.type == 'SystemInput' ?
                           <Fragment>
                             <Grid item sx={{pt:4}} xs={12}>
                               <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
@@ -568,7 +568,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                           :
                           null}
 
-                          {item.key == 'variables' ?
+                          {item.key == 'Variables' ?
                           <Fragment>
                             <Grid item sx={{pt: 7, pb: 1}} xs={12}>
                               <Box display="flex" mb={1} alignItems="center">
@@ -591,7 +591,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                           :
                           null}
 
-                          {item.key == 'questionGuide' ?
+                          {item.key == 'QuestionGuide' ?
                           <Fragment>
                             <Grid item xs={12}>
                               <Box display="flex" mb={1} alignItems="center">
@@ -633,8 +633,6 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                           </Fragment>
                           :
                           null}
-
-                          
 
                           </Fragment>)
               })

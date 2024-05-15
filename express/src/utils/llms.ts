@@ -48,7 +48,7 @@ import { UnstructuredLoader } from 'langchain/document_loaders/fs/unstructured';
 
 import { Document } from '@langchain/core/documents';
 import { RunnableSequence } from '@langchain/core/runnables';
-import { StringOutputParser } from '@langchain/core/output_parsers';
+import { BytesOutputParser, StringOutputParser } from '@langchain/core/output_parsers';
 
 import { DataDir } from './const';
 import { db, getDbRecord, getDbRecordALL } from './db'
@@ -57,8 +57,8 @@ import { getLLMSSetting, log, isFile, formatDateString, enableDir, getNanoid, wr
 import { LanceDB } from "@langchain/community/vectorstores/lancedb";
 import { connect } from "vectordb";
 
-import { createEmbeddingsFromList, getWebsiteUrlContext, Entry, EntryWithContext } from './lancedb';
-
+import { createEmbeddingsFromList, getWebsiteUrlContext, Entry, EntryWithContext, formatMessage, rephraseInput, retrieveContext, REPHRASE_TEMPLATE, QA_TEMPLATE } from './lancedb';
+import { Message as VercelChatMessage, StreamingTextResponse } from 'ai'
 
 //.ENV
 import dotenv from 'dotenv';
@@ -109,7 +109,7 @@ let ChatBaiduWenxinModel: any = null
     
   }
 
-  export async function ChatApp(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number) {
+  export async function ChatApp(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number, datasetId: string) {
 
     const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT * from app where _id = ?", [appId]);
     const AppDataText: string = Records ? Records.data : null;  
@@ -120,16 +120,21 @@ let ChatBaiduWenxinModel: any = null
         const modelList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'model')
         if(modelList && modelList[0] && modelList[0]['value']) {
           const modelName = modelList[0]['value']
-          switch(modelName) {
-            case 'gpt-3.5-turbo':
-              await chatChatOpenAI(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
-              break;
-            case 'gemini-pro':
-              await chatChatDeepSeek(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
-              break;
-            case 'DeepSeek':
-              await chatChatDeepSeek(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
-              break;
+          if(datasetId) {
+            await chatChatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId);
+          }
+          else {
+            switch(modelName) {
+              case 'gpt-3.5-turbo':
+                await chatChatOpenAI(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
+                break;
+              case 'gemini-pro':
+                await chatChatDeepSeek(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
+                break;
+              case 'DeepSeek':
+                await chatChatDeepSeek(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
+                break;
+            }
           }
         }
         else {
@@ -149,7 +154,7 @@ let ChatBaiduWenxinModel: any = null
   export async function chatChatOpenAI(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number) {
     ChatBookOpenAIStreamResponse = ''
     const startTime = performance.now()
-    if(OPENAI_API_KEY && PINECONE_API_KEY) {
+    if(OPENAI_API_KEY) {
       try{
         ChatOpenAIModel = new ChatOpenAI({ 
           modelName: "gpt-3.5-turbo",
@@ -165,7 +170,64 @@ let ChatBaiduWenxinModel: any = null
             },
           ],
          });    
-        pinecone = new Pinecone({apiKey: PINECONE_API_KEY,});
+      }
+      catch(Error: any) {
+        log('chatChatOpenAI', 'chatChatOpenAI', 'chatChatOpenAI', "chatChatOpenAI Error", Error)
+        return 
+      }
+    }
+    else {
+      res.write("Not set API_KEY in chatChatOpenAI");
+      res.end();
+      return 
+    }
+    const pastMessages: any[] = []
+    if(template && template!='') {
+      pastMessages.push(new SystemMessage(template))
+    }
+    if(history && history.length > 0) {
+      history.map((Item) => {
+        if(Item[0]) {
+          pastMessages.push(new HumanMessage(Item[0]))
+        }
+        if(Item[1]) {
+          pastMessages.push(new AIMessage(Item[1]))
+        }
+      })
+    }
+    const memory = new BufferMemory({
+      chatHistory: new ChatMessageHistory(pastMessages),
+    });
+    try {
+      const chain = new ConversationChain({ llm: ChatOpenAIModel, memory: memory });
+      await chain.call({ input: question});
+      const endTime = performance.now()
+      const responseTime = Math.round((endTime - startTime) * 100 / 1000) / 100   
+      if(allowChatLog == 1)   {
+        const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (_id, send, Received, userId, timestamp, source, history, responseTime, appId, publishId) VALUES (?,?,?,?,?,?,?,?,?,?)');
+        insertChatLog.run(_id, question, ChatBookOpenAIStreamResponse, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), responseTime, appId, publishId);
+        insertChatLog.finalize();
+        console.log("chatChatOpenAI: ", temperature, question, " => ", ChatBookOpenAIStreamResponse)
+      }
+    }
+    catch(error: any) {
+      console.log("chatChatOpenAI error", error.message)
+      res.write(error.message)
+    }    
+    res.end();
+  }
+
+  export async function chatChatOpenAIDataset(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number, datasetId: string) {
+    ChatBookOpenAIStreamResponse = ''
+    const startTime = performance.now()
+    if(OPENAI_API_KEY) {
+      try{
+        ChatOpenAIModel = new ChatOpenAI({ 
+          modelName: "gpt-3.5-turbo",
+          openAIApiKey: OPENAI_API_KEY, 
+          temperature: Number(temperature || 0.5),
+          streaming: true,
+         });    
       }
       catch(Error: any) {
         log('initChatBookOpenAIStream', 'initChatBookOpenAIStream', 'initChatBookOpenAIStream', "initChatBookOpenAIStream Error", Error)
@@ -195,8 +257,33 @@ let ChatBaiduWenxinModel: any = null
       chatHistory: new ChatMessageHistory(pastMessages),
     });
     try {
-      const chain = new ConversationChain({ llm: ChatOpenAIModel, memory: memory });
-      await chain.call({ input: question});
+      //知识库开始
+      const maxDocs = 3
+      const formattedPreviousMessages = history.map(formatMessage);
+      const rephrasedInput = await rephraseInput(ChatOpenAIModel, formattedPreviousMessages, question);
+      const context = await (async () => {
+          const result = await retrieveContext(rephrasedInput, datasetId, maxDocs)
+          //console.log("result:", result, "\n")
+          return result.map(c => {
+              if (c.title) return `${c.title}\n${c.context}`
+              return c.context
+          }).join('\n\n---\n\n').substring(0, 3750) // need to make sure our prompt is not larger than max size
+      })()
+      const qaPrompt = PromptTemplate.fromTemplate(QA_TEMPLATE);
+      const stringOutputParser = new StringOutputParser();
+      const qaChain = qaPrompt.pipe(ChatOpenAIModel).pipe(stringOutputParser);
+      res.setHeader('Content-Type', 'text/plain');
+      res.setHeader('Transfer-Encoding', 'chunked');
+      const stream = await qaChain.stream({
+          chatHistory: formattedPreviousMessages.join('\n'),
+          context, 
+          input: rephrasedInput,
+      });
+      for await (const chunk of stream) {
+          res.write(chunk);
+          ChatBookOpenAIStreamResponse += chunk.toString()
+      }
+      //知识库结束
       const endTime = performance.now()
       const responseTime = Math.round((endTime - startTime) * 100 / 1000) / 100   
       if(allowChatLog == 1)   {

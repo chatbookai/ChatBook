@@ -26,10 +26,9 @@
 
   app.get('/api/dataset', async (req: Request, res: Response) => {
 
-    const messages = [{role: "user", content: "什么是chivesweave?"}]
+    const messages = [{role: "user", content: "什么是chivesweave?,请使用中文回复"}]
     const datasetId = "website-dMMHgv7ydA3UYV30a93mlnjI13Sblx4q"
-    const ChatDatasetIdData = await ChatDatasetId(messages, datasetId);
-    res.send(ChatDatasetIdData)
+    await ChatDatasetId(res, messages, datasetId);
     res.end();
   });
   
@@ -82,11 +81,11 @@
   });
 
   app.post('/api/ChatApp', async (req: Request, res: Response) => {
-    const { question, history, template, appId, _id, publishId, allowChatLog, temperature } = req.body;
+    const { question, history, template, appId, _id, publishId, allowChatLog, temperature, datasetId } = req.body;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        await ChatApp(_id, res, checkUserTokenData.data.id, question, history, template, appId, publishId || '', allowChatLog, temperature);
+        await ChatApp(_id, res, checkUserTokenData.data.id, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId);
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
@@ -95,10 +94,10 @@
   });
 
   app.post('/api/ChatAppAnonymous', async (req: Request, res: Response) => {
-    const { question, history, template, appId, publishId, _id, allowChatLog, temperature } = req.body;
+    const { question, history, template, appId, publishId, _id, allowChatLog, temperature, datasetId } = req.body;
     const { authorization } = req.headers;
     if(authorization && authorization.length == 32) {
-        await ChatApp(_id, res, authorization, question, history, template, appId, publishId || '', allowChatLog, temperature);
+        await ChatApp(_id, res, authorization, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId);
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});

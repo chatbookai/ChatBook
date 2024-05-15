@@ -331,12 +331,22 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
             const anonymousUserId = getAnonymousUserId()
             const startTime = performance.now()
             const response = await fetch(authConfig.backEndApiChatBook + `/api/` + (userType=='User' ? 'ChatApp' : 'ChatAppAnonymous'), {
-            method: 'POST',
-            headers: {
-                Authorization: userType=='User' ? Token : anonymousUserId,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ question: Message, history: History, appId: appId, publishId, template: template, _id, allowChatLog: 1, temperature: GetModelFromAppValue?.LLMModel?.temperature || 0.6}),
+                method: 'POST',
+                headers: {
+                    Authorization: userType=='User' ? Token : anonymousUserId,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    question: Message, 
+                    history: History, 
+                    appId: appId, 
+                    publishId, 
+                    template: template, 
+                    _id, 
+                    allowChatLog: 1, 
+                    temperature: GetModelFromAppValue?.LLMModel?.temperature || 0.6,
+                    datasetId: "website-dMMHgv7ydA3UYV30a93mlnjI13Sblx4q"
+                }),
             });
             if (!response.body) {
             throw new Error('Response body is not readable as a stream');
@@ -390,11 +400,14 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
                         if(response && response.length == 3) {
                             setQuestionGuide(response)
                         }
-                        else {
+                        else if(response.includes('```json')) {
                             let result = extractTextBetween(response, "```json", "```");
                             const JsonArray = JSON.parse(result)
                             console.log("responseresponseresponseresponse", JsonArray) 
                             setQuestionGuide(JsonArray)
+                        }
+                        else {
+                            setQuestionGuide(null)
                         }
                     }
                 }

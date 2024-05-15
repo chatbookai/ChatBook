@@ -147,19 +147,21 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
                           :
                           null}
 
-                          {item.type == 'settingDatasetQuotePrompt__NotOpen' ?
+                          {item.type == 'settingDatasetQuotePrompt' ?
                           <Fragment>
                             <Grid item sx={{pt:4}} xs={12}>
                             <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
-                              
                               <Box display="flex" alignItems="center">
-                              <Typography sx={{ pl: 2, py: 2 }}>{t(item.label || item.key)}</Typography>
-                              {item && item.required && <span style={{ paddingTop: '9px', color: 'red', marginLeft: '3px' }}>*</span>}
-                              <Tooltip title={t(item.description)}>
+                                <Typography sx={{ pl: 2, py: 2 }}>{t(item.label || item.key)}</Typography>
+                                {item && item.required && <span style={{ paddingTop: '9px', color: 'red', marginLeft: '3px' }}>*</span>}
+                                <Tooltip title={t(item.description)}>
                                   <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
                                 </Tooltip>
                               </Box>
+                              <Box display="flex" alignItems="center">
+                              <Button size="small">{t('Select dataset')}</Button>
                               <Button size="small">{t('Setting quote prompt')}</Button>
+                              </Box>
                             </Box>
                             </Grid>
                           </Fragment>

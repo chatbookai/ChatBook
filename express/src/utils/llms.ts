@@ -61,7 +61,6 @@ import { Message as VercelChatMessage, StreamingTextResponse } from 'ai'
 
 //.ENV
 import dotenv from 'dotenv';
-
 dotenv.config();
 
 type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
@@ -115,6 +114,7 @@ let ChatBaiduWenxinModel: any = null
         const modelList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'AiModel')
         if(modelList && modelList[0] && modelList[0]['value']) {
           const modelName = modelList[0]['value']
+          console.log("modelName:", modelName, "datasetId:", )
           if(datasetId && Array.isArray(datasetId) && datasetId.length>0) {
             await chatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId);
           }
@@ -176,6 +176,7 @@ let ChatBaiduWenxinModel: any = null
       res.end();
       return 
     }
+    console.log("ChatOpenAIModel", ChatOpenAIModel)
     const pastMessages: any[] = []
     if(template && template!='') {
       pastMessages.push(new SystemMessage(template))

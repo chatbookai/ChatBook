@@ -109,7 +109,7 @@ let ChatBaiduWenxinModel: any = null
     
   }
 
-  export async function ChatApp(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number, datasetId: string) {
+  export async function ChatApp(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number, datasetId: string[]) {
 
     const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT * from app where _id = ?", [appId]);
     const AppDataText: string = Records ? Records.data : null;  
@@ -117,10 +117,10 @@ let ChatBaiduWenxinModel: any = null
     if(app && app.modules) {
       const AiNode = app.modules.filter((item: any)=>item.type == 'chatNode')
       if(AiNode && AiNode[0] && AiNode[0].data && AiNode[0].data.inputs) {
-        const modelList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'model')
+        const modelList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'aiModel')
         if(modelList && modelList[0] && modelList[0]['value']) {
           const modelName = modelList[0]['value']
-          if(datasetId) {
+          if(datasetId && Array.isArray(datasetId) && datasetId.length>0) {
             await chatChatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId);
           }
           else {
@@ -138,15 +138,15 @@ let ChatBaiduWenxinModel: any = null
           }
         }
         else {
-          console.log("Can not found ai modelName...")
+          console.log("[ChatApp] Can not found ai modelName...")
         }
       }
       else {
-        console.log("Can not found ai chatNode...")
+        console.log("[ChatApp] Can not found ai chatNode...")
       }
     }
     else {
-      console.log("Can not found ai app data...")
+      console.log("[ChatApp] Can not found ai app data...")
     }
 
   }
@@ -217,7 +217,7 @@ let ChatBaiduWenxinModel: any = null
     res.end();
   }
 
-  export async function chatChatOpenAIDataset(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number, datasetId: string) {
+  export async function chatChatOpenAIDataset(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number, datasetId: string[]) {
     ChatBookOpenAIStreamResponse = ''
     const startTime = performance.now()
     if(OPENAI_API_KEY) {
@@ -262,7 +262,7 @@ let ChatBaiduWenxinModel: any = null
       const formattedPreviousMessages = history.map(formatMessage);
       const rephrasedInput = await rephraseInput(ChatOpenAIModel, formattedPreviousMessages, question);
       const context = await (async () => {
-          const result = await retrieveContext(rephrasedInput, datasetId, maxDocs)
+          const result = await retrieveContext(rephrasedInput, datasetId[0], maxDocs)
           //console.log("result:", result, "\n")
           return result.map(c => {
               if (c.title) return `${c.title}\n${c.context}`
@@ -290,11 +290,11 @@ let ChatBaiduWenxinModel: any = null
         const insertChatLog = db.prepare('INSERT OR REPLACE INTO chatlog (_id, send, Received, userId, timestamp, source, history, responseTime, appId, publishId) VALUES (?,?,?,?,?,?,?,?,?,?)');
         insertChatLog.run(_id, question, ChatBookOpenAIStreamResponse, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), responseTime, appId, publishId);
         insertChatLog.finalize();
-        console.log("chatChatOpenAI: ", temperature, question, " => ", ChatBookOpenAIStreamResponse)
+        console.log("chatChatOpenAIDataset: ", temperature, question, " => ", ChatBookOpenAIStreamResponse)
       }
     }
     catch(error: any) {
-      console.log("chatChatOpenAI error", error.message)
+      console.log("chatChatOpenAIDataset error", error.message)
       res.write(error.message)
     }    
     res.end();
@@ -684,7 +684,7 @@ let ChatBaiduWenxinModel: any = null
       return response.content;
     }
     catch(error: any) {
-      console.log("chatChatOpenAI error", error.message)
+      console.log("chatChatBaiduWenxin error", error.message)
       return error.message;
     }    
   }
@@ -964,6 +964,9 @@ let ChatBaiduWenxinModel: any = null
           const UpdateFileParseStatus = db.prepare('update collection set status = ?, content = ? where id = ?');
           UpdateFileParseStatus.run(1, JSON.stringify(getWebsiteUrlContextData) ,CollectionItem.id);
           UpdateFileParseStatus.finalize();
+          const UpdateDatasetStatus = db.prepare('update dataset set syncStatus = ? where _id = ?');
+          UpdateDatasetStatus.run(1, CollectionItem.datasetId);
+          UpdateDatasetStatus.finalize();
         }
         else if(CollectionItem && CollectionItem.type == 'File') {
           const filePath = DataDir + '/uploadfiles/' + CollectionItem.newName;
@@ -1047,7 +1050,7 @@ let ChatBaiduWenxinModel: any = null
           }
           if(ChatOpenAIModel)   {
             const collectionList: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from collection where datasetId = ?`, [DatasetItem._id]) as any[];
-            //console.log("collectionList", collectionList)
+            //console.log("collectionList", collectionList, DatasetItem._id)
             const LanceDbData: EntryWithContext[] = [];
             collectionList.map((CollectionItem: any, CollectionIndex: number)=>{
               if(CollectionItem.type == 'File' && isFile(CollectionItem.content)) {
@@ -1063,6 +1066,12 @@ let ChatBaiduWenxinModel: any = null
                     text: ContentItem.pageContent,
                     context: ContentItem.pageContent,
                   } as EntryWithContext)
+                })
+              }
+              if(CollectionItem.type == 'Web') {
+                const Content = JSON.parse(CollectionItem.content)
+                Content.map((ContentItem: any, ContentIndex: number)=>{
+                  LanceDbData.push(ContentItem as EntryWithContext)
                 })
               }
             })

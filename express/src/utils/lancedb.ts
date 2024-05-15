@@ -39,18 +39,27 @@ export async function createEmbeddingsFromList(data: EntryWithContext[], dataset
   const embedFunction = new OpenAIEmbeddingFunction('context', OPENAI_API_KEY)
 
   const allTableExistsList: string[] = await lance_db.tableNames()
-  console.log("createEmbeddingsFromList allTableExistsList", allTableExistsList)
+  //console.log("createEmbeddingsFromList allTableExistsList", allTableExistsList)
 
-  if(allTableExistsList.includes(`website-${datasetId}`))  {
-    await lance_db.dropTable(`website-${datasetId}`);
-    //console.log("createEmbeddingsFromList dropTable ------------", `website-${datasetId}`)
+  if(allTableExistsList.includes(`${datasetId}`))  {
+    await lance_db.dropTable(`${datasetId}`);
+    //console.log("createEmbeddingsFromList dropTable ------------", `${datasetId}`)
   }
-  const tableData = await lance_db.createTable(`website-${datasetId}`, data, embedFunction)
-  console.log("createEmbeddingsFromList tableData", tableData)
+  if(data.length == 0) {
+    return 
+  }
+  console.log("createEmbeddingsFromList data.length", data.length)
+  try {
+    const tableData = await lance_db.createTable(`${datasetId}`, data, embedFunction)
+    //console.log("createEmbeddingsFromList tableData", tableData)    
+    console.log('createEmbeddingsFromList Vectors inserted: ', data.length, Array.isArray(data))  
+    return tableData?.name
+  }
+  catch(error: any) {
+    console.log("lance_db.createTable Failed: ", data.length)
+    return 
+  }
   
-  console.log('createEmbeddingsFromList Vectors inserted: ', data.length, Array.isArray(data))
-
-  return tableData?.name
 }
 
 export async function createEmbeddingsTable(WebsiteUrlList: string[], datasetId: string, _id: string) {
@@ -64,9 +73,9 @@ export async function createEmbeddingsTable(WebsiteUrlList: string[], datasetId:
     const allTableExistsList: string[] = await lance_db.tableNames()
     console.log("tableNamesData", allTableExistsList)
 
-    //const tableData = allTableExistsList.includes(`website-${_id}`) ? ( await lance_db.openTable(`website-${_id}`, embedFunction) ) : ( await lance_db.createTable(`website-${_id}`, [data[0]], embedFunction) )
-    //await lance_db.dropTable(`website-${_id}`);
-    const tableData = await lance_db.createTable(`website-${_id}`, data, embedFunction)
+    //const tableData = allTableExistsList.includes(`${_id}`) ? ( await lance_db.openTable(`${_id}`, embedFunction) ) : ( await lance_db.createTable(`${_id}`, [data[0]], embedFunction) )
+    //await lance_db.dropTable(`${_id}`);
+    const tableData = await lance_db.createTable(`${_id}`, data, embedFunction)
     console.log("tableData", tableData)
     
     for (var i = batchSize; i < data.length; i += batchSize) {

@@ -8,8 +8,6 @@
   import { llms } from '../config';
   import { ChatDatasetId } from '../utils/lancedb';
 
-  
-
   const app = express();
 
   app.get('/api/parsefiles', async (req: Request, res: Response) => {
@@ -20,14 +18,14 @@
 
   app.get('/api/vectorDdProcess', async (req: Request, res: Response) => {
     vectorDdProcess();
-    res.status(200).send("Execute finished, logs in the console or the log page");
+    res.status(200).send("vectorDdProcess");
     res.end();
   });
 
   app.get('/api/dataset', async (req: Request, res: Response) => {
 
     const messages = [{role: "user", content: "什么是chivesweave?,请使用中文回复"}]
-    const datasetId = "website-dMMHgv7ydA3UYV30a93mlnjI13Sblx4q"
+    const datasetId = "dMMHgv7ydA3UYV30a93mlnjI13Sblx4q"
     await ChatDatasetId(res, messages, datasetId);
     res.end();
   });

@@ -289,7 +289,7 @@ const AppChat = (props: any) => {
   const GetModelFromApp = (app: any) => {
     const AiNode = app.modules.filter((item: any)=>item.type == 'chatNode')
     if(AiNode && AiNode[0] && AiNode[0].data && AiNode[0].data.inputs) {
-      const modelList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'model')
+      const modelList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'aiModel')
       if(modelList && modelList[0] && modelList[0]['value']) {
 
         return modelList[0]
@@ -297,6 +297,22 @@ const AppChat = (props: any) => {
     }
     
     return ''
+  }
+
+  const GetDatasetFromApp = (app: any) => {
+    const AiNode = app.modules.filter((item: any)=>item.type == 'chatNode')
+    if(AiNode && AiNode[0] && AiNode[0].data && AiNode[0].data.inputs) {
+      const modelList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'Dataset')
+      if(modelList && modelList[0] && modelList[0]['MyDataSet'] && modelList[0]['MyDataSet']['MyDatasetList']) {
+        const MyDatasetList = modelList[0]['MyDataSet']['MyDatasetList']
+        const MyDatasetIdList = MyDatasetList.map((item: any) => item.value)
+        console.log("GetDatasetFromApp MyDatasetIdList", MyDatasetIdList)
+
+        return MyDatasetIdList
+      }
+    }
+    
+    return 
   }
 
   const GetWelcomeTextFromApp = (app: any) => {
@@ -365,7 +381,8 @@ const AppChat = (props: any) => {
       ChatChatInput(_id, Obj.send, Obj.message, userId, 0, [])
       setRefreshChatCounter(refreshChatCounter + 1)
       const startTime = performance.now()
-      const ChatAiOutputV1Status = await ChatAiOutputV1(_id, Obj.message, authorization, userId, chatId, app.id, publishId, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage, userType, true, setQuestionGuide, t('questionGuideTemplate'), stopMsg, setStopMsg, GetModelFromAppValue)
+      const DatasetIdList = GetDatasetFromApp(app)
+      const ChatAiOutputV1Status = await ChatAiOutputV1(_id, Obj.message, authorization, userId, chatId, app.id, publishId, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage, userType, true, setQuestionGuide, t('questionGuideTemplate'), stopMsg, setStopMsg, GetModelFromAppValue, DatasetIdList)
       const endTime = performance.now();
       setResponseTime(endTime - startTime);
       if(ChatAiOutputV1Status) {

@@ -96,7 +96,7 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
     const LLMNode: any[] = data.inputs
     if(LLMNode) {
       LLMNode.map((itemNode: any)=>{
-        if(itemNode.key == 'model') {
+        if(itemNode.key == 'aiModel') {
           console.log("setLLMModel Default", itemNode)
           setLLMModel( () => ({ ...itemNode.LLMModel, LLMModelOpen: false }) );
         }

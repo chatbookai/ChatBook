@@ -423,7 +423,7 @@ export const appTemplates: any[] = [
             connected: false
           },
           {
-            key: 'model',
+            key: 'aiModel',
             type: 'aiModel',
             label: 'aiModel',
             required: true,
@@ -738,7 +738,7 @@ export const appTemplates: any[] = [
             connected: false
           },
           {
-            key: 'model',
+            key: 'aiModel',
             type: 'aiModel',
             label: 'aiModel',
             required: true,
@@ -1031,7 +1031,7 @@ export const appTemplates: any[] = [
             connected: false
           },
           {
-            key: 'model',
+            key: 'aiModel',
             type: 'settingLLMModel',
             label: 'aiModel',
             required: true,
@@ -1404,7 +1404,7 @@ export const appTemplates: any[] = [
             connected: false
           },
           {
-            key: 'model',
+            key: 'aiModel',
             type: 'aiModel',
             valueType: 'string',
             label: 'Classify model',
@@ -1634,7 +1634,7 @@ export const appTemplates: any[] = [
             connected: true
           },
           {
-            key: 'model',
+            key: 'aiModel',
             type: 'aiModel',
             label: 'aiModel',
             required: true,

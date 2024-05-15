@@ -53,7 +53,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       Params.groupTwo = filterString(Params.groupTwo || '')
       Params.permission = filterString(Params.permission)
       Params.language = filterString(Params.language)
-      Params.data = filterString(Params.data)
+      Params.data = typeof Params.data === 'string' ? Params.data : JSON.stringify(Params.data)
       const updateSetting = db.prepare('update app set teamId = ?, name = ?, intro = ?, avatar = ?, type = ?, groupOne = ?, groupTwo = ?, permission = ?, data = ?, language = ? where _id = ?');
       updateSetting.run(Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.groupOne, Params.groupTwo, Params.permission, Params.data, Params.language, Params._id);
       updateSetting.finalize();

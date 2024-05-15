@@ -128,7 +128,7 @@ export const appData: any = {
                       "showTargetInPlugin": true
                   },
                   {
-                      "key": "model",
+                      "key": "aiModel",
                       "type": "settingLLMModel",
                       "label": "aiModel",
                       "required": true,
@@ -220,8 +220,8 @@ export const appData: any = {
                       "toolDescription": "user question"
                   },
                   {
-                      "key": "quoteQA",
-                      "type": "settingDatasetQuotePrompt",
+                      "key": "Dataset",
+                      "type": "Dataset",
                       "label": "KnowledgeBaseRef",
                       "description": "Input description",
                       "valueType": "datasetQuote",
@@ -424,7 +424,7 @@ export const appTemplates: any[] = [
           },
           {
             key: 'model',
-            type: 'selectLLMModel',
+            type: 'aiModel',
             label: 'aiModel',
             required: true,
             valueType: 'string',
@@ -544,7 +544,7 @@ export const appTemplates: any[] = [
             connected: false
           },
           {
-            key: 'quoteQA',
+            key: 'Dataset',
             type: 'target',
             label: '引用内容',
             description: "对象数组格式，结构：\n [{q:'问题',a:'回答'}]",
@@ -739,7 +739,7 @@ export const appTemplates: any[] = [
           },
           {
             key: 'model',
-            type: 'selectLLMModel',
+            type: 'aiModel',
             label: 'aiModel',
             required: true,
             valueType: 'string',
@@ -860,7 +860,7 @@ export const appTemplates: any[] = [
             connected: false
           },
           {
-            key: 'quoteQA',
+            key: 'Dataset',
             type: 'target',
             label: '引用内容',
             description: "对象数组格式，结构：\n [{q:'问题',a:'回答'}]",
@@ -1132,8 +1132,8 @@ export const appTemplates: any[] = [
             connected: true
           },
           {
-            key: 'quoteQA',
-            type: 'settingDatasetQuotePrompt',
+            key: 'Dataset',
+            type: 'Dataset',
             label: 'KnowledgeBaseRef',
             description: 'core.module.Dataset quote.Input description',
             valueType: 'datasetQuote',
@@ -1319,14 +1319,14 @@ export const appTemplates: any[] = [
             targets: []
           },
           {
-            key: 'quoteQA',
+            key: 'Dataset',
             label: 'core.module.Dataset quote.label',
             type: 'source',
             valueType: 'datasetQuote',
             targets: [
               {
                 moduleId: '63toub',
-                key: 'quoteQA'
+                key: 'Dataset'
               }
             ]
           },
@@ -1405,7 +1405,7 @@ export const appTemplates: any[] = [
           },
           {
             key: 'model',
-            type: 'selectLLMModel',
+            type: 'aiModel',
             valueType: 'string',
             label: 'Classify model',
             required: true,
@@ -1635,7 +1635,7 @@ export const appTemplates: any[] = [
           },
           {
             key: 'model',
-            type: 'selectLLMModel',
+            type: 'aiModel',
             label: 'aiModel',
             required: true,
             valueType: 'string',
@@ -1735,7 +1735,7 @@ export const appTemplates: any[] = [
             connected: true
           },
           {
-            key: 'quoteQA',
+            key: 'Dataset',
             type: 'target',
             label: 'KnowledgeBaseRef',
             description: 'core.module.Dataset quote.Input description',
@@ -1918,14 +1918,14 @@ export const appTemplates: any[] = [
             ]
           },
           {
-            key: 'quoteQA',
+            key: 'Dataset',
             label: 'core.module.Dataset quote.label',
             type: 'source',
             valueType: 'datasetQuote',
             targets: [
               {
                 moduleId: 'nlfwkc',
-                key: 'quoteQA'
+                key: 'Dataset'
               }
             ]
           },

@@ -31,6 +31,8 @@ import CloseIcon from '@mui/icons-material/Close'
 
 import { FlowContext } from '../advanced/FlowContext'
 import { getNanoid } from 'src/functions/app/string.tools'
+import MyDatasetModel from 'src/views/app/components/MyDataset'
+import DatasetPromptModel from 'src/views/app/components/DatasetPrompt'
 import TextField2 from 'src/context/TextField2'
 
 import LLMModelModel from 'src/views/app/components/LLMModel'
@@ -49,6 +51,8 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
   const [RenameOpen, setRenameOpen] = useState<boolean>(false)
   const [NodeTitle, setNodeTitle] = useState<string>("")
 
+  const [MyDataset, setMyDataset] = useState<any>({MyDatasetOpen: false, MyDatasetList:[]})
+  const [DatasetPrompt, setDatasetPrompt] = useState<any>({DatasetPromptOpen: false, REPHRASE_TEMPLATE: '', QA_TEMPLATE: ''})
   //const [TTSModel,setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
   const [LLMModel,setLLMModel] = useState<any>({LLMModelOpen: false, 
                                                 model: 'gpt-3.5-turbo', 
@@ -93,17 +97,75 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
     })
   }
 
+  const handleMyDatasetChange = (index: number, MyDataSet: any) => {
+    setNodes((prevState: any)=>{
+      const nodesNew = prevState.map((itemNode: any)=>{
+        if(itemNode.data.id == data.id) {
+          const targetNode = { ...itemNode }
+          const ItemData = targetNode.data.inputs[index]
+          targetNode.data.inputs[index] = { ...ItemData, MyDataSet }
+          console.log("targetNode", targetNode)
+
+          return targetNode
+        }
+        else {
+
+          return itemNode
+        }
+      })
+
+      return nodesNew;
+    })
+  }
+
+  const handleDatasetPromptChange = (index: number, DatasetPrompt: any) => {
+    setNodes((prevState: any)=>{
+      const nodesNew = prevState.map((itemNode: any)=>{
+        if(itemNode.data.id == data.id) {
+          const targetNode = { ...itemNode }
+          const ItemData = targetNode.data.inputs[index]
+          targetNode.data.inputs[index] = { ...ItemData, DatasetPrompt }
+          console.log("targetNode", targetNode)
+
+          return targetNode
+        }
+        else {
+
+          return itemNode
+        }
+      })
+
+      return nodesNew;
+    })
+  }
+
   useEffect(() => {
-    const LLMNode: any[] = data.inputs
-    if(LLMNode) {
-      LLMNode.map((itemNode: any)=>{
-        if(itemNode.key == 'model') {
+    const ChatNodeInitial: any = data.inputs
+    if(ChatNodeInitial && t!=null) {
+      ChatNodeInitial.map((itemNode: any)=>{
+        if(itemNode.type == 'aiModel') {
           console.log("setLLMModel Default", itemNode)
           setLLMModel( () => ({ ...itemNode.LLMModel, LLMModelOpen: false }) );
         }
+        if(itemNode.type == 'Dataset' && itemNode.MyDataSet) {
+          console.log("setMyDataset Default", itemNode)
+          setMyDataset( () => ({ ...itemNode.MyDataSet, MyDatasetOpen: false }) );
+        }
+        if(itemNode.type == 'Dataset') {
+          console.log("setDatasetPrompt Default", itemNode)
+          const DatasetTemp = {...itemNode.DatasetPrompt}
+          if(!DatasetTemp.REPHRASE_TEMPLATE) {
+            DatasetTemp.REPHRASE_TEMPLATE = t('REPHRASE_TEMPLATE_CONTENT')
+          }
+          if(!DatasetTemp.QA_TEMPLATE) {
+            DatasetTemp.QA_TEMPLATE = t('QA_TEMPLATE_CONTENT')
+          }
+          console.log("setDatasetPrompt Default", DatasetTemp)
+          setDatasetPrompt( () => ({ ...DatasetTemp, DatasetPromptOpen: false }) );
+        }
       })
     }
-  }, [])
+  }, [t])
 
   const handleRenameNode = (nodeId: string) => {
     const updatedNodes = nodes.map((node: any) => {
@@ -291,7 +353,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
               {data && data.inputs && data.inputs.length>0 && data.inputs.map((item: any, index: number) => {
 
                   return (<Fragment key={`inputs_${index}`}>
-                          {item.type == 'selectLLMModel' ?
+                          {item.type == 'aiModel' ?
                           <Fragment>
                             <Grid item sx={{pt:4}} xs={12}>
                               <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
@@ -311,34 +373,48 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                           :
                           null}
 
-                          {item.type == 'settingDatasetQuotePrompt' ?
+                          {item.type == 'Dataset' ?
                           <Fragment>
                             <Grid item sx={{pt:4}} xs={12}>
-                            <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
-                              <Box position={'absolute'} left={'-2px'}>
-                                <Handle
-                                  style={{
-                                    width: '14px',
-                                    height: '14px',
-                                    borderWidth: '3.5px',
-                                    backgroundColor: 'white',
-                                    left: '-13px',
-                                    borderColor: '#36ADEF'                                    
-                                  }}
-                                  type="target"
-                                  id={`${item.key}_Left`}
-                                  position={Position.Left}
-                                />
+                              <Box display="flex" pt={2} alignItems="center" justifyContent="space-between">
+                                <Box display="flex" alignItems="center">
+                                  <Typography sx={{ pl: 2, py: 2 }}>{t(item.label || item.key)}</Typography>
+                                  {item && item.required && <span style={{ paddingTop: '9px', color: 'red', marginLeft: '3px' }}>*</span>}
+                                  <Tooltip title={t(item.description)}>
+                                    <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
+                                  </Tooltip>
+                                </Box>
+                                <Box display="flex" alignItems="center">
+                                  <Button size="small" startIcon={<Icon icon='mdi:plus'/>} onClick={
+                                        () => { 
+                                          setMyDataset( (prevState: any) => ({ ...prevState, MyDatasetOpen: true }) ) 
+                                        }
+                                      }>
+                                        {t('Select dataset')}
+                                  </Button>
+                                  <Button size="small" startIcon={<Icon icon='mdi:plus'/>} onClick={
+                                        () => { 
+                                          setDatasetPrompt( (prevState: any) => ({ ...prevState, DatasetPromptOpen: true }) ) 
+                                        }
+                                      }>
+                                        {t('Setting quote prompt')}
+                                  </Button>
+                                </Box>
                               </Box>
-                              <Box display="flex" alignItems="center">
-                              <Typography sx={{ pl: 3, py: 2 }}>{t(item.label || item.key)}</Typography>
-                              {item && item.required && <span style={{ paddingTop: '9px', color: 'red', marginLeft: '3px' }}>*</span>}
-                              <Tooltip title={t(item.description)}>
-                                  <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
-                                </Tooltip>
+                              <Box mb={1} pt={2}>
+                                {MyDataset && MyDataset.MyDatasetList && MyDataset.MyDatasetList.map((item: any, index: number)=>{
+
+                                  return (
+                                    <Fragment>
+                                      <Button sx={{mb:1, ml:1}} variant='outlined' size="small" startIcon={<Icon icon='material-symbols:database-outline' />}>
+                                        {item.name}
+                                      </Button>
+                                    </Fragment>
+                                  )
+                                })}
                               </Box>
-                              <Button size="small">{t('Setting quote prompt')}</Button>
-                            </Box>
+                              <MyDatasetModel MyDataset={MyDataset} setMyDataset={setMyDataset} ModelData={item} handleMyDatasetChange={handleMyDatasetChange} index={index}/>
+                              <DatasetPromptModel DatasetPrompt={DatasetPrompt} setDatasetPrompt={setDatasetPrompt} ModelData={item} handleDatasetPromptChange={handleDatasetPromptChange} index={index}/>
                             </Grid>
                           </Fragment>
                           :

@@ -379,7 +379,7 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
               {data && data.inputs && data.inputs.length>0 && data.inputs.map((item: any, index: number) => {
 
                   return (<Fragment key={`inputs_${index}`}>
-                          {item.type == 'selectLLMModel' ?
+                          {item.type == 'aiModel' ?
                           <Fragment>
                             <Grid item sx={{pt:4}} xs={12}>
                               <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
@@ -399,7 +399,7 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
                           :
                           null}
 
-                          {item.type == 'settingDatasetQuotePrompt' ?
+                          {item.type == 'Dataset' ?
                           <Fragment>
                             <Grid item sx={{pt:4}} xs={12}>
                             <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">

@@ -21,6 +21,8 @@ import TTS from 'src/views/app/components/TTS'
 import GlobalVariableModel from 'src/views/app/components/GlobalVariable'
 
 import LLMModelModel from 'src/views/app/components/LLMModel'
+import MyDatasetModel from 'src/views/app/components/MyDataset'
+import DatasetPromptModel from 'src/views/app/components/DatasetPrompt'
 import TextField2 from 'src/context/TextField2'
 
 const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }: any) => {
@@ -34,6 +36,8 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
   console.log("SimpleEditApplication chatNodeData", chatNodeData)
   console.log("SimpleEditApplication userGuideData", userGuideData)
 
+  const [MyDataset, setMyDataset] = useState<any>({MyDatasetOpen: false, MyDatasetList:[]})
+  const [DatasetPrompt, setDatasetPrompt] = useState<any>({DatasetPromptOpen: false, REPHRASE_TEMPLATE: '', QA_TEMPLATE: ''})
   const [LLMModel, setLLMModel] = useState<any>({LLMModelOpen: false, 
                                                 model: 'gpt-3.5-turbo', 
                                                 name: 'Chatgpt-3.5',
@@ -57,7 +61,7 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
                                                 })
   useEffect(() => {
     const TTSNode: any = app.modules[0].data.inputs
-    if(TTSNode) {
+    if(TTSNode && t!=null) {
       TTSNode.map((itemNode: any)=>{
         if(itemNode.key == 'tts') {
           console.log("setTTSModel Default", itemNode)
@@ -65,16 +69,32 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
         }
       })
     }
-    const LLMNode: any = app.modules[2].data.inputs
-    if(LLMNode) {
-      LLMNode.map((itemNode: any)=>{
-        if(itemNode.key == 'model') {
+    const ChatNodeInitial: any = app.modules[2].data.inputs
+    if(ChatNodeInitial && t!=null) {
+      ChatNodeInitial.map((itemNode: any)=>{
+        if(itemNode.type == 'aiModel') {
           console.log("setLLMModel Default", itemNode)
           setLLMModel( () => ({ ...itemNode.LLMModel, LLMModelOpen: false }) );
         }
+        if(itemNode.type == 'Dataset' && itemNode.MyDataSet) {
+          console.log("setMyDataset Default", itemNode)
+          setMyDataset( () => ({ ...itemNode.MyDataSet, MyDatasetOpen: false }) );
+        }
+        if(itemNode.type == 'Dataset') {
+          console.log("setDatasetPrompt Default", itemNode)
+          const DatasetTemp = {...itemNode.DatasetPrompt}
+          if(!DatasetTemp.REPHRASE_TEMPLATE) {
+            DatasetTemp.REPHRASE_TEMPLATE = t('REPHRASE_TEMPLATE_CONTENT')
+          }
+          if(!DatasetTemp.QA_TEMPLATE) {
+            DatasetTemp.QA_TEMPLATE = t('QA_TEMPLATE_CONTENT')
+          }
+          console.log("setDatasetPrompt Default", DatasetTemp)
+          setDatasetPrompt( () => ({ ...DatasetTemp, DatasetPromptOpen: false }) );
+        }
       })
     }
-  }, [])
+  }, [t])
 
   useEffect(() => {
     if(userGuideData) {
@@ -100,7 +120,7 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
       updatedInputs[index] = updatedItemData;
       const newState = { ...prevState, inputs: updatedInputs };
 
-      console.log("updatedItemData", updatedItemData, LLMModel.model)
+      console.log("handleAiModelChange updatedItemData", updatedItemData, LLMModel.model)
 
       return newState;
     })
@@ -118,6 +138,34 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
     })
   }
 
+  const handleMyDatasetChange = (index: number, MyDataSet: any) => {
+    setChatNodeData((prevState: any)=>{
+      const updatedInputs = [...prevState.inputs]; 
+      const ItemData: any = updatedInputs[index];
+      const updatedItemData: any = {  ...ItemData, MyDataSet };
+      updatedInputs[index] = updatedItemData;
+      const newState = { ...prevState, inputs: updatedInputs };
+
+      console.log("handleMyDatasetChange updatedItemData", updatedItemData, MyDataSet)
+
+      return newState;
+    })
+  }
+
+  const handleDatasetPromptChange = (index: number, DatasetPrompt: any) => {
+    setChatNodeData((prevState: any)=>{
+      const updatedInputs = [...prevState.inputs]; 
+      const ItemData: any = updatedInputs[index];
+      const updatedItemData: any = {  ...ItemData, DatasetPrompt };
+      updatedInputs[index] = updatedItemData;
+      const newState = { ...prevState, inputs: updatedInputs };
+
+      console.log("handleDatasetPromptChange updatedItemData", updatedItemData, DatasetPrompt)
+
+      return newState;
+    })
+  }
+
   return (
         <Grid container spacing={2}>
           <Card sx={{ border: theme => `1px solid ${theme.palette.divider}`, mt: 2, ml: 3, mr: 3, p: 2 }}>
@@ -125,7 +173,7 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
               {chatNodeData && chatNodeData.inputs && chatNodeData.inputs.length>0 && chatNodeData.inputs.map((item: any, index: number) => {
 
                   return (<Fragment key={`inputs_${index}`}>
-                          {item.type == 'selectLLMModel' ?
+                          {item.type == 'aiModel' ?
                           <Fragment>
                             <Grid item sx={{pt:4}} xs={12}>
                               <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
@@ -147,22 +195,48 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
                           :
                           null}
 
-                          {item.type == 'settingDatasetQuotePrompt' ?
+                          {item.type == 'Dataset' ?
                           <Fragment>
                             <Grid item sx={{pt:4}} xs={12}>
-                            <Box display="flex" mb={1} pt={2} alignItems="center" justifyContent="space-between">
-                              <Box display="flex" alignItems="center">
-                                <Typography sx={{ pl: 2, py: 2 }}>{t(item.label || item.key)}</Typography>
-                                {item && item.required && <span style={{ paddingTop: '9px', color: 'red', marginLeft: '3px' }}>*</span>}
-                                <Tooltip title={t(item.description)}>
-                                  <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
-                                </Tooltip>
+                              <Box display="flex" pt={2} alignItems="center" justifyContent="space-between">
+                                <Box display="flex" alignItems="center">
+                                  <Typography sx={{ pl: 2, py: 2 }}>{t(item.label || item.key)}</Typography>
+                                  {item && item.required && <span style={{ paddingTop: '9px', color: 'red', marginLeft: '3px' }}>*</span>}
+                                  <Tooltip title={t(item.description)}>
+                                    <HelpOutlineIcon sx={{ display: ['none', 'inline'], ml: 1 }} />
+                                  </Tooltip>
+                                </Box>
+                                <Box display="flex" alignItems="center">
+                                  <Button size="small" startIcon={<Icon icon='mdi:plus'/>} onClick={
+                                        () => { 
+                                          setMyDataset( (prevState: any) => ({ ...prevState, MyDatasetOpen: true }) ) 
+                                        }
+                                      }>
+                                        {t('Select dataset')}
+                                  </Button>
+                                  <Button size="small" startIcon={<Icon icon='mdi:plus'/>} onClick={
+                                        () => { 
+                                          setDatasetPrompt( (prevState: any) => ({ ...prevState, DatasetPromptOpen: true }) ) 
+                                        }
+                                      }>
+                                        {t('Setting quote prompt')}
+                                  </Button>
+                                </Box>
                               </Box>
-                              <Box display="flex" alignItems="center">
-                              <Button size="small">{t('Select dataset')}</Button>
-                              <Button size="small">{t('Setting quote prompt')}</Button>
+                              <Box mb={1} pt={2}>
+                                {MyDataset && MyDataset.MyDatasetList && MyDataset.MyDatasetList.map((item: any, index: number)=>{
+
+                                  return (
+                                    <Fragment>
+                                      <Button sx={{mb:1, ml:1}} variant='outlined' size="small" startIcon={<Icon icon='material-symbols:database-outline' />}>
+                                        {item.name}
+                                      </Button>
+                                    </Fragment>
+                                  )
+                                })}
                               </Box>
-                            </Box>
+                              <MyDatasetModel MyDataset={MyDataset} setMyDataset={setMyDataset} ModelData={item} handleMyDatasetChange={handleMyDatasetChange} index={index}/>
+                              <DatasetPromptModel DatasetPrompt={DatasetPrompt} setDatasetPrompt={setDatasetPrompt} ModelData={item} handleDatasetPromptChange={handleDatasetPromptChange} index={index}/>
                             </Grid>
                           </Fragment>
                           :

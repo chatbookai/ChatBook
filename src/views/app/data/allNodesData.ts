@@ -128,8 +128,8 @@ export const allNodesData: any = {
                       "showTargetInPlugin": true
                   },
                   {
-                      "key": "model",
-                      "type": "selectLLMModel",
+                      "key": "aiModel",
+                      "type": "aiModel",
                       "label": "aiModel",
                       "required": true,
                       "valueType": "string",
@@ -232,8 +232,8 @@ export const allNodesData: any = {
                       "toolDescription": "user question"
                   },
                   {
-                      "key": "quoteQA",
-                      "type": "settingDatasetQuotePrompt",
+                      "key": "Dataset",
+                      "type": "Dataset",
                       "label": "KnowledgeBaseRef",
                       "description": "Input description",
                       "valueType": "datasetQuote",
@@ -362,8 +362,8 @@ export const allNodesData: any = {
                   "connected": false
                 },
                 {
-                  "key": "model",
-                  "type": "selectLLMModel",
+                  "key": "aiModel",
+                  "type": "aiModel",
                   "label": "aiModel",
                   "required": true,
                   "valueType": "string",
@@ -505,8 +505,8 @@ export const allNodesData: any = {
                   "connected": false
                 },
                 {
-                  "key": "model",
-                  "type": "selectLLMModel",
+                  "key": "aiModel",
+                  "type": "aiModel",
                   "label": "aiModel",
                   "required": true,
                   "valueType": "string",

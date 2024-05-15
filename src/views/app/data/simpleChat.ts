@@ -131,8 +131,8 @@ export const simpleChat: any = {
                       "showTargetInPlugin": true
                   },
                   {
-                      "key": "model",
-                      "type": "selectLLMModel",
+                      "key": "aiModel",
+                      "type": "aiModel",
                       "label": "aiModel",
                       "required": true,
                       "valueType": "string",
@@ -236,8 +236,8 @@ export const simpleChat: any = {
                       "toolDescription": "user question"
                   },
                   {
-                      "key": "quoteQA",
-                      "type": "settingDatasetQuotePrompt",
+                      "key": "Dataset",
+                      "type": "Dataset",
                       "label": "KnowledgeBaseRef",
                       "description": "Input description",
                       "valueType": "datasetQuote",

@@ -16,6 +16,21 @@ export async function GetLLMS() {
     return response
 }
 
+export async function GetAllMyDataset(token: string) {
+    const response = await axios.post(authConfig.backEndApiChatBook + '/api/getdatasetpage/0/100',
+        {},
+        {
+        headers: {
+            Authorization: token,
+            'Content-Type': 'application/json'
+        },
+        params: {}
+    }).then(res=>res.data);
+    
+    return response
+}
+
+
 export function ChatKnowledgeInit(MsgList: any) {
     const ChatLogList: any = []
     MsgList.map((Item: any)=>{

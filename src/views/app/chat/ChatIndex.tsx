@@ -308,7 +308,7 @@ const AppChat = (props: any) => {
         const MyDatasetIdList = MyDatasetList.map((item: any) => item.value)
         console.log("GetDatasetFromApp MyDatasetIdList", MyDatasetIdList)
 
-        return MyDatasetIdList
+        return {MyDatasetIdList, DatasetPrompt: modelList[0]['DatasetPrompt']}
       }
     }
     
@@ -381,11 +381,11 @@ const AppChat = (props: any) => {
       ChatChatInput(_id, Obj.send, Obj.message, userId, 0, [])
       setRefreshChatCounter(refreshChatCounter + 1)
       const startTime = performance.now()
-      const DatasetIdList = GetDatasetFromApp(app)
-      const ChatAiOutputV1Status = await ChatAiOutputV1(_id, Obj.message, authorization, userId, chatId, app.id, publishId, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage, userType, true, setQuestionGuide, t('questionGuideTemplate'), stopMsg, setStopMsg, GetModelFromAppValue, DatasetIdList)
+      const GetDatasetFromAppData: any = GetDatasetFromApp(app)
+      const ChatAiOutputV1Status = await ChatAiOutputV1(_id, Obj.message, authorization, userId, chatId, app.id, publishId, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage, userType, true, setQuestionGuide, t('questionGuideTemplate'), stopMsg, setStopMsg, GetModelFromAppValue, GetDatasetFromAppData.MyDatasetIdList, GetDatasetFromAppData.DatasetPrompt)
       const endTime = performance.now();
       setResponseTime(endTime - startTime);
-      if(ChatAiOutputV1Status) {
+      if(ChatAiOutputV1Status)      {
         setSendButtonDisable(false)
         setSendButtonLoading(false)
         setRefreshChatCounter(refreshChatCounter + 2)

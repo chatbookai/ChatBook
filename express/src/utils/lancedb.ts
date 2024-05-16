@@ -167,7 +167,7 @@ export async function getWebsiteUrlContext(links: string[]): Promise<Entry[]> {
 
 //检索数据
 
-export const REPHRASE_TEMPLATE = `Rephrase the follow-up question to make it a standalone inquiry, maintaining its original language. You'll be provided with a conversation history and a follow-up question.
+export const REPHRASE_TEMPLATE_INITIAL = `Rephrase the follow-up question to make it a standalone inquiry, maintaining its original language. You'll be provided with a conversation history and a follow-up question.
 
 Instructions:
 1. Review the conversation provided below, including both user and AI messages.
@@ -186,7 +186,7 @@ User's Follow-Up Question:
 
 Your Response:`
 
-export const QA_TEMPLATE = `Based on the information provided below from a website, act as a guide to assist someone navigating through the website.
+export const QA_TEMPLATE_INITIAL = `Based on the information provided below from a website, act as a guide to assist someone navigating through the website.
 
 Instructions:
 1. Review the conversation history and the contextual information extracted from the website.
@@ -215,7 +215,7 @@ export function formatMessage(message: VercelChatMessage) {
     return `${message.role}: ${message.content}`;
 };
 
-export async function rephraseInput(model: ChatOpenAI, chatHistory: string[], input: string) {
+export async function rephraseInput(model: ChatOpenAI, chatHistory: string[], input: string, REPHRASE_TEMPLATE: string) {
     if (chatHistory.length === 0) return input;
 
     const rephrasePrompt = PromptTemplate.fromTemplate(REPHRASE_TEMPLATE);
@@ -246,7 +246,7 @@ export async function retrieveContext(query: string, table: string, k = 3): Prom
       .execute() as EntryWithContext[]
 }
 
-export async function ChatDatasetId(res: Response, messages: any[], datasetId: string) {
+export async function ChatDatasetId(res: Response, messages: any[], datasetId: string, REPHRASE_TEMPLATE: string, QA_TEMPLATE: string) {
 
     const model = new ChatOpenAI({
         modelName: "gpt-3.5-turbo",
@@ -263,7 +263,7 @@ export async function ChatDatasetId(res: Response, messages: any[], datasetId: s
 
     //console.log("Current message:", currentMessageContent)
 
-    const rephrasedInput = await rephraseInput(model, formattedPreviousMessages, currentMessageContent);
+    const rephrasedInput = await rephraseInput(model, formattedPreviousMessages, currentMessageContent, REPHRASE_TEMPLATE);
 
     const context = await (async () => {
         const result = await retrieveContext(rephrasedInput, datasetId, maxDocs)
@@ -275,19 +275,6 @@ export async function ChatDatasetId(res: Response, messages: any[], datasetId: s
     })()
     //console.log("Context:", context)
 
-    // Chat models stream message chunks rather than bytes, so this
-    // output parser handles serialization and encoding.
-    /*
-    const rephrasePrompt = PromptTemplate.fromTemplate(QA_TEMPLATE);
-    const stringOutputParser = new StringOutputParser();
-    const rephraseChain = rephrasePrompt.pipe(model).pipe(stringOutputParser)
-    return rephraseChain.invoke({
-        chatHistory: formattedPreviousMessages.join('\n'),
-        context, 
-        input: rephrasedInput,
-    });
-    */
-    
     const qaPrompt = PromptTemplate.fromTemplate(QA_TEMPLATE);
     const outputParser = new BytesOutputParser();
     const qaChain = qaPrompt.pipe(model).pipe(outputParser);
@@ -306,34 +293,4 @@ export async function ChatDatasetId(res: Response, messages: any[], datasetId: s
         res.write(chunk);
     }
 
-    //return new StreamingTextResponse(stream)
-    //以上代码可以在Nextjs中实现流式输出,如果要更换为Node Express中,要如何实现流式输出
-    
-    /*
-    const qaPrompt = PromptTemplate.fromTemplate(QA_TEMPLATE);
-    const outputParser = new BytesOutputParser();
-    const qaChain = qaPrompt.pipe(model).pipe(outputParser);
-
-    res.setHeader('Content-Type', 'text/plain');
-    res.setHeader('Transfer-Encoding', 'chunked');
-
-    const stream = await qaChain.stream({
-        chatHistory: formattedPreviousMessages.join('\n'),
-        context, 
-        input: rephrasedInput,
-    });
-
-    stream.on('data', (chunk) => {
-        res.write(chunk);
-    });
-
-    stream.on('end', () => {
-        res.end();
-    });
-
-    stream.on('error', (err) => {
-        console.error(err);
-        res.status(500).end('An error occurred');
-    });
-    */
 }

@@ -326,7 +326,7 @@ export async function ChatAiAudioV1(Message: string, Token: string, voice: strin
       
 }
 
-export async function ChatAiOutputV1(_id: string, Message: string, Token: string, UserId: number | string, chatId: number | string, appId: string, publishId: string, setProcessingMessage: any, template: string, setFinishedMessage: any, userType: string, allowQuestionGuide: boolean, setQuestionGuide: any, questionGuideTemplate: string, stopMsg: boolean, setStopMsg: any, GetModelFromAppValue: any, DatasetIdList: string[]) {
+export async function ChatAiOutputV1(_id: string, Message: string, Token: string, UserId: number | string, chatId: number | string, appId: string, publishId: string, setProcessingMessage: any, template: string, setFinishedMessage: any, userType: string, allowQuestionGuide: boolean, setQuestionGuide: any, questionGuideTemplate: string, stopMsg: boolean, setStopMsg: any, GetModelFromAppValue: any, DatasetIdList: string[], DatasetPrompt: any) {
     setStopMsg(false)
     const ChatChatHistoryText = window.localStorage.getItem(ChatChatHistory)      
     const ChatChatList = ChatChatHistoryText ? JSON.parse(ChatChatHistoryText) : []
@@ -360,7 +360,8 @@ export async function ChatAiOutputV1(_id: string, Message: string, Token: string
                     _id, 
                     allowChatLog: 1, 
                     temperature: GetModelFromAppValue?.LLMModel?.temperature || 0.6,
-                    datasetId: DatasetIdList
+                    datasetId: DatasetIdList,
+                    DatasetPrompt
                 }),
             });
             if (!response.body) {

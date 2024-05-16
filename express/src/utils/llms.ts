@@ -56,7 +56,7 @@ import { getLLMSSetting, log, isFile, formatDateString, enableDir, getNanoid, wr
 import { LanceDB } from "@langchain/community/vectorstores/lancedb";
 import { connect } from "vectordb";
 
-import { createEmbeddingsFromList, getWebsiteUrlContext, Entry, EntryWithContext, formatMessage, rephraseInput, retrieveContext, REPHRASE_TEMPLATE, QA_TEMPLATE } from './lancedb';
+import { createEmbeddingsFromList, getWebsiteUrlContext, Entry, EntryWithContext, formatMessage, rephraseInput, retrieveContext, REPHRASE_TEMPLATE_INITIAL, QA_TEMPLATE_INITIAL } from './lancedb';
 import { Message as VercelChatMessage, StreamingTextResponse } from 'ai'
 
 //.ENV
@@ -68,10 +68,8 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
-
 let getLLMSSettingData: any = null
 let ChatOpenAIModel: any = null
-let pinecone: any = null
 let ChatBookOpenAIStreamResponse = ''
 let ChatGeminiModel: any = null
 let ChatBaiduWenxinModel: any = null
@@ -81,29 +79,7 @@ let ChatBaiduWenxinModel: any = null
     console.log("PromptTemplate", PromptTemplate)
   }
 
-  export async function initChatBookOpenAI(datasetId: number | string) {
-    getLLMSSettingData = await getLLMSSetting(datasetId);
-    const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
-    const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
-    const OPENAI_Temperature = getLLMSSettingData.Temperature;
-    if(OPENAI_API_KEY) {
-      if(OPENAI_API_BASE && OPENAI_API_BASE !='' && OPENAI_API_BASE.length > 16) {
-        process.env.OPENAI_BASE_URL = OPENAI_API_BASE
-        process.env.OPENAI_API_KEY = OPENAI_API_KEY
-      }
-      ChatOpenAIModel = new ChatOpenAI({ 
-        modelName: getLLMSSettingData.ModelName ?? "gpt-3.5-turbo",
-        openAIApiKey: OPENAI_API_KEY, 
-        temperature: Number(OPENAI_Temperature)
-       });
-    }
-  }
-
-  export async function initChatBookOpenAIStream(res: Response, datasetId: number | string) {
-    
-  }
-
-  export async function ChatApp(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number, datasetId: string[]) {
+  export async function ChatApp(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number, datasetId: string[], DatasetPrompt: any) {
 
     const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT * from app where _id = ?", [appId]);
     const AppDataText: string = Records ? Records.data : null;  
@@ -116,7 +92,7 @@ let ChatBaiduWenxinModel: any = null
           const modelName = modelList[0]['value']
           console.log("modelName:", modelName, "datasetId:", )
           if(datasetId && Array.isArray(datasetId) && datasetId.length>0) {
-            await chatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId);
+            await chatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId, DatasetPrompt);
           }
           else {
             switch(modelName) {
@@ -213,7 +189,7 @@ let ChatBaiduWenxinModel: any = null
     res.end();
   }
 
-  export async function chatOpenAIDataset(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number, datasetId: string[]) {
+  export async function chatOpenAIDataset(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number, datasetId: string[], DatasetPrompt: any) {
     ChatBookOpenAIStreamResponse = ''
     const startTime = performance.now()
     if(OPENAI_API_KEY) {
@@ -253,10 +229,11 @@ let ChatBaiduWenxinModel: any = null
       chatHistory: new ChatMessageHistory(pastMessages),
     });
     try {
+      console.log("DatasetPrompt", DatasetPrompt)
       //知识库开始
       const maxDocs = 3
       const formattedPreviousMessages = history.map(formatMessage);
-      const rephrasedInput = await rephraseInput(ChatOpenAIModel, formattedPreviousMessages, question);
+      const rephrasedInput = await rephraseInput(ChatOpenAIModel, formattedPreviousMessages, question, DatasetPrompt?.REPHRASE_TEMPLATE);
       const context = await (async () => {
           const result = await retrieveContext(rephrasedInput, datasetId[0], maxDocs)
           //console.log("result:", result, "\n")
@@ -265,7 +242,7 @@ let ChatBaiduWenxinModel: any = null
               return c.context
           }).join('\n\n---\n\n').substring(0, 3750) // need to make sure our prompt is not larger than max size
       })()
-      const qaPrompt = PromptTemplate.fromTemplate(QA_TEMPLATE);
+      const qaPrompt = PromptTemplate.fromTemplate(DatasetPrompt?.QA_TEMPLATE);
       const stringOutputParser = new StringOutputParser();
       const qaChain = qaPrompt.pipe(ChatOpenAIModel).pipe(stringOutputParser);
       res.setHeader('Content-Type', 'text/plain');

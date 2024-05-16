@@ -6,7 +6,7 @@
   import { getLLMSSetting, uploadfiles, uploadfilesInsertIntoDb, filterString } from '../utils/utils';
   import { outputImage, outputImageOrigin, outputAvatarForApp, outputAvatarForDataset, outputAudio, chatChatBaiduWenxin, chatChatGemini, chatChatGeminiMindMap, chatOpenAI, chatChatDeepSeek, GenereateImageUsingDallE2, GenereateAudioUsingTTS, parseFilesAndWeb, ChatApp, vectorDdProcess } from '../utils/llms';
   import { llms } from '../config';
-  import { ChatDatasetId } from '../utils/lancedb';
+  import { ChatDatasetId, QA_TEMPLATE_INITIAL, REPHRASE_TEMPLATE_INITIAL } from '../utils/lancedb';
 
   const app = express();
 
@@ -26,7 +26,7 @@
 
     const messages = [{role: "user", content: "什么是chivesweave?,请使用中文回复"}]
     const datasetId = "dMMHgv7ydA3UYV30a93mlnjI13Sblx4q"
-    await ChatDatasetId(res, messages, datasetId);
+    await ChatDatasetId(res, messages, datasetId, REPHRASE_TEMPLATE_INITIAL, QA_TEMPLATE_INITIAL);
     res.end();
   });
   
@@ -79,11 +79,11 @@
   });
 
   app.post('/api/ChatApp', async (req: Request, res: Response) => {
-    const { question, history, template, appId, _id, publishId, allowChatLog, temperature, datasetId } = req.body;
+    const { question, history, template, appId, _id, publishId, allowChatLog, temperature, datasetId, DatasetPrompt } = req.body;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        await ChatApp(_id, res, checkUserTokenData.data.id, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId);
+        await ChatApp(_id, res, checkUserTokenData.data.id, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId, DatasetPrompt);
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
@@ -92,10 +92,10 @@
   });
 
   app.post('/api/ChatAppAnonymous', async (req: Request, res: Response) => {
-    const { question, history, template, appId, publishId, _id, allowChatLog, temperature, datasetId } = req.body;
+    const { question, history, template, appId, publishId, _id, allowChatLog, temperature, datasetId, DatasetPrompt } = req.body;
     const { authorization } = req.headers;
     if(authorization && authorization.length == 32) {
-        await ChatApp(_id, res, authorization, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId);
+        await ChatApp(_id, res, authorization, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId, DatasetPrompt);
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});

@@ -56,7 +56,7 @@ const AllApp = () => {
       authorization = anonymousUserId
     }
 
-    if(loadingAllData == false)  {
+    if(loadingAllData == false && authorization)  {
       setLoading(true)
       const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getapppageall/' + pageid + '/' + pagesize, {type, search},  {
         headers: { Authorization: authorization, 'Content-Type': 'application/json' },

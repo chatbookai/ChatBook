@@ -60,7 +60,7 @@ const AppChat = (props: any) => {
       authorization = anonymousUserId
     }
     console.log("getChatLogList",userType)
-    if(userId) {
+    if(userId && authorization) {
       const RS = await axios.post(authConfig.backEndApiChatBook + '/api/app/chatlog/' + appId + '/0/90', {userType}, { 
         headers: { 
           Authorization: authorization, 

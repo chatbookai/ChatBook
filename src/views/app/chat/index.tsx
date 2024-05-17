@@ -50,8 +50,10 @@ const Chat = (props: any) => {
         authorization = anonymousUserId
         setUserType('Anonymous')
       }
-      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getapp', {appId: id}, { headers: { Authorization: authorization, 'Content-Type': 'application/json'} }).then(res=>res.data)
-      setApp(RS)
+      if(authorization)   {
+        const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getapp', {appId: id}, { headers: { Authorization: authorization, 'Content-Type': 'application/json'} }).then(res=>res.data)
+        setApp(RS)
+      }
     }
   }
 

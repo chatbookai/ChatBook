@@ -151,19 +151,6 @@ const UserDropdown = (props: Props) => {
               </Box>
             </Box>
             <Divider sx={{ mt: '0 !important' }} />
-            <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/user/account')}>
-              <Box sx={styles}>
-                <Icon icon='mdi:cog-outline' />
-                {t('Settings') as string}
-              </Box>
-            </MenuItem>
-            <MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/faq')}>
-              <Box sx={styles}>
-                <Icon icon='mdi:help-circle-outline' />
-                {t('FAQ') as string}                
-              </Box>
-            </MenuItem>
-            <Divider />
             <MenuItem
               onClick={handleLogout}
               sx={{ py: 2, '& svg': { mr: 2, fontSize: '1.375rem', color: 'text.primary' } }}

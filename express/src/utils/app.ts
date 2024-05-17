@@ -210,7 +210,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
     let Records: any = null;
     let RecordsAll: any[] = []
-    if(data) {
+    if(data && (data.name || data.intro)) {
       Records = await (getDbRecord as SqliteQueryFunction)(`
                       SELECT COUNT(*) AS NUM
                       FROM app 
@@ -227,8 +227,8 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
                     `, [data.name || '', data.intro || '', pagesizeFiler, From]) || [];
     }
     else {
-      Records = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from app ", []);
-      RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from app  order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]) as any[];
+      Records = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from app where permission = ? ", ['public']);
+      RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from app where permission = ? order by id desc limit ? OFFSET ? `, ['public', pagesizeFiler, From]) as any[];
     }
     const RecordsTotal: number = Records ? Records.NUM : 0;  
     

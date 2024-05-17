@@ -43,56 +43,6 @@ const AppModel = (props: any) => {
     setShow
   } = props
 
-  const RowOptions = (props: any) => {
-    const { id } = props
-
-    const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
-  
-    const rowOptionsOpen = Boolean(anchorEl)
-  
-    const handleRowOptionsClick = (event: MouseEvent<HTMLElement>) => {
-      setAnchorEl(event.currentTarget)
-    }
-    const handleRowOptionsClose = () => {
-      setAnchorEl(null)
-    }
-  
-    return (
-      <>
-        <IconButton size='small' onClick={handleRowOptionsClick} >
-          <Icon icon='mdi:dots-vertical' />
-        </IconButton>
-        <Menu
-          keepMounted
-          anchorEl={anchorEl}
-          open={rowOptionsOpen}
-          onClose={handleRowOptionsClose}
-          anchorOrigin={{
-            vertical: 'bottom',
-            horizontal: 'right'
-          }}
-          transformOrigin={{
-            vertical: 'top',
-            horizontal: 'right'
-          }}
-          PaperProps={{ style: { minWidth: '8rem' } }}
-        >
-          <MenuItem
-            component={Link}
-            sx={{ '& svg': { mr: 2 } }}
-            onClick={handleRowOptionsClose}
-            href={`/store/chat/${id}`}
-          >
-            <Icon icon='mdi:database-outline' fontSize={20} />
-            {t('Chat')}
-          </MenuItem>
-        </Menu>
-      </>
-    )
-  }
-
-  console.log("app", app)
-  
   const renderContent = () => {
       return (
         <Grid container spacing={2}>
@@ -103,7 +53,7 @@ const AppModel = (props: any) => {
                   <Grid container spacing={2}>
                     <Grid item xs={12}>
                       <Box p={2}>
-                        <Typography variant="h6">{t('Store')}</Typography>
+                        <Typography variant="h6">{t('Marketplace')}</Typography>
                       </Box>
                     </Grid>
                   </Grid>
@@ -137,9 +87,6 @@ const AppModel = (props: any) => {
                               </Typography>
                             </Box>
                           </Box>
-                          <Box position="absolute" top={0} right={0} m={1} px={0.8} borderRadius={1}>
-                            <RowOptions id={item._id} />
-                          </Box>
                           <Box position="absolute" top={55} left={5} m={1} px={0.8} borderRadius={1} 
                             sx={{ 
                               cursor: 'pointer',
@@ -155,12 +102,16 @@ const AppModel = (props: any) => {
                             <Typography variant='caption'>{item.intro}</Typography>
                           </Box>
                           <Box position="absolute" bottom={0} left={1} m={1} px={0.8}>
-                            <Button  variant="text" size="small" startIcon={<Icon icon={item.permission == 'private' ? 'ri:git-repository-private-line' : 'material-symbols:share'} />} >
+                            <Button disabled variant="text" size="small" startIcon={<Icon icon={item.permission == 'private' ? 'ri:git-repository-private-line' : 'material-symbols:share'} />} >
                               {t(item.permission)}
                             </Button>
                           </Box>
-                          <Box position="absolute" bottom={0} right={1} m={1} px={0.8}>
-                            <Button  variant="text" size="small" startIcon={<Icon icon='material-symbols:chat-outline' />} >
+                          <Box position="absolute" top={2} right={1} m={1} px={0.8}>
+                            <Button variant="text" size="small" startIcon={<Icon icon='material-symbols:chat-outline' />} 
+                              onClick={()=>{
+                                router.push('/store/chat/' + item._id)
+                              }}
+                              >
                               {t('Chat')}
                             </Button>
                           </Box>

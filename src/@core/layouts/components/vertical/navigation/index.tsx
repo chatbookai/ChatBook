@@ -202,20 +202,14 @@ const Navigation = (props: Props) => {
               : null}
           </ScrollWrapper>
         </Box>
-        <Box className='actions-right' sx={{ position: 'absolute', bottom: 110, left: 0, width: '100%', overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
+        <Box className='actions-right' sx={{ position: 'absolute', bottom: 15, left: 3, width: '100%', overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
           {auth.user && authConfig.productName=="ChatBook" && (
             <Box sx={{mr: 1}}>
               <UserDropdown settings={settings} />
+              <ModeToggler settings={settings} saveSettings={saveSettings} />
+              <LanguageDropdown settings={settings} saveSettings={saveSettings} />
             </Box>
           )}
-        </Box>
-        <Box className='actions-right' sx={{ position: 'absolute', bottom: 60, left: 7, width: '100%', overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
-          <LanguageDropdown settings={settings} saveSettings={saveSettings} />
-          {t('Language')}
-        </Box>
-        <Box className='actions-right' sx={{ position: 'absolute', bottom: 10, left: 7, width: '100%', overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
-          <ModeToggler settings={settings} saveSettings={saveSettings} />
-          {t('Light')}
         </Box>
         {afterNavMenuContent && afterVerticalNavMenuContentPosition === 'fixed'
           ? afterNavMenuContent(navMenuContentProps)

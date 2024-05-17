@@ -60,17 +60,6 @@ const LanguageDropdown = ({ settings, saveSettings }: Props) => {
           }
         },
         {
-          text: 'Korean',
-          menuItemProps: {
-            sx: { py: 2 },
-            selected: i18n.language === 'Kr',
-            onClick: () => {
-              handleLangItemClick('Kr')
-              saveSettings({ ...settings, direction: 'ltr' })
-            }
-          }
-        },
-        {
           text: 'Russia',
           menuItemProps: {
             sx: { py: 2 },

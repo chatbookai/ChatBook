@@ -31,11 +31,6 @@ export const MenuListAdmin = [
     path: '/store'
   },
   {
-    title: 'Chat',
-    icon: 'material-symbols:chat-outline',
-    path: '/chat'
-  },
-  {
     sectionTitle: 'My App'
   },
   {
@@ -68,11 +63,6 @@ export const MenuListUser = [
     title: 'Marketplace',
     icon: 'tabler:apps-filled',
     path: '/store'
-  },
-  {
-    title: 'Chat',
-    icon: 'material-symbols:chat-outline',
-    path: '/chat'
   },
   {
     sectionTitle: 'My App'

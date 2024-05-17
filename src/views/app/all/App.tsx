@@ -51,7 +51,7 @@ const AllApp = () => {
     const pagesize = 20
     if(loadingAllData == false)  {
       setLoading(true)
-      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getapppage/' + pageid + '/' + pagesize, {type, search},  {
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getapppageall/' + pageid + '/' + pagesize, {type, search},  {
         headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
       }).then(res => res.data);
       if(RS && RS.data) {

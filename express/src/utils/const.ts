@@ -26,7 +26,7 @@ Helpful answer in markdown:`
 
 export const MenuListAdmin = [
   {
-    title: 'Store',
+    title: 'Marketplace',
     icon: 'tabler:apps-filled',
     path: '/store'
   },
@@ -65,7 +65,7 @@ export const MenuListAdmin = [
 
 export const MenuListUser = [
   {
-    title: 'Store',
+    title: 'Marketplace',
     icon: 'tabler:apps-filled',
     path: '/store'
   },

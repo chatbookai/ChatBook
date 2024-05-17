@@ -86,7 +86,7 @@ const AppModel = (props: any) => {
             onClick={handleRowOptionsClose}
             href={`/dataset/collection/${id}`}
           >
-            <Icon icon='mdi:eye-outline' fontSize={20} />
+            <Icon icon='mdi:database-outline' fontSize={20} />
             {t('Dataset')}
           </MenuItem>
           <MenuItem
@@ -104,7 +104,7 @@ const AppModel = (props: any) => {
             onClick={handleRowOptionsClose}
             href={`/dataset/searchtest/${id}`}
           >
-            <Icon icon='mdi:database-outline' fontSize={20} />
+            <Icon icon='material-symbols:chat-bubble-outline' fontSize={20} />
             {t('Test')}
           </MenuItem>
           <MenuItem onClick={()=>{
@@ -146,11 +146,11 @@ const AppModel = (props: any) => {
                   <Grid container spacing={2} sx={{ mt: 2, mb: 2}}>
                     {app && app.map((item: any, index: number) => (
                       <Grid item key={index} xs={12} sm={6} md={4} lg={4}>
-                        <Box position="relative" sx={{mb: 2, mr: 2, cursor: 'pointer'}} onClick={()=>{
-                          router.push('/dataset/collection/' + item._id)
-                        }}>
+                        <Box position="relative" sx={{mb: 2, mr: 2}}>
                           <CardMedia image={`/images/cardmedia/cardmedia-${theme.palette.mode}.png`} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1 }}/>
-                          <Box position="absolute" top={10} left={5} m={1} px={0.8} borderRadius={1}>
+                          <Box position="absolute" top={10} left={5} m={1} px={0.8} borderRadius={1} sx={{cursor: 'pointer'}} onClick={()=>{
+                              router.push('/dataset/collection/' + item._id)
+                            }}>
                             <Box display="flex" alignItems="center">
                               <Avatar src={authConfig.backEndApiChatBook + '/api/avatarfordataset/' + (item.avatar || authConfig.logo)} sx={{ mr: 3, width: 35, height: 35 }} />
                               <Typography 
@@ -179,6 +179,10 @@ const AppModel = (props: any) => {
                               display: '-webkit-box',
                               WebkitLineClamp: 3,
                               WebkitBoxOrient: 'vertical',
+                              cursor: 'pointer'
+                            }}
+                            onClick={()=>{
+                              router.push('/dataset/collection/' + item._id)
                             }}>
                             <Typography variant='caption'>{item.intro}</Typography>
                           </Box>

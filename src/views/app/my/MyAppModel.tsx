@@ -95,7 +95,7 @@ const AppModel = (props: any) => {
             onClick={handleRowOptionsClose}
             href={`/app/chat/${id}`}
           >
-            <Icon icon='mdi:database-outline' fontSize={20} />
+            <Icon icon='material-symbols:chat-bubble-outline' fontSize={20} />
             {t('Chat')}
           </MenuItem>
           <MenuItem onClick={()=>{

@@ -3,7 +3,7 @@ export const llms = {
     "llmModels": [
       {
         "model": "gpt-3.5-turbo",
-        "name": "gpt-3.5-turbo",
+        "name": "Chatgpt 3.5",
         "maxContext": 16000,
         "avatar": "/imgs/model/openai.svg",
         "maxResponse": 4000,
@@ -25,8 +25,8 @@ export const llms = {
         "defaultConfig": {}
       },
       {
-        "model": "gpt-4-0125-preview",
-        "name": "gpt-4-turbo",
+        "model": "deepseek",
+        "name": "Deepseek",
         "avatar": "/imgs/model/openai.svg",
         "maxContext": 125000,
         "maxResponse": 4000,

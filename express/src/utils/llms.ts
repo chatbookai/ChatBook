@@ -37,7 +37,7 @@ import { GitbookLoader } from "langchain/document_loaders/web/gitbook";
 import { GithubRepoLoader } from "langchain/document_loaders/web/github";
 import { CheerioWebBaseLoader } from "langchain/document_loaders/web/cheerio";
 
-import https from 'https'; // Used in chatChatDeepSeek
+import https from 'https'; // Used in chatDeepSeek
 
 /*
 import { DirectoryLoader } from 'langchain/document_loaders/fs/directory';
@@ -92,7 +92,17 @@ let ChatBaiduWenxinModel: any = null
           const modelName = modelList[0]['value']
           console.log("modelName:", modelName, "datasetId:", )
           if(datasetId && Array.isArray(datasetId) && datasetId.length>0) {
-            await chatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId, DatasetPrompt);
+            switch(modelName) {
+              case 'gpt-3.5-turbo':
+                await chatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId, DatasetPrompt);
+                break;
+              case 'gemini-pro':
+                await chatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId, DatasetPrompt);
+                break;
+              case 'deepseek':
+                await chatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId, DatasetPrompt);
+                break;
+            }
           }
           else {
             switch(modelName) {
@@ -100,10 +110,10 @@ let ChatBaiduWenxinModel: any = null
                 await chatOpenAI(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
                 break;
               case 'gemini-pro':
-                await chatChatDeepSeek(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
+                await chatDeepSeek(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
                 break;
-              case 'DeepSeek':
-                await chatChatDeepSeek(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
+              case 'deepseek':
+                await chatDeepSeek(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
                 break;
             }
           }
@@ -202,7 +212,8 @@ let ChatBaiduWenxinModel: any = null
          });    
       }
       catch(Error: any) {
-        log('initChatBookOpenAIStream', 'initChatBookOpenAIStream', 'initChatBookOpenAIStream', "initChatBookOpenAIStream Error", Error)
+        console.log("chatOpenAIDataset AIModel Connect Error:", Error.message)
+        return 
         return 
       }
     }
@@ -273,7 +284,7 @@ let ChatBaiduWenxinModel: any = null
     res.end();
   }
 
-  export async function chatChatDeepSeek(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number) {
+  export async function chatDeepSeek(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number) {
     const startTime = performance.now()
     const pastMessages: any[] = [];
     if (template && template !== '') {
@@ -310,7 +321,7 @@ let ChatBaiduWenxinModel: any = null
           if( chunk && chunk != 'data: [DONE]' && chunk != 'data: [DONE]\n' && !chunk.startsWith('data: [DONE]') )  {
             const cleanedChunk = chunk.replace(/^data: /, '');
             try {
-              console.log('cleanedChunk cleanedChunk:', cleanedChunk);
+              //console.log('cleanedChunk cleanedChunk:', cleanedChunk);
               const chunkData = JSON.parse(cleanedChunk);
               if (chunkData && chunkData.choices && Array.isArray(chunkData.choices)) {
                 chunkData.choices.forEach((choice: any) => {
@@ -324,7 +335,7 @@ let ChatBaiduWenxinModel: any = null
               }
             }
             catch (error) {
-              console.error('chatChatDeepSeek Error parsing JSON:', error);
+              console.error('chatDeepSeek Error parsing JSON:', error);
             }
           }
         });
@@ -338,11 +349,11 @@ let ChatBaiduWenxinModel: any = null
             insertChatLog.run(_id, question, StreamResponse, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), responseTime, appId, publishId);
             insertChatLog.finalize();
           }
-          console.log("chatChatDeepSeek: ", temperature, question, " => ", StreamResponse)
+          console.log("chatDeepSeek: ", temperature, question, " => ", StreamResponse)
           res.end();
         });
         resFromAi.on("error", (error) => {
-          console.error("chatChatDeepSeek Error", error);
+          console.error("chatDeepSeek Error", error);
           res.end();
         });
       });    
@@ -364,7 +375,7 @@ let ChatBaiduWenxinModel: any = null
 
     }
     catch(error: any) {
-      console.log("chatChatDeepSeek error", error.message)
+      console.log("chatDeepSeek error", error.message)
       res.write(error.message)
     }
   }

@@ -78,12 +78,13 @@ const LLMModel = (props: any) => {
                                 fullWidth
                                 onChange={(e: any) => {
                                     if(e.target.value != null) {
-                                        setLLMModel( (prevState: any) => ({ ...prevState, model: String(e.target.value) }) )
+                                        const currentLLM = llms.llmModels.filter((item: any)=>item.model == e.target.value)
+                                        setLLMModel( (prevState: any) => ({ ...prevState, model: String(e.target.value), name: String(currentLLM[0]['name']) }) )
                                     }
                                 }}
                                 >
                             {llms && llms.llmModels && llms.llmModels[0] && llms.llmModels.map((item: any, index: number)=>{
-                                return <MenuItem value={item.model} key={`llmModels_${index}`}>{item.model}</MenuItem>
+                                return <MenuItem value={item.model} key={`llmModels_${index}`}>{item.name}</MenuItem>
                             })}
                             </Select>
                         </Grid>

@@ -39,8 +39,8 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
   const [MyDataset, setMyDataset] = useState<any>({MyDatasetOpen: false, MyDatasetList:[]})
   const [DatasetPrompt, setDatasetPrompt] = useState<any>({DatasetPromptOpen: false, REPHRASE_TEMPLATE: '', QA_TEMPLATE: ''})
   const [LLMModel, setLLMModel] = useState<any>({LLMModelOpen: false, 
-                                                model: 'gpt-3.5-turbo', 
-                                                name: 'Chatgpt-3.5',
+                                                model: '', 
+                                                name: '',
                                                 quoteMaxToken: 2, 
                                                 maxContext: 16000,
                                                 functionCall: true,
@@ -186,7 +186,7 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
                                         setLLMModel( (prevState: any) => ({ ...prevState, LLMModelOpen: true }) ) 
                                       }
                                     }>
-                                      {LLMModel.model}
+                                      {LLMModel.name}
                                 </Button>
                               </Box>
                               <LLMModelModel LLMModel={LLMModel} setLLMModel={setLLMModel} ModelData={item} handleAiModelChange={handleAiModelChange} index={index}/>

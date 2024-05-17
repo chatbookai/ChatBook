@@ -126,9 +126,8 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
   
   export async function getApp(id: string, userId: string) {
     const idFilter = filterString(id)
-    const userIdFilter = Number(userId)
     
-    const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT data, avatar, name, intro, type, groupTwo, permission from app where _id = ? and userId = ? `, [idFilter, userIdFilter]) as any[];
+    const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT data, avatar, name, intro, type, groupTwo, permission from app where _id = ? `, [idFilter]) as any[];
     
     let Template: any = {}
     if(SettingRS)  {

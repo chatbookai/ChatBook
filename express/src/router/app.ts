@@ -94,6 +94,10 @@
         const getAppData: any = await getApp(req.body.appId, checkUserTokenData.data.id);
         res.status(200).json(getAppData);
     }
+    else if(authorization && authorization.length == 32 && req.body.appId) {
+      const getAppData: any = await getApp(req.body.appId, authorization);
+      res.status(200).json(getAppData);
+    }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
     }
@@ -160,6 +164,10 @@
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
         const getChatlogPageData: any = await getAppPageAll(Number(pageid), Number(pagesize), req.body);
         res.status(200).json(getChatlogPageData);
+    }
+    else if(authorization && authorization.length == 32) {
+      const getChatlogPageData: any = await getAppPageAll(Number(pageid), Number(pagesize), req.body);
+      res.status(200).json(getChatlogPageData);
     }
     else {
         res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});

@@ -16,14 +16,14 @@ import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
-import { CheckPermission } from 'src/functions/ChatBook'
+import { getAnonymousUserId } from 'src/functions/ChatBook'
 import { useTranslation } from 'react-i18next'
 
 const Chat = (props: any) => {
   // ** States
   const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
   const [app, setApp] = useState<any>(null)
-
+  
   // ** Hooks
   const { t } = useTranslation()
   const theme = useTheme()
@@ -31,13 +31,26 @@ const Chat = (props: any) => {
   const auth = useAuth()
   const router = useRouter()
   const { id } = router.query
+
+  const [anonymousUserId, setAnonymousUserId] = useState<string>('')
+  const [userType, setUserType] = useState<string>('')
   useEffect(() => {
-    CheckPermission(auth, router, false)
+    const tempId = getAnonymousUserId()
+    setAnonymousUserId(tempId)
   }, [])
 
   const getMyApp = async function (id: string) {
     if (auth && auth.user && id) {
-      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getapp', {appId: id}, { headers: { Authorization: auth.user.token, 'Content-Type': 'application/json'} }).then(res=>res.data)
+      let authorization = null
+      if(auth.user && auth.user.id && auth.user.email && auth.user.token)   {
+        authorization = auth.user.token
+        setUserType('User')
+      }
+      else {
+        authorization = anonymousUserId
+        setUserType('Anonymous')
+      }
+      const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getapp', {appId: id}, { headers: { Authorization: authorization, 'Content-Type': 'application/json'} }).then(res=>res.data)
       setApp(RS)
     }
   }
@@ -53,7 +66,7 @@ const Chat = (props: any) => {
 
   return (
     <Fragment>
-      {auth.user && auth.user.email && app ?
+      {auth.user && app ?
       <Box
         className='app-chat'
         sx={{
@@ -68,7 +81,7 @@ const Chat = (props: any) => {
           ...(skin === 'bordered' && { border: `1px solid ${theme.palette.divider}` })
         }}
       >
-        <ChatIndex app={app} userType={'User'}/>
+        <ChatIndex app={app} userType={userType}/>
 
       </Box>
       :

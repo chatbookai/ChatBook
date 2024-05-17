@@ -8,18 +8,13 @@ import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
 import { useRouter } from 'next/router'
-import { CheckPermission } from 'src/functions/ChatBook'
+import { getAnonymousUserId } from 'src/functions/ChatBook'
 
 const AllApp = () => {
 
   // ** Hook
   const auth = useAuth()
-  const router = useRouter()
 
-  useEffect(() => {
-    CheckPermission(auth, router, false)
-  }, [])
-  
   const [pageid, setPageid] = useState<number>(0)
   const [show, setShow] = useState<boolean>(false)
   const [loadingAllData, setLoadingAllData] = useState<boolean>(false)
@@ -32,10 +27,8 @@ const AllApp = () => {
   const [search, setSearch] = useState<string>("ALL")
 
   useEffect(() => {
-    if(auth && auth.user && auth.user.email) {
-      getAppsPage(type, search)
-    }
-  }, [type, search, auth])
+    getAppsPage(type, search)
+  }, [type, search])
 
   const handleSearchFilter = async function (Item: string) {
     setPageid(0)
@@ -46,13 +39,27 @@ const AllApp = () => {
     setAppId("")
   }
 
+  const [anonymousUserId, setAnonymousUserId] = useState<string>('')
+  useEffect(() => {
+    const tempId = getAnonymousUserId()
+    setAnonymousUserId(tempId)
+  }, [])
+
   const getAppsPage = async function (type: string, search: string) {
     console.log("loadingAllData", loadingAllData)
     const pagesize = 20
+    let authorization = null
+    if(auth.user && auth.user.id && auth.user.email && auth.user.token)   {
+      authorization = auth.user.token
+    }
+    else {
+      authorization = anonymousUserId
+    }
+
     if(loadingAllData == false)  {
       setLoading(true)
       const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getapppageall/' + pageid + '/' + pagesize, {type, search},  {
-        headers: { Authorization: auth?.user?.token, 'Content-Type': 'application/json' },
+        headers: { Authorization: authorization, 'Content-Type': 'application/json' },
       }).then(res => res.data);
       if(RS && RS.data) {
         const appInitial: string[] = []

@@ -59,6 +59,7 @@ const AppChat = (props: any) => {
       userId = anonymousUserId
       authorization = anonymousUserId
     }
+    console.log("getChatLogList",userType)
     if(userId) {
       const RS = await axios.post(authConfig.backEndApiChatBook + '/api/app/chatlog/' + appId + '/0/90', {userType}, { 
         headers: { 
@@ -382,7 +383,7 @@ const AppChat = (props: any) => {
       setRefreshChatCounter(refreshChatCounter + 1)
       const startTime = performance.now()
       const GetDatasetFromAppData: any = GetDatasetFromApp(app)
-      const ChatAiOutputV1Status = await ChatAiOutputV1(_id, Obj.message, authorization, userId, chatId, app.id, publishId, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage, userType, true, setQuestionGuide, t('questionGuideTemplate'), stopMsg, setStopMsg, GetModelFromAppValue, GetDatasetFromAppData.MyDatasetIdList, GetDatasetFromAppData.DatasetPrompt)
+      const ChatAiOutputV1Status = await ChatAiOutputV1(_id, Obj.message, authorization, userId, chatId, app.id, publishId, setProcessingMessage, GetSystemPromptFromAppValue, setFinishedMessage, userType, true, setQuestionGuide, t('questionGuideTemplate'), stopMsg, setStopMsg, GetModelFromAppValue, GetDatasetFromAppData?.MyDatasetIdList, GetDatasetFromAppData?.DatasetPrompt)
       const endTime = performance.now();
       setResponseTime(endTime - startTime);
       if(ChatAiOutputV1Status)      {

@@ -202,10 +202,16 @@ const Navigation = (props: Props) => {
               : null}
           </ScrollWrapper>
         </Box>
-        <Box className='actions-right' sx={{ position: 'absolute', bottom: 15, left: 3, width: '100%', overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
-          {auth.user && authConfig.productName=="ChatBook" && (
+        <Box sx={{ position: 'absolute', bottom: 15, left: 3, width: '100%', overflow: 'hidden', display: 'flex', alignItems: 'center' }}>
+          {auth && auth.user && auth.user.email && authConfig.productName=="ChatBook" && (
             <Box sx={{mr: 1}}>
               <UserDropdown settings={settings} />
+              <ModeToggler settings={settings} saveSettings={saveSettings} />
+              <LanguageDropdown settings={settings} saveSettings={saveSettings} />
+            </Box>
+          )}
+          {auth && auth.user && !auth.user.email && authConfig.productName=="ChatBook" && (
+            <Box sx={{mr: 1}}>
               <ModeToggler settings={settings} saveSettings={saveSettings} />
               <LanguageDropdown settings={settings} saveSettings={saveSettings} />
             </Box>

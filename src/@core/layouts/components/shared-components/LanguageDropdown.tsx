@@ -27,7 +27,7 @@ const LanguageDropdown = ({ settings, saveSettings }: Props) => {
   // ** Vars
   const { layout } = settings
 
-  const handleLangItemClick = (lang: 'en' | 'zh-CN' | 'Ru' | 'Kr' ) => {
+  const handleLangItemClick = (lang: 'en' | 'zh-CN' | 'Ru' ) => {
     i18n.changeLanguage(lang)
     setChatBookLanguage(lang)
   }

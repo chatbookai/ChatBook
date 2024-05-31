@@ -70,6 +70,16 @@ app.use((err, req, res, next) => {
 
 app.use(express.static(join(__dirname, '../../out')));
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+const startServer = (port) => {
+  return app.listen(port, () => {
+    console.log(`Express server is running on port ${port}`);
+  });
+};
+
+const getPort = () => {
+  return port;
+};
+
+const server = startServer(port);
+
+export { app, server, getPort };

@@ -1,9 +1,11 @@
-import { app, BrowserWindow, Menu, ipcMain, dialog } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import isDev from 'electron-is-dev'
+import { server, getPort } from './src/app.js';
+
+const PORT = getPort();
 
 
 let mainWindow;
-let ChivesLightNodeSetting;
 
 function createMainWindow() {
   mainWindow = new BrowserWindow({
@@ -15,7 +17,7 @@ function createMainWindow() {
     },
   });
 
-  mainWindow.loadURL('http://localhost:1988');
+  mainWindow.loadURL('http://localhost:' + PORT);
   
   if (isDev) {
     mainWindow.webContents.openDevTools();
@@ -39,6 +41,7 @@ app.on('activate', () => {
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
+    server.close();
     app.quit();
   }
 });

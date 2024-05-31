@@ -1,11 +1,11 @@
 // globals.ts
 import sqlite3 from 'sqlite3';
 import { promisify } from 'util';
-import { DataDir, CONDENSE_TEMPLATE_INIT, QA_TEMPLATE_INIT } from './const';
-import { enableDir } from './utils';
+import { DataDir, CONDENSE_TEMPLATE_INIT, QA_TEMPLATE_INIT } from './const.js';
+import { enableDir } from './utils.js';
 
 // @ts-ignore
-export const db: sqlite3.Database = new sqlite3.Database(DataDir + '/ChatBookSqlite3.db', { encoding: 'utf8' });
+export const db = new sqlite3.Database(DataDir + '/ChatBookSqlite3.db', { encoding: 'utf8' });
 
 export const getDbRecord = promisify(db.get.bind(db));
 export const getDbRecordALL = promisify(db.all.bind(db));

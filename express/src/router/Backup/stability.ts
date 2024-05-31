@@ -1,5 +1,5 @@
   // app.ts
-  import express, { Request, Response } from 'express';
+  import express from 'express';
 
   import { checkUserToken, checkUserTokenXWE, checkUserTokenXWENotCostAmount } from '../../utils/user';
 
@@ -9,10 +9,10 @@
 
   const app = express();
 
-  app.post('/api/getUserImagesStabilityAi', async (req: Request, res: Response) => {
+  app.post('/api/getUserImagesStabilityAi', async (req, res) => {
     const { authorization } = req.headers;
     const { pageid, pagesize } = req.body;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateimageData = await getUserImagesStabilityAi(checkUserTokenData.data.id, pageid, pagesize);
       //console.log("generateimageData", generateimageData);
@@ -23,16 +23,16 @@
     }
   });
 
-  app.post('/api/getUserImagesAll', async (req: Request, res: Response) => {
+  app.post('/api/getUserImagesAll', async (req, res) => {
     const { pageid, pagesize } = req.body;
     const getUserImagesAllData = await getUserImagesAll(pageid, pagesize);
     //console.log("getUserImagesAllData", getUserImagesAllData);
     res.status(200).json(getUserImagesAllData).end();
   });
 
-  app.post('/api/generateImageFromTextStabilityAi', async (req: Request, res: Response) => {
+  app.post('/api/generateImageFromTextStabilityAi', async (req, res) => {
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateImageFromTextStabilityAiData = await generateImageFromTextStabilityAi(checkUserTokenData, req.body);
       //console.log("generateImageFromTextStabilityAiData", generateImageFromTextStabilityAiData);
@@ -43,9 +43,9 @@
     }
   });
 
-  app.post('/api/generateImageFromTextStabilityAiXWE', async (req: Request, res: Response) => {
+  app.post('/api/generateImageFromTextStabilityAiXWE', async (req, res) => {
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserTokenXWE(authorization as string);
+    const checkUserTokenData = await checkUserTokenXWE(authorization);
     //console.log("checkUserTokenData", checkUserTokenData)
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateImageFromTextStabilityAiData = await generateImageFromTextStabilityAi(checkUserTokenData, req.body);
@@ -57,9 +57,9 @@
     }
   });
 
-  app.post('/api/generateImageStabilityAiXWE', async (req: Request, res: Response) => {
+  app.post('/api/generateImageStabilityAiXWE', async (req, res) => {
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserTokenXWE(authorization as string);
+    const checkUserTokenData = await checkUserTokenXWE(authorization);
     //console.log("checkUserTokenData", checkUserTokenData)
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateImageFromTextStabilityAiData = await generateImageFromTextStabilityAi(checkUserTokenData, req.body);
@@ -71,9 +71,9 @@
     }
   });
 
-  app.post('/api/generateImageFromImageStabilityAi', uploadImageForImageGenerateImage().array('image', 10), async (req: Request, res: Response) => {
+  app.post('/api/generateImageFromImageStabilityAi', uploadImageForImageGenerateImage().array('image', 10), async (req, res) => {
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateImageFromImageStabilityAiData = await generateImageFromImageStabilityAi(checkUserTokenData, req.body, req.files);
       //console.log("generateImageFromImageStabilityAiData", generateImageFromImageStabilityAiData);
@@ -84,10 +84,10 @@
     }
   });
 
-  app.post('/api/getUserImagesXWE', async (req: Request, res: Response) => {
+  app.post('/api/getUserImagesXWE', async (req, res) => {
     const { pageid, pagesize } = req.body;
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserTokenXWENotCostAmount(authorization as string);
+    const checkUserTokenData = await checkUserTokenXWENotCostAmount(authorization);
     //console.log("checkUserTokenData", checkUserTokenData)
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateimageData = await getUserImagesStabilityAi(checkUserTokenData.data.id, pageid, pagesize);
@@ -99,9 +99,9 @@
     }
   });
 
-  app.post('/api/generateVideoStabilityAi', uploadImageForVideo().array('image', 10), async (req: Request, res: Response) => {
+  app.post('/api/generateVideoStabilityAi', uploadImageForVideo().array('image', 10), async (req, res) => {
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateVideoStabilityAiData = await generateVideoStabilityAi(checkUserTokenData, req.body, req.files);
       //console.log("generateVideoStabilityAiData", generateVideoStabilityAiData);
@@ -112,17 +112,17 @@
     }
   });
 
-  app.get('/api/getVideoStabilityAi', async (req: Request, res: Response) => {
+  app.get('/api/getVideoStabilityAi', async (req, res) => {
     const id = "b8a57ec51f4cf5fb5e98f82e6b6efcd118651797fc90fdb8ef662d25625d5fff"
     const getVideoStabilityAiData = await getVideoStabilityAi(id);
     //console.log("generateVideoStabilityAiData", getVideoStabilityAiData);
     res.status(200).send(getVideoStabilityAiData).end();
   });
 
-  app.post('/api/getUserVideosStabilityAi', async (req: Request, res: Response) => {
+  app.post('/api/getUserVideosStabilityAi', async (req, res) => {
     const { authorization } = req.headers;
     const { pageid, pagesize } = req.body;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const getUserVideosStabilityAiData = await getUserVideosStabilityAi(checkUserTokenData.data.id, pageid, pagesize);
       //console.log("getUserVideosStabilityAiData", getUserVideosStabilityAiData);
@@ -133,17 +133,17 @@
     }
   });
 
-  app.post('/api/getUserVideosStabilityAiAll', async (req: Request, res: Response) => {
+  app.post('/api/getUserVideosStabilityAiAll', async (req, res) => {
     const { pageid, pagesize } = req.body;
     const getUserVideosStabilityAiAllData = await getUserVideosStabilityAiAll(pageid, pagesize);
     //console.log("getUserVideosStabilityAiAllData", getUserVideosStabilityAiAllData);
     res.status(200).json(getUserVideosStabilityAiAllData).end();
   });
 
-  app.post('/api/generateImageUpscaleStabilityAi', async (req: Request, res: Response) => {
+  app.post('/api/generateImageUpscaleStabilityAi', async (req, res) => {
     const { authorization } = req.headers;
     const { filename } = req.body;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateImageUpscaleStabilityAiData = await generateImageUpscaleStabilityAi(checkUserTokenData, filename, 'stability.ai');
       //console.log("generateImageUpscaleStabilityAiData", generateImageUpscaleStabilityAiData);
@@ -154,10 +154,10 @@
     }
   });
 
-  app.post('/api/generateImageUpscaleGetImg', async (req: Request, res: Response) => {
+  app.post('/api/generateImageUpscaleGetImg', async (req, res) => {
     const { authorization } = req.headers;
     const { filename } = req.body;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateImageUpscaleStabilityAiData = await generateImageUpscaleStabilityAi(checkUserTokenData, filename, 'getimg.ai');
       //console.log("generateImageUpscaleStabilityAiData", generateImageUpscaleStabilityAiData);
@@ -168,12 +168,12 @@
     }
   });
 
-  app.get('/api/video/:file', async (req: Request, res: Response) => {
+  app.get('/api/video/:file', async (req, res) => {
     const { file } = req.params;
     outputVideo(res, file);
   });
 
-  app.get('/api/videoimage/:file', async (req: Request, res: Response) => {
+  app.get('/api/videoimage/:file', async (req, res) => {
     const { file } = req.params;
     outputVideoImage(res, file);
   });

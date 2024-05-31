@@ -1,4 +1,3 @@
-import { Request, Response } from 'express';
 
 import * as fs from 'fs'
 import path from 'path'
@@ -49,45 +48,42 @@ import { Document } from '@langchain/core/documents';
 import { RunnableSequence } from '@langchain/core/runnables';
 import { BytesOutputParser, StringOutputParser } from '@langchain/core/output_parsers';
 
-import { DataDir } from './const';
-import { db, getDbRecord, getDbRecordALL } from './db'
-import { getLLMSSetting, log, isFile, formatDateString, enableDir, getNanoid, writeFile } from './utils'
+import { DataDir } from './const.js';
+import { db, getDbRecord, getDbRecordALL } from './db.js'
+import { getLLMSSetting, log, isFile, formatDateString, enableDir, getNanoid, writeFile } from './utils.js'
 
 import { LanceDB } from "@langchain/community/vectorstores/lancedb";
 import { connect } from "vectordb";
 
-import { createEmbeddingsFromList, getWebsiteUrlContext, Entry, EntryWithContext, formatMessage, rephraseInput, retrieveContext, REPHRASE_TEMPLATE_INITIAL, QA_TEMPLATE_INITIAL } from './lancedb';
-import { Message as VercelChatMessage, StreamingTextResponse } from 'ai'
+import { createEmbeddingsFromList, getWebsiteUrlContext, formatMessage, rephraseInput, retrieveContext } from './lancedb.js';
 
 //.ENV
 import dotenv from 'dotenv';
 dotenv.config();
 
-type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
-
 const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 
-let getLLMSSettingData: any = null
-let ChatOpenAIModel: any = null
+let getLLMSSettingData = null
+let ChatOpenAIModel = null
 let ChatBookOpenAIStreamResponse = ''
-let ChatGeminiModel: any = null
-let ChatBaiduWenxinModel: any = null
+let ChatGeminiModel = null
+let ChatBaiduWenxinModel = null
 
   export function NotUsed() {
     console.log("OpenAI", OpenAI)
     console.log("PromptTemplate", PromptTemplate)
   }
 
-  export async function ChatApp(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number, datasetId: string[], DatasetPrompt: any) {
+  export async function ChatApp(_id, res, userId, question, history, template, appId, publishId, allowChatLog, temperature, datasetId, DatasetPrompt) {
 
-    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT * from app where _id = ?", [appId]);
-    const AppDataText: string = Records ? Records.data : null;  
-    const app: any = JSON.parse(AppDataText)
+    const Records = await (getDbRecord)("SELECT * from app where _id = ?", [appId]);
+    const AppDataText = Records ? Records.data : null;  
+    const app = JSON.parse(AppDataText)
     if(app && app.modules) {
-      const AiNode = app.modules.filter((item: any)=>item.type == 'chatNode')
+      const AiNode = app.modules.filter((item)=>item.type == 'chatNode')
       if(AiNode && AiNode[0] && AiNode[0].data && AiNode[0].data.inputs) {
-        const modelList = AiNode[0].data.inputs.filter((itemNode: any)=>itemNode.key == 'AiModel')
+        const modelList = AiNode[0].data.inputs.filter((itemNode)=>itemNode.key == 'AiModel')
         if(modelList && modelList[0] && modelList[0]['value']) {
           const modelName = modelList[0]['value']
           console.log("modelName:", modelName, "datasetId:", )
@@ -132,7 +128,7 @@ let ChatBaiduWenxinModel: any = null
 
   }
 
-  export async function chatOpenAI(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number) {
+  export async function chatOpenAI(_id, res, userId, question, history, template, appId, publishId, allowChatLog, temperature) {
     ChatBookOpenAIStreamResponse = ''
     const startTime = performance.now()
     if(OPENAI_API_KEY) {
@@ -140,7 +136,7 @@ let ChatBaiduWenxinModel: any = null
         ChatOpenAIModel = new ChatOpenAI({ 
           modelName: "gpt-3.5-turbo",
           openAIApiKey: OPENAI_API_KEY, 
-          temperature: Number(temperature || 0.5),
+          temperature: Number(temperature),
           streaming: true,
           callbacks: [
             {
@@ -152,7 +148,7 @@ let ChatBaiduWenxinModel: any = null
           ],
          });    
       }
-      catch(Error: any) {
+      catch(Error) {
         log('chatOpenAI', 'chatOpenAI', 'chatOpenAI', "chatOpenAI Error", Error)
         return 
       }
@@ -163,7 +159,7 @@ let ChatBaiduWenxinModel: any = null
       return 
     }
     console.log("ChatOpenAIModel", ChatOpenAIModel)
-    const pastMessages: any[] = []
+    const pastMessages = []
     if(template && template!='') {
       pastMessages.push(new SystemMessage(template))
     }
@@ -192,14 +188,14 @@ let ChatBaiduWenxinModel: any = null
         console.log("chatOpenAI: ", temperature, question, " => ", ChatBookOpenAIStreamResponse)
       }
     }
-    catch(error: any) {
+    catch(error) {
       console.log("chatOpenAI error", error.message)
       res.write(error.message)
     }    
     res.end();
   }
 
-  export async function chatOpenAIDataset(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number, datasetId: string[], DatasetPrompt: any) {
+  export async function chatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId, allowChatLog, temperature, datasetId, DatasetPrompt) {
     ChatBookOpenAIStreamResponse = ''
     const startTime = performance.now()
     if(OPENAI_API_KEY) {
@@ -207,11 +203,11 @@ let ChatBaiduWenxinModel: any = null
         ChatOpenAIModel = new ChatOpenAI({ 
           modelName: "gpt-3.5-turbo",
           openAIApiKey: OPENAI_API_KEY, 
-          temperature: Number(temperature || 0.5),
+          temperature: temperature(temperature ?? 0.5),
           streaming: true,
          });    
       }
-      catch(Error: any) {
+      catch(Error) {
         console.log("chatOpenAIDataset AIModel Connect Error:", Error.message)
         return 
         return 
@@ -222,7 +218,7 @@ let ChatBaiduWenxinModel: any = null
       res.end();
       return 
     }
-    const pastMessages: any[] = []
+    const pastMessages = []
     if(template && template!='') {
       pastMessages.push(new SystemMessage(template))
     }
@@ -277,16 +273,16 @@ let ChatBaiduWenxinModel: any = null
         console.log("chatOpenAIDataset: ", temperature, question, " => ", ChatBookOpenAIStreamResponse)
       }
     }
-    catch(error: any) {
+    catch(error) {
       console.log("chatOpenAIDataset error", error.message)
       res.write(error.message)
     }    
     res.end();
   }
 
-  export async function chatDeepSeek(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number, temperature: number) {
+  export async function chatDeepSeek(_id, res, userId, question, history, template, appId, publishId, allowChatLog, temperature) {
     const startTime = performance.now()
-    const pastMessages: any[] = [];
+    const pastMessages = [];
     if (template && template !== '') {
         pastMessages.push({ "role": "system", "content": template });
     }
@@ -315,7 +311,7 @@ let ChatBaiduWenxinModel: any = null
     };
     try {
       const reqFromAi = https.request(options, (resFromAi) => {
-        let chunks: any[] = [];
+        let chunks = [];
         resFromAi.setEncoding('utf8');
         resFromAi.on("data", (chunk) => {
           if( chunk && chunk != 'data: [DONE]' && chunk != 'data: [DONE]\n' && !chunk.startsWith('data: [DONE]') )  {
@@ -324,7 +320,7 @@ let ChatBaiduWenxinModel: any = null
               //console.log('cleanedChunk cleanedChunk:', cleanedChunk);
               const chunkData = JSON.parse(cleanedChunk);
               if (chunkData && chunkData.choices && Array.isArray(chunkData.choices)) {
-                chunkData.choices.forEach((choice: any) => {
+                chunkData.choices.forEach((choice) => {
                     const ReplayContent = choice?.delta?.content
                     if(ReplayContent != null) {
                       //console.log('Received choice:', ReplayContent);
@@ -365,7 +361,7 @@ let ChatBaiduWenxinModel: any = null
         "presence_penalty": 0,
         "stop": null,
         "stream": true,
-        "temperature": Number(temperature || 0.5),
+        "temperature": (temperature ?? 0.5),
         "top_p": 1,
         "logprobs": false,
         "top_logprobs": null
@@ -374,13 +370,13 @@ let ChatBaiduWenxinModel: any = null
       reqFromAi.end();
 
     }
-    catch(error: any) {
+    catch(error) {
       console.log("chatDeepSeek error", error.message)
       res.write(error.message)
     }
   }
 
-  export function makeChainOpenAI(retriever: any, CONDENSE_TEMPLATE: string, QA_TEMPLATE: string) {
+  export function makeChainOpenAI(retriever, CONDENSE_TEMPLATE, QA_TEMPLATE) {
     const condenseQuestionPrompt = ChatPromptTemplate.fromTemplate(CONDENSE_TEMPLATE);
     const answerPrompt = ChatPromptTemplate.fromTemplate(QA_TEMPLATE);
 
@@ -424,13 +420,13 @@ let ChatBaiduWenxinModel: any = null
     return conversationalRetrievalQAChain;
   }
 
-  export function combineDocumentsFn(docs: any[], separator = '\n\n') {
+  export function combineDocumentsFn(docs, separator = '\n\n') {
     const serializedDocs = docs.map((doc) => doc.pageContent);
 
     return serializedDocs.join(separator);
   }
 
-  export async function initChatBookGeminiStream(res: Response, datasetId: number | string) {
+  export async function initChatBookGeminiStream(res, datasetId) {
     getLLMSSettingData = await getLLMSSetting(datasetId);
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE;
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
@@ -453,10 +449,10 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function chatChatGemini(_id: string, res: Response, userId: string, question: string, history: any[], template: string, appId: string, publishId: string, allowChatLog: number) {
+  export async function chatChatGemini(_id, res, userId, question, history, template, appId, publishId, allowChatLog) {
     const datasetId = ''
     await initChatBookGeminiStream(res, datasetId)
-    const pastMessages: any[] = []
+    const pastMessages = []
     if(template && template!='') {
       pastMessages.push(new SystemMessage(template))
     }
@@ -489,14 +485,14 @@ let ChatBaiduWenxinModel: any = null
         insertChatLog.finalize();
       }
     }
-    catch(error: any) {
+    catch(error) {
       console.log("chatChatGemini error", error.message)
       res.write(error.message)
     }
     res.end();
   }
 
-  export async function chatChatGeminiMindMap(res: Response, userId: string, question: string, history: any[], template: string, appId: number) {
+  export async function chatChatGeminiMindMap(res, userId, question, history, template, appId) {
     const datasetId = ''
     await initChatBookGeminiStream(res, datasetId)
     const TextPrompts = template && template != '' ? template : "\n 要求生成一份PPT的大纲,以行业总结性报告的形式显现,生成15-20页左右,每一页3-6个要点,每一个要点字数在10-30之间,返回格式为Markdown,标题格式使用: **标题名称** 的形式表达."
@@ -522,14 +518,14 @@ let ChatBaiduWenxinModel: any = null
       insertChatLog.run(question, response, userId, Date.now(), JSON.stringify([]), JSON.stringify(history), appId);
       insertChatLog.finalize();
     }
-    catch(error: any) {
+    catch(error) {
       console.log("chatChatGemini error", error.message)
       res.write(error.message)
     }
     res.end();
   }
 
-  export async function initChatBookBaiduWenxinStream(res: Response, datasetId: number | string) {
+  export async function initChatBookBaiduWenxinStream(res, datasetId) {
     getLLMSSettingData = await getLLMSSetting(datasetId);
     const BAIDU_API_KEY = getLLMSSettingData.OPENAI_API_KEY ?? "1AWXpm1Cd8lbxmAaFoPR0dNx";
     const BAIDU_SECRET_KEY = getLLMSSettingData.OPENAI_API_BASE ?? "TQy5sT9Mz4xKn0tR8h7W6LxPWIUNnXqq";
@@ -555,7 +551,7 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function chatChatBaiduWenxin(res: Response, userId: string, question: string, history: any[], template: string, appId: number) {
+  export async function chatChatBaiduWenxin(res, userId, question, history, template, appId) {
     const datasetId = ''
     await initChatBookBaiduWenxinStream(res, datasetId);
     if(!ChatBaiduWenxinModel) {
@@ -563,7 +559,7 @@ let ChatBaiduWenxinModel: any = null
       return
     }
     try {
-      const pastMessages: any[] = []
+      const pastMessages = []
       if(template && template!='') {
         pastMessages.push(new SystemMessage(template))
       }
@@ -586,18 +582,18 @@ let ChatBaiduWenxinModel: any = null
 
       return response.content;
     }
-    catch(error: any) {
+    catch(error) {
       console.log("chatChatBaiduWenxin error", error.message)
       return error.message;
     }    
   }
 
-  export async function debug_agent(res: Response, datasetId: number | string) {
+  export async function debug_agent(res, datasetId) {
     
 
   }
 
-  export async function GenereateImageUsingDallE2(res: Response, userId: string, question: string, size='1024x1024') {
+  export async function GenereateImageUsingDallE2(res, userId, question, size='1024x1024') {
     const datasetId = ''
     getLLMSSettingData = await getLLMSSetting(datasetId);    
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE ?? "https://api.openai.com/v1";
@@ -664,7 +660,7 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function GenereateAudioUsingTTS(res: Response, ModelId: string, userId: string, question: string, voice='alloy', appId: string) {
+  export async function GenereateAudioUsingTTS(res, ModelId, userId, question, voice='alloy', appId) {
     getLLMSSettingData = await getLLMSSetting(ModelId);    
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE ?? "https://api.openai.com/v1";
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
@@ -716,7 +712,7 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function outputAudio(res: Response, file: string) {
+  export async function outputAudio(res, file) {
     try {
       const fileList = file.split('_')
       const FileName = DataDir + "/audio/" + fileList[0] + "/" + file + ".mp3";
@@ -736,7 +732,7 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function compressPng(file: string) {
+  export async function compressPng(file) {
     const FileName = path.join(DataDir, "/image/"+ file + ".png");
     const FileNameNew = path.join(DataDir, "/image/"+ file + "_thumbnail.png");
     if(!isFile(FileNameNew) && isFile(FileName))   {
@@ -744,14 +740,14 @@ let ChatBaiduWenxinModel: any = null
       try { 
         await sharp(FileName).resize({ fit: 'inside', width: 800, withoutEnlargement: true }).png({ quality }).toFile(FileNameNew);
       }
-      catch(error: any) {
+      catch(error) {
         console.log("compressPng", file, error.message)
       }
 
     }
   }
 
-  export async function compressImageForImage(file: string, width: number | undefined, height: number | undefined) {
+  export async function compressImageForImage(file, width, height) {
     const FileName = path.join(DataDir, "/imageforimage/"+ file);
     const FileNameNew = path.join(DataDir, "/imageforimage/Resize_" + (width ? width+'_'+file : height+'_'+file) );
     if(!isFile(FileNameNew) && isFile(FileName))   {
@@ -764,7 +760,7 @@ let ChatBaiduWenxinModel: any = null
           await sharp(FileName).resize({ fit: 'inside', height: height, withoutEnlargement: true }).png({ quality }).toFile(FileNameNew);
         }
       }
-      catch(error: any) {
+      catch(error) {
         console.log("compressPng", file, error.message)
       }
       console.log("compressPng", file)
@@ -772,7 +768,7 @@ let ChatBaiduWenxinModel: any = null
     return FileNameNew
   }
 
-  export async function outputImage(res: Response, file: string) {
+  export async function outputImage(res, file) {
     try {
       await compressPng(file);
       const FileName = path.join(DataDir, "/image/"+ file + "_thumbnail.png");
@@ -793,7 +789,7 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function outputAvatarForApp(res: Response, file: string) {
+  export async function outputAvatarForApp(res, file) {
     try {
       await compressPng(file);
       const FileName = path.join(DataDir, "/avatarforapp/"+ file);
@@ -814,7 +810,7 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function outputAvatarForDataset(res: Response, file: string) {
+  export async function outputAvatarForDataset(res, file) {
     try {
       await compressPng(file);
       const FileName = path.join(DataDir, "/avatarfordataset/"+ file);
@@ -835,7 +831,7 @@ let ChatBaiduWenxinModel: any = null
     }
   }
 
-  export async function outputImageOrigin(res: Response, file: string) {
+  export async function outputImageOrigin(res, file) {
     try {
       const FileName = path.join(DataDir, "/image/"+ file + ".png");
       if(isFile(FileName))   {
@@ -858,8 +854,8 @@ let ChatBaiduWenxinModel: any = null
   export async function parseFilesAndWeb() {
     try {
 
-      const RecordsAll: any[] = await getDbRecordALL(`SELECT * from collection where status = '0' order by id asc limit 10`) as any[];
-      await Promise.all(RecordsAll.map(async (CollectionItem: any)=>{
+      const RecordsAll = await getDbRecordALL(`SELECT * from collection where status = '0' order by id asc limit 10`);
+      await Promise.all(RecordsAll.map(async (CollectionItem)=>{
         
         if(CollectionItem && CollectionItem.type == 'Web' && CollectionItem.name && CollectionItem.name.trim().startsWith('http'))  {
           const getWebsiteUrlContextData = await getWebsiteUrlContext([CollectionItem.name.trim()]);
@@ -873,7 +869,7 @@ let ChatBaiduWenxinModel: any = null
         }
         else if(CollectionItem && CollectionItem.type == 'File') {
           const filePath = DataDir + '/uploadfiles/' + CollectionItem.newName;
-          let LoaderData: any = null
+          let LoaderData = null
           if(CollectionItem.suffixName == '.pdf' && isFile(filePath))  {
             LoaderData = new PDFLoader(filePath);
           }
@@ -901,7 +897,7 @@ let ChatBaiduWenxinModel: any = null
             UpdateDatasetStatus.finalize();
             const destinationFilePath = path.join(DataDir + '/parsedfiles/', CollectionItem.newName);
             console.log("destinationFilePath", destinationFilePath)
-            fs.rename(DataDir + '/uploadfiles/' + CollectionItem.newName, destinationFilePath, (err: any) => {
+            fs.rename(DataDir + '/uploadfiles/' + CollectionItem.newName, destinationFilePath, (err) => {
               if (err) {
                 console.log('parseFilesAndWeb Error moving file:', err, CollectionItem.newName);
               } else {
@@ -919,17 +915,17 @@ let ChatBaiduWenxinModel: any = null
 
       }))
 
-    } catch (error: any) {
+    } catch (error) {
       console.log('parseFilesAndWeb Failed to ingest your data', error);
     }
   }
 
   export async function vectorDdProcess() {
     try {
-      const RecordsAll: any[] = await getDbRecordALL(`SELECT * from dataset where syncStatus = '1' limit 1`) as any[];
-      await Promise.all(RecordsAll.map(async (DatasetItem: any)=>{
+      const RecordsAll = await getDbRecordALL(`SELECT * from dataset where syncStatus = '1' limit 1`);
+      await Promise.all(RecordsAll.map(async (DatasetItem)=>{
         
-        const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from collection where datasetId = ? and status = ? ", [DatasetItem._id, 0]);
+        const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from collection where datasetId = ? and status = ? ", [DatasetItem._id, 0]);
         
         console.log("Records", Records)
         if(Records && Records.NUM > 0)    {
@@ -944,22 +940,22 @@ let ChatBaiduWenxinModel: any = null
               ChatOpenAIModel = new ChatOpenAI({ 
                 modelName: "gpt-3.5-turbo",
                 openAIApiKey: OPENAI_API_KEY, 
-                temperature: Number(0.1),
+                temperature: 0.1,
                });
             }
-            catch(Error: any) {
+            catch(Error) {
               log('parseFilesAndWeb', 'parseFilesAndWeb', 'parseFilesAndWeb', "parseFilesAndWeb Error", Error)
             }
           }
           if(ChatOpenAIModel)   {
-            const collectionList: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from collection where datasetId = ?`, [DatasetItem._id]) as any[];
+            const collectionList = await (getDbRecordALL)(`SELECT * from collection where datasetId = ?`, [DatasetItem._id]);
             //console.log("collectionList", collectionList, DatasetItem._id)
-            const LanceDbData: EntryWithContext[] = [];
-            collectionList.map((CollectionItem: any, CollectionIndex: number)=>{
+            const LanceDbData = [];
+            collectionList.map((CollectionItem, CollectionIndex)=>{
               if(CollectionItem.type == 'File' && isFile(CollectionItem.content)) {
                 const FileContent = fs.readFileSync(CollectionItem.content, 'utf8');
                 const Content = JSON.parse(FileContent)
-                Content.map((ContentItem: any, ContentIndex: number)=>{
+                Content.map((ContentItem, ContentIndex)=>{
                   //console.log("ContentItem", ContentItem.metadata.loc)
                   //console.log("ContentItem", ContentItem.metadata.pdf)
                   //console.log("ContentItem", ContentItem.metadata.source)
@@ -968,13 +964,13 @@ let ChatBaiduWenxinModel: any = null
                     title: ContentItem.metadata.source,
                     text: ContentItem.pageContent,
                     context: ContentItem.pageContent,
-                  } as EntryWithContext)
+                  })
                 })
               }
               if(CollectionItem.type == 'Web') {
                 const Content = JSON.parse(CollectionItem.content)
-                Content.map((ContentItem: any, ContentIndex: number)=>{
-                  LanceDbData.push(ContentItem as EntryWithContext)
+                Content.map((ContentItem, ContentIndex)=>{
+                  LanceDbData.push(ContentItem)
                 })
               }
             })
@@ -992,7 +988,7 @@ let ChatBaiduWenxinModel: any = null
         
       }))
 
-    } catch (error: any) {
+    } catch (error) {
       console.log('vectorDdProcess Failed to ingest your data', error);
     }
   }

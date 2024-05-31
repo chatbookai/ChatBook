@@ -2,12 +2,10 @@ import axios from 'axios'
 import * as fs from 'fs'
 import { DataDir } from '../const'
 
-import { db, getDbRecord, getDbRecordALL } from '../db'
+import { db, getDbRecord, getDbRecordALL } from '../db.mjs'
 import { timestampToDate, filterNegativePrompt } from '../utils'
 
 const GETIMG_AI_SECRET_KEY = process.env.GETIMG_AI_SECRET_KEY
-
-type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
 export async function getUserBalanceGetImg() {
   const url = 'https://api.getimg.ai/v1/account/balance';
@@ -34,7 +32,7 @@ export async function getModelsToGenereateImage() {
           'authorization': `Bearer ${GETIMG_AI_SECRET_KEY}`,
         },
       }).then(res=>res.data);
-    response.map((Item: any)=>{
+    response.map((Item)=>{
         console.log("Model ID: ", Item.id)
     })
     return response;
@@ -53,7 +51,7 @@ export async function getModels() {
     return response;
 }
 
-export async function getModelDetail(id: string) {
+export async function getModelDetail(id) {
     const url = 'https://api.getimg.ai/v1/models/' + id;
     const response = await axios.get(url, {
         headers: {
@@ -67,26 +65,26 @@ export async function getModelDetail(id: string) {
 }
 
 interface StableDiffusionV1 {
-  model: string
-  prompt: string
-  negativePrompt: string
-  width: number
-  height: number
-  steps: number
-  guidanceScale: number
-  numberOfImages: number
-  sampler: string
-  outpuFormat: string
-  seed: number | string
+  model
+  prompt
+  negativePrompt
+  width
+  height
+  steps
+  guidanceScale
+  numberOfImages
+  sampler
+  outpuFormat
+  seed
 }
 
-export async function generateImageGetImg(checkUserTokenData: any, data: StableDiffusionV1) {
-    const getUserBalanceGetImgStatus: boolean = await getUserBalanceGetImg();
+export async function generateImageGetImg(checkUserTokenData, data: StableDiffusionV1) {
+    const getUserBalanceGetImgStatus = await getUserBalanceGetImg();
     if(getUserBalanceGetImgStatus == false)   {
       return {status: 'error', msg: 'Insufficient balance'};
     }
     const url = 'https://api.getimg.ai/v1/stable-diffusion/text-to-image';
-    const POSTDATA: any = {}
+    const POSTDATA = {}
     POSTDATA['model'] = data.model
     POSTDATA['prompt'] = data.prompt
     POSTDATA['negative_prompt'] = filterNegativePrompt(data.negativePrompt)
@@ -120,7 +118,7 @@ export async function generateImageGetImg(checkUserTokenData: any, data: StableD
             insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, data.model, data.prompt, filterNegativePrompt(data.negativePrompt), data.steps, POSTDATA['seed'], POSTDATA['scheduler'], orderId, JSON.stringify(POSTDATA), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, 'getimg.ai');
             insertSetting.finalize();
           }
-          catch(error: any) {
+          catch(error) {
             console.log("generateImageGetImg insertSetting Error", error.message)
           }
           return {status: 'ok', msg: Base64ToImgData};
@@ -129,7 +127,7 @@ export async function generateImageGetImg(checkUserTokenData: any, data: StableD
           return {status: 'error', msg: res.data.toString()};
       }
     }
-    catch(error: any) {
+    catch(error) {
       console.log("generateImageGetImg Error", error.message)
       return {status: 'error', msg: error.message};
     }
@@ -137,7 +135,7 @@ export async function generateImageGetImg(checkUserTokenData: any, data: StableD
 }
 
 export async function TextToImageALL() {
-    const FilesList: any[] = [];
+    const FilesList = [];
     //FilesList.push(await generateimage("stable-diffusion-v1-5"))
     //FilesList.push(await generateimage("stable-diffusion-v2-1"))
     //FilesList.push(await generateimage("realistic-vision-v1-3"))
@@ -174,16 +172,16 @@ export async function TextToImageALL() {
 }
 
 export async function TextToImageAllLatentConsistency() {
-    const FilesList: any[] = [];
+    const FilesList = [];
     FilesList.push(await TextToImageByLatentConsistency("lcm-dark-sushi-mix-v2-25"))
     //FilesList.push(await TextToImageByLatentConsistency("lcm-realistic-vision-v5-1"))
     //FilesList.push(await TextToImageByLatentConsistency("lcm-dream-shaper-v8"))
     return FilesList;
 }
 
-export async function TextToImageByLatentConsistency(model: string) {
+export async function TextToImageByLatentConsistency(model) {
     const url = 'https://api.getimg.ai/v1/latent-consistency/text-to-image';
-    const POSTDATA: any = {}
+    const POSTDATA = {}
     POSTDATA['model'] = model
     POSTDATA['prompt'] = 'pretty chinese girl, double eyelids, hair in a bun, pin sweater, studying, at night'
     POSTDATA['negative_prompt'] = 'Disfigured, cartoon, blurry'
@@ -210,7 +208,7 @@ export async function TextToImageByLatentConsistency(model: string) {
 }
 
 
-export async function Base64ToImg(Base64IMG: string, model: string) {
+export async function Base64ToImg(Base64IMG, model) {
     const decodedImg = Buffer.from(Base64IMG, 'base64');
     const uniqueSuffix = model + '-' + Date.now() + '-' + Math.round(Math.random() * 1e9);
     const FileName = DataDir + "/image/" +uniqueSuffix + '.png';
@@ -218,19 +216,19 @@ export async function Base64ToImg(Base64IMG: string, model: string) {
     return uniqueSuffix;
 }
 
-export async function getUserImagesGetImg(userId: string, pageid: number, pagesize: number) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+export async function getUserImagesGetImg(userId, pageid, pagesize) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
   console.log("pageidFiler", pageidFiler)
   console.log("pagesizeFiler", pagesizeFiler)
 
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from userimages where userId = ? and source='getimg.ai' ", [userId]);
-  const RecordsTotal: number = Records ? Records.NUM : 0;
+  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from userimages where userId = ? and source='getimg.ai' ", [userId]);
+  const RecordsTotal = Records ? Records.NUM : 0;
 
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)("SELECT * FROM userimages where userId = ? and source='getimg.ai' ORDER BY id DESC LIMIT ? OFFSET ? ", [userId, pagesizeFiler, From]) || [];
+  const RecordsAll = await (getDbRecordALL)("SELECT * FROM userimages where userId = ? and source='getimg.ai' ORDER BY id DESC LIMIT ? OFFSET ? ", [userId, pagesizeFiler, From]) || [];
 
-  const RS: any = {};
+  const RS = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
   RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
   RS['from'] = From;
@@ -241,19 +239,19 @@ export async function getUserImagesGetImg(userId: string, pageid: number, pagesi
   return RS;
 }
 
-export async function getUserImagesGetImgAll(pageid: number, pagesize: number) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+export async function getUserImagesGetImgAll(pageid, pagesize) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
   console.log("pageidFiler", pageidFiler)
   console.log("pagesizeFiler", pagesizeFiler)
 
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from userimages where source='getimg.ai' ");
-  const RecordsTotal: number = Records ? Records.NUM : 0;
+  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from userimages where source='getimg.ai' ");
+  const RecordsTotal = Records ? Records.NUM : 0;
 
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)("SELECT * FROM userimages where source='getimg.ai' ORDER BY id DESC LIMIT ? OFFSET ? ", [pagesizeFiler, From]) || [];
+  const RecordsAll = await (getDbRecordALL)("SELECT * FROM userimages where source='getimg.ai' ORDER BY id DESC LIMIT ? OFFSET ? ", [pagesizeFiler, From]) || [];
 
-  const RS: any = {};
+  const RS = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
   RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
   RS['from'] = From;

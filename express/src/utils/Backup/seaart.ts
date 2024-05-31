@@ -4,31 +4,29 @@ import * as fs from 'fs'
 import { DataDir } from '../const'
 
 import path from 'path'
-import { db, getDbRecord, getDbRecordALL } from '../db'
+import { db, getDbRecord, getDbRecordALL } from '../db.mjs'
 import { timestampToDate, isFile } from '../utils'
 import sharp from 'sharp'
-
-type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
 
 const backEndApi = "https://openapi.seaart.ai"
 const SEAART_CLIENT_ID = process.env.SEAART_CLIENT_ID
 const SEAART_SECRET_KEY = process.env.SEAART_SECRET_KEY
 
 interface SeaArt {
-  model: string
-  prompt: string
-  negativePrompt: string
-  width: number
-  height: number
-  steps: number
-  CFGScale: number
-  numberOfImages: number
-  style: string
-  outpuFormat: string
-  seed: number | string
+  model
+  prompt
+  negativePrompt
+  width
+  height
+  steps
+  CFGScale
+  numberOfImages
+  style
+  outpuFormat
+  seed
 }
 
-export async function generateImageSeaArt(checkUserTokenData: any, data: SeaArt) {
+export async function generateImageSeaArt(checkUserTokenData, data: SeaArt) {
 
   const SimpleData = {
     "category": 4,
@@ -43,7 +41,7 @@ export async function generateImageSeaArt(checkUserTokenData: any, data: SeaArt)
   }
   const getTokenSeaArtData = await getTokenSeaArt();
   const access_token = getTokenSeaArtData.data.access_token;
-  const POSTDATA: any = {}
+  const POSTDATA = {}
   POSTDATA['width'] = 768
   POSTDATA['height'] = 1024
   POSTDATA['num'] = 1
@@ -85,7 +83,7 @@ export async function generateImageSeaArt(checkUserTokenData: any, data: SeaArt)
             }
             return orderId;
         }
-        catch(error: any) {
+        catch(error) {
           console.log("generateImageSeaArt insertSetting Error", error.message)
           return null;
         }
@@ -95,14 +93,14 @@ export async function generateImageSeaArt(checkUserTokenData: any, data: SeaArt)
         return res.data.status.msg;
     }
   }
-  catch(error: any) {
+  catch(error) {
     console.log("generateImageSeaArt Error", error.message)
     return null;
   }
   
 }
 
-export async function checkImageProcessSeaArt(ids: string[]) {
+export async function checkImageProcessSeaArt(ids) {
     const getTokenSeaArtData = await getTokenSeaArt();
     const access_token = getTokenSeaArtData.data.access_token;
     try {
@@ -114,7 +112,7 @@ export async function checkImageProcessSeaArt(ids: string[]) {
         }).then(res => res.data);
       console.log("res.data.items", ids)
       if(res.status.code == 10000 && res.data.items) {
-        res.data.items.map((Item: any, Index: number) => {
+        res.data.items.map((Item, Index) => {
             const task_id = Item.task_id
             const type = Item.type
             const process = Item.process
@@ -124,7 +122,7 @@ export async function checkImageProcessSeaArt(ids: string[]) {
             const status_desc = Item.status_desc
             if(status_desc == "finish" && images) {
                 console.log("images", images)
-                images.map((ImageItem: any, ImageItemIndex: number)=>{
+                images.map((ImageItem, ImageItemIndex)=>{
                     console.log("ImageItem", ImageItem.url)
                     if(ImageItem.url && ImageItem.url != "")  {
                         downloadAndConvert(ImageItem.url, task_id)
@@ -144,13 +142,13 @@ export async function checkImageProcessSeaArt(ids: string[]) {
         return false;
       }
     }
-    catch(error: any) {
+    catch(error) {
       console.log("checkImageProcessSeaArt Error", error.message)
       return false;
     }
   }
 
-export function Base64ToImg(Base64IMG: string, model: string) {
+export function Base64ToImg(Base64IMG, model) {
     const decodedImg = Buffer.from(Base64IMG, 'base64');
     const uniqueSuffix = model + '-' + Date.now() + '-' + Math.round(Math.random() * 1e9);
     const FileName = DataDir + "/image/" +uniqueSuffix + '.png';
@@ -158,7 +156,7 @@ export function Base64ToImg(Base64IMG: string, model: string) {
     return uniqueSuffix;
 }
 
-export async function downloadAndConvert(webpUrl: string, filename: string) {
+export async function downloadAndConvert(webpUrl, filename) {
     try {
         const webpFilePath = DataDir + "/image/" +filename + '.webp';
         const pngFilePath = DataDir + "/image/" +filename + '.png';
@@ -195,19 +193,19 @@ export async function downloadAndConvert(webpUrl: string, filename: string) {
     }
 }
 
-export async function getUserImagesSeaArt(userId: string, pageid: number, pagesize: number) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+export async function getUserImagesSeaArt(userId, pageid, pagesize) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
   console.log("pageidFiler", pageidFiler)
   console.log("pagesizeFiler", pagesizeFiler)
 
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from userimages where userId = ? ", [userId]);
-  const RecordsTotal: number = Records ? Records.NUM : 0;
+  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from userimages where userId = ? ", [userId]);
+  const RecordsTotal = Records ? Records.NUM : 0;
 
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)('SELECT * FROM userimages where userId = ? ORDER BY id DESC LIMIT ? OFFSET ? ', [userId, pagesizeFiler, From]) || [];
+  const RecordsAll = await (getDbRecordALL)('SELECT * FROM userimages where userId = ? ORDER BY id DESC LIMIT ? OFFSET ? ', [userId, pagesizeFiler, From]) || [];
 
-  const RS: any = {};
+  const RS = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
   RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
   RS['from'] = From;
@@ -218,19 +216,19 @@ export async function getUserImagesSeaArt(userId: string, pageid: number, pagesi
   return RS;
 }
 
-export async function getUserImagesAll(pageid: number, pagesize: number) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+export async function getUserImagesAll(pageid, pagesize) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
   console.log("pageidFiler", pageidFiler)
   console.log("pagesizeFiler", pagesizeFiler)
 
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from userimages where 1=1 ");
-  const RecordsTotal: number = Records ? Records.NUM : 0;
+  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from userimages where 1=1 ");
+  const RecordsTotal = Records ? Records.NUM : 0;
 
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)('SELECT * FROM userimages where 1=1 ORDER BY id DESC LIMIT ? OFFSET ? ', [pagesizeFiler, From]) || [];
+  const RecordsAll = await (getDbRecordALL)('SELECT * FROM userimages where 1=1 ORDER BY id DESC LIMIT ? OFFSET ? ', [pagesizeFiler, From]) || [];
 
-  const RS: any = {};
+  const RS = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
   RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
   RS['from'] = From;
@@ -251,11 +249,11 @@ export async function getTokenSeaArt() {
     return res;  
 }
 
-function sleep(ms: number) {
+function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-export async function outputImageSeaArt(res: Response, file: string) {
+export async function outputImageSeaArt(res, file) {
     try {
       const FileName = path.join(DataDir, "/image/"+ file + ".png");
       while (!isFile(FileName) && file != undefined && file != null && file != '') {

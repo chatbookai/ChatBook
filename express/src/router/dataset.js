@@ -1,19 +1,19 @@
 
   // app.ts
-  import express, { Request, Response } from 'express';
+  import express from 'express';
 
-  import { checkUserToken } from '../utils/user';
-  import { addDataset, editDataset, deleteDataset, getDataset, getDatasetPage, addCollection, editCollection, uploadCollection, deleteCollection, getCollection, getCollectionPageByDataset, getCollectionAll } from '../utils/dataset';
-  import { uploadAvatarForDataset } from '../utils/utils';
+  import { checkUserToken } from '../utils/user.js';
+  import { addDataset, editDataset, deleteDataset, getDataset, getDatasetPage, addCollection, editCollection, uploadCollection, deleteCollection, getCollection, getCollectionPageByDataset, getCollectionAll } from '../utils/dataset.js';
+  import { uploadAvatarForDataset } from '../utils/utils.js';
  
   const app = express();
 
-  app.post('/api/adddataset', async (req: Request, res: Response) => {
+  app.post('/api/adddataset', async (req, res) => {
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         console.log("checkUserTokenData adddataset", checkUserTokenData)
-        const addDatasetData: any = await addDataset({...req.body, userId: checkUserTokenData.data.id});
+        const addDatasetData = await addDataset({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(addDatasetData);
     }
     else {
@@ -22,16 +22,16 @@
     res.end();
   });
 
-  app.post('/api/editdataset', uploadAvatarForDataset().array('avatar', 1), async (req: Request, res: Response) => {
+  app.post('/api/editdataset', uploadAvatarForDataset().array('avatar', 1), async (req, res) => {
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         console.log("editdataset uploadedFiles", req.files)
         if(req.files && Array.isArray(req.files) && req.files[0] && req.files[0].filename) {
           req.body.avatar = req.files[0].filename
         }
         console.log("editdataset originalAvatar", req.body.avatar)
-        const editDatasetData: any = await editDataset({...req.body, userId: checkUserTokenData.data.id});
+        const editDatasetData = await editDataset({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(editDatasetData);
     }
     else {
@@ -40,12 +40,12 @@
     res.end();
   });
 
-  app.post('/api/deletedataset', async (req: Request, res: Response) => {
+  app.post('/api/deletedataset', async (req, res) => {
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         console.log("checkUserTokenData app", checkUserTokenData)
-        const editDatasetData: any = await deleteDataset({...req.body, userId: checkUserTokenData.data.id});
+        const editDatasetData = await deleteDataset({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(editDatasetData);
     }
     else {
@@ -54,13 +54,13 @@
     res.end();
   });
 
-  app.get('/api/getdataset/:id', async (req: Request, res: Response) => {
+  app.get('/api/getdataset/:id', async (req, res) => {
     const { id } = req.params;
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         console.log("checkUserTokenData app", checkUserTokenData)
-        const getDatasetData: any = await getDataset(id, checkUserTokenData.data.id);
+        const getDatasetData = await getDataset(id, checkUserTokenData.data.id);
         res.status(200).json(getDatasetData);
     }
     else {
@@ -69,13 +69,13 @@
     res.end();
   });
 
-  app.post('/api/getdatasetpage/:pageid/:pagesize', async (req: Request, res: Response) => {
+  app.post('/api/getdatasetpage/:pageid/:pagesize', async (req, res) => {
     const { pageid, pagesize } = req.params;
     const { authorization } = req.headers;
     const { type, search } = req.body;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
-        const getCollectionPageData: any = await getDatasetPage(Number(pageid), Number(pagesize), checkUserTokenData.data.id);
+        const getCollectionPageData = await getDatasetPage(Number(pageid), Number(pagesize), checkUserTokenData.data.id);
         res.status(200).json(getCollectionPageData);
     }
     else {
@@ -84,12 +84,12 @@
     res.end();
   });
 
-  app.get('/api/collectionbydataset/:datasetId/:pageid/:pagesize', async (req: Request, res: Response) => {
+  app.get('/api/collectionbydataset/:datasetId/:pageid/:pagesize', async (req, res) => {
     const { datasetId, pageid, pagesize } = req.params;
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
-        const getCollectionPageData: any = await getCollectionPageByDataset(datasetId, Number(pageid), Number(pagesize), checkUserTokenData.data.id);
+        const getCollectionPageData = await getCollectionPageByDataset(datasetId, Number(pageid), Number(pagesize), checkUserTokenData.data.id);
         res.status(200).json(getCollectionPageData);
     }
     else {
@@ -98,12 +98,12 @@
     res.end();
   });
 
-  app.post('/api/collectionall/:pageid/:pagesize', async (req: Request, res: Response) => {
+  app.post('/api/collectionall/:pageid/:pagesize', async (req, res) => {
     const { pageid, pagesize } = req.params;
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        const getCollectionPageData: any = await getCollectionAll(Number(pageid), Number(pagesize));
+        const getCollectionPageData = await getCollectionAll(Number(pageid), Number(pagesize));
         res.status(200).json(getCollectionPageData);
     }
     else {
@@ -112,12 +112,12 @@
     res.end();
   });
 
-  app.post('/api/addcollection', async (req: Request, res: Response) => {
+  app.post('/api/addcollection', async (req, res) => {
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         console.log("checkUserTokenData addcollection", checkUserTokenData)
-        const addCollectionData: any = await addCollection({...req.body, userId: checkUserTokenData.data.id});
+        const addCollectionData = await addCollection({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(addCollectionData);
     }
     else {
@@ -126,12 +126,12 @@
     res.end();
   });
 
-  app.post('/api/editcollection', async (req: Request, res: Response) => {
+  app.post('/api/editcollection', async (req, res) => {
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         console.log("checkUserTokenData editcollection", checkUserTokenData)
-        const editCollectionData: any = await editCollection({...req.body, userId: checkUserTokenData.data.id});
+        const editCollectionData = await editCollection({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(editCollectionData);
     }
     else {
@@ -140,12 +140,12 @@
     res.end();
   });
 
-  app.post('/api/deletecollection', async (req: Request, res: Response) => {
+  app.post('/api/deletecollection', async (req, res) => {
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         console.log("checkUserTokenData deletecollection", checkUserTokenData)
-        const deleteCollectionData: any = await deleteCollection({...req.body, userId: checkUserTokenData.data.id});
+        const deleteCollectionData = await deleteCollection({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(deleteCollectionData);
     }
     else {
@@ -154,12 +154,12 @@
     res.end();
   });
 
-  app.post('/api/uploadcollection', async (req: Request, res: Response) => {
+  app.post('/api/uploadcollection', async (req, res) => {
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         console.log("checkUserTokenData uploadCollectionData", checkUserTokenData)
-        const uploadCollectionData: any = await uploadCollection({...req.body, userId: checkUserTokenData.data.id});
+        const uploadCollectionData = await uploadCollection({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(uploadCollectionData);
     }
     else {

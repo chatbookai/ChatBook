@@ -1,5 +1,5 @@
   // app.ts
-  import express, { Request, Response } from 'express';
+  import express from 'express';
 
   import { checkUserToken, checkUserTokenXWE, checkUserTokenXWENotCostAmount } from '../../utils/user';
 
@@ -7,10 +7,10 @@
 
   const app = express();
   
-  app.post('/api/getUserImagesSeaArt', async (req: Request, res: Response) => {
+  app.post('/api/getUserImagesSeaArt', async (req, res) => {
     const { authorization } = req.headers;
     const { pageid, pagesize } = req.body;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateimageData = await getUserImagesSeaArt(checkUserTokenData.data.id, pageid, pagesize);
       //console.log("generateimageData", generateimageData);
@@ -21,16 +21,16 @@
     }
   });
 
-  app.post('/api/getUserImagesSeaArtAll', async (req: Request, res: Response) => {
+  app.post('/api/getUserImagesSeaArtAll', async (req, res) => {
     const { pageid, pagesize } = req.body;
     const getUserImagesAllData = await getUserImagesAll(pageid, pagesize);
     //console.log("getUserImagesAllData", getUserImagesAllData);
     res.status(200).json(getUserImagesAllData).end();
   });
 
-  app.post('/api/generateImageSeaArt', async (req: Request, res: Response) => {
+  app.post('/api/generateImageSeaArt', async (req, res) => {
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateImageSeaArtData = await generateImageSeaArt(checkUserTokenData, req.body);
       //console.log("generateImageSeaArtData", generateImageSeaArtData);
@@ -41,9 +41,9 @@
     }
   });
 
-  app.post('/api/generateImageSeaArtXWE', async (req: Request, res: Response) => {
+  app.post('/api/generateImageSeaArtXWE', async (req, res) => {
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserTokenXWE(authorization as string);
+    const checkUserTokenData = await checkUserTokenXWE(authorization);
     console.log("checkUserTokenData", checkUserTokenData)
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateImageSeaArtData = await generateImageSeaArt(checkUserTokenData, req.body);
@@ -55,10 +55,10 @@
     }
   });
 
-  app.post('/api/getUserImagesSeaArtXWE', async (req: Request, res: Response) => {
+  app.post('/api/getUserImagesSeaArtXWE', async (req, res) => {
     const { pageid, pagesize } = req.body;
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserTokenXWENotCostAmount(authorization as string);
+    const checkUserTokenData = await checkUserTokenXWENotCostAmount(authorization);
     console.log("checkUserTokenData", checkUserTokenData)
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && ( checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') ) {
       const generateimageData = await getUserImagesSeaArt(checkUserTokenData.data.id, pageid, pagesize);
@@ -70,19 +70,19 @@
     }
   });
 
-  app.get('/api/getTokenSeaArt', async (req: Request, res: Response) => {
+  app.get('/api/getTokenSeaArt', async (req, res) => {
     const getTokenSeaArtData = await getTokenSeaArt();
     //console.log("getTokenSeaArtData", getTokenSeaArtData);
     res.status(200).json(getTokenSeaArtData).end();
   });
 
-  app.get('/api/checkImageProcessSeaArt', async (req: Request, res: Response) => {
+  app.get('/api/checkImageProcessSeaArt', async (req, res) => {
     const checkImageProcessSeaArtData = await checkImageProcessSeaArt(["cn211rde878c73ch5hhg"]);
     //console.log("checkImageProcessSeaArtData", checkImageProcessSeaArtData);
     res.status(200).json(checkImageProcessSeaArtData).end();
   });
 
-  app.get('/api/image/seaart/:file', async (req: Request, res: Response) => {
+  app.get('/api/image/seaart/:file', async (req, res) => {
     const { file } = req.params;
     if(file && file != "undefined") {
         outputImageSeaArt(res, file);

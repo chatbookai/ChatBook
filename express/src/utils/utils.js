@@ -5,36 +5,33 @@ import * as crypto from 'crypto'
 import sqlite3 from 'sqlite3';
 import validator from 'validator';
 import { promisify } from 'util';
-import { DataDir, CONDENSE_TEMPLATE_INIT, QA_TEMPLATE_INIT } from './const';
+import { DataDir, CONDENSE_TEMPLATE_INIT, QA_TEMPLATE_INIT } from './const.js';
 import { randomBytes } from 'crypto';
-import { db, getDbRecord, getDbRecordALL } from './db'
+import { db, getDbRecord, getDbRecordALL } from './db.js'
 import iconv from 'iconv-lite';
 
-type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
-
-
-export function enableDir(directoryPath: string): void {
+export function enableDir(directoryPath) {
   try {
     fs.accessSync(directoryPath, fs.constants.F_OK);
   } 
-  catch (err: any) {
+  catch (err) {
     try {
       fs.mkdirSync(directoryPath, { recursive: true });
     } 
-    catch (err: any) {
+    catch (err) {
       console.log(`Error creating directory ${directoryPath}: ${err.message}`);
       throw err;
     }
   }
 }
 
-export async function getLLMSSetting(datasetId: number | string) {
+export async function getLLMSSetting(datasetId) {
   const datasetIdFilter = filterString(datasetId)
   
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT name,content from setting where type='openaisetting' and datasetId = ? `, [datasetIdFilter]) as any[];
-  const OpenAISetting: any = {}
+  const RecordsAll = await (getDbRecordALL)(`SELECT name,content from setting where type='openaisetting' and datasetId = ? `, [datasetIdFilter]);
+  const OpenAISetting = {}
   if(RecordsAll)  {
-    RecordsAll.map((Item: any)=>{
+    RecordsAll.map((Item)=>{
       OpenAISetting[Item.name] = Item.content
     })
   }
@@ -42,7 +39,7 @@ export async function getLLMSSetting(datasetId: number | string) {
   return OpenAISetting
 }
 
-export async function setOpenAISetting(Params: any) {
+export async function setOpenAISetting(Params) {
   const datasetIdFilter = filterString(Params.datasetId)
   const userIdFilter = filterString(Params.userId)
   try {
@@ -54,22 +51,22 @@ export async function setOpenAISetting(Params: any) {
     insertSetting.run('Prompt', Params.Prompt, 'openaisetting', datasetIdFilter, userIdFilter);
     insertSetting.finalize();
   }
-  catch (error: any) {
+  catch (error) {
     console.log('Error setOpenAISetting:', error.message);
   }
 
   return {"status":"ok", "msg":"Update Success"}
 }
 
-export async function getTemplate(datasetId: number | string, userId: string) {
+export async function getTemplate(datasetId, userId) {
   const datasetIdFilter = filterString(datasetId)
   const userIdFilter = Number(userId)
   
-  const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT name,content from setting where type='TEMPLATE' and datasetId = ? and userId = ? `, [datasetIdFilter, userIdFilter]) as any[];
+  const SettingRS = await (getDbRecordALL)(`SELECT name,content from setting where type='TEMPLATE' and datasetId = ? and userId = ? `, [datasetIdFilter, userIdFilter]);
   
-  const Template: any = {}
+  const Template = {}
   if(SettingRS)  {
-    SettingRS.map((Item: any)=>{
+    SettingRS.map((Item)=>{
       Template[Item.name.replace("_" + String(datasetIdFilter),"")] = Item.content
     })
   }
@@ -77,7 +74,7 @@ export async function getTemplate(datasetId: number | string, userId: string) {
   return Template
 }
 
-export async function setTemplate(Params: any) {
+export async function setTemplate(Params) {
   try{
     const datasetIdFilter = Number(Params.datasetId)
     const userIdFilter = Params.userId
@@ -87,22 +84,22 @@ export async function setTemplate(Params: any) {
     insertSetting.run('QA_TEMPLATE', Params.QA_TEMPLATE, Templatename, datasetIdFilter, userIdFilter);
     insertSetting.finalize();
   }
-  catch (error: any) {
+  catch (error) {
     console.log('Error setTemplate:', error.message);
   }
 
   return {"status":"ok", "msg":"Update Success"}
 }
 
-export async function addKnowledge(Params: any) {
+export async function addKnowledge(Params) {
   try{
     console.log("ParamsParamsParamsParamsParams", Params)
     const userIdFilter = Params.userId
     Params.name = filterString(Params.name)
     Params.summary = filterString(Params.summary)
     
-    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT id from knowledge where name = ? and userId = ?", [Params.name, userIdFilter]);
-    const RecordId: number = Records ? Records.id : 0;
+    const Records = await (getDbRecord)("SELECT id from knowledge where name = ? and userId = ?", [Params.name, userIdFilter]);
+    const RecordId = Records ? Records.id : 0;
 
     console.log("RecordId", RecordId, Params.userId)
     if(RecordId > 0) {
@@ -113,7 +110,7 @@ export async function addKnowledge(Params: any) {
       const insertSetting = db.prepare('INSERT OR REPLACE INTO knowledge (name, summary, timestamp, userId) VALUES (?, ?, ?, ?)');
       insertSetting.run(Params.name, Params.summary, Date.now(), userIdFilter);
 
-      insertSetting.run(Params.name, Params.summary, Date.now(), userIdFilter, function(err: any) {
+      insertSetting.run(Params.name, Params.summary, Date.now(), userIdFilter, function(err) {
         if (err) {
           console.error(err.message);
 
@@ -132,14 +129,14 @@ export async function addKnowledge(Params: any) {
       });
     }
   }
-  catch (error: any) {
+  catch (error) {
     console.log('Error setOpenAISetting:', error.message);
   }
 
   return {"status":"ok", "msg":"Update Success"}
 }
 
-export async function setKnowledge(Params: any) {
+export async function setKnowledge(Params) {
   try{
     Params.id = Number(Params.id)
     Params.name = filterString(Params.name)
@@ -148,7 +145,7 @@ export async function setKnowledge(Params: any) {
     updateSetting.run(Params.name, Params.summary, Date.now(), Params.id);
     updateSetting.finalize();
   }
-  catch (error: any) {
+  catch (error) {
     console.log('Error setOpenAISetting:', error.message);
   }
 
@@ -157,10 +154,10 @@ export async function setKnowledge(Params: any) {
 
 export function uploadfiles() {
   const storage = multer.diskStorage({
-    destination: (req: any, file: any, cb: any) => {
+    destination: (req, file, cb) => {
       cb(null, DataDir + '/uploadfiles/'); // 设置上传文件保存的目录
     },
-    filename: (req: any, file: any, cb: any) => {
+    filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
       const FileNameNew = file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase();
       cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase());
@@ -173,10 +170,10 @@ export function uploadfiles() {
 
 export function uploadavatar() {
   const storage = multer.diskStorage({
-    destination: (req: any, file: any, cb: any) => {
+    destination: (req, file, cb) => {
       cb(null, DataDir + '/avatarforapp/'); // 设置上传文件保存的目录
     },
-    filename: (req: any, file: any, cb: any) => {
+    filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
       const FileNameNew = file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase();
       cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase());
@@ -190,10 +187,10 @@ export function uploadavatar() {
 
 export function uploadAvatarForDataset() {
   const storage = multer.diskStorage({
-    destination: (req: any, file: any, cb: any) => {
+    destination: (req, file, cb) => {
       cb(null, DataDir + '/avatarfordataset/'); // 设置上传文件保存的目录
     },
-    filename: (req: any, file: any, cb: any) => {
+    filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
       const FileNameNew = file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase();
       cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase());
@@ -207,10 +204,10 @@ export function uploadAvatarForDataset() {
 
 export function uploadImageForVideo() {
   const storage = multer.diskStorage({
-    destination: (req: any, file: any, cb: any) => {
+    destination: (req, file, cb) => {
       cb(null, DataDir + '/imageforvideo/'); // 设置上传文件保存的目录
     },
-    filename: (req: any, file: any, cb: any) => {
+    filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
       const FileNameNew = file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase();
       cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase());
@@ -224,10 +221,10 @@ export function uploadImageForVideo() {
 
 export function uploadImageForImageGenerateImage() {
   const storage = multer.diskStorage({
-    destination: (req: any, file: any, cb: any) => {
+    destination: (req, file, cb) => {
       cb(null, DataDir + '/imageforimage/'); // 设置上传文件保存的目录
     },
-    filename: (req: any, file: any, cb: any) => {
+    filename: (req, file, cb) => {
       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
       const FileNameNew = file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase();
       cb(null, file.fieldname + '-' + uniqueSuffix + path.extname(file.originalname).toLowerCase());
@@ -239,8 +236,8 @@ export function uploadImageForImageGenerateImage() {
   return upload
 }
 
-export async function uploadfilesInsertIntoDb(files: any[], datasetId: string, userId: string) {
-  const filesInfo = files.map((file: any) => {
+export async function uploadfilesInsertIntoDb(files, datasetId, userId) {
+  const filesInfo = files.map((file) => {
     const filePath = path.join(DataDir, 'uploadfiles', file.filename);
     const fileHash = calculateFileHashSync(filePath);
     const originalName = iconv.decode(Buffer.from(file.originalname, 'binary'), 'utf-8');
@@ -252,7 +249,7 @@ export async function uploadfilesInsertIntoDb(files: any[], datasetId: string, u
   });
   console.log("filesInfo", filesInfo, datasetId, userId)
   const insertCollection = db.prepare('INSERT OR IGNORE INTO collection (_id, datasetId, type, name, content, suffixName, newName, originalName, fileHash, status, timestamp, userId, data, dataTotal, folder, updateTime) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
-  filesInfo.map((Item: any)=>{
+  filesInfo.map((Item)=>{
     const suffixName = path.extname(Item.originalName).toLowerCase();
     insertCollection.run(getNanoid(32), datasetId, 'File', Item.originalName, '', suffixName, Item.newName, Item.originalName, Item.fileHash, 0, Date.now(), Number(userId), '', '', '', '');
   })
@@ -260,18 +257,18 @@ export async function uploadfilesInsertIntoDb(files: any[], datasetId: string, u
   
 }
 
-export async function getFilesPage(pageid: number, pagesize: number) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+export async function getFilesPage(pageid, pagesize) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
   
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from files");
-  const RecordsTotal: number = Records ? Records.NUM : 0;  
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from files where 1=1 order by status desc, timestamp desc limit ? OFFSET ? `, [pagesizeFiler, From]) as any[];
-  let RSDATA: any[] = []
+  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from files");
+  const RecordsTotal = Records ? Records.NUM : 0;  
+  const RecordsAll = await (getDbRecordALL)(`SELECT * from files where 1=1 order by status desc, timestamp desc limit ? OFFSET ? `, [pagesizeFiler, From]);
+  let RSDATA = []
   if(RecordsAll != undefined) {
     RSDATA = await Promise.all(
-      RecordsAll.map(async (Item: any)=>{
+      RecordsAll.map(async (Item)=>{
           let ItemStatus = "Ready To Parse"
           switch(Item.status) {
             case 1:
@@ -288,7 +285,7 @@ export async function getFilesPage(pageid: number, pagesize: number) {
     
     //log("getFilesPage", RSDATA)
   }
-  const RS: any = {};
+  const RS = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
   RS['data'] = RSDATA.filter(element => element !== null && element !== undefined && element !== '');
   RS['from'] = From;
@@ -299,16 +296,16 @@ export async function getFilesPage(pageid: number, pagesize: number) {
   return RS;
 }
 
-export async function getFilesDatasetId(datasetId: number | string, pageid: number, pagesize: number) {
-  const KnowledgeIdFiler = Number(datasetId) < 0 ? 0 : Number(datasetId);
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+export async function getFilesDatasetId(datasetId, pageid, pagesize) {
+  const KnowledgeIdFiler = Number(datasetId) < 0 ? 0 : datasetId;
+  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
   
   
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from files where datasetId = ?", [KnowledgeIdFiler]);
-  const RecordsTotal: number = Records ? Records.NUM : 0;  
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from files where datasetId = ? order by status desc, timestamp desc limit ? OFFSET ? `, [KnowledgeIdFiler, pagesizeFiler, From]) as any[];
+  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from files where datasetId = ?", [KnowledgeIdFiler]);
+  const RecordsTotal = Records ? Records.NUM : 0;  
+  const RecordsAll = await (getDbRecordALL)(`SELECT * from files where datasetId = ? order by status desc, timestamp desc limit ? OFFSET ? `, [KnowledgeIdFiler, pagesizeFiler, From]);
 
   let RSDATA = []
   if(RecordsAll != undefined) {
@@ -328,7 +325,7 @@ export async function getFilesDatasetId(datasetId: number | string, pageid: numb
         })
     );
   }
-  const RS: any = {};
+  const RS = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
   RS['data'] = RSDATA.filter(element => element !== null && element !== undefined && element !== '');
   RS['from'] = From;
@@ -341,24 +338,24 @@ export async function getFilesDatasetId(datasetId: number | string, pageid: numb
 
 export async function getFilesNotParsed() {
   
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from files where status = '0' order by timestamp asc limit 10 `) as any[];
+  const RecordsAll = await (getDbRecordALL)(`SELECT * from files where status = '0' order by timestamp asc limit 10 `);
 
   return RecordsAll;
 }
 
-export async function getChatLogByKnowledgeIdAndUserId(datasetId: number | string, userId: number, pageid: number, pagesize: number) {
+export async function getChatLogByKnowledgeIdAndUserId(datasetId, userId, pageid, pagesize) {
   const KnowledgeIdFiler = filterString(datasetId);
-  const userIdFiler = Number(userId) < 0 ? 0 : Number(userId) || 1;
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+  const userIdFiler = Number(userId) < 0 ? 0 : userId;
+  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
 
   
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from chatlog where current = 1 and appId = ? and userId = ?", [KnowledgeIdFiler, userIdFiler]);
-  const RecordsTotal: number = Records ? Records.NUM : 0;
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from chatlog where current = 1 and  appId = ? and userId = ? order by id desc limit ? OFFSET ? `, [KnowledgeIdFiler, userIdFiler, pagesizeFiler, From]) as any[];
+  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from chatlog where current = 1 and appId = ? and userId = ?", [KnowledgeIdFiler, userIdFiler]);
+  const RecordsTotal = Records ? Records.NUM : 0;
+  const RecordsAll = await (getDbRecordALL)(`SELECT * from chatlog where current = 1 and  appId = ? and userId = ? order by id desc limit ? OFFSET ? `, [KnowledgeIdFiler, userIdFiler, pagesizeFiler, From]);
 
-  const RS: any = {};
+  const RS = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
   RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
   RS['from'] = From;
@@ -369,17 +366,17 @@ export async function getChatLogByKnowledgeIdAndUserId(datasetId: number | strin
   return RS;
 }
 
-export async function getLogsPage(pageid: number, pagesize: number) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+export async function getLogsPage(pageid, pagesize) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
 
   
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from logs ");
-  const RecordsTotal: number = Records ? Records.NUM : 0;  
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from logs order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]) as any[];
+  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from logs ");
+  const RecordsTotal = Records ? Records.NUM : 0;  
+  const RecordsAll = await (getDbRecordALL)(`SELECT * from logs order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]);
   
-  const RS: any = {};
+  const RS = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
   RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
   RS['from'] = From;
@@ -390,19 +387,19 @@ export async function getLogsPage(pageid: number, pagesize: number) {
   return RS;
 }
 
-export async function getKnowledgePage(pageid: number, pagesize: number) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+export async function getKnowledgePage(pageid, pagesize) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
   console.log("pageidFiler", pageidFiler)
   console.log("pagesizeFiler", pagesizeFiler)
 
   
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from knowledge");
-  const RecordsTotal: number = Records ? Records.NUM : 0;  
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from knowledge order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]) as any[];
+  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from knowledge");
+  const RecordsTotal = Records ? Records.NUM : 0;  
+  const RecordsAll = await (getDbRecordALL)(`SELECT * from knowledge order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]);
   
-  const RS: any = {};
+  const RS = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
   RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
   RS['from'] = From;
@@ -413,7 +410,7 @@ export async function getKnowledgePage(pageid: number, pagesize: number) {
   return RS;
 }
 
-export function timestampToDate(timestamp: number | string) {
+export function timestampToDate(timestamp) {
   const date = new Date(Number(timestamp) * 1000);
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -422,7 +419,7 @@ export function timestampToDate(timestamp: number | string) {
   return `${year}-${month}-${day}`;
 }
 
-export async function log(appId: string, publishId: string, userId: string, Action1: string | any, Action2: string | any='', Action3: string | any='', Action4: string | any='', Action5: string | any='', Action6: string | any='', Action7: string | any='', Action8: string | any='', Action9: string | any='', Action10: string | any='') {
+export async function log(appId, publishId, userId, Action1, Action2, Action3, Action4, Action5, Action6, Action7, Action8, Action9, Action10) {
   const currentDate = new Date();
   const currentDateTime = currentDate.toLocaleString();
   const content = JSON.stringify(Action1) +" "+ JSON.stringify(Action2) +" "+ JSON.stringify(Action3) +" "+ JSON.stringify(Action4) +" "+ JSON.stringify(Action5) +" "+ JSON.stringify(Action6) +" "+ JSON.stringify(Action7) +" "+ JSON.stringify(Action8) +" "+ JSON.stringify(Action9) +" "+ JSON.stringify(Action10);
@@ -433,8 +430,8 @@ export async function log(appId: string, publishId: string, userId: string, Acti
 }
 
 export async function deleteLog() {
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT MAX(id) AS NUM FROM logs");
-  const MaxId: number = Records ? Records.NUM : 0;
+  const Records = await (getDbRecord)("SELECT MAX(id) AS NUM FROM logs");
+  const MaxId = Records ? Records.NUM : 0;
   if(MaxId > 1000) {
     const DeleteId = MaxId - 1000;
     const DeleteLog = db.prepare("delete from logs where id < ?");
@@ -457,14 +454,14 @@ export async function clearAllLogs() {
   return {"status":"ok", "msg":"Deleted Success"}
 }
 
-export async function deleteUserLogByKnowledgeId(datasetId: number | string, userId: number) {
+export async function deleteUserLogByKnowledgeId(datasetId, userId) {
   const UpdateChatLog = db.prepare("update chatlog set current = 0 where appId = ? and userId = ?");
   UpdateChatLog.run(datasetId, userId);
   UpdateChatLog.finalize();
   return {"status":"ok", "msg":"Clear History Success"}
 }
 
-export function calculateFileHashSync(filePath: string) {
+export function calculateFileHashSync(filePath) {
   try {
     const fileContent = fs.readFileSync(filePath);
     const hash = crypto.createHash('sha256');
@@ -472,12 +469,12 @@ export function calculateFileHashSync(filePath: string) {
 
     return hash.digest('hex');
   } 
-  catch (error: any) {
+  catch (error) {
     throw error;
   }
 }
 
-export function readFile(Dir: string, FileName: string, Mark: string, OpenFormat: any) {
+export function readFile(Dir, FileName, Mark, OpenFormat) {
   const filePath = DataDir + '/' + Dir + '/' + FileName;
   if(isFile(filePath)) {
     console.log("filePath", filePath)
@@ -492,7 +489,7 @@ export function readFile(Dir: string, FileName: string, Mark: string, OpenFormat
   }
 }
 
-export function writeFile(Dir: string, FileName: string, FileContent: string, Mark: string) {
+export function writeFile(Dir, FileName, FileContent, Mark) {
   const directoryPath = DataDir + '/' + Dir;
   enableDir(directoryPath)
   const TxFilePath = directoryPath + "/" + FileName
@@ -508,7 +505,7 @@ export function writeFile(Dir: string, FileName: string, FileContent: string, Ma
   }
 }
 
-export function filterString(input: number | string | undefined) {
+export function filterString(input) {
   console.log("filterString input:", input)
   if(input == undefined)              {
 
@@ -527,7 +524,7 @@ export function filterString(input: number | string | undefined) {
   }
 }
 
-export function copyFileSync(source: string, destination: string) {
+export function copyFileSync(source, destination) {
   try {
     const content = fs.readFileSync(source);
     fs.writeFileSync(destination, content);
@@ -535,14 +532,14 @@ export function copyFileSync(source: string, destination: string) {
 
     return true;
   } 
-  catch (error: any) {
+  catch (error) {
     console.log('0', 'Error copying file:', error);
 
     return false;
   }
 }
 
-export function isFile(filePath: string) {
+export function isFile(filePath) {
   try {
     const stats = fs.statSync(filePath);
     if (stats.isFile() && stats.size > 0) {
@@ -559,7 +556,7 @@ export function isFile(filePath: string) {
   }
 }
 
-export function formatDateFromTimestamp(timestamp: number | string) {
+export function formatDateFromTimestamp(timestamp) {
   const date = new Date(timestamp);
 
   const year = date.getFullYear();
@@ -574,7 +571,7 @@ export function formatDateFromTimestamp(timestamp: number | string) {
   return formattedDate;
 }
 
-export function formatDate(timestamp: number | string) {
+export function formatDate(timestamp) {
   const date = new Date(timestamp);
 
   const year = date.getFullYear();
@@ -586,7 +583,7 @@ export function formatDate(timestamp: number | string) {
   return formattedDate;
 }
 
-export function formatDateString(timestamp: number | string) {
+export function formatDateString(timestamp) {
   const date = new Date(timestamp);
 
   const year = date.getFullYear();
@@ -598,68 +595,68 @@ export function formatDateString(timestamp: number | string) {
   return formattedDate;
 }
 
-export const isEmailValid = (email: string): boolean => {
+export const isEmailValid = (email) => {
   return validator.isEmail(email);
 };
 
 export async function wholeSiteStatics() {
-  const NewUserPerDayData: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT strftime('%Y-%m-%d', datetime(createtime / 1000, 'unixepoch')) AS date, count(*) AS NUM from user group by date order by date asc`) as any[];
+  const NewUserPerDayData = await (getDbRecordALL)(`SELECT strftime('%Y-%m-%d', datetime(createtime / 1000, 'unixepoch')) AS date, count(*) AS NUM from user group by date order by date asc`);
   const NewUserPerDay = NewUserPerDayData.map(Item => Item.NUM)
 
-  const NewImagesPerDayData: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT strftime('%Y-%m-%d', datetime(createtime / 1000, 'unixepoch')) AS date, count(*) AS NUM from userimages group by date order by date asc`) as any[];
+  const NewImagesPerDayData = await (getDbRecordALL)(`SELECT strftime('%Y-%m-%d', datetime(createtime / 1000, 'unixepoch')) AS date, count(*) AS NUM from userimages group by date order by date asc`);
   const NewImagesPerDay = NewImagesPerDayData.map(Item => Item.NUM)
 
-  const NewFilesPerDayData: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT strftime('%Y-%m-%d', datetime(timestamp / 1000, 'unixepoch')) AS date, count(*) AS NUM from files group by date order by date asc`) as any[];
+  const NewFilesPerDayData = await (getDbRecordALL)(`SELECT strftime('%Y-%m-%d', datetime(timestamp / 1000, 'unixepoch')) AS date, count(*) AS NUM from files group by date order by date asc`);
   const NewFilesPerDay = NewFilesPerDayData.map(Item => Item.NUM)
 
-  const NewActivitesPerDayData: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT strftime('%Y-%m-%d', datetime(timestamp / 1000, 'unixepoch')) AS date, count(*) AS NUM from chatlog group by date order by date asc`) as any[];
+  const NewActivitesPerDayData = await (getDbRecordALL)(`SELECT strftime('%Y-%m-%d', datetime(timestamp / 1000, 'unixepoch')) AS date, count(*) AS NUM from chatlog group by date order by date asc`);
   const NewActivitesPerDay = NewActivitesPerDayData.map(Item => Item.NUM)
 
-  const DateListData: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT distinct strftime('%Y-%m-%d', datetime(timestamp / 1000, 'unixepoch')) AS date from chatlog order by date asc`) as any[];
+  const DateListData = await (getDbRecordALL)(`SELECT distinct strftime('%Y-%m-%d', datetime(timestamp / 1000, 'unixepoch')) AS date from chatlog order by date asc`);
   const DateList = DateListData.map(Item => Item.date)
 
-  const Records1: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from userimages");
-  const TotalImages: number = Records1 ? Records1.NUM : 0;
+  const Records1 = await (getDbRecord)("SELECT COUNT(*) AS NUM from userimages");
+  const TotalImages = Records1 ? Records1.NUM : 0;
 
-  const Records2: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from chatlog");
-  const TotalActivites: number = Records2 ? Records2.NUM : 0;
+  const Records2 = await (getDbRecord)("SELECT COUNT(*) AS NUM from chatlog");
+  const TotalActivites = Records2 ? Records2.NUM : 0;
 
-  const Records3: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from user");
-  const TotalUsers: number = Records3 ? Records3.NUM : 0;
+  const Records3 = await (getDbRecord)("SELECT COUNT(*) AS NUM from user");
+  const TotalUsers = Records3 ? Records3.NUM : 0;
 
-  const Records4: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from files");
-  const TotalFiles: number = Records4 ? Records4.NUM : 0;
+  const Records4 = await (getDbRecord)("SELECT COUNT(*) AS NUM from files");
+  const TotalFiles = Records4 ? Records4.NUM : 0;
 
-  const Records5: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from knowledge");
-  const TotalKnowledges: number = Records5 ? Records5.NUM : 0;
+  const Records5 = await (getDbRecord)("SELECT COUNT(*) AS NUM from knowledge");
+  const TotalKnowledges = Records5 ? Records5.NUM : 0;
   
   return {NewUserPerDay, NewImagesPerDay, NewFilesPerDay, NewActivitesPerDay, DateList, TotalImages, TotalActivites, TotalUsers, TotalFiles, TotalKnowledges}
 }
 
-export async function getAllImages(userId: string | undefined, pageid: number, pagesize: number) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+export async function getAllImages(userId, pageid, pagesize) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
   console.log("pageidFiler", pageidFiler)
   console.log("pagesizeFiler", pagesizeFiler)
 
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from userimages where 1=1 ");
-  const RecordsTotal: number = Records ? Records.NUM : 0;
+  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from userimages where 1=1 ");
+  const RecordsTotal = Records ? Records.NUM : 0;
 
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)("SELECT * FROM userimages where 1=1 ORDER BY id DESC LIMIT ? OFFSET ? ", [pagesizeFiler, From]) || [];
+  const RecordsAll = await (getDbRecordALL)("SELECT * FROM userimages where 1=1 ORDER BY id DESC LIMIT ? OFFSET ? ", [pagesizeFiler, From]) || [];
 
-  const RecordsIdList: string[] = RecordsAll.map(element => element.id);
+  const RecordsIdList = RecordsAll.map(element => element.id);
 
   //Get Favorite Data
-  let Favorite: any = {}
+  let Favorite = {}
   if(userId)  {
-    const RecordsFavorite = await (getDbRecordALL as SqliteQueryFunction)("SELECT * FROM userimagefavorite WHERE imageId IN (" + RecordsIdList.map(() => "?").join(",") + ") and userId = ? and status = 1 order by id asc", [...RecordsIdList, userId]) || [];
-    RecordsFavorite.map((Item: any)=>{
+    const RecordsFavorite = await (getDbRecordALL)("SELECT * FROM userimagefavorite WHERE imageId IN (" + RecordsIdList.map(() => "?").join(",") + ") and userId = ? and status = 1 order by id asc", [...RecordsIdList, userId]) || [];
+    RecordsFavorite.map((Item)=>{
       Favorite[Item.imageId] = 1
     })
   }
 
-  const RS: any = {};
+  const RS = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
   RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
   RS['favorite'] = Favorite
@@ -671,14 +668,14 @@ export async function getAllImages(userId: string | undefined, pageid: number, p
   return RS;
 }
 
-export function filterNegativePrompt(Prompt: string) {
+export function filterNegativePrompt(Prompt) {
   const PromptNew = Prompt + ", ugly, poorly designed, amateur, bad proportions, direct sunlight, low quality, disfigured hands, poorly drawn face, out of frame, bad anatomy, signature, low contrast, overexposed, nsfw, weapon, blood, guro, without cloth, disturbing imagery, sexual violence, inappropriate attire, blurry, unfocused, unpleasant, unintelligible, offensive, distorted, unoriginal, uninspired, poor composition, boring, inconsistent style, low resolution, irrelevant"
   return removeDuplicates(PromptNew)
 }
 
-export function removeDuplicates(words: string): string {
+export function removeDuplicates(words) {
   const wordList = words.split(',');
-  const uniqueWords: string[] = [];
+  const uniqueWords = [];
   for (const word of wordList) {
     if (!uniqueWords.includes(word.trim())) {
       uniqueWords.push(word.trim());
@@ -687,19 +684,19 @@ export function removeDuplicates(words: string): string {
   return uniqueWords.join(',');
 }
 
-export async function getAgentsPage(pageid: number, pagesize: number) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+export async function getAgentsPage(pageid, pagesize) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
   console.log("pageidFiler", pageidFiler)
   console.log("pagesizeFiler", pagesizeFiler)
 
   
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from agents");
-  const RecordsTotal: number = Records ? Records.NUM : 0;  
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from agents order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]) as any[];
+  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from agents");
+  const RecordsTotal = Records ? Records.NUM : 0;  
+  const RecordsAll = await (getDbRecordALL)(`SELECT * from agents order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]);
   
-  const RS: any = {};
+  const RS = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
   RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
   RS['from'] = From;
@@ -710,9 +707,9 @@ export async function getAgentsPage(pageid: number, pagesize: number) {
   return RS;
 }
 
-export async function getAgentsEnabledList(pageid: number, pagesize: number, type: string, search: string) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+export async function getAgentsEnabledList(pageid, pagesize, type, search) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
   console.log("pageidFiler", pageidFiler)
   console.log("pagesizeFiler", pagesizeFiler)
@@ -720,27 +717,27 @@ export async function getAgentsEnabledList(pageid: number, pagesize: number, typ
   console.log("search", search)
 
   
-  let Records: any = null;
-  let RecordsTotal: number = Records ? Records.NUM : 0;  
-  let RecordsAll: any[] = [];
+  let Records = null;
+  let RecordsTotal = Records ? Records.NUM : 0;  
+  let RecordsAll = [];
   if(type != "ALL" && type != "全部") {
-    Records = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from agents where status = 1 and tags like ?", [`%${type}%`]);
+    Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from agents where status = 1 and tags like ?", [`%${type}%`]);
     RecordsTotal = Records ? Records.NUM : 0;  
-    RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from agents where status = 1 and tags like ? order by id desc limit ? OFFSET ? `, [`%${type}%`, pagesizeFiler, From]) as any[];
+    RecordsAll = await (getDbRecordALL)(`SELECT * from agents where status = 1 and tags like ? order by id desc limit ? OFFSET ? `, [`%${type}%`, pagesizeFiler, From]);
     console.log("RecordsAll", RecordsAll, type, search)
   }
   else if(search != "ALL" && search != "全部") {
-    Records = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from agents where status = 1 and title like ?", [`%${search}%`]);
+    Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from agents where status = 1 and title like ?", [`%${search}%`]);
     RecordsTotal = Records ? Records.NUM : 0;  
-    RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from agents where status = 1 and title like ? order by id desc limit ? OFFSET ? `, [`%${search}%`, pagesizeFiler, From]) as any[];
+    RecordsAll = await (getDbRecordALL)(`SELECT * from agents where status = 1 and title like ? order by id desc limit ? OFFSET ? `, [`%${search}%`, pagesizeFiler, From]);
   }
   else {
-    Records = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from agents where status = 1");
+    Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from agents where status = 1");
     RecordsTotal = Records ? Records.NUM : 0;  
-    RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from agents where status = 1 order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]) as any[];
+    RecordsAll = await (getDbRecordALL)(`SELECT * from agents where status = 1 order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]);
   }
   
-  const RS: any = {};
+  const RS = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
   RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
   RS['from'] = From;
@@ -751,7 +748,7 @@ export async function getAgentsEnabledList(pageid: number, pagesize: number, typ
   return RS;
 }
 
-export async function addAgent(Params: any) {
+export async function addAgent(Params) {
   try{
     console.log("ParamsParamsParamsParamsParams", Params)
     Params.title = filterString(Params.title)
@@ -762,8 +759,8 @@ export async function addAgent(Params: any) {
     Params.author = filterString(Params.author)
     Params.model = filterString(Params.model)
 
-    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT id from agents where title = ?", [Params.title]);
-    const RecordId: number = Records ? Records.id : 0;
+    const Records = await (getDbRecord)("SELECT id from agents where title = ?", [Params.title]);
+    const RecordId = Records ? Records.id : 0;
 
     console.log("RecordId", RecordId, Params.userId)
     if(RecordId > 0) {
@@ -779,13 +776,13 @@ export async function addAgent(Params: any) {
       return {"status":"ok", "msg":"Add Success"}
     }
   }
-  catch (error: any) {
+  catch (error) {
     console.log('Error setOpenAISetting:', error.message);
     return {"status":"error", "msg":error.message}
   }
 }
 
-export async function editAgent(Params: any) {
+export async function editAgent(Params) {
   try{
     Params.id = Number(Params.id)
     Params.name = filterString(Params.name)
@@ -795,7 +792,7 @@ export async function editAgent(Params: any) {
     updateSetting.run(Params.title, Params.description, Params.tags, Params.config, Params.avatar, Params.author, formatDateValue, Params.status, Params.model, Params.type, Params.id);
     updateSetting.finalize();
   }
-  catch (error: any) {
+  catch (error) {
     console.log('Error setOpenAISetting:', error.message);
   }
 

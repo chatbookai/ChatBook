@@ -5,16 +5,14 @@ import * as crypto from 'crypto'
 import sqlite3 from 'sqlite3';
 import validator from 'validator';
 import { promisify } from 'util';
-import { DataDir, CONDENSE_TEMPLATE_INIT, QA_TEMPLATE_INIT } from './const';
+import { DataDir, CONDENSE_TEMPLATE_INIT, QA_TEMPLATE_INIT } from './const.js';
 
-import { db, getDbRecord, getDbRecordALL } from './db'
-import { filterString, log, formatDate, getNanoid } from './utils'
-
-
-type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
+import { db, getDbRecord, getDbRecordALL } from './db.js'
+import { filterString, log, formatDate, getNanoid } from './utils.js'
 
 
-  export async function addApp(Params: any) {
+
+  export async function addApp(Params) {
     try{
       console.log("ParamsParamsParamsParamsParams", Params)
       Params._id = filterString(Params._id)
@@ -35,13 +33,13 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       log(Params._id, 'addApp', Params.userId, 'Success addApp:', JSON.stringify(Params));
       return {"status":"ok", "msg":"Add Success"}
     }
-    catch (error: any) {
+    catch (error) {
       log(Params._id, 'addApp', Params.userId, 'Error addApp:', error.message);
       return {"status":"error", "msg":error.message}
     }
   }
   
-  export async function editApp(Params: any) {
+  export async function editApp(Params) {
     try{
       Params._id = filterString(Params._id)
       Params.teamId = filterString(Params.teamId)
@@ -60,14 +58,14 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       log(Params._id, 'editApp', Params.userId, 'Success editApp:', JSON.stringify(Params));
       return {"status":"ok", "msg":"Update Success"}
     }
-    catch (error: any) {
+    catch (error) {
       log(Params._id, 'editApp', Params.userId, 'Error editApp:', error.message);
       return {"status":"error", "msg":error.message}
     }
 
   }
 
-  export async function editAppById(Params: any) {
+  export async function editAppById(Params) {
     try{
       Params._id = filterString(Params._id)
       Params.teamId = filterString(Params.teamId)
@@ -85,14 +83,14 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       log(Params._id, 'editAppById', Params.userId, 'Success editAppById:', JSON.stringify(Params));
       return {"status":"ok", "msg":"Update Success"}
     }
-    catch (error: any) {
+    catch (error) {
       log(Params._id, 'editAppById', Params.userId, 'Error editAppById:', error.message);
       return {"status":"error", "msg":error.message}
     }
 
   }
 
-  export async function deleteApp(Params: any) {
+  export async function deleteApp(Params) {
     try{
       Params._id = filterString(Params.appId)
       Params.userId = filterString(Params.userId)
@@ -102,13 +100,13 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       log(Params._id, 'deleteApp', Params.userId, 'Success deleteApp:', JSON.stringify(Params));
       return {"status":"ok", "msg":"Delete Success"}
     }
-    catch (error: any) {
+    catch (error) {
       log(Params._id, 'deleteApp', Params.userId, 'Error deleteApp:', error.message);
       return {"status":"error", "msg":error.message}
     }
   }
   
-  export async function deleteAppById(Params: any) {
+  export async function deleteAppById(Params) {
     try{
       Params._id = filterString(Params._id)
       Params.id = filterString(Params.id)
@@ -118,20 +116,20 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       log(Params._id, 'deleteAppById', Params.userId, 'Success deleteAppById:', JSON.stringify(Params));
       return {"status":"ok", "msg":"Delete Success", Params}
     }
-    catch (error: any) {
+    catch (error) {
       log(Params._id, 'deleteAppById', Params.userId, 'Error deleteAppById:', error.message);
       return {"status":"error", "msg":error.message}
     }
   }
   
-  export async function getApp(id: string, userId: string) {
+  export async function getApp(id, userId) {
     const idFilter = filterString(id)
     
-    const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT data, avatar, name, intro, type, groupTwo, permission from app where _id = ? `, [idFilter]) as any[];
+    const SettingRS = await (getDbRecordALL)(`SELECT data, avatar, name, intro, type, groupTwo, permission from app where _id = ? `, [idFilter]);
     
-    let Template: any = {}
+    let Template = {}
     if(SettingRS)  {
-      SettingRS.map((Item: any)=>{
+      SettingRS.map((Item)=>{
         const TemplateTemp = JSON.parse(Item.data)
         Template = {...TemplateTemp, avatar: Item.avatar, name: Item.name, intro: Item.intro, type: Item.type, groupTwo: Item.groupTwo, permission: Item.permission}
       })
@@ -140,15 +138,15 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return Template
   }
 
-  export async function getAppById(_id: string, id: string) {
+  export async function getAppById(_id, id) {
     const _idFilter = filterString(_id)
     const idFilter = filterString(id)
     
-    const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT data, avatar, name, intro, type, groupTwo, permission from app where _id = ? and id = ? `, [_idFilter, idFilter]) as any[];
+    const SettingRS = await (getDbRecordALL)(`SELECT data, avatar, name, intro, type, groupTwo, permission from app where _id = ? and id = ? `, [_idFilter, idFilter]);
     
-    let Template: any = {}
+    let Template = {}
     if(SettingRS)  {
-      SettingRS.map((Item: any)=>{
+      SettingRS.map((Item)=>{
         const TemplateTemp = JSON.parse(Item.data)
         Template = {...TemplateTemp, avatar: Item.avatar, name: Item.name, intro: Item.intro, type: Item.type, groupTwo: Item.groupTwo, permission: Item.permission}
       })
@@ -157,17 +155,17 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return Template
   }
 
-  export async function getAppByPublishId(id: string) {
+  export async function getAppByPublishId(id) {
     const idFilter = filterString(id)
     
-    const PublishApp: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from publish where _id = ?`, [idFilter]) as any[];
+    const PublishApp = await (getDbRecordALL)(`SELECT * from publish where _id = ?`, [idFilter]);
     if(PublishApp && PublishApp[0] && PublishApp[0].appId)  {
       const appid = PublishApp[0].appId
       const userId = PublishApp[0].userId
-      const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT data from app where _id = ? and userId = ? `, [appid, userId]) as any[];
-      let Template: any = {}
+      const SettingRS = await (getDbRecordALL)(`SELECT data from app where _id = ? and userId = ? `, [appid, userId]);
+      let Template = {}
       if(SettingRS)  {
-        SettingRS.map((Item: any)=>{
+        SettingRS.map((Item)=>{
           Template = JSON.parse(Item.data)
         })
       }
@@ -178,18 +176,18 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     }
   }
 
-  export async function getAppPage(pageid: number, pagesize: number, userId: number) {
-    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+  export async function getAppPage(pageid, pagesize, userId) {
+    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
     console.log("pageidFiler", pageidFiler)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from app where userId = ?", [userId]);
-    const RecordsTotal: number = Records ? Records.NUM : 0;  
-    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from app where userId = ? order by id desc limit ? OFFSET ? `, [userId, pagesizeFiler, From]) as any[];
+    const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from app where userId = ?", [userId]);
+    const RecordsTotal = Records ? Records.NUM : 0;  
+    const RecordsAll = await (getDbRecordALL)(`SELECT * from app where userId = ? order by id desc limit ? OFFSET ? `, [userId, pagesizeFiler, From]);
     
-    const RS: any = {};
+    const RS = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
     RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
     RS['from'] = From;
@@ -200,23 +198,23 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return RS;
   }
 
-  export async function getAppPageAll(pageid: number, pagesize: number, data: any) {
-    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+  export async function getAppPageAll(pageid, pagesize, data) {
+    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
     console.log("getAppPageAll************", data)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    let Records: any = null;
-    let RecordsAll: any[] = []
+    let Records = null;
+    let RecordsAll = []
     if(data && (data.name || data.intro)) {
-      Records = await (getDbRecord as SqliteQueryFunction)(`
+      Records = await (getDbRecord)(`
                       SELECT COUNT(*) AS NUM
                       FROM app 
                       WHERE name LIKE '%' || ? || '%' 
                       AND intro LIKE '%' || ? || '%' 
                     `, [data.name || '', data.intro || ''])
-      RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`
+      RecordsAll = await (getDbRecordALL)(`
                       SELECT *
                       FROM app 
                       WHERE name LIKE '%' || ? || '%' 
@@ -226,12 +224,12 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
                     `, [data.name || '', data.intro || '', pagesizeFiler, From]) || [];
     }
     else {
-      Records = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from app where permission = ? ", ['public']);
-      RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from app where permission = ? order by id desc limit ? OFFSET ? `, ['public', pagesizeFiler, From]) as any[];
+      Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from app where permission = ? ", ['public']);
+      RecordsAll = await (getDbRecordALL)(`SELECT * from app where permission = ? order by id desc limit ? OFFSET ? `, ['public', pagesizeFiler, From]);
     }
-    const RecordsTotal: number = Records ? Records.NUM : 0;  
+    const RecordsTotal = Records ? Records.NUM : 0;  
     
-    const RS: any = {};
+    const RS = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
     RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
     RS['from'] = From;
@@ -242,19 +240,19 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return RS;
   }
 
-  export async function getChatlogPageByApp(appId: string, pageid: number, pagesize: number, userId: number) {
+  export async function getChatlogPageByApp(appId, pageid, pagesize, userId) {
     const appIdFileter = filterString(appId)
-    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
     console.log("pageidFiler", pageidFiler)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from appchatlog where appId = ? and userId = ?", [appIdFileter, userId]);
-    const RecordsTotal: number = Records ? Records.NUM : 0;  
-    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from appchatlog where appId = ? and userId = ? order by id desc limit ? OFFSET ? `, [appIdFileter, userId, pagesizeFiler, From]) as any[];
+    const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from appchatlog where appId = ? and userId = ?", [appIdFileter, userId]);
+    const RecordsTotal = Records ? Records.NUM : 0;  
+    const RecordsAll = await (getDbRecordALL)(`SELECT * from appchatlog where appId = ? and userId = ? order by id desc limit ? OFFSET ? `, [appIdFileter, userId, pagesizeFiler, From]);
     
-    const RS: any = {};
+    const RS = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
     RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
     RS['from'] = From;
@@ -265,32 +263,32 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return RS;
   }
 
-  export async function getChatlogStaticPageByApp(appId: string, pageid: number, pagesize: number) {
+  export async function getChatlogStaticPageByApp(appId, pageid, pagesize) {
     const appIdFileter = filterString(appId)
-    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
     console.log("pageidFiler", pageidFiler)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(DISTINCT userid) as totalRecords FROM chatlog WHERE appId = ?", [appIdFileter]);
-    const RecordsTotal: number = Records ? Records.NUM : 0;  
-    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`select id, userid, count(*) as chatCount, publishId, timestamp from chatlog where appId = ? group by userid order by timestamp desc limit ? OFFSET ?`, [appIdFileter, pagesizeFiler, From]) as any[];
+    const Records = await (getDbRecord)("SELECT COUNT(DISTINCT userid) as totalRecords FROM chatlog WHERE appId = ?", [appIdFileter]);
+    const RecordsTotal = Records ? Records.NUM : 0;  
+    const RecordsAll = await (getDbRecordALL)(`select id, userid, count(*) as chatCount, publishId, timestamp from chatlog where appId = ? group by userid order by timestamp desc limit ? OFFSET ?`, [appIdFileter, pagesizeFiler, From]);
 
-    const allPublishIdList: string[] = RecordsAll.map((item: any)=> item.publishId)
+    const allPublishIdList = RecordsAll.map((item)=> item.publishId)
     const allPublishIdListNotNull = allPublishIdList.filter(item => item!=null && item!='')
-    const RecordsAllPublish: any[] = await (getDbRecordALL as SqliteQueryFunction)(`select name, _id from publish where _id IN (${allPublishIdListNotNull.map(() => '?').join(', ')})`, [...allPublishIdListNotNull]) as any[];
-    const RecordsAllPublishMap: any = {}
-    RecordsAllPublish.map((item: any)=>{
+    const RecordsAllPublish = await (getDbRecordALL)(`select name, _id from publish where _id IN (${allPublishIdListNotNull.map(() => '?').join(', ')})`, [...allPublishIdListNotNull]);
+    const RecordsAllPublishMap = {}
+    RecordsAllPublish.map((item)=>{
       RecordsAllPublishMap[item._id] = item.name
     })
     console.log("RecordsAllPublish", RecordsAllPublishMap)
 
-    const RecordsAllFilter = RecordsAll.map((item: any)=>{
+    const RecordsAllFilter = RecordsAll.map((item)=>{
       return {...item, publishName: RecordsAllPublishMap[item.publishId] || ''}
     })
     
-    const RS: any = {};
+    const RS = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
     RS['data'] = RecordsAllFilter;
     RS['from'] = From;
@@ -301,19 +299,19 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return RS;
   }
   
-  export async function getPublishsPageByApp(appId: string, pageid: number, pagesize: number, userId: number) {
+  export async function getPublishsPageByApp(appId, pageid, pagesize, userId) {
     const appIdFileter = filterString(appId)
-    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
     console.log("pageidFiler", pageidFiler)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from publish where appId = ? and userId = ?", [appIdFileter, userId]);
-    const RecordsTotal: number = Records ? Records.NUM : 0;  
-    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from publish where appId = ? and userId = ? order by id desc limit ? OFFSET ? `, [appIdFileter, userId, pagesizeFiler, From]) as any[];
+    const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from publish where appId = ? and userId = ?", [appIdFileter, userId]);
+    const RecordsTotal = Records ? Records.NUM : 0;  
+    const RecordsAll = await (getDbRecordALL)(`SELECT * from publish where appId = ? and userId = ? order by id desc limit ? OFFSET ? `, [appIdFileter, userId, pagesizeFiler, From]);
     
-    const RS: any = {};
+    const RS = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
     RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
     RS['from'] = From;
@@ -324,21 +322,21 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return RS;
   }
 
-  export async function getPublishsAll(pageid: number, pagesize: number) {
-    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+  export async function getPublishsAll(pageid, pagesize) {
+    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
     console.log("pageidFiler", pageidFiler)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    let Records: any = null;
-    let RecordsTotal: number = Records ? Records.NUM : 0;  
-    let RecordsAll: any[] = [];
-    Records = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from publish");
+    let Records = null;
+    let RecordsTotal = Records ? Records.NUM : 0;  
+    let RecordsAll = [];
+    Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from publish");
     RecordsTotal = Records ? Records.NUM : 0;  
-    RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from publish order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]) as any[];
+    RecordsAll = await (getDbRecordALL)(`SELECT * from publish order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]);
     
-    const RS: any = {};
+    const RS = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
     RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
     RS['from'] = From;
@@ -349,7 +347,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return RS;
   }
 
-  export async function addPublish(Params: any) {
+  export async function addPublish(Params) {
     try{
       Params._id = getNanoid(32)
       Params.name = filterString(Params.name)
@@ -362,8 +360,8 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       Params.userId = filterString(Params.userId)
       Params.appId = filterString(Params.appId)
 
-      const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT id from publish where _id = ?", [Params._id]);
-      const RecordId: number = Records ? Records.id : 0;
+      const Records = await (getDbRecord)("SELECT id from publish where _id = ?", [Params._id]);
+      const RecordId = Records ? Records.id : 0;
 
       console.log("RecordId", RecordId, Params)
       if(RecordId > 0) {
@@ -379,14 +377,14 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
         return {"status":"ok", "msg":"Add Success"}
       }
     }
-    catch (error: any) {
+    catch (error) {
       log(Params._id, 'addPublish', Params.userId, 'Error addPublish:', error.message);
       return {"status":"error", "msg":error.message}
     }
   }
 
   
-  export async function editPublish(Params: any) {
+  export async function editPublish(Params) {
     try{
       Params._id = filterString(Params._id)
       Params.name = filterString(Params.name)
@@ -404,14 +402,14 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       log(Params._id, 'editPublish', Params.userId, 'Success editPublish:', JSON.stringify(Params));
       return {"status":"ok", "msg":"Update Success"}
     }
-    catch (error: any) {
+    catch (error) {
       log(Params._id, 'editPublish', Params.userId,'Error editPublish:', error.message);
       return {"status":"error", "msg":error.message}
     }
     
   }
 
-  export async function deletePublish(Params: any) {
+  export async function deletePublish(Params) {
     try{
       Params._id = filterString(Params._id)
       Params.appId = filterString(Params.appId)
@@ -422,22 +420,22 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       log(Params._id, 'deletePublish', Params.userId, 'Success deletePublish:', JSON.stringify(Params));
       return {"status":"ok", "msg":"Delete Success"}
     }
-    catch (error: any) {
+    catch (error) {
       log(Params._id, 'deletePublish', Params.userId,'Error deletePublish:', error.message);
       return {"status":"error", "msg":error.message}
     }  
     
   }
   
-  export async function getPublish(id: string, userId: string) {
+  export async function getPublish(id, userId) {
     const idFilter = filterString(id)
     const userIdFilter = Number(userId)
     
-    const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT data from publish where _id = ? and userId = ? `, [idFilter, userIdFilter]) as any[];
+    const SettingRS = await (getDbRecordALL)(`SELECT data from publish where _id = ? and userId = ? `, [idFilter, userIdFilter]);
     
-    let Template: any = {}
+    let Template = {}
     if(SettingRS)  {
-      SettingRS.map((Item: any)=>{
+      SettingRS.map((Item)=>{
         Template = JSON.parse(Item.data)
       })
     }
@@ -445,20 +443,20 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return Template
   }
 
-  export async function getChatLogByAppIdAndUserId(appId: string, userId: number, pageid: number, pagesize: number) {
+  export async function getChatLogByAppIdAndUserId(appId, userId, pageid, pagesize) {
     const appIdFiler = filterString(appId);
     const userIdFiler = filterString(userId);
-    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
 
     console.log("appIdFiler", appIdFiler, userIdFiler)
   
-    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from chatlog where current = 1 and appId = ? and userId = ?", [appIdFiler, userIdFiler]);
-    const RecordsTotal: number = Records ? Records.NUM : 0;
-    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from chatlog where current = 1 and  appId = ? and userId = ? order by id desc limit ? OFFSET ? `, [appIdFiler, userIdFiler, pagesizeFiler, From]) as any[];
+    const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from chatlog where current = 1 and appId = ? and userId = ?", [appIdFiler, userIdFiler]);
+    const RecordsTotal = Records ? Records.NUM : 0;
+    const RecordsAll = await (getDbRecordALL)(`SELECT * from chatlog where current = 1 and  appId = ? and userId = ? order by id desc limit ? OFFSET ? `, [appIdFiler, userIdFiler, pagesizeFiler, From]);
   
-    const RS: any = {};
+    const RS = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
     RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
     RS['from'] = From;
@@ -469,7 +467,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return RS;
   }
 
-  export async function deleteUserLogByAppId(appId: string, userId: string) {
+  export async function deleteUserLogByAppId(appId, userId) {
     const UpdateChatLog = db.prepare("update chatlog set current = 0 where appId = ? and userId = ?");
     UpdateChatLog.run(appId, userId);
     UpdateChatLog.finalize();
@@ -477,7 +475,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return {"status":"ok", "msg":"Clear History Success"}
   }
 
-  export async function deleteUserLogByChatlogId(appId: string, userId: string, id: number) {
+  export async function deleteUserLogByChatlogId(appId, userId, id) {
     const UpdateChatLog = db.prepare("delete from chatlog where appId = ? and userId = ? and _id = ?");
     UpdateChatLog.run(appId, userId, id);
     UpdateChatLog.finalize();

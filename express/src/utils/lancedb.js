@@ -1,44 +1,29 @@
-import express, { Request, Response } from 'express';
+import express from 'express';
 import crypto from 'crypto';
 import { OpenAI } from "openai";
 import { ChatOpenAI } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { connect } from "vectordb";
 import { OpenAIEmbeddingFunction } from 'vectordb';
-import { load, type Element } from 'cheerio';
+import { load } from 'cheerio';
 
-import { Message as VercelChatMessage, StreamingTextResponse } from 'ai'
 import { BytesOutputParser, StringOutputParser } from '@langchain/core/output_parsers';
 
-import { DataDir } from './const';
-import { db, getDbRecord, getDbRecordALL } from './db'
+import { DataDir } from './const.js';
+import { db, getDbRecord, getDbRecordALL } from './db.js'
 
 import dotenv from 'dotenv';
 dotenv.config();
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? ''
 
-export interface Entry {
-    [x: string]: any
-    link: string
-    title: string;
-    text: string
-}
 
-export interface EntryWithContext {
-    [x: string]: any
-    link: string
-    title: string
-    text: string
-    context: string
-}
-
-export async function createEmbeddingsFromList(data: EntryWithContext[], datasetId: string) {
+export async function createEmbeddingsFromList(data, datasetId) {
   const lance_db = await connect(DataDir + '/LanceDb/');
 
   const embedFunction = new OpenAIEmbeddingFunction('context', OPENAI_API_KEY)
 
-  const allTableExistsList: string[] = await lance_db.tableNames()
+  const allTableExistsList = await lance_db.tableNames()
   //console.log("createEmbeddingsFromList allTableExistsList", allTableExistsList)
 
   if(allTableExistsList.includes(`${datasetId}`))  {
@@ -55,14 +40,14 @@ export async function createEmbeddingsFromList(data: EntryWithContext[], dataset
     console.log('createEmbeddingsFromList Vectors inserted: ', data.length, Array.isArray(data))  
     return tableData?.name
   }
-  catch(error: any) {
+  catch(error) {
     console.log("lance_db.createTable Failed: ", data.length)
     return 
   }
   
 }
 
-export async function createEmbeddingsTable(WebsiteUrlList: string[], datasetId: string, _id: string) {
+export async function createEmbeddingsTable(WebsiteUrlList, datasetId, _id) {
     const lance_db = await connect(DataDir + '/LanceDb/datasetId_' + datasetId + "/" + _id);
   
     const embedFunction = new OpenAIEmbeddingFunction('context', OPENAI_API_KEY)
@@ -70,7 +55,7 @@ export async function createEmbeddingsTable(WebsiteUrlList: string[], datasetId:
     const batchSize = 1;
   
     //console.log("contextualize data", data.slice(0, Math.min(batchSize, data.length)))
-    const allTableExistsList: string[] = await lance_db.tableNames()
+    const allTableExistsList = await lance_db.tableNames()
     console.log("tableNamesData", allTableExistsList)
 
     //const tableData = allTableExistsList.includes(`${_id}`) ? ( await lance_db.openTable(`${_id}`, embedFunction) ) : ( await lance_db.createTable(`${_id}`, [data[0]], embedFunction) )
@@ -90,8 +75,8 @@ export async function createEmbeddingsTable(WebsiteUrlList: string[], datasetId:
   
 // Each article line has a small text column, we include previous lines in order to
 // have more context information when creating embeddings
-export function contextualize(rows: Entry[], contextSize: number, groupColumn: string): EntryWithContext[] {
-    const grouped: { [key: string]: any } = []
+export function contextualize(rows, contextSize, groupColumn) {
+    const grouped = []
   
     rows.forEach(row => {
       if (!grouped[row[groupColumn]]) {
@@ -101,12 +86,12 @@ export function contextualize(rows: Entry[], contextSize: number, groupColumn: s
       grouped[row[groupColumn]].push(row)
     })
   
-    const data: EntryWithContext[] = []
+    const data = []
   
     Object.keys(grouped).forEach(key => {
       for (let i = 0; i < grouped[key].length; i++) {
         const start = i - contextSize > 0 ? i - contextSize : 0
-        grouped[key][i].context = grouped[key].slice(start, i + 1).map((r: Entry) => r.text).join(' ')
+        grouped[key][i].context = grouped[key].slice(start, i + 1).map((r) => r.text).join(' ')
       }
   
       data.push(...grouped[key])
@@ -115,8 +100,8 @@ export function contextualize(rows: Entry[], contextSize: number, groupColumn: s
     return data
 }
 
-export async function getWebsiteUrlContent(links: string[]): Promise<Entry[]> {
-    let allEntries: Entry[] = [];
+export async function getWebsiteUrlContent(links) {
+    let allEntries = [];
 
     for (const link of links) {
         console.log('Scraping: ', link);
@@ -129,9 +114,9 @@ export async function getWebsiteUrlContent(links: string[]): Promise<Entry[]> {
 
             const $ = load(html);
 
-            const contentArray: string[] = [];
+            const contentArray = [];
 
-            $('p').each((index: number, element: Element) => {
+            $('p').each((index, element) => {
                 contentArray.push($(element).text().trim());
             });
             //console.log("contentArray", contentArray)
@@ -159,7 +144,7 @@ export async function getWebsiteUrlContent(links: string[]): Promise<Entry[]> {
     return allEntries;
 }
 
-export async function getWebsiteUrlContext(links: string[]): Promise<Entry[]> {
+export async function getWebsiteUrlContext(links) {
   const data = contextualize(await getWebsiteUrlContent(links), 1, 'link')
   return data
 }
@@ -211,11 +196,11 @@ User's Input:
 Your Response:`
 
 
-export function formatMessage(message: VercelChatMessage) {
+export function formatMessage(message) {
     return `${message.role}: ${message.content}`;
 };
 
-export async function rephraseInput(model: ChatOpenAI, chatHistory: string[], input: string, REPHRASE_TEMPLATE: string) {
+export async function rephraseInput(model, chatHistory, input, REPHRASE_TEMPLATE) {
     if (chatHistory.length === 0) return input;
 
     const rephrasePrompt = PromptTemplate.fromTemplate(REPHRASE_TEMPLATE);
@@ -230,7 +215,7 @@ export async function rephraseInput(model: ChatOpenAI, chatHistory: string[], in
     });
 }
 
-export async function retrieveContext(query: string, table: string, k = 3): Promise<EntryWithContext[]> {
+export async function retrieveContext(query, table, k = 3) {
     const db = await connect(DataDir + '/LanceDb/')
     
     const embedFunction = new OpenAIEmbeddingFunction('context', OPENAI_API_KEY)
@@ -243,14 +228,14 @@ export async function retrieveContext(query: string, table: string, k = 3): Prom
       .search(query)
       .select(['link', 'title', 'text', 'context'])
       .limit(k)
-      .execute() as EntryWithContext[]
+      .execute()
 }
 
-export async function ChatDatasetId(res: Response, messages: any[], datasetId: string, REPHRASE_TEMPLATE: string, QA_TEMPLATE: string) {
+export async function ChatDatasetId(res, messages, datasetId, REPHRASE_TEMPLATE, QA_TEMPLATE) {
 
     const model = new ChatOpenAI({
         modelName: "gpt-3.5-turbo",
-        temperature : Number(0.1),
+        temperature: (0.1),
         openAIApiKey: OPENAI_API_KEY,
         streaming: true,
     });

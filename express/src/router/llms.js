@@ -1,28 +1,28 @@
   // app.ts
-  import express, { Request, Response } from 'express';
+  import express from 'express';
 
-  import { checkUserToken } from '../utils/user';
+  import { checkUserToken } from '../utils/user.js';
 
-  import { getLLMSSetting, uploadfiles, uploadfilesInsertIntoDb, filterString } from '../utils/utils';
-  import { outputImage, outputImageOrigin, outputAvatarForApp, outputAvatarForDataset, outputAudio, chatChatBaiduWenxin, chatChatGemini, chatChatGeminiMindMap, chatOpenAI, chatDeepSeek, GenereateImageUsingDallE2, GenereateAudioUsingTTS, parseFilesAndWeb, ChatApp, vectorDdProcess } from '../utils/llms';
-  import { llms } from '../config';
-  import { ChatDatasetId, QA_TEMPLATE_INITIAL, REPHRASE_TEMPLATE_INITIAL } from '../utils/lancedb';
+  import { getLLMSSetting, uploadfiles, uploadfilesInsertIntoDb, filterString } from '../utils/utils.js';
+  import { outputImage, outputImageOrigin, outputAvatarForApp, outputAvatarForDataset, outputAudio, chatChatBaiduWenxin, chatChatGemini, chatChatGeminiMindMap, chatOpenAI, chatDeepSeek, GenereateImageUsingDallE2, GenereateAudioUsingTTS, parseFilesAndWeb, ChatApp, vectorDdProcess } from '../utils/llms.js';
+  import { llms } from '../config.js';
+  import { ChatDatasetId, QA_TEMPLATE_INITIAL, REPHRASE_TEMPLATE_INITIAL } from '../utils/lancedb.js';
 
   const app = express();
 
-  app.get('/api/parsefiles', async (req: Request, res: Response) => {
+  app.get('/api/parsefiles', async (req, res) => {
     parseFilesAndWeb();
     res.status(200).send("Execute finished, logs in the console or the log page");
     res.end();
   });
 
-  app.get('/api/vectorDdProcess', async (req: Request, res: Response) => {
+  app.get('/api/vectorDdProcess', async (req, res) => {
     vectorDdProcess();
     res.status(200).send("vectorDdProcess");
     res.end();
   });
 
-  app.get('/api/dataset', async (req: Request, res: Response) => {
+  app.get('/api/dataset', async (req, res) => {
 
     const messages = [{role: "user", content: "什么是chivesweave?,请使用中文回复"}]
     const datasetId = "dMMHgv7ydA3UYV30a93mlnjI13Sblx4q"
@@ -31,11 +31,11 @@
   });
   
   app.post('/api/uploadfiles', uploadfiles().array('files', 10), async (req, res) => {
-    const datasetId: string = req.body.datasetId
+    const datasetId = req.body.datasetId
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user') && datasetId) {
-      uploadfilesInsertIntoDb(req.files as any[], datasetId, checkUserTokenData.data.id);
+      uploadfilesInsertIntoDb(req.files, datasetId, checkUserTokenData.data.id);
       res.json({"status":"ok", "msg":"Uploaded Success"}).end();
     }
     else {
@@ -44,10 +44,10 @@
     res.end();
   });
   
-  app.post('/api/DallE2Openai', async (req: Request, res: Response) => {
-    const question: string = req.body.question
+  app.post('/api/DallE2Openai', async (req, res) => {
+    const question = req.body.question
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
         const getLLMSSettingData = await getLLMSSetting("Dall-E-2");   
         if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
@@ -64,10 +64,10 @@
     res.end();
   });
   
-  app.post('/api/ChatOpenai', async (req: Request, res: Response) => {
+  app.post('/api/ChatOpenai', async (req, res) => {
     const { question, history, template, appId, _id, publishId, temperature} = req.body;
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         await chatOpenAI(_id, res, checkUserTokenData.data.id, question, history, template, appId, publishId || '', 1, temperature);
         res.end();
@@ -78,10 +78,10 @@
     res.end();
   });
 
-  app.post('/api/ChatApp', async (req: Request, res: Response) => {
+  app.post('/api/ChatApp', async (req, res) => {
     const { question, history, template, appId, _id, publishId, allowChatLog, temperature, datasetId, DatasetPrompt } = req.body;
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         await ChatApp(_id, res, checkUserTokenData.data.id, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId, DatasetPrompt);
     }
@@ -91,7 +91,7 @@
     }
   });
 
-  app.post('/api/ChatAppAnonymous', async (req: Request, res: Response) => {
+  app.post('/api/ChatAppAnonymous', async (req, res) => {
     const { question, history, template, appId, publishId, _id, allowChatLog, temperature, datasetId, DatasetPrompt } = req.body;
     const { authorization } = req.headers;
     if(authorization && authorization.length == 32) {
@@ -103,10 +103,10 @@
     }
   });
   
-  app.post('/api/ChatGemini', async (req: Request, res: Response) => {
+  app.post('/api/ChatGemini', async (req, res) => {
     const { question, history, template, appId, publishId, _id, allowChatLog} = req.body;
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
         await chatChatGemini(_id, res, checkUserTokenData.data.id, question, history, template, appId, publishId || '', allowChatLog);
     }
@@ -116,12 +116,12 @@
     res.end();
   });
 
-  app.post('/api/ChatBaiduwenxin', async (req: Request, res: Response) => {
+  app.post('/api/ChatBaiduwenxin', async (req, res) => {
     const { question, history, template, appId } = req.body;
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-      const chatChatBaiduWenxinData: any = await chatChatBaiduWenxin(res, checkUserTokenData.data.id, question, history, template, appId);    
+      const chatChatBaiduWenxinData = await chatChatBaiduWenxin(res, checkUserTokenData.data.id, question, history, template, appId);    
       res.status(200).json(chatChatBaiduWenxinData);
     }
     else {
@@ -130,12 +130,12 @@
     res.end();
   });
 
-  app.post('/api/TTS-1', async (req: Request, res: Response) => {
-    const question: string = req.body.question
-    const voice: string = req.body.voice
-    const appId: string = req.body.appId
+  app.post('/api/TTS-1', async (req, res) => {
+    const question = req.body.question
+    const voice = req.body.voice
+    const appId = req.body.appId
     const { authorization } = req.headers;
-    const checkUserTokenData: any = await checkUserToken(authorization as string);
+    const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
         const getLLMSSettingData = await getLLMSSetting("TTS-1");   
         if(getLLMSSettingData && getLLMSSettingData.OPENAI_API_KEY && getLLMSSettingData.OPENAI_API_KEY != "") {
@@ -152,35 +152,35 @@
     res.end();
   });
 
-  app.get('/api/audio/:file', async (req: Request, res: Response) => {
+  app.get('/api/audio/:file', async (req, res) => {
     const { file }= req.params;
     outputAudio(res, file);
   });
 
-  app.get('/api/image/:file', async (req: Request, res: Response) => {
+  app.get('/api/image/:file', async (req, res) => {
     const { file } = req.params;
     outputImage(res, file);
 
   });
 
-  app.get('/api/avatarforapp/:file', async (req: Request, res: Response) => {
+  app.get('/api/avatarforapp/:file', async (req, res) => {
     const { file } = req.params;
     outputAvatarForApp(res, file);
 
   });
 
-  app.get('/api/avatarfordataset/:file', async (req: Request, res: Response) => {
+  app.get('/api/avatarfordataset/:file', async (req, res) => {
     const { file } = req.params;
     outputAvatarForDataset(res, file);
 
   });
 
-  app.get('/api/imageorigin/:file', async (req: Request, res: Response) => {
+  app.get('/api/imageorigin/:file', async (req, res) => {
     const { file } = req.params;
     outputImageOrigin(res, file);
   });
 
-  app.get('/api/llms', async (req: Request, res: Response) => {
+  app.get('/api/llms', async (req, res) => {
     res.status(200).json(llms)
   });
   

@@ -1,21 +1,25 @@
 // app.ts
-import express, { Request, Response, NextFunction } from 'express';
+import express from 'express';
 import cors from 'cors';
 import bodyParser from 'body-parser';
 import cron from 'node-cron';
 import dotenv from 'dotenv';
-import { join } from 'path';
+import { dirname, join } from 'path';
 
-import { initChatBookDbExec } from './utils/db';
-import { parseFilesAndWeb, vectorDdProcess } from './utils/llms';
+import { initChatBookDbExec } from './utils/db.js';
+import { parseFilesAndWeb, vectorDdProcess } from './utils/llms.js';
 
-//import { downloadVideoFromAPI } from './utils/Backup/stability';
+//import { downloadVideoFromAPI } from './utils/Backup/stability.js';
 
-import userRouter from './router/user'
-import llmsRouter from './router/llms'
-import utilsRouter from './router/utils'
-import appRouter from './router/app'
-import datasetRouter from './router/dataset'
+import userRouter from './router/user.js'
+import llmsRouter from './router/llms.js'
+import utilsRouter from './router/utils.js'
+import appRouter from './router/app.js'
+import datasetRouter from './router/dataset.js'
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 //import stabilityRouter from './router/Backup/stability'
 //import getimgRouter from './router/Backup/getimg'
@@ -51,7 +55,7 @@ app.use('/', datasetRouter);
 //app.use('/', stabilityRouter);
 //app.use('/', seaartRouter);
 
-app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+app.use((err, req, res, next) => {
   // 处理身份验证错误
   if (err.name === 'AuthenticationError') {
     console.error('AuthenticationError:', err.message);

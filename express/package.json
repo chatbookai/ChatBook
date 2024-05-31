@@ -5,10 +5,11 @@
   "email": "chatbookai@gmail.com",
   "url": "https://github.com/chatbookai/ChatBook",
   "main": "main.js",
+  "type": "module",
   "scripts": {
     "start": "npm run electron",
     "electron": "electron --max-old-space-size=8096 main.js",
-    "express": "nodemon src/app.ts",
+    "express": "nodemon src/app.js",
     "build": "electron-builder"
   },
   "keywords": [],
@@ -72,7 +73,6 @@
     "openai": "^4.27.0",
     "os": "^0.1.2",
     "pdf-parse": "^1.1.1",
-    "puppeteer": "^21.7.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "sharp": "^0.33.2",

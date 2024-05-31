@@ -5,7 +5,7 @@ import { DataDir } from '../const'
 import sharp from 'sharp';
 
 import path from 'path'
-import { db, getDbRecord, getDbRecordALL } from '../db'
+import { db, getDbRecord, getDbRecordALL } from '../db.mjs'
 import { timestampToDate, isFile, filterNegativePrompt } from '../utils'
 import { compressImageForImage } from '../llms'
 import FormData from "form-data"
@@ -13,22 +13,20 @@ import FormData from "form-data"
 const STABILITY_API_SECRET_KEY_IMAGE = process.env.STABILITY_API_KEY_IMAGE
 const STABILITY_API_SECRET_KEY_VIDEO = process.env.STABILITY_API_KEY_VIDEO
 
-type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
-
 
 interface StabilityAi {
-  model: string
-  prompt: string
-  negativePrompt: string
-  width: number
-  height: number
-  steps: number
-  CFGScale: number
-  numberOfImages: number
-  style: string
-  outpuFormat: string
-  seed: number | string
-  sampler: string
+  model
+  prompt
+  negativePrompt
+  width
+  height
+  steps
+  CFGScale
+  numberOfImages
+  style
+  outpuFormat
+  seed
+  sampler
 }
 
 export async function getUserBalanceStabilityAi() {
@@ -48,9 +46,9 @@ export async function getUserBalanceStabilityAi() {
   }
 }
 
-export async function generateImageFromTextStabilityAi(checkUserTokenData: any, data: StabilityAi) {
+export async function generateImageFromTextStabilityAi(checkUserTokenData, data: StabilityAi) {
   
-  //const getUserBalanceGetImgStatus: boolean = await getUserBalanceStabilityAi();
+  //const getUserBalanceGetImgStatus = await getUserBalanceStabilityAi();
   //if(getUserBalanceGetImgStatus == false)   {
   //  return {status: 'error', msg: 'Insufficient balance 2'};
   //}
@@ -64,7 +62,7 @@ export async function generateImageFromTextStabilityAi(checkUserTokenData: any, 
     data.height = 1024
   }
 
-  const POSTDATA: any = {}
+  const POSTDATA = {}
   POSTDATA['steps'] = Number(data.steps)
   POSTDATA['width'] = Number(data.width)
   POSTDATA['height'] = Number(data.height)
@@ -88,7 +86,7 @@ export async function generateImageFromTextStabilityAi(checkUserTokenData: any, 
       });
     if(res.status == 200 && res.data) {
         let FileNamePath = ''
-        res.data.artifacts.forEach((image: any, index: number) => {          
+        res.data.artifacts.forEach((image, index) => {          
           FileNamePath = Base64ToImg(image.base64, 'v16_' + image.seed);
         })     
         console.log("FileNamePath", FileNamePath)
@@ -102,7 +100,7 @@ export async function generateImageFromTextStabilityAi(checkUserTokenData: any, 
           insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, data.model, data.prompt, filterNegativePrompt(data.negativePrompt), data.steps, POSTDATA['seed'], POSTDATA['style_preset'], orderId, JSON.stringify(POSTDATA), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, 'stability.ai');
           insertSetting.finalize();
         }
-        catch(error: any) {
+        catch(error) {
           console.log("generateImageFromTextStabilityAiV16 insertSetting Error", error.message)
         }
         return {status: 'ok', msg: 'Submit Success', id: orderId };
@@ -111,14 +109,14 @@ export async function generateImageFromTextStabilityAi(checkUserTokenData: any, 
       return {status: 'error', msg: 'Submit failed 1 '};
     }
   }
-  catch(error: any) {
+  catch(error) {
     console.log("generateImageFromTextStabilityAiV16 Error", error.message)
     return {status: 'error', msg: error.message, errorText: 'Submit failed 2' };
   }
   
 }
 
-export async function generateImageFromImageStabilityAi(checkUserTokenData: any, PostData:any, files: any) {
+export async function generateImageFromImageStabilityAi(checkUserTokenData, PostData:any, files) {
   if(files==null || files[0]==null || files[0].filename==null) {
     if(PostData.image && typeof PostData.image === 'string') {
       const ImageName = PostData.image.split('/').pop()
@@ -164,7 +162,7 @@ export async function generateImageFromImageStabilityAi(checkUserTokenData: any,
   }
 
   //Submit
-  const formData: any = new FormData();
+  const formData = new FormData();
   formData.append("init_image", fs.readFileSync(FilePath), FileName);
   formData.append('init_image_mode', 'IMAGE_STRENGTH')
   formData.append('image_strength', 0.35)
@@ -191,7 +189,7 @@ export async function generateImageFromImageStabilityAi(checkUserTokenData: any,
     });
     if(res.status == 200 && res.data && res.data.artifacts) {
       let FileNamePath = ''
-      res.data.artifacts.forEach((image: any, index: number) => {   
+      res.data.artifacts.forEach((image, index) => {   
         console.log("image.seed", image.seed)       
         FileNamePath = Base64ToImg(image.base64, 'v16_' + image.seed);
       })     
@@ -206,7 +204,7 @@ export async function generateImageFromImageStabilityAi(checkUserTokenData: any,
         insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, PostData.model, PostData.prompt, filterNegativePrompt(PostData.negativePrompt), PostData.steps, Number(PostData.seed), String(PostData.style), orderId, JSON.stringify(PostData), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, 'stability.ai');
         insertSetting.finalize();
       }
-      catch(error: any) {
+      catch(error) {
         console.log("generateImageFromImageStabilityAi insertSetting Error", error.message)
       }
       return {status: 'ok', msg: 'Submit Success', id: orderId };
@@ -215,7 +213,7 @@ export async function generateImageFromImageStabilityAi(checkUserTokenData: any,
       return {status: 'error', msg: 'Submit failed'};
     }
   }
-  catch(error: any) {
+  catch(error) {
     if(error && error.response && error.response.data && error.response.data.message) {
       return {status: 'error', msg: error.response.data.message, errorText: 'Submit failed' };
     }
@@ -226,7 +224,7 @@ export async function generateImageFromImageStabilityAi(checkUserTokenData: any,
   
 }
 
-export function Base64ToImg(Base64IMG: string, model: string) {
+export function Base64ToImg(Base64IMG, model) {
     const decodedImg = Buffer.from(Base64IMG, 'base64');
     const uniqueSuffix = model + '-' + Date.now() + '-' + Math.round(Math.random() * 1e9);
     const FileName = DataDir + "/image/" +uniqueSuffix + '.png';
@@ -234,19 +232,19 @@ export function Base64ToImg(Base64IMG: string, model: string) {
     return uniqueSuffix;
 }
 
-export async function getUserImagesStabilityAi(userId: string, pageid: number, pagesize: number) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+export async function getUserImagesStabilityAi(userId, pageid, pagesize) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
   console.log("pageidFiler", pageidFiler)
   console.log("pagesizeFiler", pagesizeFiler)
 
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from userimages where userId = ? and source='stability.ai' ", [userId]);
-  const RecordsTotal: number = Records ? Records.NUM : 0;
+  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from userimages where userId = ? and source='stability.ai' ", [userId]);
+  const RecordsTotal = Records ? Records.NUM : 0;
 
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)("SELECT * FROM userimages where userId = ? and source='stability.ai' ORDER BY id DESC LIMIT ? OFFSET ? ", [userId, pagesizeFiler, From]) || [];
+  const RecordsAll = await (getDbRecordALL)("SELECT * FROM userimages where userId = ? and source='stability.ai' ORDER BY id DESC LIMIT ? OFFSET ? ", [userId, pagesizeFiler, From]) || [];
 
-  const RS: any = {};
+  const RS = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
   RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
   RS['from'] = From;
@@ -257,19 +255,19 @@ export async function getUserImagesStabilityAi(userId: string, pageid: number, p
   return RS;
 }
 
-export async function getUserImagesAll(pageid: number, pagesize: number) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+export async function getUserImagesAll(pageid, pagesize) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
   console.log("pageidFiler", pageidFiler)
   console.log("pagesizeFiler", pagesizeFiler)
 
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from userimages where 1=1 ");
-  const RecordsTotal: number = Records ? Records.NUM : 0;
+  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from userimages where 1=1 ");
+  const RecordsTotal = Records ? Records.NUM : 0;
 
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)('SELECT * FROM userimages where 1=1 ORDER BY id DESC LIMIT ? OFFSET ? ', [pagesizeFiler, From]) || [];
+  const RecordsAll = await (getDbRecordALL)('SELECT * FROM userimages where 1=1 ORDER BY id DESC LIMIT ? OFFSET ? ', [pagesizeFiler, From]) || [];
 
-  const RS: any = {};
+  const RS = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
   RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
   RS['from'] = From;
@@ -280,14 +278,14 @@ export async function getUserImagesAll(pageid: number, pagesize: number) {
   return RS;
 }
 
-export async function generateVideoStabilityAi(checkUserTokenData: any, PostData:any, files: any) {
+export async function generateVideoStabilityAi(checkUserTokenData, PostData:any, files) {
   if(files==null || files[0]==null || files[0].filename==null) {
     return {status: 'error', msg: 'Please upload the file first' };
   }
   console.log("files", files)
   const FileName = files[0].filename
   const FilePath = files[0].path
-  const data: any = new FormData();
+  const data = new FormData();
   data.append("image", fs.readFileSync(FilePath), FileName);
   data.append("seed", Number(PostData.seed));
   data.append("cfg_scale", Number(PostData.cfg_scale));
@@ -315,7 +313,7 @@ export async function generateVideoStabilityAi(checkUserTokenData: any, PostData
           insertSetting.run(checkUserTokenData.data.id, checkUserTokenData.data.email, 'stability.ai', PostData.motion_bucket_id, PostData.cfg_scale, PostData.seed, FileName.replace(".png","").replace(".jpg","").replace(".jpeg",""), JSON.stringify(PostData), timestampToDate(Date.now()/1000), Date.now(), cost_usd, cost_xwe, cost_api, orderId, orderTX, 'stability.ai');
           insertSetting.finalize();
         }
-        catch(error: any) {
+        catch(error) {
           console.log("generateVideoStabilityAi insertSetting Error", error)
         }
         
@@ -325,14 +323,14 @@ export async function generateVideoStabilityAi(checkUserTokenData: any, PostData
       return {status: 'error', msg: 'Submit failed', errorText: res.data.toString() };
     }
   }
-  catch(error: any) {
+  catch(error) {
     console.log("generateVideoStabilityAi Error", error.message)
     return {status: 'error', msg: 'Submit failed', errorText: error.message };
   }
   
 }
 
-export async function getVideoStabilityAi(generationID: string) {
+export async function getVideoStabilityAi(generationID) {
 
   const response = await axios.request({
     url: `https://api.stability.ai/v2alpha/generation/image-to-video/result/${generationID}`,
@@ -366,10 +364,10 @@ export async function getVideoStabilityAi(generationID: string) {
 }
 
 export async function downloadVideoFromAPI() {
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)('SELECT id, filename, orderId FROM uservideos where status = 0 order by id desc LIMIT 10 OFFSET 0 ') || [];
+  const RecordsAll = await (getDbRecordALL)('SELECT id, filename, orderId FROM uservideos where status = 0 order by id desc LIMIT 10 OFFSET 0 ') || [];
   if(RecordsAll != undefined) {
     await Promise.all(
-      RecordsAll.map(async (Item: any)=>{
+      RecordsAll.map(async (Item)=>{
           console.log("downloadVideoFromAPI Item", Item.id, Item.orderId)
           const getVideoStabilityAiData = await getVideoStabilityAi(Item.orderId);
           if(getVideoStabilityAiData) {
@@ -383,19 +381,19 @@ export async function downloadVideoFromAPI() {
   }
 }
 
-export async function getUserVideosStabilityAi(userId: string, pageid: number, pagesize: number) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+export async function getUserVideosStabilityAi(userId, pageid, pagesize) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
   console.log("pageidFiler", pageidFiler)
   console.log("pagesizeFiler", pagesizeFiler)
 
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from uservideos where userId = ? and source='stability.ai' ", [userId]);
-  const RecordsTotal: number = Records ? Records.NUM : 0;
+  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from uservideos where userId = ? and source='stability.ai' ", [userId]);
+  const RecordsTotal = Records ? Records.NUM : 0;
 
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)("SELECT * FROM uservideos where userId = ? and source='stability.ai' ORDER BY id DESC LIMIT ? OFFSET ? ", [userId, pagesizeFiler, From]) || [];
+  const RecordsAll = await (getDbRecordALL)("SELECT * FROM uservideos where userId = ? and source='stability.ai' ORDER BY id DESC LIMIT ? OFFSET ? ", [userId, pagesizeFiler, From]) || [];
 
-  const RS: any = {};
+  const RS = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
   RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
   RS['from'] = From;
@@ -407,19 +405,19 @@ export async function getUserVideosStabilityAi(userId: string, pageid: number, p
   return RS;
 }
 
-export async function getUserVideosStabilityAiAll(pageid: number, pagesize: number) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+export async function getUserVideosStabilityAiAll(pageid, pagesize) {
+  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
   console.log("pageidFiler", pageidFiler)
   console.log("pagesizeFiler", pagesizeFiler)
 
-  const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from uservideos where source='getimg.ai' ");
-  const RecordsTotal: number = Records ? Records.NUM : 0;
+  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from uservideos where source='getimg.ai' ");
+  const RecordsTotal = Records ? Records.NUM : 0;
 
-  const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)("SELECT * FROM uservideos where source='getimg.ai' ORDER BY id DESC LIMIT ? OFFSET ? ", [pagesizeFiler, From]) || [];
+  const RecordsAll = await (getDbRecordALL)("SELECT * FROM uservideos where source='getimg.ai' ORDER BY id DESC LIMIT ? OFFSET ? ", [pagesizeFiler, From]) || [];
 
-  const RS: any = {};
+  const RS = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
   RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
   RS['from'] = From;
@@ -430,7 +428,7 @@ export async function getUserVideosStabilityAiAll(pageid: number, pagesize: numb
   return RS;
 }
 
-export async function outputVideo(res: Response, file: string) {
+export async function outputVideo(res, file) {
   try {
     const FileName = path.join(DataDir, "/video/"+ file + ".mp4");
     if(isFile(FileName))   {
@@ -449,7 +447,7 @@ export async function outputVideo(res: Response, file: string) {
   }
 }
 
-export async function outputVideoImage(res: Response, file: string) {
+export async function outputVideoImage(res, file) {
   try {
     const FileName = path.join(DataDir, "/imageforvideo/"+ file + ".png");
     if(isFile(FileName))   {
@@ -468,9 +466,9 @@ export async function outputVideoImage(res: Response, file: string) {
   }
 }
 
-export async function generateImageUpscaleStabilityAi(checkUserTokenData: any, filename: string, source: string) {
+export async function generateImageUpscaleStabilityAi(checkUserTokenData, filename, source) {
 
-  //const getUserBalanceGetImgStatus: boolean = await getUserBalanceStabilityAi();
+  //const getUserBalanceGetImgStatus = await getUserBalanceStabilityAi();
   //if(getUserBalanceGetImgStatus == false)   {
   //  return {status: 'error', msg: 'Insufficient balance 2'};
   //}
@@ -515,7 +513,7 @@ export async function generateImageUpscaleStabilityAi(checkUserTokenData: any, f
         const orderId = filenameLarge
         try {
           //需要重新更新一下width height
-          const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT * from userimages where filename = ? ", [filename]);
+          const Records = await (getDbRecord)("SELECT * from userimages where filename = ? ", [filename]);
           if(Records)  {
             const metadata = await sharp(FileFullPathLarge).metadata();
             const widthNew = metadata.width;
@@ -528,7 +526,7 @@ export async function generateImageUpscaleStabilityAi(checkUserTokenData: any, f
             insertSetting.finalize();
           }
         }
-        catch(error: any) {
+        catch(error) {
           console.log("generateImageUpscaleStabilityAi insertSetting Error", error.message)
         }
         return {status: 'ok', msg: orderId};

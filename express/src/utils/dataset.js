@@ -5,15 +5,13 @@ import * as crypto from 'crypto'
 import sqlite3 from 'sqlite3';
 import validator from 'validator';
 import { promisify } from 'util';
-import { DataDir, CONDENSE_TEMPLATE_INIT, QA_TEMPLATE_INIT } from './const';
+import { DataDir, CONDENSE_TEMPLATE_INIT, QA_TEMPLATE_INIT } from './const.js';
 
-import { db, getDbRecord, getDbRecordALL } from './db'
-import { filterString, log, formatDate, getNanoid } from './utils'
+import { db, getDbRecord, getDbRecordALL } from './db.js'
+import { filterString, log, formatDate, getNanoid } from './utils.js'
 
 
-type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
-
-  export async function addDataset(Params: any) {
+  export async function addDataset(Params) {
     try{
       Params._id = filterString(Params._id)
       Params.name = filterString(Params.name)
@@ -30,13 +28,13 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       insertSetting.finalize();
       return {"status":"ok", "msg":"Add Success"}
     }
-    catch (error: any) {
+    catch (error) {
       log(Params._id, 'addDataset', Params.userId, 'Error addDataset:', error.message);
       return {"status":"error", "msg":error.message}
     }
   }
   
-  export async function editDataset(Params: any) {
+  export async function editDataset(Params) {
     try{
       Params._id = filterString(Params._id)
       Params.teamId = filterString(Params.teamId)
@@ -52,14 +50,14 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       updateSetting.finalize();
       return {"status":"ok", "msg":"Update Success"}
     }
-    catch (error: any) {
+    catch (error) {
       log(Params._id, 'editDataset', Params.userId, 'Error editDataset:', error.message);
       return {"status":"error", "msg":error.message}
     }
   
   }
   
-  export async function deleteDataset(Params: any) {
+  export async function deleteDataset(Params) {
     try{
       Params._id = filterString(Params.datasetId)
       Params.userId = filterString(Params.userId)
@@ -68,22 +66,22 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       deleteSetting.finalize();
       return {"status":"ok", "msg":"Delete Success"}
     }
-    catch (error: any) {
+    catch (error) {
       log(Params._id, 'deleteDataset', Params.userId, 'Error deleteDataset:', error.message);
       return {"status":"error", "msg":error.message}
     }
   
   }
   
-  export async function getDataset(id: string, userId: string) {
+  export async function getDataset(id, userId) {
     const idFilter = filterString(id)
     const userIdFilter = Number(userId)
     
-    const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from dataset where _id = ? and userId = ? `, [idFilter, userIdFilter]) as any[];
+    const SettingRS = await (getDbRecordALL)(`SELECT * from dataset where _id = ? and userId = ? `, [idFilter, userIdFilter]);
     
-    let Template: any = {}
+    let Template = {}
     if(SettingRS)  {
-      SettingRS.map((Item: any)=>{
+      SettingRS.map((Item)=>{
         Template = Item
       })
     }
@@ -91,18 +89,18 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return Template
   }
 
-  export async function getDatasetPage(pageid: number, pagesize: number, userId: number) {
-    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+  export async function getDatasetPage(pageid, pagesize, userId) {
+    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
     console.log("pageidFiler", pageidFiler)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from dataset where userId = ?", [userId]);
-    const RecordsTotal: number = Records ? Records.NUM : 0;  
-    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from dataset where userId = ? order by id desc limit ? OFFSET ? `, [userId, pagesizeFiler, From]) as any[];
+    const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from dataset where userId = ?", [userId]);
+    const RecordsTotal = Records ? Records.NUM : 0;  
+    const RecordsAll = await (getDbRecordALL)(`SELECT * from dataset where userId = ? order by id desc limit ? OFFSET ? `, [userId, pagesizeFiler, From]);
     
-    const RS: any = {};
+    const RS = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
     RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
     RS['from'] = From;
@@ -113,19 +111,19 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return RS;
   }
 
-  export async function getCollectionPageByDataset(datasetId: string, pageid: number, pagesize: number, userId: number) {
+  export async function getCollectionPageByDataset(datasetId, pageid, pagesize, userId) {
     const datasetIdFileter = filterString(datasetId)
-    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
     console.log("pageidFiler", pageidFiler)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from collection where datasetId = ? and userId = ?", [datasetIdFileter, userId]);
-    const RecordsTotal: number = Records ? Records.NUM : 0;  
-    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from collection where datasetId = ? and userId = ? order by id desc limit ? OFFSET ? `, [datasetIdFileter, userId, pagesizeFiler, From]) as any[];
+    const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from collection where datasetId = ? and userId = ?", [datasetIdFileter, userId]);
+    const RecordsTotal = Records ? Records.NUM : 0;  
+    const RecordsAll = await (getDbRecordALL)(`SELECT * from collection where datasetId = ? and userId = ? order by id desc limit ? OFFSET ? `, [datasetIdFileter, userId, pagesizeFiler, From]);
     
-    const RS: any = {};
+    const RS = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
     RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
     RS['from'] = From;
@@ -136,21 +134,21 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return RS;
   }
 
-  export async function getCollectionAll(pageid: number, pagesize: number) {
-    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+  export async function getCollectionAll(pageid, pagesize) {
+    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
     console.log("pageidFiler", pageidFiler)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    let Records: any = null;
-    let RecordsTotal: number = Records ? Records.NUM : 0;  
-    let RecordsAll: any[] = [];
-    Records = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from publish");
+    let Records = null;
+    let RecordsTotal = Records ? Records.NUM : 0;  
+    let RecordsAll = [];
+    Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from publish");
     RecordsTotal = Records ? Records.NUM : 0;  
-    RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * from collection order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]) as any[];
+    RecordsAll = await (getDbRecordALL)(`SELECT * from collection order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]);
     
-    const RS: any = {};
+    const RS = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
     RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
     RS['from'] = From;
@@ -161,7 +159,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
     return RS;
   }
 
-  export async function addCollection(Params: any) {
+  export async function addCollection(Params) {
     try{
       Params._id = getNanoid(32)
       Params.name = filterString(Params.name)
@@ -173,8 +171,8 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       Params.userId = filterString(Params.userId)
       Params.datasetId = filterString(Params.datasetId)
 
-      const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT id from collection where _id = ?", [Params._id]);
-      const RecordId: number = Records ? Records.id : 0;
+      const Records = await (getDbRecord)("SELECT id from collection where _id = ?", [Params._id]);
+      const RecordId = Records ? Records.id : 0;
 
       console.log("RecordId", RecordId, Params)
       if(RecordId > 0) {
@@ -189,13 +187,13 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
         return {"status":"ok", "msg":"Add Success"}
       }
     }
-    catch (error: any) {
+    catch (error) {
       log(Params._id, 'addCollection', Params.userId, 'Error addCollection:', error.message);
       return {"status":"error", "msg":error.message}
     }
   }
 
-  export async function editCollection(Params: any) {
+  export async function editCollection(Params) {
     try{
       Params._id = filterString(Params._id)
       Params.name = filterString(Params.name)
@@ -211,14 +209,14 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       updateSetting.finalize();
       return {"status":"ok", "msg":"Update Success"}
     }
-    catch (error: any) {
+    catch (error) {
       log(Params._id, 'editCollection', Params.userId, 'Error editCollection:', error.message);
       return {"status":"error", "msg":error.message}
     }
 
   }
 
-  export async function uploadCollection(Params: any) {
+  export async function uploadCollection(Params) {
     try{
       const type = filterString(Params.type)
       const datasetId = filterString(Params.datasetId)
@@ -231,7 +229,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       const LinkName = Params.LinkName
       const files = Params.files
       if ((type === 'File' || type === 'Table') && files && Array.isArray(files)) {
-        const fileNames = files.map((Item: any) => Item.path);
+        const fileNames = files.map((Item) => Item.path);
         const placeholders = fileNames.map(() => '?').join(',');
         const updateSetting = db.prepare(`update collection set processWay = ?, trainingMode = ?, IdealChunkLength = ?, CustomSplitChar = ? where datasetId = ? and type = ? and name in (${placeholders})`);
         updateSetting.run(processWay, trainingMode, IdealChunkLength, CustomSplitChar, datasetId, type, ...fileNames);
@@ -243,7 +241,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
         const LinkNameArray = LinkName.split('\n')
         console.log("LinkNameArray", LinkNameArray)
         const insertCollection = db.prepare('INSERT INTO collection (_id, datasetId, type, name, content, suffixName, newName, originalName, fileHash, status, timestamp, userId, data, dataTotal, folder, updateTime, processWay, trainingMode, IdealChunkLength, CustomSplitChar) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
-        LinkNameArray.map((Item: string)=>{
+        LinkNameArray.map((Item)=>{
           const _id = getNanoid(32)
           insertCollection.run(_id, datasetId, type, Item, '', '', _id, Item, '', 0, Date.now(), Number(Params.userId), '', '', '', '', processWay, trainingMode, IdealChunkLength, CustomSplitChar);
         })
@@ -264,7 +262,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       }
       
     }
-    catch (error: any) {
+    catch (error) {
       log(Params._id, 'editCollection', Params.userId, 'Error editCollection:', error.message);
       return {"status":"error", "msg":error.message}
     }
@@ -272,7 +270,7 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
   }
 
 
-  export async function deleteCollection(Params: any) {
+  export async function deleteCollection(Params) {
     try{
       Params._id = filterString(Params._id)
       Params.datasetId = filterString(Params.datasetId)
@@ -282,22 +280,22 @@ type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
       updateSetting.finalize();
       return {"status":"ok", "msg":"Delete Success"}
     }
-    catch (error: any) {
+    catch (error) {
       log(Params._id, 'deleteCollection', Params.userId, 'Error deleteCollection:', error.message);
       return {"status":"error", "msg":error.message}
     }
     
   }
   
-  export async function getCollection(id: string, userId: string) {
+  export async function getCollection(id, userId) {
     const idFilter = filterString(id)
     const userIdFilter = Number(userId)
     
-    const SettingRS: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT data from collection where _id = ? and userId = ? `, [idFilter, userIdFilter]) as any[];
+    const SettingRS = await (getDbRecordALL)(`SELECT data from collection where _id = ? and userId = ? `, [idFilter, userIdFilter]);
     
-    let Template: any = {}
+    let Template = {}
     if(SettingRS)  {
-      SettingRS.map((Item: any)=>{
+      SettingRS.map((Item)=>{
         Template = JSON.parse(Item.data)
       })
     }

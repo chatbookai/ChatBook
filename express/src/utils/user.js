@@ -1,5 +1,4 @@
-  import { Request, Response } from 'express';
-  import { log } from './utils'
+  import { log } from './utils.js'
   import dotenv from 'dotenv';
   import bcrypt from 'bcrypt';
   import jwt from 'jsonwebtoken';
@@ -9,22 +8,19 @@
 
   dotenv.config();
 
-  import { db, getDbRecord, getDbRecordALL } from './db'
+  import { db, getDbRecord, getDbRecordALL } from './db.js'
 
   const arweave = Arweave.init(urlToSettings("http://112.170.68.77:1985"))
 
+  const secretKey = process.env.JWT_TOKEN_SECRET_KEY || "ChatBookAI"; 
 
-  type SqliteQueryFunction = (sql: string, params?: any[]) => Promise<any[]>;
-
-  const secretKey: string = process.env.JWT_TOKEN_SECRET_KEY || "ChatBookAI"; 
-
-  export const createJwtToken = (userId: string, email: string, role: string) => {
+  export const createJwtToken = (userId, email, role) => {
     const token = jwt.sign({ id: userId, email, role }, secretKey, { expiresIn: '30d' });
 
     return token;
   };
 
-  export const verifyJwtToken = (token: string) => {
+  export const verifyJwtToken = (token) => {
     try {
       const decoded = jwt.verify(token, secretKey);
 
@@ -36,20 +32,20 @@
     }
   };
 
-  export const hashPassword = async (password: string): Promise<string> => {
+  export const hashPassword = async (password) => {
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(password, saltRounds);
 
     return hashedPassword;
   };
 
-  export const comparePasswords = async (password: string, hashedPassword: string): Promise<boolean> => {
+  export const comparePasswords = async (password, hashedPassword) => {
     const isMatch = await bcrypt.compare(password, hashedPassword);
 
     return isMatch;
   };
 
-  export const passwordValidator = (password: string): boolean => {
+  export const passwordValidator = (password) => {
 
     // 正则表达式，要求至少包含一个数字、一个字母，且长度至少为八位
     const passwordRegex = /^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/;
@@ -57,8 +53,8 @@
     return passwordRegex.test(password);
   };
 
-  export async function checkUserToken(token: string) {
-    const userTokenData: any = verifyJwtToken(token);
+  export async function checkUserToken(token) {
+    const userTokenData = verifyJwtToken(token);
     if(userTokenData) {
         return {"status":"ok", "msg":"User token is valid", "data": userTokenData}
     }
@@ -67,7 +63,7 @@
     }
   }
 
-  export async function checkUserTokenXWE(token: string) {
+  export async function checkUserTokenXWE(token) {
     const buffer = Buffer.from(token, 'base64');
     const TxText = buffer.toString('utf-8');
     const Tx = JSON.parse(TxText)
@@ -96,7 +92,7 @@
             console.log("checkUserTokenXWE tx Error", txResult)
           }
         }
-        catch(error: any) {
+        catch(error) {
           console.log("checkUserTokenXWE TX Error", error)
         }
       }
@@ -106,7 +102,7 @@
     return {"status":"error", "msg":"Token is valid"}
   }
 
-  export async function checkUserTokenXWENotCostAmount(token: string) {
+  export async function checkUserTokenXWENotCostAmount(token) {
     const buffer = Buffer.from(token, 'base64');
     const TxText = buffer.toString('utf-8');
     const Tx = JSON.parse(TxText)
@@ -121,7 +117,7 @@
     return {"status":"error", "msg":"Token is valid"}
   }
 
-  export async function ownerToAddress(owner: string) {
+  export async function ownerToAddress(owner) {
     const pubJwk = {
         kty: 'RSA',
         e: 'AQAB',
@@ -130,14 +126,14 @@
     return await arweave.wallets.getAddress(pubJwk)
   }
 
-  export async function userLoginLog(req: Request, email: string, action: string, msg: string) {
+  export async function userLoginLog(req, email, action, msg) {
     const agent = useragent.parse(req.headers['user-agent']);
     const BrowserType = agent.family
     const BrowserVersion = agent.toVersion()
     const OperatingSystem = agent.os.family
     const Device = agent.device.family
     const ipaddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    const ipaddress2 = (ipaddress as string).replace('::ffff:','');
+    const ipaddress2 = (ipaddress).replace('::ffff:','');
     const insertSetting = db.prepare('INSERT OR IGNORE INTO userlog (email, browsertype, browserversion, os, device, location, country, ipaddress, recentactivities, action, msg) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
     if(ipaddress2 != "::1")  {
       try {
@@ -148,13 +144,13 @@
         insertSetting.run(email, BrowserType, BrowserVersion, OperatingSystem, Device, location, country, ipaddress2, Date.now(), action, msg);
         insertSetting.finalize();
       }
-      catch(error: any) {
+      catch(error) {
       }
     }
   }
 
-  export async function refreshUserToken(token: string) {
-    const userTokenData: any = verifyJwtToken(token);
+  export async function refreshUserToken(token) {
+    const userTokenData = verifyJwtToken(token);
     if(userTokenData) {
       const createJwtTokenData = createJwtToken(userTokenData.id, userTokenData.email, userTokenData.role)
         return {"status":"ok", "msg":"User token is valid", "token": createJwtTokenData}
@@ -164,8 +160,8 @@
     }
   }
 
-  export async function checkUserPassword(req: Request, email: string, password: string) {
-    const getOneUserData: any = await getOneUser(email);
+  export async function checkUserPassword(req, email, password) {
+    const getOneUserData = await getOneUser(email);
     if(getOneUserData && getOneUserData.user_status == '1') {
         const isPasswordMatch = await comparePasswords(password, getOneUserData.password);
         if(isPasswordMatch) {
@@ -196,10 +192,10 @@
     }
   }
 
-  export async function changeUserPasswordByToken(token: string, data: any) {    
-    const checkUserTokenData: any = await checkUserToken(token);
+  export async function changeUserPasswordByToken(token, data) {    
+    const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
-      const getOneUserData: any = await getOneUser(checkUserTokenData.data.email);
+      const getOneUserData = await getOneUser(checkUserTokenData.data.email);
       
       if(getOneUserData) {
           const isPasswordMatch = await comparePasswords(data.currentPassword, getOneUserData.password);
@@ -234,8 +230,8 @@
     }
   }
 
-  export async function changeUserDetail(token: string, data: any) {
-    const checkUserTokenData: any = await checkUserToken(token);
+  export async function changeUserDetail(token, data) {
+    const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
       const updateSetting = db.prepare('update user set firstname = ?, lastname = ?, organization = ?, mobile = ?, address = ?, state = ?, country = ?, language = ? where email = ?');
       updateSetting.run(data.firstname, data.lastname, data.organization, data.mobile, data.address, data.state, data.country, data.language, checkUserTokenData.data.email);
@@ -249,8 +245,8 @@
     }
   }
 
-  export async function changeUserStatus(token: string, data: any) {
-    const checkUserTokenData: any = await checkUserToken(token);
+  export async function changeUserStatus(token, data) {
+    const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
       const updateSetting = db.prepare('update user set user_status = ? where id = ?');
       updateSetting.run(data.user_status, data.id);
@@ -264,7 +260,7 @@
     }
   }
 
-  export async function registerUser(email: string, username: string, password: string, confirm_password: string, language: string) {
+  export async function registerUser(email, username, password, confirm_password, language) {
     try{
         if(password != confirm_password) {
 
@@ -274,7 +270,7 @@
 
             return {"status":"error", "msg":"The password must contain both letters and numbers, and be at least 8 characters long"}
         }
-        const getOneUserData: any = await getOneUser(email);
+        const getOneUserData = await getOneUser(email);
         if(getOneUserData) {
           return {"status":"error", "msg":"This email have used before"}
         }
@@ -283,22 +279,22 @@
         insertUser.run(email, username, hashedPassword, language, Date.now());
         insertUser.finalize();
     }
-    catch (error: any) {
+    catch (error) {
       console.log('Error registerUser:', error.message);
     }
 
     return {"status":"ok", "msg":"Register user successful"}
   }
 
-  export async function addUser(token: string, data: any) {
-    const checkUserTokenData: any = await checkUserToken(token);
+  export async function addUser(token, data) {
+    const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin' && data && data.email && data.username) {
       
-      const getOneUserData1: any = await getOneUser(data.email);
+      const getOneUserData1 = await getOneUser(data.email);
       if(getOneUserData1) {
         return {"status":"error", "msg":"This email have used before"}
       }
-      const getOneUserData2: any = await getOneUser(data.username);
+      const getOneUserData2 = await getOneUser(data.username);
       if(getOneUserData2) {
         return {"status":"error", "msg":"This username have used before"}
       }
@@ -316,8 +312,8 @@
     }
   }
 
-  export async function editUser(token: string, data: any) {
-    const checkUserTokenData: any = await checkUserToken(token);
+  export async function editUser(token, data) {
+    const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
       const updateSetting = db.prepare('update user set firstname = ?, lastname = ?, organization = ?, mobile = ?, address = ?, state = ?, country = ?, language = ? where email = ?');
       updateSetting.run(data.firstname, data.lastname, data.organization, data.mobile, data.address, data.state, data.country, data.language, data.email);
@@ -332,8 +328,8 @@
     }
   }
 
-  export async function deleteUser(token: string, data: any) {
-    const checkUserTokenData: any = await checkUserToken(token);
+  export async function deleteUser(token, data) {
+    const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin' && data && data.email && data.username) {
       const deleteSetting = db.prepare('delete from user where email = ? and username = ?');
       deleteSetting.run(data.email, data.username);
@@ -348,16 +344,16 @@
     }
   }
 
-  export async function getOneUser(email: string) {
-    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT * from user where email = ? ", [email]);
+  export async function getOneUser(email) {
+    const Records = await (getDbRecord)("SELECT * from user where email = ? ", [email]);
  
     return Records ? Records : null;
   }
 
-  export async function getOneUserByToken(token: string) {
-    const checkUserTokenData: any = await checkUserToken(token);
+  export async function getOneUserByToken(token) {
+    const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
-      const getOneUserData: any = await getOneUser(checkUserTokenData.data.email);
+      const getOneUserData = await getOneUser(checkUserTokenData.data.email);
       if(getOneUserData) {
 
         return {"status":"ok", "msg":"Get one user information", "data": {...getOneUserData, password:''}}
@@ -373,8 +369,8 @@
     }
   }
 
-  export async function getUserByEmail(email: string) {
-    const getUserByEmailData: any = await getOneUser(email);
+  export async function getUserByEmail(email) {
+    const getUserByEmailData = await getOneUser(email);
     if(getUserByEmailData) {
 
       return {"status":"ok", "msg":"Get one user information", "data": {...getUserByEmailData, password:''}}
@@ -385,24 +381,24 @@
     }
   }
 
-  export async function getUsers(pageid: number, pagesize: number, data: any) {
-    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+  export async function getUsers(pageid, pagesize, data) {
+    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
     console.log("pageidFiler", pageidFiler)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    let Records: any = null;
-    let RecordsAll: any[] = []
+    let Records = null;
+    let RecordsAll = []
     if(data) {
-      Records = await (getDbRecord as SqliteQueryFunction)(`
+      Records = await (getDbRecord)(`
                       SELECT COUNT(*) AS NUM
                       FROM user 
                       WHERE email LIKE '%' || ? || '%' 
                       AND username LIKE '%' || ? || '%' 
                       AND mobile LIKE '%' || ? || '%' 
                     `, [data.email || '', data.username || '', data.mobile || ''])
-      RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`
+      RecordsAll = await (getDbRecordALL)(`
                       SELECT id, email, username, firstname, lastname, organization, role, mobile, address, state, zipcode, country, language, timezone, nickname, birthday, avatar, mobile_status, google_auth, github_auth, user_type, user_status, createtime 
                       FROM user 
                       WHERE email LIKE '%' || ? || '%' 
@@ -413,12 +409,12 @@
                     `, [data.email || '', data.username || '', data.mobile || '', pagesizeFiler, From]) || [];
     }
     else {
-      Records = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from user ");
-      RecordsAll = await (getDbRecordALL as SqliteQueryFunction)(`SELECT id, email, username, firstname, lastname, organization, role, mobile, address, state, zipcode, country, language, timezone, nickname, birthday, avatar, mobile_status, google_auth, github_auth, user_type, user_status, createtime FROM user ORDER BY id DESC LIMIT ? OFFSET ? `, [pagesizeFiler, From]) || [];
+      Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from user ");
+      RecordsAll = await (getDbRecordALL)(`SELECT id, email, username, firstname, lastname, organization, role, mobile, address, state, zipcode, country, language, timezone, nickname, birthday, avatar, mobile_status, google_auth, github_auth, user_type, user_status, createtime FROM user ORDER BY id DESC LIMIT ? OFFSET ? `, [pagesizeFiler, From]) || [];
     }
-    const RecordsTotal: number = Records ? Records.NUM : 0;
+    const RecordsTotal = Records ? Records.NUM : 0;
     
-    const RS: any = {};
+    const RS = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
     RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
     RS['from'] = From;
@@ -429,19 +425,19 @@
     return RS;
   }
 
-  export async function getUserLogs(email: string, pageid: number, pagesize: number) {
-    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+  export async function getUserLogs(email, pageid, pagesize) {
+    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
     console.log("pageidFiler", pageidFiler)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from userlog where email = ? ", [email]);
-    const RecordsTotal: number = Records ? Records.NUM : 0;
+    const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from userlog where email = ? ", [email]);
+    const RecordsTotal = Records ? Records.NUM : 0;
 
-    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * FROM userlog WHERE email = ? ORDER BY id DESC LIMIT ? OFFSET ? `, [email, pagesizeFiler, From]) || [];
+    const RecordsAll = await (getDbRecordALL)(`SELECT * FROM userlog WHERE email = ? ORDER BY id DESC LIMIT ? OFFSET ? `, [email, pagesizeFiler, From]) || [];
 
-    const RS: any = {};
+    const RS = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
     RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
     RS['from'] = From;
@@ -452,19 +448,19 @@
     return RS;
   }
 
-  export async function getUserLogsAll(pageid: number, pagesize: number) {
-    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+  export async function getUserLogsAll(pageid, pagesize) {
+    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
     console.log("pageidFiler", pageidFiler)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from userlog");
-    const RecordsTotal: number = Records ? Records.NUM : 0;
+    const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from userlog");
+    const RecordsTotal = Records ? Records.NUM : 0;
 
-    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * FROM userlog ORDER BY id DESC LIMIT ? OFFSET ? `, [pagesizeFiler, From]) || [];
+    const RecordsAll = await (getDbRecordALL)(`SELECT * FROM userlog ORDER BY id DESC LIMIT ? OFFSET ? `, [pagesizeFiler, From]) || [];
 
-    const RS: any = {};
+    const RS = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
     RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
     RS['from'] = From;
@@ -475,7 +471,7 @@
     return RS;
   }
 
-  export function urlToSettings (url: string) {
+  export function urlToSettings (url) {
     const obj = new URL(url)
     const protocol = obj.protocol.replace(':', '')
     const host = obj.hostname
@@ -484,9 +480,9 @@
     return { protocol, host, port }
   }
 
-  export async function updateUserImageFavorite(token: string, data: any) {
+  export async function updateUserImageFavorite(token, data) {
     console.log("data", data)
-    const checkUserTokenData: any = await checkUserToken(token);
+    const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user' && data && data.id && data.status != null)) {
       if(data.status == '1') {
         const updateSetting = db.prepare('update userimages set favorite = favorite + 1 where id = ?');
@@ -508,9 +504,9 @@
     }
   }
 
-  export async function updateUserVideoFavorite(token: string, data: any) {
+  export async function updateUserVideoFavorite(token, data) {
     console.log("data", data)
-    const checkUserTokenData: any = await checkUserToken(token);
+    const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user' && data && data.id && data.status != null)) {
       if(data.status == '1') {
         const updateSetting = db.prepare('update uservideos set favorite = favorite + 1 where id = ?');
@@ -533,9 +529,9 @@
   }
   
 
-  export async function addUserAgent(token: string, data: any) {
+  export async function addUserAgent(token, data) {
     console.log("data", data)
-    const checkUserTokenData: any = await checkUserToken(token);
+    const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user' && data && data.appId)) {
       console.log("addUserAgent", checkUserTokenData)
       const insertUser = db.prepare('INSERT OR REPLACE INTO useragents (userId, appId, createtime) VALUES (?, ?, ?)');
@@ -549,9 +545,9 @@
     }
   }
 
-  export async function deleteUserAgent(token: string, data: any) {
+  export async function deleteUserAgent(token, data) {
     console.log("data", data)
-    const checkUserTokenData: any = await checkUserToken(token);
+    const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user' && data && data.appId)) {
       console.log("addUserAgent", checkUserTokenData)
       const commitSql = db.prepare('delete from useragents where userId = ? and appId = ?');
@@ -564,19 +560,19 @@
     }
   }
 
-  export async function getUserAgents(userId: string, pageid: number, pagesize: number) {
-    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+  export async function getUserAgents(userId, pageid, pagesize) {
+    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
     console.log("pageidFiler", pageidFiler)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from useragents where userId = ? ", [userId]);
-    const RecordsTotal: number = Records ? Records.NUM : 0;
+    const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from useragents where userId = ? ", [userId]);
+    const RecordsTotal = Records ? Records.NUM : 0;
 
-    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * FROM useragents WHERE userId = ? ORDER BY id DESC LIMIT ? OFFSET ? `, [userId, pagesizeFiler, From]) || [];
+    const RecordsAll = await (getDbRecordALL)(`SELECT * FROM useragents WHERE userId = ? ORDER BY id DESC LIMIT ? OFFSET ? `, [userId, pagesizeFiler, From]) || [];
 
-    const RS: any = {};
+    const RS = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
     RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
     RS['from'] = From;
@@ -587,22 +583,22 @@
     return RS;
   }
 
-  export async function getMyAgents(userId: string, pageid: number, pagesize: number) {
-    const pageidFiler = Number(pageid) < 0 ? 0 : Number(pageid) || 0;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : Number(pagesize) || 5;
+  export async function getMyAgents(userId, pageid, pagesize) {
+    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
     console.log("pageidFiler", pageidFiler)
     console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records: any = await (getDbRecord as SqliteQueryFunction)("SELECT COUNT(*) AS NUM from useragents where userId = ? ", [userId]);
-    const RecordsTotal: number = Records ? Records.NUM : 0;
+    const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from useragents where userId = ? ", [userId]);
+    const RecordsTotal = Records ? Records.NUM : 0;
 
-    const RecordsAll: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * FROM useragents WHERE userId = ? ORDER BY id DESC LIMIT ? OFFSET ? `, [userId, pagesizeFiler, From]) || [];
-    const AgentsList: number[] = RecordsAll.map(element => element.appId);
+    const RecordsAll = await (getDbRecordALL)(`SELECT * FROM useragents WHERE userId = ? ORDER BY id DESC LIMIT ? OFFSET ? `, [userId, pagesizeFiler, From]) || [];
+    const AgentsList = RecordsAll.map(element => element.appId);
     const PlaceHolders = AgentsList.map(() => '?').join(',');
-    const RecordsList: any[] = await (getDbRecordALL as SqliteQueryFunction)(`SELECT * FROM agents WHERE id IN (${PlaceHolders}) ORDER BY id DESC`, AgentsList) || [];
+    const RecordsList = await (getDbRecordALL)(`SELECT * FROM agents WHERE id IN (${PlaceHolders}) ORDER BY id DESC`, AgentsList) || [];
 
-    const RS: any = {};
+    const RS = {};
     RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
     RS['data'] = RecordsList;
     RS['RecordsAll'] = RecordsAll;

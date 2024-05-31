@@ -18,6 +18,7 @@ import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
 import { getAnonymousUserId } from 'src/functions/ChatBook'
 import { useTranslation } from 'react-i18next'
+import { CheckPermission } from 'src/functions/ChatBook'
 
 const Chat = (props: any) => {
   // ** States
@@ -45,14 +46,11 @@ const Chat = (props: any) => {
       if(auth.user && auth.user.id && auth.user.email && auth.user.token)   {
         authorization = auth.user.token
         setUserType('User')
-      }
-      else {
-        authorization = anonymousUserId
-        setUserType('Anonymous')
-      }
-      if(authorization)   {
         const RS = await axios.post(authConfig.backEndApiChatBook + '/api/getapp', {appId: id}, { headers: { Authorization: authorization, 'Content-Type': 'application/json'} }).then(res=>res.data)
         setApp(RS)
+      }
+      else {
+        CheckPermission(auth, router, false)
       }
     }
   }

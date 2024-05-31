@@ -54,10 +54,6 @@ const SimpleEdit = (props: any) => {
     CheckPermission(auth, router, false)
   }, [])
 
-  useEffect(() => {
-    console.log("app", app)
-  }, [app])
-
   // Styled component for the upload image inside the dropzone area
   const Img = styled('img')(({ theme }) => ({
     [theme.breakpoints.up('md')]: {

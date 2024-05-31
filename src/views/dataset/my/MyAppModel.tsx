@@ -120,8 +120,6 @@ const AppModel = (props: any) => {
     )
   }
 
-  console.log("app", app)
-  
   const renderContent = () => {
       return (
         <Grid container spacing={2}>

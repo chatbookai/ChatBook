@@ -39,22 +39,18 @@ const AllApp = () => {
     setAppId("")
   }
 
-  const [anonymousUserId, setAnonymousUserId] = useState<string>('')
-  useEffect(() => {
-    const tempId = getAnonymousUserId()
-    setAnonymousUserId(tempId)
-  }, [])
-
   const getAppsPage = async function (type: string, search: string) {
-    console.log("loadingAllData", loadingAllData)
     const pagesize = 20
     let authorization = null
     if(auth.user && auth.user.id && auth.user.email && auth.user.token)   {
       authorization = auth.user.token
     }
     else {
-      authorization = anonymousUserId
+      authorization = getAnonymousUserId()
     }
+
+    console.log("loadingAllData loadingAllData", loadingAllData)
+    console.log("loadingAllData authorization", authorization)
 
     if(loadingAllData == false && authorization)  {
       setLoading(true)

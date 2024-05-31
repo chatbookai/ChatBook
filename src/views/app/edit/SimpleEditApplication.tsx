@@ -227,7 +227,7 @@ const SimpleEditApplication = ({ app, setApp, isDisabledButton, handleEditApp }:
                                 {MyDataset && MyDataset.MyDatasetList && MyDataset.MyDatasetList.map((item: any, index: number)=>{
 
                                   return (
-                                    <Fragment>
+                                    <Fragment key={index}>
                                       <Button sx={{mb:1, ml:1}} variant='outlined' size="small" startIcon={<Icon icon='material-symbols:database-outline' />}>
                                         {item.name}
                                       </Button>

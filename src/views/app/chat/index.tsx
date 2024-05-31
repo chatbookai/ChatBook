@@ -16,29 +16,20 @@ import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
-import { getAnonymousUserId } from 'src/functions/ChatBook'
-import { useTranslation } from 'react-i18next'
 import { CheckPermission } from 'src/functions/ChatBook'
 
-const Chat = (props: any) => {
+const Chat = () => {
   // ** States
-  const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
   const [app, setApp] = useState<any>(null)
   
   // ** Hooks
-  const { t } = useTranslation()
   const theme = useTheme()
   const { settings } = useSettings()
   const auth = useAuth()
   const router = useRouter()
   const { id } = router.query
 
-  const [anonymousUserId, setAnonymousUserId] = useState<string>('')
   const [userType, setUserType] = useState<string>('')
-  useEffect(() => {
-    const tempId = getAnonymousUserId()
-    setAnonymousUserId(tempId)
-  }, [])
 
   const getMyApp = async function (id: string) {
     if (auth && auth.user && id) {
@@ -59,7 +50,7 @@ const Chat = (props: any) => {
     if(id) {
       getMyApp(String(id))  
     }
-  }, [refreshChatCounter, id])
+  }, [id])
 
   // ** Vars
   const { skin } = settings

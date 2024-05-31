@@ -25,7 +25,6 @@ import { useTranslation } from 'react-i18next'
 
 const EditDataSet = (props: any) => {
   // ** States
-  const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
   const [app, setApp] = useState<any>({openDelete: false})
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
   const [avatarFiles, setAvatarFiles] = useState<File[]>([])
@@ -117,7 +116,7 @@ const EditDataSet = (props: any) => {
     if(id) {
       fetchData(String(id))  
     }
-  }, [refreshChatCounter, id])
+  }, [id])
 
   // ** Vars
   const { skin } = settings

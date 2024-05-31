@@ -15,10 +15,6 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Avatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
-import InputLabel from '@mui/material/InputLabel'
-import Slider from '@mui/material/Slider'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
 
 import { GetAllMyDataset } from 'src/functions/ChatBook'
 
@@ -30,7 +26,7 @@ import CustomCheckboxBasic from 'src/@core/components/custom-checkbox/basic'
 
 const MyDataset = (props: any) => {
     // ** Props
-    const {MyDataset, setMyDataset, ModelData, handleMyDatasetChange, index } = props
+    const {MyDataset, setMyDataset, handleMyDatasetChange, index } = props
 
     // ** Hook
     const { t } = useTranslation()
@@ -49,7 +45,7 @@ const MyDataset = (props: any) => {
                 const MyDatasetListData = await GetAllMyDataset(auth.user.token)
                 console.log("MyDatasetListData", MyDatasetListData)
                 const tempData: any[] = []
-                MyDatasetListData && MyDatasetListData.data && MyDatasetListData.data.length>0 && MyDatasetListData.data.map((item: any, index: number)=>{
+                MyDatasetListData && MyDatasetListData.data && MyDatasetListData.data.length>0 && MyDatasetListData.data.map((item: any)=>{
                     tempData.push({
                         meta: item.vectorModel,
                         isSelected: true,
@@ -79,14 +75,17 @@ const MyDataset = (props: any) => {
     const MyDatasetIdInitialSelected: string[] = MyDataset.MyDatasetList.map((item: any) => item.value)
     const handleChange = (name: string, value: string) => {
         const MyDatasetIdSelected: string[] = MyDataset.MyDatasetList.map((item: any) => item.value)
+
         //console.log("MyDatasetListMyDatasetList0", MyDatasetIdSelected, value)
         if (MyDatasetIdSelected.includes(value)) {
             const MyDatasetList = MyDataset.MyDatasetList.filter((item: any) => item.value !== value)
+
             //console.log("MyDatasetListMyDatasetList1", MyDatasetList)
             setMyDataset( (prevState: any) => ({ ...prevState, MyDatasetList }) )
         } else {
             const MyDatasetList = [...MyDataset.MyDatasetList]
             MyDatasetList.push({name, value})
+
             //console.log("MyDatasetListMyDatasetList2", MyDatasetList)
             setMyDataset( (prevState: any) => ({ ...prevState, MyDatasetList }) )
         }
@@ -126,7 +125,7 @@ const MyDataset = (props: any) => {
                             {AllMyDataset && AllMyDataset.map((item: any, index: number)=>{
                                 
                                 return (
-                                    <Fragment>
+                                    <Fragment key={index}>
                                         {item.name}
                                     </Fragment>
                                 )

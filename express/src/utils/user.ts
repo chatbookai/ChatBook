@@ -356,7 +356,7 @@
 
   export async function getOneUserByToken(token: string) {
     const checkUserTokenData: any = await checkUserToken(token);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
       const getOneUserData: any = await getOneUser(checkUserTokenData.data.email);
       if(getOneUserData) {
 

@@ -7,7 +7,6 @@ import AppModel from 'src/views/app/all/AppModel'
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
 import { useAuth } from 'src/hooks/useAuth'
-import { useRouter } from 'next/router'
 import { getAnonymousUserId } from 'src/functions/ChatBook'
 
 const AllApp = () => {

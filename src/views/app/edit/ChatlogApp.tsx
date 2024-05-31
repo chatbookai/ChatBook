@@ -32,7 +32,7 @@ const ChatlogApp = (props: any) => {
     CheckPermission(auth, router, false)
   }, [])
 
-  const [pageData, setPageData] = useState<any>({name: '', maxToken: 16000, returnReference: 0, ipLimitPerMinute: 100, expiredTime: '', authCheck: '', appId: appId, FormAction: 'addpublish', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg', openEdit: false, openDelete: false })
+  //const [pageData, setPageData] = useState<any>({name: '', maxToken: 16000, returnReference: 0, ipLimitPerMinute: 100, expiredTime: '', authCheck: '', appId: appId, FormAction: 'addpublish', FormTitle: 'Create', FormSubmit: 'Add', FormTitleIcon: '/imgs/modal/shareFill.svg', openEdit: false, openDelete: false })
 
   const isMobileData = isMobile()
   
@@ -40,12 +40,12 @@ const ChatlogApp = (props: any) => {
   const [isLoading, setIsLoading] = useState(false);
   const [paginationModel, setPaginationModel] = useState({ page: 0, pageSize: 15 })
   const [store, setStore] = useState<any>(null);
-  const [counter, setCounter] = useState<number>(0)
 
   useEffect(() => {
     fetchData(paginationModel)
+    setIsLoading(false)
     console.log("router", router)
-  }, [paginationModel, counter, isMobileData, auth, appId])
+  }, [paginationModel, isMobileData, auth, appId])
 
   const fetchData = async function (paginationModel: any) {
     if (auth && auth.user && appId) {
@@ -55,9 +55,9 @@ const ChatlogApp = (props: any) => {
     }
   }
 
-  useEffect(() => {
-    console.log("pageData", pageData)
-  }, [pageData])
+  //useEffect(() => {
+  //  console.log("pageData", pageData)
+  //}, [pageData])
 
   const columns: GridColDef[] = [
     {

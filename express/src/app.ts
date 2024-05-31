@@ -33,7 +33,7 @@ dotenv.config();
 initChatBookDbExec()
 
 //Schedule Task for Parse Upload Files
-cron.schedule('*/10 * * * *', () => {
+cron.schedule('*/3 * * * *', () => {
   console.log('Task Begin !');
   parseFilesAndWeb();
   vectorDdProcess();

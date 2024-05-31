@@ -351,7 +351,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
 
   useEffect(()=>{
     if(selected) {
-      const updateEdges = edges.map((item: any)=>{
+      edges.map((item: any)=>{
         if(item.target == id) {
 
           return {
@@ -559,6 +559,7 @@ const NodeContentExtract = ({ data, selected }: NodeProps<FlowModuleItemType>) =
                                         return itemNode
                                       }
                                     })
+                                    
                                     return nodesNew;
 
                                   })

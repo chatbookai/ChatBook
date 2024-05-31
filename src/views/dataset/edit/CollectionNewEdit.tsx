@@ -30,7 +30,6 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Typography from '@mui/material/Typography'
 import InputLabel from '@mui/material/InputLabel'
-import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import useBgColor, { UseBgColorType } from 'src/@core/hooks/useBgColor'
@@ -128,7 +127,7 @@ const maxCountCSV = 10;
 
 const CollectionNewEdit = (props: any) => {
     // ** Props
-    const {pageData, setPageData, handleSubmit, isDisabledButton, uploadProgress, setUploadProgress, setCounter } = props
+    const {pageData, setPageData, isDisabledButton, uploadProgress, setUploadProgress, setCounter } = props
     const [activeStep, setActiveStep] = useState<number>(0)
     const bgColors: UseBgColorType = useBgColor()
 

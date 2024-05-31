@@ -41,7 +41,7 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
   const { t } = useTranslation()
   
 
-  const { setNodes, nodes, setEdges, edges } = useContext(FlowContext);
+  const { setNodes, nodes, edges } = useContext(FlowContext);
 
   console.log("NodeClassifyQuestion moduleId", selected, id, name, moduleId, inputs, outputs)
   console.log("NodeClassifyQuestion data", data)
@@ -273,7 +273,7 @@ const NodeClassifyQuestion = ({ data, selected }: NodeProps<FlowModuleItemType>)
 
   useEffect(()=>{
     if(selected) {
-      const updateEdges = edges.map((item: any)=>{
+      edges.map((item: any)=>{
         if(item.target == id) {
           return {
             ...item,

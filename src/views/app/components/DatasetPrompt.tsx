@@ -1,4 +1,4 @@
-import { useEffect, memo, useState, Fragment } from 'react'
+import { useEffect, memo } from 'react'
 
 import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
@@ -15,21 +15,15 @@ import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
 import Avatar from '@mui/material/Avatar'
 import Typography from '@mui/material/Typography'
-import InputLabel from '@mui/material/InputLabel'
-import Slider from '@mui/material/Slider'
-import Select from '@mui/material/Select'
-import MenuItem from '@mui/material/MenuItem'
 
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close';
 import TextField2 from 'src/context/TextField2'
 
-import CustomCheckboxBasic from 'src/@core/components/custom-checkbox/basic'
-
 const DatasetPrompt = (props: any) => {
     // ** Props
-    const {DatasetPrompt, setDatasetPrompt, ModelData, handleDatasetPromptChange, index } = props
+    const {DatasetPrompt, setDatasetPrompt, handleDatasetPromptChange, index } = props
 
     // ** Hook
     const { t } = useTranslation()
@@ -40,8 +34,6 @@ const DatasetPrompt = (props: any) => {
         CheckPermission(auth, router, false)
     }, [auth, router])
 
-    const [AllDatasetPrompt, setAllDatasetPrompt] = useState<any[]>([])
-
     useEffect(() => {
         const fetchData = async () => {
             if(auth && auth.user && auth.user.token)  {
@@ -50,10 +42,6 @@ const DatasetPrompt = (props: any) => {
         };
         fetchData();
     }, [])
-
-    const handleChange = (name: string, value: string) => {
-        
-    }
 
     return (
         <Dialog fullWidth open={DatasetPrompt.DatasetPromptOpen} onClose={

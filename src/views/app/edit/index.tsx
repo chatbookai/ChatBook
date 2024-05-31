@@ -28,7 +28,6 @@ import { useTranslation } from 'react-i18next'
 
 const EditApp = (props: any) => {
   // ** States
-  const [refreshChatCounter, setRefreshChatCounter] = useState<number>(0)
   const [app, setApp] = useState<any>(null)
   const [isDisabledButton, setIsDisabledButton] = useState<boolean>(false)
   const [deleteOpen, setDeleteOpen] = useState<boolean>(false) 
@@ -131,7 +130,7 @@ const EditApp = (props: any) => {
     if(id) {
       getMyApp(String(id))  
     }
-  }, [refreshChatCounter, id])
+  }, [id])
 
   // ** Vars
   const { skin } = settings

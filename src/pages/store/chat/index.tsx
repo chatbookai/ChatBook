@@ -2,7 +2,7 @@ import Chat from 'src/views/app/chat/index';
 
 const ChatApp = () => {
 
-  return <Chat menuid={'chat'}/>
+  return <Chat />
 
 }
 

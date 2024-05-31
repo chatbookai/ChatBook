@@ -44,6 +44,7 @@ import { isEmailValid, passwordValidator } from 'src/configs/functions'
 import toast from 'react-hot-toast'
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
+import { useRouter } from 'next/router'
 
 // ** Styled Components
 const Card = styled(MuiCard)<CardProps>(({ theme }) => ({
@@ -71,8 +72,8 @@ const schema = yup.object().shape({
 })
 
 const defaultValues = {
-  password: 'admin001',
-  email: 'chatbookai@gmail.com'
+  password: '',
+  email: ''
 }
 
 interface FormData {
@@ -89,6 +90,7 @@ const RegisterV1 = () => {
 
   // ** Hook
   const theme = useTheme()
+  const router = useRouter()
 
   const {
     control,
@@ -130,8 +132,8 @@ const RegisterV1 = () => {
     const username = email
     axios.post(authConfig.backEndApiChatBook + '/api/user/register', { email, username, password }) .then(res => {
       if (res.data.status == 'ok') {
-        //handleLogin({ email: params.email, password: params.password })
         toast.success(t(res.data.msg) as string, { duration: 4000 })
+        router.push('/login')
       }
       else {
         toast.error(t(res.data.msg) as string, { duration: 4000 })
@@ -239,7 +241,7 @@ const RegisterV1 = () => {
                       onBlur={onBlur}
                       onChange={onChange}
                       error={Boolean(errors.email)}
-                      placeholder='chatbookai@gmail.com'
+                      placeholder='Email address'
                     />
                   )}
                 />

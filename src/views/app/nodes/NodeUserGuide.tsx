@@ -27,11 +27,11 @@ import TTS from 'src/views/app/components/TTS'
 import GlobalVariableModel from 'src/views/app/components/GlobalVariable'
 import { FlowContext } from '../advanced/FlowContext'
 
-const QuestionInputNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
+const QuestionInputNode = ({ data }: NodeProps<FlowModuleItemType>) => {
   const { moduleId, outputs } = data;
   const { t } = useTranslation()
 
-  const { setNodes, nodes, setEdges, edges } = useContext(FlowContext);
+  const { setNodes, nodes } = useContext(FlowContext);
 
   console.log("QuestionInputNode moduleId", moduleId)
   console.log("QuestionInputNode outputs", outputs)

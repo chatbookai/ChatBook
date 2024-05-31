@@ -203,6 +203,7 @@ const AppChat = (props: any) => {
   const hidden = false
 
   useEffect(() => {
+    console.log("finishedMessage", finishedMessage)
     let userId = null
     if(auth.user && auth.user.id && userType=='User')   {
       userId = auth.user.id

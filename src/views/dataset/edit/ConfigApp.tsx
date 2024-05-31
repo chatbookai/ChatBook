@@ -1,4 +1,4 @@
-import { useEffect, memo, Fragment, useState } from 'react'
+import { useEffect, memo, Fragment } from 'react'
 
 import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
@@ -8,14 +8,12 @@ import { useTranslation } from 'react-i18next'
 // ** MUI Imports
 import Box from '@mui/material/Box'
 import Grid from '@mui/material/Grid'
-import Avatar from '@mui/material/Avatar'
 import Radio from '@mui/material/Radio'
 import Tooltip from '@mui/material/Tooltip'
 import FormControlLabel from '@mui/material/FormControlLabel'
 import RadioGroup from '@mui/material/RadioGroup'
 import InputLabel from '@mui/material/InputLabel'
 import Typography from '@mui/material/Typography'
-import TextField from '@mui/material/TextField'
 import Button from '@mui/material/Button'
 import Icon from 'src/@core/components/icon'
 import IconButton from '@mui/material/IconButton'
@@ -27,7 +25,7 @@ import authConfig from 'src/configs/auth'
 
 const ConfigApp = (props: any) => {
     // ** Props
-    const { app, setApp, handleEditDataSet, isDisabledButton, setIsDisabledButton, avatarFiles, setAvatarFiles } = props
+    const { app, setApp, handleEditDataSet, isDisabledButton, avatarFiles, setAvatarFiles } = props
 
     // ** Hook
     const { t } = useTranslation()

@@ -4,8 +4,8 @@ import { GetStaticProps, GetStaticPaths, GetStaticPropsContext, InferGetStaticPr
 // ** Demo Components Imports
 import SystemSettings from 'src/views/system/SystemSettings'
 
-const SystemSettingsTab = ({ tab, apiPricingPlanData }: InferGetStaticPropsType<typeof getStaticProps>) => {
-  return <SystemSettings tab={tab} apiPricingPlanData={apiPricingPlanData} />
+const SystemSettingsTab = ({ tab }: InferGetStaticPropsType<typeof getStaticProps>) => {
+  return <SystemSettings tab={tab} />
 }
 
 export const getStaticPaths: GetStaticPaths = () => {

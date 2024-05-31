@@ -59,6 +59,7 @@ const PublishApp = (props: any) => {
 
   useEffect(() => {
     fetchData(paginationModel)
+    setIsLoading(false)
     console.log("router", router)
   }, [paginationModel, counter, isMobileData, auth, appId])
 

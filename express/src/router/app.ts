@@ -161,7 +161,7 @@
     const { pageid, pagesize } = req.params;
     const { authorization } = req.headers;
     const checkUserTokenData: any = await checkUserToken(authorization as string);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
+    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
         const getChatlogPageData: any = await getAppPageAll(Number(pageid), Number(pagesize), req.body);
         res.status(200).json(getChatlogPageData);
     }

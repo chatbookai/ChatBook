@@ -80,21 +80,6 @@ const UserDropdown = (props: Props) => {
     setAnchorEl(null)
   }
 
-  const styles = {
-    py: 2,
-    px: 4,
-    width: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    color: 'text.primary',
-    textDecoration: 'none',
-    '& svg': {
-      mr: 2,
-      fontSize: '1.375rem',
-      color: 'text.primary'
-    }
-  }
-
   const handleLogout = () => {
     logout()
     handleDropdownClose()
@@ -167,12 +152,4 @@ const UserDropdown = (props: Props) => {
   )
 }
 
-/*
-<MenuItem sx={{ p: 0 }} onClick={() => handleDropdownClose('/faq')}>
-  <Box sx={styles}>
-    <Icon icon='mdi:help-circle-outline' />
-    {`${t(`FAQ`)}`}
-  </Box>
-</MenuItem>
-*/
 export default UserDropdown

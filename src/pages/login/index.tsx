@@ -217,7 +217,7 @@ const RegisterV1 = () => {
                       onBlur={onBlur}
                       onChange={onChange}
                       error={Boolean(errors.email)}
-                      placeholder='chatbookai@gmail.com'
+                      placeholder='Email address'
                     />
                   )}
                 />

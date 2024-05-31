@@ -23,7 +23,6 @@ import authConfig from 'src/configs/auth'
 
 // ** Theme Config
 import themeConfig from 'src/configs/themeConfig'
-import { useTranslation } from 'react-i18next'
 
 // ** Component Imports
 import Drawer from './Drawer'
@@ -91,7 +90,6 @@ const Navigation = (props: Props) => {
   const shadowRef = useRef(null)
 
   const auth = useAuth()
-  const { t } = useTranslation()
 
   // ** Var
   const { navCollapsed } = settings

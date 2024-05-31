@@ -53,6 +53,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
 
   const [MyDataset, setMyDataset] = useState<any>({MyDatasetOpen: false, MyDatasetList:[]})
   const [DatasetPrompt, setDatasetPrompt] = useState<any>({DatasetPromptOpen: false, REPHRASE_TEMPLATE: '', QA_TEMPLATE: ''})
+  
   //const [TTSModel,setTTSModel] = useState<any>({TTSOpen: false, TTSValue: 'Disabled', TTSSpeed: 1})
   const [LLMModel,setLLMModel] = useState<any>({LLMModelOpen: false, 
                                                 model: 'gpt-3.5-turbo', 
@@ -250,7 +251,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
 
   useEffect(()=>{
     if(selected) {
-      const updateEdges = edges.map((item: any)=>{
+      edges.map((item: any)=>{
         if(item.target == id) {
 
           return {
@@ -405,7 +406,7 @@ const NodeChatNode = ({ data, selected }: NodeProps<FlowModuleItemType>) => {
                                 {MyDataset && MyDataset.MyDatasetList && MyDataset.MyDatasetList.map((item: any, index: number)=>{
 
                                   return (
-                                    <Fragment>
+                                    <Fragment key={index}>
                                       <Button sx={{mb:1, ml:1}} variant='outlined' size="small" startIcon={<Icon icon='material-symbols:database-outline' />}>
                                         {item.name}
                                       </Button>

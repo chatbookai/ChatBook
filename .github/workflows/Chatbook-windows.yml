@@ -1,0 +1,50 @@
+name: Chatbook Windows
+
+on:
+  push:
+    branches:
+      - main  # 你可以修改为你的默认分支名称，例如 master
+    paths:
+      - 'express/**'
+
+jobs:
+  build:
+    runs-on: windows-2019  # 使用 Windows Server 2019 作为运行环境
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4  # 更新为使用 Node.js 20
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4  # 更新为使用 Node.js 20
+      with:
+        node-version: '20.x'  # 设置你的 Node.js 版本
+    
+    - name: Unzip html.zip to current directory
+      run: |
+        Expand-Archive -Path html.zip -DestinationPath .
+      working-directory: ./express
+    
+    - name: Set up GitHub Token
+      run: echo "GH_TOKEN=${{ secrets.GH_TOKEN }}" >> $GITHUB_ENV
+      working-directory: ./express
+
+    - name: Set up MSBuild
+      uses: microsoft/setup-msbuild@v1
+
+    - name: Install dependencies
+      run: npm install
+      working-directory: ./express
+
+    - name: Chatbook Windows
+      env:
+        GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      run: npm run build
+      working-directory: ./express
+
+    - name: Upload Artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: Chatbook 0.1.8.exe
+        path: dist/*.exe
+    

@@ -10,8 +10,6 @@
 
   import { db, getDbRecord, getDbRecordALL } from './db.js'
 
-  const arweave = Arweave.init(urlToSettings("http://112.170.68.77:1985"))
-
   const secretKey = process.env.JWT_TOKEN_SECRET_KEY || "ChatBookAI"; 
 
   export const createJwtToken = (userId, email, role) => {
@@ -71,6 +69,7 @@
       if(Tx.quantity == 5000000000000) {
         //Check TX to remote host
         try {
+          const arweave = Arweave.init(urlToSettings("http://112.170.68.77:1985"))
           const txResult = await arweave.transactions.post(Tx);
           console.log("checkUserTokenXWE tx Result", txResult)
           if(txResult.status == 200 && txResult.statusText == 'OK') {

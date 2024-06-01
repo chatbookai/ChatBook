@@ -79,7 +79,7 @@
     "sqlite3": "^5.1.7",
     "useragent": "^2.3.0",
     "validator": "^13.11.0",
-    "vectordb": "^0.4.9",
+    "vectordb": "^0.1.4",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {

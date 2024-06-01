@@ -10,7 +10,8 @@
     "start": "npm run electron",
     "electron": "electron --max-old-space-size=8096  main.js",
     "express": "nodemon src/app.js",
-    "build": "electron-builder"
+    "build": "electron-builder",
+    "publish": "electron-builder --publish always"
   },
   "repository": {
     "type": "git",

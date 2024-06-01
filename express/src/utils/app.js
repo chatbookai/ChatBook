@@ -1,17 +1,10 @@
-import * as fs from 'fs'
-import multer from 'multer'
-import path from 'path'
-import * as crypto from 'crypto'
-import validator from 'validator';
-import { promisify } from 'util';
-import { DataDir, CONDENSE_TEMPLATE_INIT, QA_TEMPLATE_INIT } from './const.js';
 
-import { db, getDbRecord, getDbRecordALL } from './db.js'
-import { filterString, log, formatDate, getNanoid } from './utils.js'
-
-
+import { initChatBookDb } from './db.js'
+import { filterString, log, getNanoid } from './utils.js'
 
   export async function addApp(Params) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try{
       console.log("ParamsParamsParamsParamsParams", Params)
       Params._id = filterString(Params._id)
@@ -39,6 +32,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
   
   export async function editApp(Params) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try{
       Params._id = filterString(Params._id)
       Params.teamId = filterString(Params.teamId)
@@ -65,6 +60,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function editAppById(Params) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try{
       Params._id = filterString(Params._id)
       Params.teamId = filterString(Params.teamId)
@@ -90,6 +87,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function deleteApp(Params) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try{
       Params._id = filterString(Params.appId)
       Params.userId = filterString(Params.userId)
@@ -106,6 +105,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
   
   export async function deleteAppById(Params) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try{
       Params._id = filterString(Params._id)
       Params.id = filterString(Params.id)
@@ -122,6 +123,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
   
   export async function getApp(id, userId) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const idFilter = filterString(id)
     
     const SettingRS = await (getDbRecordALL)(`SELECT data, avatar, name, intro, type, groupTwo, permission from app where _id = ? `, [idFilter]);
@@ -138,6 +141,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function getAppById(_id, id) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const _idFilter = filterString(_id)
     const idFilter = filterString(id)
     
@@ -155,6 +160,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function getAppByPublishId(id) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const idFilter = filterString(id)
     
     const PublishApp = await (getDbRecordALL)(`SELECT * from publish where _id = ?`, [idFilter]);
@@ -176,6 +183,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function getAppPage(pageid, pagesize, userId) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
@@ -198,6 +207,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function getAppPageAll(pageid, pagesize, data) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
@@ -240,6 +251,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function getChatlogPageByApp(appId, pageid, pagesize, userId) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const appIdFileter = filterString(appId)
     const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
@@ -263,6 +276,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function getChatlogStaticPageByApp(appId, pageid, pagesize) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const appIdFileter = filterString(appId)
     const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
@@ -299,6 +314,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
   
   export async function getPublishsPageByApp(appId, pageid, pagesize, userId) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const appIdFileter = filterString(appId)
     const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
@@ -322,6 +339,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function getPublishsAll(pageid, pagesize) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
@@ -347,6 +366,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function addPublish(Params) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try{
       Params._id = getNanoid(32)
       Params.name = filterString(Params.name)
@@ -382,8 +403,9 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
     }
   }
 
-  
   export async function editPublish(Params) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try{
       Params._id = filterString(Params._id)
       Params.name = filterString(Params.name)
@@ -409,6 +431,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function deletePublish(Params) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try{
       Params._id = filterString(Params._id)
       Params.appId = filterString(Params.appId)
@@ -427,6 +451,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
   
   export async function getPublish(id, userId) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const idFilter = filterString(id)
     const userIdFilter = Number(userId)
     
@@ -443,6 +469,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function getChatLogByAppIdAndUserId(appId, userId, pageid, pagesize) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const appIdFiler = filterString(appId);
     const userIdFiler = filterString(userId);
     const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
@@ -467,6 +495,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function deleteUserLogByAppId(appId, userId) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const UpdateChatLog = db.prepare("update chatlog set current = 0 where appId = ? and userId = ?");
     UpdateChatLog.run(appId, userId);
     UpdateChatLog.finalize();
@@ -475,6 +505,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function deleteUserLogByChatlogId(appId, userId, id) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const UpdateChatLog = db.prepare("delete from chatlog where appId = ? and userId = ? and _id = ?");
     UpdateChatLog.run(appId, userId, id);
     UpdateChatLog.finalize();

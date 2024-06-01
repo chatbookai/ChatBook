@@ -1,24 +1,54 @@
 // globals.ts
+import fs from 'fs'
 import sqlite3 from 'sqlite3';
 import { promisify } from 'util';
-import { DataDir } from './const.js';
 import { enableDir } from './utils.js';
 
 let initialized = false;
 let ChatBookSetting = null
+let db = null
+let getDbRecord = null
+let getDbRecordALL = null
 
-export async function initChatBookSetting(Data) {
+export function initChatBookSetting(Data) {
     console.log("ChatBookSettingChatBookSetting", ChatBookSetting)
     ChatBookSetting = Data
 }
 
-// @ts-ignore
-export const db = new sqlite3.Database(DataDir + '/ChatBookSqlite3.db', { encoding: 'utf8' });
+export function initChatBookDb() {
 
-export const getDbRecord = promisify(db.get.bind(db));
-export const getDbRecordALL = promisify(db.all.bind(db));
+    const DataDir = ChatBookSetting && ChatBookSetting.NodeStorageDirectory ? ChatBookSetting.NodeStorageDirectory : "D:\\GitHub\\ChatBook\\express\\data";
+    
+    if(!isDirectorySync(DataDir)) {
+        return {DataDir: null, db: null, getDbRecord: null, getDbRecordALL: null}
+    }
+    
+    if(db == null) {
+        db = new sqlite3.Database(DataDir + '/ChatBookSqlite3.db', { encoding: 'utf8' });
+    }
 
-export async function initChatBookDb() {
+    if(getDbRecord == null) {
+        getDbRecord = promisify(db.get.bind(db));
+    }
+
+    if(getDbRecordALL == null) {
+        getDbRecordALL = promisify(db.all.bind(db));
+    }
+
+    return {DataDir, db, getDbRecord, getDbRecordALL}
+}
+
+export async function initChatBookDbExec() {
+  let exeStatus = 0  
+  if (!initialized) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    
+    if(!isDirectorySync(DataDir)) {
+        return {DataDir: null, db: null, getDbRecord: null, getDbRecordALL: null}
+    }
+
+    console.log("dbdbdbdbdbdbdb", db, DataDir)
+
     enableDir(DataDir);
     enableDir(DataDir + '/audio/');
     enableDir(DataDir + '/avatarforapp/');
@@ -30,7 +60,7 @@ export async function initChatBookDb() {
     enableDir(DataDir + '/uploadfiles/');
     enableDir(DataDir + '/parsedfiles/');
     enableDir(DataDir + '/video/');
-    
+
     db.serialize(() => {
         db.run(`
             CREATE TABLE IF NOT EXISTS collection (
@@ -65,16 +95,6 @@ export async function initChatBookDb() {
                 appId TEXT not null,
                 publishId TEXT not null,
                 userId TEXT not null
-            );
-        `);
-        db.run(`
-            CREATE TABLE IF NOT EXISTS knowledge (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                name TEXT not null,
-                summary TEXT not null,
-                timestamp INTEGER not null default 0,
-                userId INTEGER not null,
-                UNIQUE(name, userId)
             );
         `);
         db.run(`
@@ -229,31 +249,6 @@ export async function initChatBookDb() {
             );
         `);
         db.run(`
-            CREATE TABLE IF NOT EXISTS agents (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                title TEXT KEY not null,
-                description TEXT not null,
-                tags TEXT not null,
-                config TEXT not null,
-                avatar TEXT not null,
-                author TEXT not null,
-                createDate TEXT not null,
-                status INTEGER not null default 1,
-                model TEXT not null default 'Gemini',
-                type INTEGER not null default 1,
-                userId TEXT not null default 0
-            );
-        `);
-        db.run(`
-            CREATE TABLE IF NOT EXISTS useragents (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                userId INTEGER not null default 0,
-                appId INTEGER not null default 0,
-                createtime INTEGER not null default 0,
-                UNIQUE(userId, appId)
-            );
-        `);
-        db.run(`
             CREATE TABLE IF NOT EXISTS app (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 _id TEXT KEY not null,
@@ -313,7 +308,6 @@ export async function initChatBookDb() {
                 userId INTEGER not null default 0
             );
         `);
-        
         db.run(`
             CREATE TABLE IF NOT EXISTS dataset (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -335,12 +329,7 @@ export async function initChatBookDb() {
         `);
         
     });
-}
 
-export async function initChatBookDbExec() {
-  let exeStatus = 0  
-  if (!initialized) {
-    await initChatBookDb();
     initialized = true;
     exeStatus = 1
   }
@@ -348,3 +337,12 @@ export async function initChatBookDbExec() {
   console.log("initChatBookDbExec initialized", initialized)
 }
 
+function isDirectorySync(path) {
+    try {
+        const stats = fs.statSync(path);
+        return stats.isDirectory();
+    } catch (err) {
+        console.error('isDirectorySync Error checking if path is a directory:', err);
+        return false;
+    }
+  }

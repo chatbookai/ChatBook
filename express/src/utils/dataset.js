@@ -1,16 +1,11 @@
-import * as fs from 'fs'
-import multer from 'multer'
-import path from 'path'
-import * as crypto from 'crypto'
-import validator from 'validator';
-import { promisify } from 'util';
-import { DataDir, CONDENSE_TEMPLATE_INIT, QA_TEMPLATE_INIT } from './const.js';
 
-import { db, getDbRecord, getDbRecordALL } from './db.js'
-import { filterString, log, formatDate, getNanoid } from './utils.js'
+import { initChatBookDb } from './db.js'
+import { filterString, log, getNanoid } from './utils.js'
 
 
   export async function addDataset(Params) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try{
       Params._id = filterString(Params._id)
       Params.name = filterString(Params.name)
@@ -34,6 +29,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
   
   export async function editDataset(Params) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try{
       Params._id = filterString(Params._id)
       Params.teamId = filterString(Params.teamId)
@@ -57,6 +54,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
   
   export async function deleteDataset(Params) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try{
       Params._id = filterString(Params.datasetId)
       Params.userId = filterString(Params.userId)
@@ -73,6 +72,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
   
   export async function getDataset(id, userId) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const idFilter = filterString(id)
     const userIdFilter = Number(userId)
     
@@ -89,6 +90,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function getDatasetPage(pageid, pagesize, userId) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
@@ -111,6 +114,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function getCollectionPageByDataset(datasetId, pageid, pagesize, userId) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const datasetIdFileter = filterString(datasetId)
     const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
@@ -134,6 +139,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function getCollectionAll(pageid, pagesize) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
@@ -159,6 +166,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function addCollection(Params) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try{
       Params._id = getNanoid(32)
       Params.name = filterString(Params.name)
@@ -193,6 +202,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function editCollection(Params) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try{
       Params._id = filterString(Params._id)
       Params.name = filterString(Params.name)
@@ -216,6 +227,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
 
   export async function uploadCollection(Params) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try{
       const type = filterString(Params.type)
       const datasetId = filterString(Params.datasetId)
@@ -268,8 +281,9 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
 
   }
 
-
   export async function deleteCollection(Params) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try{
       Params._id = filterString(Params._id)
       Params.datasetId = filterString(Params.datasetId)
@@ -287,6 +301,8 @@ import { filterString, log, formatDate, getNanoid } from './utils.js'
   }
   
   export async function getCollection(id, userId) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const idFilter = filterString(id)
     const userIdFilter = Number(userId)
     

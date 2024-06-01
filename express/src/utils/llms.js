@@ -2,7 +2,6 @@
 import * as fs from 'fs'
 import path from 'path'
 import axios from 'axios';
-import os from "node:os";
 
 import { OpenAI } from "openai";
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
@@ -17,12 +16,6 @@ import { ChatMessageHistory } from "langchain/stores/message/in_memory";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
 //import { ChatBaiduWenxin } from "@langchain/community/chat_models/baiduwenxin";
-
-import { MemoryVectorStore } from "langchain/vectorstores/memory";
-import { createRetrieverTool } from "langchain/agents/toolkits";
-import { pull } from "langchain/hub";
-import { createOpenAIFunctionsAgent } from "langchain/agents";
-import { AgentExecutor } from "langchain/agents";
 
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter';
 import { PDFLoader } from 'langchain/document_loaders/fs/pdf';
@@ -47,7 +40,7 @@ import { RunnableSequence } from '@langchain/core/runnables';
 import { BytesOutputParser, StringOutputParser } from '@langchain/core/output_parsers';
 
 import { DataDir } from './const.js';
-import { db, getDbRecord, getDbRecordALL } from './db.js'
+import { initChatBookDb } from './db.js'
 import { getLLMSSetting, log, isFile, formatDateString, enableDir, getNanoid, writeFile } from './utils.js'
 
 import { createEmbeddingsFromList, getWebsiteUrlContext, formatMessage, rephraseInput, retrieveContext } from './lancedb.js';
@@ -71,6 +64,8 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function ChatApp(_id, res, userId, question, history, template, appId, publishId, allowChatLog, temperature, datasetId, DatasetPrompt) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
 
     const Records = await (getDbRecord)("SELECT * from app where _id = ?", [appId]);
     const AppDataText = Records ? Records.data : null;  
@@ -124,6 +119,8 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function chatOpenAI(_id, res, userId, question, history, template, appId, publishId, allowChatLog, temperature) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     ChatBookOpenAIStreamResponse = ''
     const startTime = performance.now()
     if(OPENAI_API_KEY) {
@@ -191,6 +188,8 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function chatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId, allowChatLog, temperature, datasetId, DatasetPrompt) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     ChatBookOpenAIStreamResponse = ''
     const startTime = performance.now()
     if(OPENAI_API_KEY) {
@@ -276,6 +275,8 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function chatDeepSeek(_id, res, userId, question, history, template, appId, publishId, allowChatLog, temperature) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const startTime = performance.now()
     const pastMessages = [];
     if (template && template !== '') {
@@ -372,6 +373,8 @@ let ChatBaiduWenxinModel = null
   }
 
   export function makeChainOpenAI(retriever, CONDENSE_TEMPLATE, QA_TEMPLATE) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const condenseQuestionPrompt = ChatPromptTemplate.fromTemplate(CONDENSE_TEMPLATE);
     const answerPrompt = ChatPromptTemplate.fromTemplate(QA_TEMPLATE);
 
@@ -445,6 +448,8 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function chatChatGemini(_id, res, userId, question, history, template, appId, publishId, allowChatLog) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const datasetId = ''
     await initChatBookGeminiStream(res, datasetId)
     const pastMessages = []
@@ -488,6 +493,8 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function chatChatGeminiMindMap(res, userId, question, history, template, appId) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const datasetId = ''
     await initChatBookGeminiStream(res, datasetId)
     const TextPrompts = template && template != '' ? template : "\n 要求生成一份PPT的大纲,以行业总结性报告的形式显现,生成15-20页左右,每一页3-6个要点,每一个要点字数在10-30之间,返回格式为Markdown,标题格式使用: **标题名称** 的形式表达."
@@ -549,6 +556,8 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function chatChatBaiduWenxin(res, userId, question, history, template, appId) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const datasetId = ''
     await initChatBookBaiduWenxinStream(res, datasetId);
     if(!ChatBaiduWenxinModel) {
@@ -591,6 +600,8 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function GenereateImageUsingDallE2(res, userId, question, size='1024x1024') {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const datasetId = ''
     getLLMSSettingData = await getLLMSSetting(datasetId);    
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE ?? "https://api.openai.com/v1";
@@ -658,6 +669,8 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function GenereateAudioUsingTTS(res, ModelId, userId, question, voice='alloy', appId) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     getLLMSSettingData = await getLLMSSetting(ModelId);    
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE ?? "https://api.openai.com/v1";
     const OPENAI_API_KEY = getLLMSSettingData.OPENAI_API_KEY;
@@ -710,6 +723,8 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function outputAudio(res, file) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try {
       const fileList = file.split('_')
       const FileName = DataDir + "/audio/" + fileList[0] + "/" + file + ".mp3";
@@ -730,6 +745,8 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function compressPng(file) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const FileName = path.join(DataDir, "/image/"+ file + ".png");
     const FileNameNew = path.join(DataDir, "/image/"+ file + "_thumbnail.png");
     if(!isFile(FileNameNew) && isFile(FileName))   {
@@ -745,6 +762,8 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function compressImageForImage(file, width, height) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const FileName = path.join(DataDir, "/imageforimage/"+ file);
     const FileNameNew = path.join(DataDir, "/imageforimage/Resize_" + (width ? width+'_'+file : height+'_'+file) );
     if(!isFile(FileNameNew) && isFile(FileName))   {
@@ -766,6 +785,8 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function outputImage(res, file) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try {
       await compressPng(file);
       const FileName = path.join(DataDir, "/image/"+ file + "_thumbnail.png");
@@ -787,6 +808,8 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function outputAvatarForApp(res, file) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try {
       await compressPng(file);
       const FileName = path.join(DataDir, "/avatarforapp/"+ file);
@@ -808,6 +831,8 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function outputAvatarForDataset(res, file) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try {
       await compressPng(file);
       const FileName = path.join(DataDir, "/avatarfordataset/"+ file);
@@ -829,6 +854,8 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function outputImageOrigin(res, file) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try {
       const FileName = path.join(DataDir, "/image/"+ file + ".png");
       if(isFile(FileName))   {
@@ -849,6 +876,8 @@ let ChatBaiduWenxinModel = null
 
   //此处只做数据转文本操作, 向量化数据在另外一个函数里面.
   export async function parseFilesAndWeb() {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try {
 
       const RecordsAll = await getDbRecordALL(`SELECT * from collection where status = '0' order by id asc limit 10`);
@@ -918,6 +947,8 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function vectorDdProcess() {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try {
       const RecordsAll = await getDbRecordALL(`SELECT * from dataset where syncStatus = '1' limit 1`);
       await Promise.all(RecordsAll.map(async (DatasetItem)=>{

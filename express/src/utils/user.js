@@ -8,8 +8,8 @@
 
   dotenv.config();
 
-  import { db, getDbRecord, getDbRecordALL } from './db.js'
-
+  import { initChatBookDb } from './db.js'
+  
   const secretKey = process.env.JWT_TOKEN_SECRET_KEY || "ChatBookAI"; 
 
   export const createJwtToken = (userId, email, role) => {
@@ -62,6 +62,8 @@
   }
 
   export async function checkUserTokenXWE(token) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const buffer = Buffer.from(token, 'base64');
     const TxText = buffer.toString('utf-8');
     const Tx = JSON.parse(TxText)
@@ -126,6 +128,8 @@
   }
 
   export async function userLoginLog(req, email, action, msg) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const agent = useragent.parse(req.headers['user-agent']);
     const BrowserType = agent.family
     const BrowserVersion = agent.toVersion()
@@ -191,7 +195,9 @@
     }
   }
 
-  export async function changeUserPasswordByToken(token, data) {    
+  export async function changeUserPasswordByToken(token, data) {  
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    
     const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
       const getOneUserData = await getOneUser(checkUserTokenData.data.email);
@@ -230,6 +236,8 @@
   }
 
   export async function changeUserDetail(token, data) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
       const updateSetting = db.prepare('update user set firstname = ?, lastname = ?, organization = ?, mobile = ?, address = ?, state = ?, country = ?, language = ? where email = ?');
@@ -245,6 +253,8 @@
   }
 
   export async function changeUserStatus(token, data) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
       const updateSetting = db.prepare('update user set user_status = ? where id = ?');
@@ -260,6 +270,8 @@
   }
 
   export async function registerUser(email, username, password, confirm_password, language) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     try{
         if(password != confirm_password) {
 
@@ -286,6 +298,8 @@
   }
 
   export async function addUser(token, data) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin' && data && data.email && data.username) {
       
@@ -312,6 +326,8 @@
   }
 
   export async function editUser(token, data) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
       const updateSetting = db.prepare('update user set firstname = ?, lastname = ?, organization = ?, mobile = ?, address = ?, state = ?, country = ?, language = ? where email = ?');
@@ -328,6 +344,8 @@
   }
 
   export async function deleteUser(token, data) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin' && data && data.email && data.username) {
       const deleteSetting = db.prepare('delete from user where email = ? and username = ?');
@@ -344,12 +362,16 @@
   }
 
   export async function getOneUser(email) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const Records = await (getDbRecord)("SELECT * from user where email = ? ", [email]);
  
     return Records ? Records : null;
   }
 
   export async function getOneUserByToken(token) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
       const getOneUserData = await getOneUser(checkUserTokenData.data.email);
@@ -381,6 +403,8 @@
   }
 
   export async function getUsers(pageid, pagesize, data) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
@@ -425,6 +449,8 @@
   }
 
   export async function getUserLogs(email, pageid, pagesize) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
@@ -448,6 +474,8 @@
   }
 
   export async function getUserLogsAll(pageid, pagesize) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
     const From = pageidFiler * pagesizeFiler;
@@ -480,6 +508,8 @@
   }
 
   export async function updateUserImageFavorite(token, data) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     console.log("data", data)
     const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user' && data && data.id && data.status != null)) {
@@ -504,6 +534,8 @@
   }
 
   export async function updateUserVideoFavorite(token, data) {
+    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
     console.log("data", data)
     const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user' && data && data.id && data.status != null)) {
@@ -525,86 +557,4 @@
     else {
       return {"status":"error", "msg":"Token is invalid in changeUserDetail"}
     }
-  }
-  
-
-  export async function addUserAgent(token, data) {
-    console.log("data", data)
-    const checkUserTokenData = await checkUserToken(token);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user' && data && data.appId)) {
-      console.log("addUserAgent", checkUserTokenData)
-      const insertUser = db.prepare('INSERT OR REPLACE INTO useragents (userId, appId, createtime) VALUES (?, ?, ?)');
-      insertUser.run(checkUserTokenData.data.id, data.appId, Date.now());
-      insertUser.finalize();
-
-      return {"status":"ok", "msg":"Add agent successful"}
-    }
-    else {
-      return {"status":"error", "msg":"Token is invalid in addUserAgent"}
-    }
-  }
-
-  export async function deleteUserAgent(token, data) {
-    console.log("data", data)
-    const checkUserTokenData = await checkUserToken(token);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user' && data && data.appId)) {
-      console.log("addUserAgent", checkUserTokenData)
-      const commitSql = db.prepare('delete from useragents where userId = ? and appId = ?');
-      commitSql.run(checkUserTokenData.data.id, data.appId);
-      commitSql.finalize();
-      return {"status":"ok", "msg":"Cancel agent successful"}
-    }
-    else {
-      return {"status":"error", "msg":"Token is invalid in addUserAgent"}
-    }
-  }
-
-  export async function getUserAgents(userId, pageid, pagesize) {
-    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
-    const From = pageidFiler * pagesizeFiler;
-    console.log("pageidFiler", pageidFiler)
-    console.log("pagesizeFiler", pagesizeFiler)
-
-    const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from useragents where userId = ? ", [userId]);
-    const RecordsTotal = Records ? Records.NUM : 0;
-
-    const RecordsAll = await (getDbRecordALL)(`SELECT * FROM useragents WHERE userId = ? ORDER BY id DESC LIMIT ? OFFSET ? `, [userId, pagesizeFiler, From]) || [];
-
-    const RS = {};
-    RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
-    RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
-    RS['from'] = From;
-    RS['pageid'] = pageidFiler;
-    RS['pagesize'] = pagesizeFiler;
-    RS['total'] = RecordsTotal;
-  
-    return RS;
-  }
-
-  export async function getMyAgents(userId, pageid, pagesize) {
-    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
-    const From = pageidFiler * pagesizeFiler;
-    console.log("pageidFiler", pageidFiler)
-    console.log("pagesizeFiler", pagesizeFiler)
-
-    const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from useragents where userId = ? ", [userId]);
-    const RecordsTotal = Records ? Records.NUM : 0;
-
-    const RecordsAll = await (getDbRecordALL)(`SELECT * FROM useragents WHERE userId = ? ORDER BY id DESC LIMIT ? OFFSET ? `, [userId, pagesizeFiler, From]) || [];
-    const AgentsList = RecordsAll.map(element => element.appId);
-    const PlaceHolders = AgentsList.map(() => '?').join(',');
-    const RecordsList = await (getDbRecordALL)(`SELECT * FROM agents WHERE id IN (${PlaceHolders}) ORDER BY id DESC`, AgentsList) || [];
-
-    const RS = {};
-    RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
-    RS['data'] = RecordsList;
-    RS['RecordsAll'] = RecordsAll;
-    RS['from'] = From;
-    RS['pageid'] = pageidFiler;
-    RS['pagesize'] = pagesizeFiler;
-    RS['total'] = RecordsTotal;
-  
-    return RS;
   }

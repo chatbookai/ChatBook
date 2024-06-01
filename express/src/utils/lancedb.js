@@ -1,6 +1,4 @@
-import express from 'express';
-import crypto from 'crypto';
-import { OpenAI } from "openai";
+
 import { ChatOpenAI } from "@langchain/openai";
 import { PromptTemplate } from "@langchain/core/prompts";
 import { connect } from "vectordb";
@@ -10,8 +8,6 @@ import { load } from 'cheerio';
 import { BytesOutputParser, StringOutputParser } from '@langchain/core/output_parsers';
 
 import { DataDir } from './const.js';
-
-//import { db, getDbRecord, getDbRecordALL } from './db.js'
 
 import dotenv from 'dotenv';
 dotenv.config();

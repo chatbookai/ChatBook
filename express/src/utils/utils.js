@@ -3,11 +3,10 @@ import multer from 'multer'
 import path from 'path'
 import * as crypto from 'crypto'
 import validator from 'validator';
-import { promisify } from 'util';
-import { DataDir, CONDENSE_TEMPLATE_INIT, QA_TEMPLATE_INIT } from './const.js';
 import { randomBytes } from 'crypto';
-import { db, getDbRecord, getDbRecordALL } from './db.js'
+import { initChatBookDb } from './db.js'
 import iconv from 'iconv-lite';
+
 
 export function enableDir(directoryPath) {
   try {
@@ -25,6 +24,8 @@ export function enableDir(directoryPath) {
 }
 
 export async function getLLMSSetting(datasetId) {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+
   const datasetIdFilter = filterString(datasetId)
   
   const RecordsAll = await (getDbRecordALL)(`SELECT name,content from setting where type='openaisetting' and datasetId = ? `, [datasetIdFilter]);
@@ -39,6 +40,8 @@ export async function getLLMSSetting(datasetId) {
 }
 
 export async function setOpenAISetting(Params) {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
   const datasetIdFilter = filterString(Params.datasetId)
   const userIdFilter = filterString(Params.userId)
   try {
@@ -58,6 +61,8 @@ export async function setOpenAISetting(Params) {
 }
 
 export async function getTemplate(datasetId, userId) {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
   const datasetIdFilter = filterString(datasetId)
   const userIdFilter = Number(userId)
   
@@ -74,6 +79,8 @@ export async function getTemplate(datasetId, userId) {
 }
 
 export async function setTemplate(Params) {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  
   try{
     const datasetIdFilter = Number(Params.datasetId)
     const userIdFilter = Params.userId
@@ -85,67 +92,6 @@ export async function setTemplate(Params) {
   }
   catch (error) {
     console.log('Error setTemplate:', error.message);
-  }
-
-  return {"status":"ok", "msg":"Update Success"}
-}
-
-export async function addKnowledge(Params) {
-  try{
-    console.log("ParamsParamsParamsParamsParams", Params)
-    const userIdFilter = Params.userId
-    Params.name = filterString(Params.name)
-    Params.summary = filterString(Params.summary)
-    
-    const Records = await (getDbRecord)("SELECT id from knowledge where name = ? and userId = ?", [Params.name, userIdFilter]);
-    const RecordId = Records ? Records.id : 0;
-
-    console.log("RecordId", RecordId, Params.userId)
-    if(RecordId > 0) {
-      Params.id = RecordId
-      setKnowledge(Params)
-    }
-    else {
-      const insertSetting = db.prepare('INSERT OR REPLACE INTO knowledge (name, summary, timestamp, userId) VALUES (?, ?, ?, ?)');
-      insertSetting.run(Params.name, Params.summary, Date.now(), userIdFilter);
-
-      insertSetting.run(Params.name, Params.summary, Date.now(), userIdFilter, function(err) {
-        if (err) {
-          console.error(err.message);
-
-          return;
-        }
-
-        //@ts-ignore
-        const lastInsertId = this.lastID;
-        console.log('Last inserted ID:', lastInsertId);
-        insertSetting.finalize();
-        if(lastInsertId) {
-          const TemplateInfo = {datasetId: lastInsertId, CONDENSE_TEMPLATE: CONDENSE_TEMPLATE_INIT, QA_TEMPLATE: QA_TEMPLATE_INIT, userId: userIdFilter}
-          setTemplate(TemplateInfo)
-        }
-
-      });
-    }
-  }
-  catch (error) {
-    console.log('Error setOpenAISetting:', error.message);
-  }
-
-  return {"status":"ok", "msg":"Update Success"}
-}
-
-export async function setKnowledge(Params) {
-  try{
-    Params.id = Number(Params.id)
-    Params.name = filterString(Params.name)
-    Params.summary = filterString(Params.summary)
-    const updateSetting = db.prepare('update knowledge set name = ?, summary = ?, timestamp = ? where id = ?');
-    updateSetting.run(Params.name, Params.summary, Date.now(), Params.id);
-    updateSetting.finalize();
-  }
-  catch (error) {
-    console.log('Error setOpenAISetting:', error.message);
   }
 
   return {"status":"ok", "msg":"Update Success"}
@@ -257,6 +203,8 @@ export async function uploadfilesInsertIntoDb(files, datasetId, userId) {
 }
 
 export async function getFilesPage(pageid, pagesize) {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+
   const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
@@ -296,15 +244,17 @@ export async function getFilesPage(pageid, pagesize) {
 }
 
 export async function getFilesDatasetId(datasetId, pageid, pagesize) {
-  const KnowledgeIdFiler = Number(datasetId) < 0 ? 0 : datasetId;
+  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+
+  const datasetIdFiler = Number(datasetId) < 0 ? 0 : datasetId;
   const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
   
   
-  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from files where datasetId = ?", [KnowledgeIdFiler]);
+  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from files where datasetId = ?", [datasetIdFiler]);
   const RecordsTotal = Records ? Records.NUM : 0;  
-  const RecordsAll = await (getDbRecordALL)(`SELECT * from files where datasetId = ? order by status desc, timestamp desc limit ? OFFSET ? `, [KnowledgeIdFiler, pagesizeFiler, From]);
+  const RecordsAll = await (getDbRecordALL)(`SELECT * from files where datasetId = ? order by status desc, timestamp desc limit ? OFFSET ? `, [datasetIdFiler, pagesizeFiler, From]);
 
   let RSDATA = []
   if(RecordsAll != undefined) {
@@ -336,23 +286,27 @@ export async function getFilesDatasetId(datasetId, pageid, pagesize) {
 }
 
 export async function getFilesNotParsed() {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+
   
   const RecordsAll = await (getDbRecordALL)(`SELECT * from files where status = '0' order by timestamp asc limit 10 `);
 
   return RecordsAll;
 }
 
-export async function getChatLogByKnowledgeIdAndUserId(datasetId, userId, pageid, pagesize) {
-  const KnowledgeIdFiler = filterString(datasetId);
+export async function getChatLogByDatasetIdAndUserId(datasetId, userId, pageid, pagesize) {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+
+  const datasetIdFiler = filterString(datasetId);
   const userIdFiler = Number(userId) < 0 ? 0 : userId;
   const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
 
   
-  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from chatlog where current = 1 and appId = ? and userId = ?", [KnowledgeIdFiler, userIdFiler]);
+  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from chatlog where current = 1 and appId = ? and userId = ?", [datasetIdFiler, userIdFiler]);
   const RecordsTotal = Records ? Records.NUM : 0;
-  const RecordsAll = await (getDbRecordALL)(`SELECT * from chatlog where current = 1 and  appId = ? and userId = ? order by id desc limit ? OFFSET ? `, [KnowledgeIdFiler, userIdFiler, pagesizeFiler, From]);
+  const RecordsAll = await (getDbRecordALL)(`SELECT * from chatlog where current = 1 and  appId = ? and userId = ? order by id desc limit ? OFFSET ? `, [datasetIdFiler, userIdFiler, pagesizeFiler, From]);
 
   const RS = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
@@ -366,6 +320,8 @@ export async function getChatLogByKnowledgeIdAndUserId(datasetId, userId, pageid
 }
 
 export async function getLogsPage(pageid, pagesize) {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+
   const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
@@ -374,29 +330,6 @@ export async function getLogsPage(pageid, pagesize) {
   const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from logs ");
   const RecordsTotal = Records ? Records.NUM : 0;  
   const RecordsAll = await (getDbRecordALL)(`SELECT * from logs order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]);
-  
-  const RS = {};
-  RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
-  RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
-  RS['from'] = From;
-  RS['pageid'] = pageidFiler;
-  RS['pagesize'] = pagesizeFiler;
-  RS['total'] = RecordsTotal;
-
-  return RS;
-}
-
-export async function getKnowledgePage(pageid, pagesize) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
-  const From = pageidFiler * pagesizeFiler;
-  console.log("pageidFiler", pageidFiler)
-  console.log("pagesizeFiler", pagesizeFiler)
-
-  
-  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from knowledge");
-  const RecordsTotal = Records ? Records.NUM : 0;  
-  const RecordsAll = await (getDbRecordALL)(`SELECT * from knowledge order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]);
   
   const RS = {};
   RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
@@ -419,6 +352,8 @@ export function timestampToDate(timestamp) {
 }
 
 export async function log(appId, publishId, userId, Action1, Action2, Action3, Action4, Action5, Action6, Action7, Action8, Action9, Action10) {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+
   const currentDate = new Date();
   const currentDateTime = currentDate.toLocaleString();
   const content = JSON.stringify(Action1) +" "+ JSON.stringify(Action2) +" "+ JSON.stringify(Action3) +" "+ JSON.stringify(Action4) +" "+ JSON.stringify(Action5) +" "+ JSON.stringify(Action6) +" "+ JSON.stringify(Action7) +" "+ JSON.stringify(Action8) +" "+ JSON.stringify(Action9) +" "+ JSON.stringify(Action10);
@@ -429,6 +364,8 @@ export async function log(appId, publishId, userId, Action1, Action2, Action3, A
 }
 
 export async function deleteLog() {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+
   const Records = await (getDbRecord)("SELECT MAX(id) AS NUM FROM logs");
   const MaxId = Records ? Records.NUM : 0;
   if(MaxId > 1000) {
@@ -440,6 +377,8 @@ export async function deleteLog() {
 }
 
 export async function clearShortLogs() {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+
   const DeleteLog = db.prepare("delete from logs where length(content) < 50");
   DeleteLog.run();
   DeleteLog.finalize();
@@ -447,13 +386,17 @@ export async function clearShortLogs() {
 }
 
 export async function clearAllLogs() {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+
   const DeleteLog = db.prepare("delete from logs");
   DeleteLog.run();
   DeleteLog.finalize();
   return {"status":"ok", "msg":"Deleted Success"}
 }
 
-export async function deleteUserLogByKnowledgeId(datasetId, userId) {
+export async function deleteUserLogByDatasetId(datasetId, userId) {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+
   const UpdateChatLog = db.prepare("update chatlog set current = 0 where appId = ? and userId = ?");
   UpdateChatLog.run(datasetId, userId);
   UpdateChatLog.finalize();
@@ -599,6 +542,8 @@ export const isEmailValid = (email) => {
 };
 
 export async function wholeSiteStatics() {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+
   const NewUserPerDayData = await (getDbRecordALL)(`SELECT strftime('%Y-%m-%d', datetime(createtime / 1000, 'unixepoch')) AS date, count(*) AS NUM from user group by date order by date asc`);
   const NewUserPerDay = NewUserPerDayData.map(Item => Item.NUM)
 
@@ -626,13 +571,12 @@ export async function wholeSiteStatics() {
   const Records4 = await (getDbRecord)("SELECT COUNT(*) AS NUM from files");
   const TotalFiles = Records4 ? Records4.NUM : 0;
 
-  const Records5 = await (getDbRecord)("SELECT COUNT(*) AS NUM from knowledge");
-  const TotalKnowledges = Records5 ? Records5.NUM : 0;
-  
-  return {NewUserPerDay, NewImagesPerDay, NewFilesPerDay, NewActivitesPerDay, DateList, TotalImages, TotalActivites, TotalUsers, TotalFiles, TotalKnowledges}
+  return {NewUserPerDay, NewImagesPerDay, NewFilesPerDay, NewActivitesPerDay, DateList, TotalImages, TotalActivites, TotalUsers, TotalFiles}
 }
 
 export async function getAllImages(userId, pageid, pagesize) {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+
   const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
   const From = pageidFiler * pagesizeFiler;
@@ -681,121 +625,6 @@ export function removeDuplicates(words) {
     }
   }
   return uniqueWords.join(',');
-}
-
-export async function getAgentsPage(pageid, pagesize) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
-  const From = pageidFiler * pagesizeFiler;
-  console.log("pageidFiler", pageidFiler)
-  console.log("pagesizeFiler", pagesizeFiler)
-
-  
-  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from agents");
-  const RecordsTotal = Records ? Records.NUM : 0;  
-  const RecordsAll = await (getDbRecordALL)(`SELECT * from agents order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]);
-  
-  const RS = {};
-  RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
-  RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
-  RS['from'] = From;
-  RS['pageid'] = pageidFiler;
-  RS['pagesize'] = pagesizeFiler;
-  RS['total'] = RecordsTotal;
-
-  return RS;
-}
-
-export async function getAgentsEnabledList(pageid, pagesize, type, search) {
-  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
-  const From = pageidFiler * pagesizeFiler;
-  console.log("pageidFiler", pageidFiler)
-  console.log("pagesizeFiler", pagesizeFiler)
-  console.log("type", type)
-  console.log("search", search)
-
-  
-  let Records = null;
-  let RecordsTotal = Records ? Records.NUM : 0;  
-  let RecordsAll = [];
-  if(type != "ALL" && type != "全部") {
-    Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from agents where status = 1 and tags like ?", [`%${type}%`]);
-    RecordsTotal = Records ? Records.NUM : 0;  
-    RecordsAll = await (getDbRecordALL)(`SELECT * from agents where status = 1 and tags like ? order by id desc limit ? OFFSET ? `, [`%${type}%`, pagesizeFiler, From]);
-    console.log("RecordsAll", RecordsAll, type, search)
-  }
-  else if(search != "ALL" && search != "全部") {
-    Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from agents where status = 1 and title like ?", [`%${search}%`]);
-    RecordsTotal = Records ? Records.NUM : 0;  
-    RecordsAll = await (getDbRecordALL)(`SELECT * from agents where status = 1 and title like ? order by id desc limit ? OFFSET ? `, [`%${search}%`, pagesizeFiler, From]);
-  }
-  else {
-    Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from agents where status = 1");
-    RecordsTotal = Records ? Records.NUM : 0;  
-    RecordsAll = await (getDbRecordALL)(`SELECT * from agents where status = 1 order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]);
-  }
-  
-  const RS = {};
-  RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
-  RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
-  RS['from'] = From;
-  RS['pageid'] = pageidFiler;
-  RS['pagesize'] = pagesizeFiler;
-  RS['total'] = RecordsTotal;
-
-  return RS;
-}
-
-export async function addAgent(Params) {
-  try{
-    console.log("ParamsParamsParamsParamsParams", Params)
-    Params.title = filterString(Params.title)
-    Params.description = filterString(Params.description)
-    Params.tags = filterString(Params.tags)
-    Params.config = filterString(Params.config)
-    Params.avatar = filterString(Params.avatar)
-    Params.author = filterString(Params.author)
-    Params.model = filterString(Params.model)
-
-    const Records = await (getDbRecord)("SELECT id from agents where title = ?", [Params.title]);
-    const RecordId = Records ? Records.id : 0;
-
-    console.log("RecordId", RecordId, Params.userId)
-    if(RecordId > 0) {
-      Params.id = RecordId
-      editAgent(Params)
-      return {"status":"ok", "msg":"Update Success"}
-    }
-    else {
-      const formatDateValue = formatDate(Date.now())
-      const insertSetting = db.prepare('INSERT OR IGNORE INTO agents (title, description, tags, config, avatar, author, createDate, status, model, type, userId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
-      insertSetting.run(Params.title, Params.description, Params.tags, Params.config, Params.avatar, Params.author, formatDateValue, 1, Params.model, 1, Params.userId);
-      insertSetting.finalize();
-      return {"status":"ok", "msg":"Add Success"}
-    }
-  }
-  catch (error) {
-    console.log('Error setOpenAISetting:', error.message);
-    return {"status":"error", "msg":error.message}
-  }
-}
-
-export async function editAgent(Params) {
-  try{
-    Params.id = Number(Params.id)
-    Params.name = filterString(Params.name)
-    Params.summary = filterString(Params.summary)
-    const formatDateValue = formatDate(Date.now())
-    const updateSetting = db.prepare('update agents set title = ?, description = ?, tags = ?, config = ?, avatar = ?, author = ?, createDate = ?, status = ?, model = ?, type = ? where id = ?');
-    updateSetting.run(Params.title, Params.description, Params.tags, Params.config, Params.avatar, Params.author, formatDateValue, Params.status, Params.model, Params.type, Params.id);
-    updateSetting.finalize();
-  }
-  catch (error) {
-    console.log('Error setOpenAISetting:', error.message);
-  }
-
-  return {"status":"ok", "msg":"Update Success"}
 }
 
 export const getNanoid = (size = 12) => {

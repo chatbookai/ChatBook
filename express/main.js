@@ -3,7 +3,7 @@ import isDev from 'electron-is-dev'
 import settings from 'electron-settings';
 
 import { server, getPort } from './src/app.js';
-import { initChatBookSetting, initChatBookDb } from './src/utils/db.js';
+import { initChatBookSetting, initChatBookDbExec } from './src/utils/db.js';
 
 const PORT = getPort();
 
@@ -27,7 +27,7 @@ function createMainWindow() {
     ChatBookSetting = await settings.get('chatbook');
     console.log("ChatBookSetting main.js", ChatBookSetting)
     await initChatBookSetting(ChatBookSetting);
-    await initChatBookDb();
+    await initChatBookDbExec();
     mainWindow.loadURL('http://localhost:' + PORT);
   });
   

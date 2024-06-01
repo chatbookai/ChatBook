@@ -1,7 +1,7 @@
   // app.ts
   import express from 'express';
 
-  import { checkUserPassword, registerUser, changeUserPasswordByToken, changeUserDetail, changeUserStatus, checkUserToken, getUsers, getUserLogsAll, getUserLogs, getOneUserByToken, getUserByEmail, updateUserImageFavorite, updateUserVideoFavorite, refreshUserToken, addUserAgent, deleteUserAgent, getUserAgents, getMyAgents, addUser, editUser, deleteUser } from '../utils/user.js';
+  import { checkUserPassword, registerUser, changeUserPasswordByToken, changeUserDetail, changeUserStatus, checkUserToken, getUsers, getUserLogsAll, getUserLogs, getOneUserByToken, getUserByEmail, updateUserImageFavorite, updateUserVideoFavorite, refreshUserToken, addUser, editUser, deleteUser } from '../utils/user.js';
 
   const app = express();
 
@@ -151,48 +151,5 @@
     res.status(200).json(updateUserVideoFavoriteData);
     res.end();
   });
-
-  app.post('/api/user/agent/add', async (req, res) => {
-    const { authorization } = req.headers;
-    const addUserAgentData = await addUserAgent(authorization, req.body);
-    res.status(200).json(addUserAgentData);
-    res.end();
-  });
-
-  app.post('/api/user/agent/delete', async (req, res) => {
-    const { authorization } = req.headers;
-    const deleteUserAgentData = await deleteUserAgent(authorization, req.body);
-    res.status(200).json(deleteUserAgentData);
-    res.end();
-  });
-
-  app.post('/api/user/agents', async (req, res) => {
-    const { authorization } = req.headers;
-    const { pageid, pagesize } = req.body;
-    const checkUserTokenData = await checkUserToken(authorization);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        const getUserAgentsData = await getUserAgents(checkUserTokenData.data.id, Number(pageid), Number(pagesize));
-        res.status(200).json(getUserAgentsData);
-    }
-    else {
-        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
-    }
-    res.end();
-  });
-
-  app.post('/api/my/agents', async (req, res) => {
-    const { authorization } = req.headers;
-    const { pageid, pagesize } = req.body;
-    const checkUserTokenData = await checkUserToken(authorization);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.id && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        const getMyAgentsData = await getMyAgents(checkUserTokenData.data.id, Number(pageid), Number(pagesize));
-        res.status(200).json(getMyAgentsData);
-    }
-    else {
-        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
-    }
-    res.end();
-  });
-  
 
   export default app;

@@ -20,17 +20,21 @@ jobs:
 
     - name: Unzip out.zip to current directory
       run: unzip out.zip -d .
+      working-directory: ./express
 
     - name: Set up GitHub Token
       run: echo "GH_TOKEN=${{ secrets.GH_TOKEN }}" >> $GITHUB_ENV
+      working-directory: ./express
 
     - name: Install dependencies
       run: npm install
+      working-directory: ./express
 
     - name: Chatbook Ubuntu
       env:
         GH_TOKEN: ${{ secrets.GH_TOKEN }}
       run: npm run build
+      working-directory: ./express
 
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3

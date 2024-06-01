@@ -18,8 +18,8 @@ jobs:
       with:
         node-version: '20.x'
 
-    - name: Unzip html.zip to current directory
-      run: unzip html.zip -d .
+    - name: Unzip out.zip to current directory
+      run: unzip out.zip -d .
 
     - name: Set up GitHub Token
       run: echo "GH_TOKEN=${{ secrets.GH_TOKEN }}" >> $GITHUB_ENV

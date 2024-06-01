@@ -12,7 +12,7 @@
     const { authorization } = req.headers;
     const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        console.log("checkUserTokenData adddataset", checkUserTokenData)
+        //console.log("checkUserTokenData adddataset", checkUserTokenData)
         const addDatasetData = await addDataset({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(addDatasetData);
     }
@@ -44,7 +44,7 @@
     const { authorization } = req.headers;
     const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        console.log("checkUserTokenData app", checkUserTokenData)
+        //console.log("checkUserTokenData app", checkUserTokenData)
         const editDatasetData = await deleteDataset({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(editDatasetData);
     }
@@ -59,7 +59,7 @@
     const { authorization } = req.headers;
     const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        console.log("checkUserTokenData app", checkUserTokenData)
+        //console.log("checkUserTokenData app", checkUserTokenData)
         const getDatasetData = await getDataset(id, checkUserTokenData.data.id);
         res.status(200).json(getDatasetData);
     }
@@ -116,7 +116,7 @@
     const { authorization } = req.headers;
     const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        console.log("checkUserTokenData addcollection", checkUserTokenData)
+        //console.log("checkUserTokenData addcollection", checkUserTokenData)
         const addCollectionData = await addCollection({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(addCollectionData);
     }
@@ -130,7 +130,7 @@
     const { authorization } = req.headers;
     const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        console.log("checkUserTokenData editcollection", checkUserTokenData)
+        //console.log("checkUserTokenData editcollection", checkUserTokenData)
         const editCollectionData = await editCollection({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(editCollectionData);
     }
@@ -144,7 +144,7 @@
     const { authorization } = req.headers;
     const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        console.log("checkUserTokenData deletecollection", checkUserTokenData)
+        //console.log("checkUserTokenData deletecollection", checkUserTokenData)
         const deleteCollectionData = await deleteCollection({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(deleteCollectionData);
     }
@@ -158,7 +158,7 @@
     const { authorization } = req.headers;
     const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin' || checkUserTokenData.data.role == 'user')) {
-        console.log("checkUserTokenData uploadCollectionData", checkUserTokenData)
+        //console.log("checkUserTokenData uploadCollectionData", checkUserTokenData)
         const uploadCollectionData = await uploadCollection({...req.body, userId: checkUserTokenData.data.id});
         res.status(200).json(uploadCollectionData);
     }

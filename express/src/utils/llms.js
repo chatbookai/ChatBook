@@ -3,6 +3,8 @@ import * as fs from 'fs'
 import path from 'path'
 import axios from 'axios';
 
+import { base64Encode, base64Decode } from './utils.js'
+
 import { OpenAI } from "openai";
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
 import { PromptTemplate, ChatPromptTemplate } from "@langchain/core/prompts";
@@ -65,55 +67,58 @@ let ChatBaiduWenxinModel = null
 
   export async function ChatApp(_id, res, userId, question, history, template, appId, publishId, allowChatLog, temperature, datasetId, DatasetPrompt) {
     const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
-  
-
-    const Records = await (getDbRecord)("SELECT * from app where _id = ?", [appId]);
-    const AppDataText = Records ? Records.data : null;  
-    const app = JSON.parse(AppDataText)
-    if(app && app.modules) {
-      const AiNode = app.modules.filter((item)=>item.type == 'chatNode')
-      if(AiNode && AiNode[0] && AiNode[0].data && AiNode[0].data.inputs) {
-        const modelList = AiNode[0].data.inputs.filter((itemNode)=>itemNode.key == 'AiModel')
-        if(modelList && modelList[0] && modelList[0]['value']) {
-          const modelName = modelList[0]['value']
-          console.log("modelName:", modelName, "datasetId:", )
-          if(datasetId && Array.isArray(datasetId) && datasetId.length>0) {
-            switch(modelName) {
-              case 'gpt-3.5-turbo':
-                await chatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId, DatasetPrompt);
-                break;
-              case 'gemini-pro':
-                await chatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId, DatasetPrompt);
-                break;
-              case 'deepseek':
-                await chatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId, DatasetPrompt);
-                break;
+    
+    try {
+      const Records = await (getDbRecord)("SELECT * from app where _id = ?", [appId]);
+      const app = Records ? JSON.parse(base64Decode(Records.data)) : null;  
+      if(app && app.modules) {
+        const AiNode = app.modules.filter((item)=>item.type == 'chatNode')
+        if(AiNode && AiNode[0] && AiNode[0].data && AiNode[0].data.inputs) {
+          const modelList = AiNode[0].data.inputs.filter((itemNode)=>itemNode.key == 'AiModel')
+          if(modelList && modelList[0] && modelList[0]['value']) {
+            const modelName = modelList[0]['value']
+            console.log("modelName:", modelName, "datasetId:", )
+            if(datasetId && Array.isArray(datasetId) && datasetId.length>0) {
+              switch(modelName) {
+                case 'gpt-3.5-turbo':
+                  await chatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId, DatasetPrompt);
+                  break;
+                case 'gemini-pro':
+                  await chatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId, DatasetPrompt);
+                  break;
+                case 'deepseek':
+                  await chatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature, datasetId, DatasetPrompt);
+                  break;
+              }
+            }
+            else {
+              switch(modelName) {
+                case 'gpt-3.5-turbo':
+                  await chatOpenAI(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
+                  break;
+                case 'gemini-pro':
+                  await chatDeepSeek(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
+                  break;
+                case 'deepseek':
+                  await chatDeepSeek(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
+                  break;
+              }
             }
           }
           else {
-            switch(modelName) {
-              case 'gpt-3.5-turbo':
-                await chatOpenAI(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
-                break;
-              case 'gemini-pro':
-                await chatDeepSeek(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
-                break;
-              case 'deepseek':
-                await chatDeepSeek(_id, res, userId, question, history, template, appId, publishId || '', allowChatLog, temperature);
-                break;
-            }
+            console.log("[ChatApp] Can not found ai modelName...")
           }
         }
         else {
-          console.log("[ChatApp] Can not found ai modelName...")
+          console.log("[ChatApp] Can not found ai chatNode...")
         }
       }
       else {
-        console.log("[ChatApp] Can not found ai chatNode...")
+        console.log("[ChatApp] Can not found ai app data...")
       }
     }
-    else {
-      console.log("[ChatApp] Can not found ai app data...")
+    catch(Error) {
+      console.log("ChatApp Error", Error)
     }
 
   }

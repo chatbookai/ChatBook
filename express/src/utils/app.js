@@ -1,6 +1,8 @@
 
 import { ChatBookDbPool } from './db.js'
-import { filterString, log, getNanoid } from './utils.js'
+import { filterString, log, getNanoid, base64Encode, base64Decode } from './utils.js'
+
+
 
   export async function addApp(Params) {
     const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
@@ -17,7 +19,7 @@ import { filterString, log, getNanoid } from './utils.js'
       Params.groupTwo = filterString(Params.groupTwo)
       Params.permission = filterString(Params.permission)
       Params.language = filterString(Params.language)
-      Params.data = filterString(JSON.stringify(Params.data))
+      Params.data = base64Encode(JSON.stringify(Params.data))
   
       const insertSetting = db.prepare('INSERT OR IGNORE INTO app (_id, teamId, name, intro, avatar, type, groupTwo, groupOne, permission, data, status, userId, language, createtime) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)');
       insertSetting.run(Params._id, Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.groupOne, Params.groupTwo, Params.permission, Params.data, 1, Params.userId, Params.language, Date.now());
@@ -47,7 +49,7 @@ import { filterString, log, getNanoid } from './utils.js'
       Params.language = filterString(Params.language)
       Params.data = typeof Params.data === 'string' ? Params.data : JSON.stringify(Params.data)
       const updateSetting = db.prepare('update app set teamId = ?, name = ?, intro = ?, avatar = ?, type = ?, groupOne = ?, groupTwo = ?, permission = ?, data = ?, language = ? where _id = ?');
-      updateSetting.run(Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.groupOne, Params.groupTwo, Params.permission, Params.data, Params.language, Params._id);
+      updateSetting.run(Params.teamId, Params.name, Params.intro, Params.avatar, Params.type, Params.groupOne, Params.groupTwo, Params.permission, base64Encode(Params.data), Params.language, Params._id);
       updateSetting.finalize();
       log(Params._id, 'editApp', Params.userId, 'Success editApp:', JSON.stringify(Params));
       return {"status":"ok", "msg":"Update Success"}
@@ -132,7 +134,7 @@ import { filterString, log, getNanoid } from './utils.js'
     let Template = {}
     if(SettingRS)  {
       SettingRS.map((Item)=>{
-        const TemplateTemp = JSON.parse(Item.data)
+        const TemplateTemp = JSON.parse(base64Decode(Item.data))
         Template = {...TemplateTemp, avatar: Item.avatar, name: Item.name, intro: Item.intro, type: Item.type, groupTwo: Item.groupTwo, permission: Item.permission}
       })
     }
@@ -151,7 +153,7 @@ import { filterString, log, getNanoid } from './utils.js'
     let Template = {}
     if(SettingRS)  {
       SettingRS.map((Item)=>{
-        const TemplateTemp = JSON.parse(Item.data)
+        const TemplateTemp = JSON.parse(base64Decode(Item.data))
         Template = {...TemplateTemp, avatar: Item.avatar, name: Item.name, intro: Item.intro, type: Item.type, groupTwo: Item.groupTwo, permission: Item.permission}
       })
     }
@@ -172,7 +174,7 @@ import { filterString, log, getNanoid } from './utils.js'
       let Template = {}
       if(SettingRS)  {
         SettingRS.map((Item)=>{
-          Template = JSON.parse(Item.data)
+          Template = JSON.parse(base64Decode(Item.data))
         })
       }
       return {...Template, PublishApp: PublishApp[0]}

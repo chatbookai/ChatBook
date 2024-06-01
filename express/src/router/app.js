@@ -108,7 +108,7 @@
     const { authorization } = req.headers;
     const checkUserTokenData = await checkUserToken(authorization);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && (checkUserTokenData.data.role == 'admin') && req.body.appId && req.body.id) {
-        //console.log("checkUserTokenData app", checkUserTokenData)
+        console.log("getappbyid app", checkUserTokenData, req.body)
         const getAppData = await getAppById(req.body.appId, req.body.id);
         res.status(200).json(getAppData);
     }

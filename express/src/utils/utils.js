@@ -7,6 +7,13 @@ import { randomBytes } from 'crypto';
 import { ChatBookDbPool } from './db.js'
 import iconv from 'iconv-lite';
 
+export function base64Encode(str) {
+  return Buffer.from(str).toString('base64');
+}
+
+export function base64Decode(base64Str) {
+  return Buffer.from(base64Str, 'base64').toString('utf-8');
+}
 
 export function enableDir(directoryPath) {
   try {

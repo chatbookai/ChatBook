@@ -68,7 +68,7 @@ app.use((err, req, res, next) => {
   }
 });
 
-app.use(express.static(join(__dirname, '../../out')));
+app.use(express.static(join(__dirname, '../out')));
 
 const startServer = (port) => {
   return app.listen(port, () => {

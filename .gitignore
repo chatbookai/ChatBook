@@ -36,6 +36,6 @@ yarn-error.log*
 /express/node_modules
 /express/dist
 /express/data
+/express/out
 /express/data/ChatBookSqlite3.db
-/express/.env
 .env

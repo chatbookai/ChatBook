@@ -45,6 +45,6 @@ jobs:
     - name: Upload Artifacts
       uses: actions/upload-artifact@v3
       with:
-        name: Chatbook 0.1.8.exe
+        name: Chatbook 0.1.0.exe
         path: dist/*.exe
     

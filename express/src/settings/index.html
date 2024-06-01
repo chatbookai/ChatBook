@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChatBook AI</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      padding: 20px;
+    }
+    h1 {
+      color: #333;
+    }
+    .buttonSave {
+      background-color: #8649f9;
+      color: white;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+    .buttonSave:hover {
+      background-color: rgb(131, 66, 252)
+    }
+    .buttonStart {
+      background-color: rgb(22, 177, 255);
+      color: white;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+    }
+    .buttonStart:hover {
+      background-color: rgb(9, 169, 249);
+    }
+    label {
+      display: block;
+      margin: 10px 0;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      box-sizing: border-box;
+    }
+    .flex-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+    .flex-item-left {
+      width: 35%; /* Adjust the width as needed */
+      margin-bottom: 10px;
+    }
+    .flex-item-right {
+      width: 65%; /* Adjust the width as needed */
+      margin-bottom: 10px;
+      text-align: left;
+    }
+  </style>
+  <link rel="stylesheet" href="notyf.min.css">
+  <script src="notyf.min.js"></script>
+
+</head>
+
+<body>
+  <h1>ChatBook AI</h1>
+  
+  <div class="flex-container">
+    <div class="flex-item-left">
+      <label for="Choose Folder">Choose Folder:</label>
+    </div>
+    <div class="flex-item-right">
+      <button onclick="openFolderDialog()" class='buttonSave'>Choose Folder</button>
+    </div>
+
+    <div class="flex-item-left">
+      <label for="Selected Folder">Selected Folder:</label>
+    </div>
+    <div class="flex-item-right">
+      <input type="text" id="NodeStorageDirectory" placeholder="Pls choose a folder as the data dir" readonly disabled>
+    </div>
+
+    <!--
+    <div class="flex-item-left">
+      <label for="Your Node Name">Your Node Name:</label>
+    </div>
+    <div class="flex-item-right">
+      <input type="text" id="Enter node name" placeholder="Enter node name" value='ChatBook AI'>
+    </div>
+    -->
+
+  </div>
+
+  <button class='buttonSave' onclick="saveData()">Save Settings</button>
+  <button class='buttonStart' onclick="startChatBook()">Start ChatBook AI</button>
+
+  <script>
+    const { ipcRenderer } = require('electron');
+    const fs = require('fs');
+    const os = require('os');
+
+    function openFolderDialog() {
+      ipcRenderer.send('open-folder-dialog');
+    }
+
+    ipcRenderer.on('selected-folder', (event, folderPath) => {
+      document.getElementById('NodeStorageDirectory').value = folderPath;
+    });
+
+    function startChatBook() {
+      const NodeStorageDirectory = document.getElementById('NodeStorageDirectory').value || '';
+      if (!NodeStorageDirectory || NodeStorageDirectory=='') {
+        const notyf = new Notyf({ position: { x: 'right', y: 'top' } });
+        notyf.error('data folder must be filled!');
+        return;
+      }
+      ipcRenderer.send('start-chatbook');
+    }
+    
+    function saveData() {
+      //const NodeName = document.getElementById('NodeName').value;
+      const NodeStorageDirectory = document.getElementById('NodeStorageDirectory').value || '';
+
+      //if (!NodeName || NodeName=='') {
+      //  const notyf = new Notyf({ position: { x: 'right', y: 'top' } });
+      //  notyf.error('Node Name must be filled!');
+      //  return;
+      //}
+
+      if (!NodeStorageDirectory || NodeStorageDirectory=='') {
+        const notyf = new Notyf({ position: { x: 'right', y: 'top' } });
+        notyf.error('data folder must be filled!');
+        return;
+      }
+
+      ipcRenderer.send('save-chatbook', { NodeStorageDirectory });
+
+      const notyf = new Notyf({ position: { x: 'right', y: 'top' } });
+      notyf.success('Setting saved successfully!');
+    }
+
+    function loadData() {
+      ipcRenderer.send('get-chatbook');
+    }
+
+    ipcRenderer.on('data-chatbook', (event, data) => {
+      //document.getElementById('NodeName').value = data?.NodeName ?? 'ChatBook AI';
+      document.getElementById('NodeStorageDirectory').value = data?.NodeStorageDirectory ?? '';
+    });
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadData();
+    });
+  </script>
+</body>
+</html>

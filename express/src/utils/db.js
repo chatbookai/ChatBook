@@ -1,8 +1,16 @@
 // globals.ts
 import sqlite3 from 'sqlite3';
 import { promisify } from 'util';
-import { DataDir, CONDENSE_TEMPLATE_INIT, QA_TEMPLATE_INIT } from './const.js';
+import { DataDir } from './const.js';
 import { enableDir } from './utils.js';
+
+let initialized = false;
+let ChatBookSetting = null
+
+export async function initChatBookSetting(Data) {
+    console.log("ChatBookSettingChatBookSetting", ChatBookSetting)
+    ChatBookSetting = Data
+}
 
 // @ts-ignore
 export const db = new sqlite3.Database(DataDir + '/ChatBookSqlite3.db', { encoding: 'utf8' });
@@ -10,17 +18,18 @@ export const db = new sqlite3.Database(DataDir + '/ChatBookSqlite3.db', { encodi
 export const getDbRecord = promisify(db.get.bind(db));
 export const getDbRecordALL = promisify(db.all.bind(db));
 
-let initialized = false;
-
 export async function initChatBookDb() {
     enableDir(DataDir);
+    enableDir(DataDir + '/audio/');
+    enableDir(DataDir + '/avatarforapp/');
+    enableDir(DataDir + '/avatarfordataset/');
+    enableDir(DataDir + '/image/');
+    enableDir(DataDir + '/imageforimage/');
+    enableDir(DataDir + '/imageforvideo/');
+    enableDir(DataDir + '/LanceDB/');
     enableDir(DataDir + '/uploadfiles/');
     enableDir(DataDir + '/parsedfiles/');
-    enableDir(DataDir + '/audio/');
-    enableDir(DataDir + '/image/');
     enableDir(DataDir + '/video/');
-    enableDir(DataDir + '/imageforvideo/');
-    enableDir(DataDir + '/imageforimage/');
     
     db.serialize(() => {
         db.run(`

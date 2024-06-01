@@ -3,22 +3,21 @@ name: Chatbook Windows
 on:
   push:
     branches:
-      - main  # 你可以修改为你的默认分支名称，例如 master
-    paths:
-      - 'express/**'
+      - main
+
 
 jobs:
   build:
-    runs-on: windows-2019  # 使用 Windows Server 2019 作为运行环境
+    runs-on: windows-2019
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4  # 更新为使用 Node.js 20
+      uses: actions/checkout@v4
 
     - name: Set up Node.js
-      uses: actions/setup-node@v4  # 更新为使用 Node.js 20
+      uses: actions/setup-node@v4
       with:
-        node-version: '20.x'  # 设置你的 Node.js 版本
+        node-version: '20.x'
     
     - name: Unzip out.zip to current directory
       run: |

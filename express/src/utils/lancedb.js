@@ -10,7 +10,8 @@ import { load } from 'cheerio';
 import { BytesOutputParser, StringOutputParser } from '@langchain/core/output_parsers';
 
 import { DataDir } from './const.js';
-import { db, getDbRecord, getDbRecordALL } from './db.js'
+
+//import { db, getDbRecord, getDbRecordALL } from './db.js'
 
 import dotenv from 'dotenv';
 dotenv.config();

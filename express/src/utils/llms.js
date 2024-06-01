@@ -16,9 +16,8 @@ import { SystemMessage, HumanMessage, AIMessage } from "@langchain/core/messages
 import { ChatMessageHistory } from "langchain/stores/message/in_memory";
 import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
-import { ChatBaiduWenxin } from "@langchain/community/chat_models/baiduwenxin";
+//import { ChatBaiduWenxin } from "@langchain/community/chat_models/baiduwenxin";
 
-import { TavilySearchResults } from "@langchain/community/tools/tavily_search";
 import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { createRetrieverTool } from "langchain/agents/toolkits";
 import { pull } from "langchain/hub";
@@ -50,9 +49,6 @@ import { BytesOutputParser, StringOutputParser } from '@langchain/core/output_pa
 import { DataDir } from './const.js';
 import { db, getDbRecord, getDbRecordALL } from './db.js'
 import { getLLMSSetting, log, isFile, formatDateString, enableDir, getNanoid, writeFile } from './utils.js'
-
-import { LanceDB } from "@langchain/community/vectorstores/lancedb";
-import { connect } from "vectordb";
 
 import { createEmbeddingsFromList, getWebsiteUrlContext, formatMessage, rephraseInput, retrieveContext } from './lancedb.js';
 
@@ -525,6 +521,7 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function initChatBookBaiduWenxinStream(res, datasetId) {
+    /*
     getLLMSSettingData = await getLLMSSetting(datasetId);
     const BAIDU_API_KEY = getLLMSSettingData.OPENAI_API_KEY ?? "1AWXpm1Cd8lbxmAaFoPR0dNx";
     const BAIDU_SECRET_KEY = getLLMSSettingData.OPENAI_API_BASE ?? "TQy5sT9Mz4xKn0tR8h7W6LxPWIUNnXqq";
@@ -548,6 +545,7 @@ let ChatBaiduWenxinModel = null
       res.write("Not set API_KEY");
       res.end();
     }
+    */
   }
 
   export async function chatChatBaiduWenxin(res, userId, question, history, template, appId) {

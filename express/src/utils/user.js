@@ -8,7 +8,7 @@
 
   dotenv.config();
 
-  import { initChatBookDb } from './db.js'
+  import { ChatBookDbPool } from './db.js'
   
   const secretKey = process.env.JWT_TOKEN_SECRET_KEY || "ChatBookAI"; 
 
@@ -62,7 +62,7 @@
   }
 
   export async function checkUserTokenXWE(token) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const buffer = Buffer.from(token, 'base64');
     const TxText = buffer.toString('utf-8');
@@ -128,7 +128,7 @@
   }
 
   export async function userLoginLog(req, email, action, msg) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const agent = useragent.parse(req.headers['user-agent']);
     const BrowserType = agent.family
@@ -196,7 +196,7 @@
   }
 
   export async function changeUserPasswordByToken(token, data) {  
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
     
     const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
@@ -236,7 +236,7 @@
   }
 
   export async function changeUserDetail(token, data) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
@@ -253,7 +253,7 @@
   }
 
   export async function changeUserStatus(token, data) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
@@ -270,7 +270,7 @@
   }
 
   export async function registerUser(email, username, password, confirm_password, language) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     try{
         if(password != confirm_password) {
@@ -298,7 +298,7 @@
   }
 
   export async function addUser(token, data) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin' && data && data.email && data.username) {
@@ -326,7 +326,7 @@
   }
 
   export async function editUser(token, data) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
@@ -344,7 +344,7 @@
   }
 
   export async function deleteUser(token, data) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin' && data && data.email && data.username) {
@@ -362,7 +362,7 @@
   }
 
   export async function getOneUser(email) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const Records = await (getDbRecord)("SELECT * from user where email = ? ", [email]);
  
@@ -370,7 +370,7 @@
   }
 
   export async function getOneUserByToken(token) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const checkUserTokenData = await checkUserToken(token);
     if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email) {
@@ -403,7 +403,7 @@
   }
 
   export async function getUsers(pageid, pagesize, data) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
@@ -449,7 +449,7 @@
   }
 
   export async function getUserLogs(email, pageid, pagesize) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
@@ -474,7 +474,7 @@
   }
 
   export async function getUserLogsAll(pageid, pagesize) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
@@ -508,7 +508,7 @@
   }
 
   export async function updateUserImageFavorite(token, data) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     console.log("data", data)
     const checkUserTokenData = await checkUserToken(token);
@@ -534,7 +534,7 @@
   }
 
   export async function updateUserVideoFavorite(token, data) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     console.log("data", data)
     const checkUserTokenData = await checkUserToken(token);

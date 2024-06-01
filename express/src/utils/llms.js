@@ -40,7 +40,7 @@ import { RunnableSequence } from '@langchain/core/runnables';
 import { BytesOutputParser, StringOutputParser } from '@langchain/core/output_parsers';
 
 import { DataDir } from './const.js';
-import { initChatBookDb } from './db.js'
+import { ChatBookDbPool } from './db.js'
 import { getLLMSSetting, log, isFile, formatDateString, enableDir, getNanoid, writeFile } from './utils.js'
 
 import { createEmbeddingsFromList, getWebsiteUrlContext, formatMessage, rephraseInput, retrieveContext } from './lancedb.js';
@@ -64,7 +64,7 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function ChatApp(_id, res, userId, question, history, template, appId, publishId, allowChatLog, temperature, datasetId, DatasetPrompt) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
 
     const Records = await (getDbRecord)("SELECT * from app where _id = ?", [appId]);
@@ -119,7 +119,7 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function chatOpenAI(_id, res, userId, question, history, template, appId, publishId, allowChatLog, temperature) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     ChatBookOpenAIStreamResponse = ''
     const startTime = performance.now()
@@ -188,7 +188,7 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function chatOpenAIDataset(_id, res, userId, question, history, template, appId, publishId, allowChatLog, temperature, datasetId, DatasetPrompt) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     ChatBookOpenAIStreamResponse = ''
     const startTime = performance.now()
@@ -275,7 +275,7 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function chatDeepSeek(_id, res, userId, question, history, template, appId, publishId, allowChatLog, temperature) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const startTime = performance.now()
     const pastMessages = [];
@@ -373,7 +373,7 @@ let ChatBaiduWenxinModel = null
   }
 
   export function makeChainOpenAI(retriever, CONDENSE_TEMPLATE, QA_TEMPLATE) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const condenseQuestionPrompt = ChatPromptTemplate.fromTemplate(CONDENSE_TEMPLATE);
     const answerPrompt = ChatPromptTemplate.fromTemplate(QA_TEMPLATE);
@@ -448,7 +448,7 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function chatChatGemini(_id, res, userId, question, history, template, appId, publishId, allowChatLog) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const datasetId = ''
     await initChatBookGeminiStream(res, datasetId)
@@ -493,7 +493,7 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function chatChatGeminiMindMap(res, userId, question, history, template, appId) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const datasetId = ''
     await initChatBookGeminiStream(res, datasetId)
@@ -556,7 +556,7 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function chatChatBaiduWenxin(res, userId, question, history, template, appId) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const datasetId = ''
     await initChatBookBaiduWenxinStream(res, datasetId);
@@ -600,7 +600,7 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function GenereateImageUsingDallE2(res, userId, question, size='1024x1024') {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const datasetId = ''
     getLLMSSettingData = await getLLMSSetting(datasetId);    
@@ -669,7 +669,7 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function GenereateAudioUsingTTS(res, ModelId, userId, question, voice='alloy', appId) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     getLLMSSettingData = await getLLMSSetting(ModelId);    
     const OPENAI_API_BASE = getLLMSSettingData.OPENAI_API_BASE ?? "https://api.openai.com/v1";
@@ -723,7 +723,7 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function outputAudio(res, file) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     try {
       const fileList = file.split('_')
@@ -745,7 +745,7 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function compressPng(file) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const FileName = path.join(DataDir, "/image/"+ file + ".png");
     const FileNameNew = path.join(DataDir, "/image/"+ file + "_thumbnail.png");
@@ -762,7 +762,7 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function compressImageForImage(file, width, height) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const FileName = path.join(DataDir, "/imageforimage/"+ file);
     const FileNameNew = path.join(DataDir, "/imageforimage/Resize_" + (width ? width+'_'+file : height+'_'+file) );
@@ -785,7 +785,7 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function outputImage(res, file) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     try {
       await compressPng(file);
@@ -808,7 +808,7 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function outputAvatarForApp(res, file) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     try {
       await compressPng(file);
@@ -831,7 +831,7 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function outputAvatarForDataset(res, file) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     try {
       await compressPng(file);
@@ -854,7 +854,7 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function outputImageOrigin(res, file) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     try {
       const FileName = path.join(DataDir, "/image/"+ file + ".png");
@@ -876,7 +876,7 @@ let ChatBaiduWenxinModel = null
 
   //此处只做数据转文本操作, 向量化数据在另外一个函数里面.
   export async function parseFilesAndWeb() {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     try {
 
@@ -947,7 +947,7 @@ let ChatBaiduWenxinModel = null
   }
 
   export async function vectorDdProcess() {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     try {
       const RecordsAll = await getDbRecordALL(`SELECT * from dataset where syncStatus = '1' limit 1`);

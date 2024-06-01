@@ -4,7 +4,7 @@ import path from 'path'
 import * as crypto from 'crypto'
 import validator from 'validator';
 import { randomBytes } from 'crypto';
-import { initChatBookDb } from './db.js'
+import { ChatBookDbPool } from './db.js'
 import iconv from 'iconv-lite';
 
 
@@ -24,7 +24,7 @@ export function enableDir(directoryPath) {
 }
 
 export async function getLLMSSetting(datasetId) {
-  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
 
   const datasetIdFilter = filterString(datasetId)
   
@@ -40,7 +40,7 @@ export async function getLLMSSetting(datasetId) {
 }
 
 export async function setOpenAISetting(Params) {
-  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
   const datasetIdFilter = filterString(Params.datasetId)
   const userIdFilter = filterString(Params.userId)
@@ -61,7 +61,7 @@ export async function setOpenAISetting(Params) {
 }
 
 export async function getTemplate(datasetId, userId) {
-  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
   const datasetIdFilter = filterString(datasetId)
   const userIdFilter = Number(userId)
@@ -79,7 +79,7 @@ export async function getTemplate(datasetId, userId) {
 }
 
 export async function setTemplate(Params) {
-  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
   try{
     const datasetIdFilter = Number(Params.datasetId)
@@ -203,7 +203,7 @@ export async function uploadfilesInsertIntoDb(files, datasetId, userId) {
 }
 
 export async function getFilesPage(pageid, pagesize) {
-  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
 
   const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
@@ -244,7 +244,7 @@ export async function getFilesPage(pageid, pagesize) {
 }
 
 export async function getFilesDatasetId(datasetId, pageid, pagesize) {
-  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
 
   const datasetIdFiler = Number(datasetId) < 0 ? 0 : datasetId;
   const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
@@ -286,7 +286,7 @@ export async function getFilesDatasetId(datasetId, pageid, pagesize) {
 }
 
 export async function getFilesNotParsed() {
-  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
 
   
   const RecordsAll = await (getDbRecordALL)(`SELECT * from files where status = '0' order by timestamp asc limit 10 `);
@@ -295,7 +295,7 @@ export async function getFilesNotParsed() {
 }
 
 export async function getChatLogByDatasetIdAndUserId(datasetId, userId, pageid, pagesize) {
-  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
 
   const datasetIdFiler = filterString(datasetId);
   const userIdFiler = Number(userId) < 0 ? 0 : userId;
@@ -320,7 +320,7 @@ export async function getChatLogByDatasetIdAndUserId(datasetId, userId, pageid, 
 }
 
 export async function getLogsPage(pageid, pagesize) {
-  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
 
   const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
@@ -352,7 +352,7 @@ export function timestampToDate(timestamp) {
 }
 
 export async function log(appId, publishId, userId, Action1, Action2, Action3, Action4, Action5, Action6, Action7, Action8, Action9, Action10) {
-  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
 
   const currentDate = new Date();
   const currentDateTime = currentDate.toLocaleString();
@@ -364,7 +364,7 @@ export async function log(appId, publishId, userId, Action1, Action2, Action3, A
 }
 
 export async function deleteLog() {
-  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
 
   const Records = await (getDbRecord)("SELECT MAX(id) AS NUM FROM logs");
   const MaxId = Records ? Records.NUM : 0;
@@ -377,7 +377,7 @@ export async function deleteLog() {
 }
 
 export async function clearShortLogs() {
-  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
 
   const DeleteLog = db.prepare("delete from logs where length(content) < 50");
   DeleteLog.run();
@@ -386,7 +386,7 @@ export async function clearShortLogs() {
 }
 
 export async function clearAllLogs() {
-  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
 
   const DeleteLog = db.prepare("delete from logs");
   DeleteLog.run();
@@ -395,7 +395,7 @@ export async function clearAllLogs() {
 }
 
 export async function deleteUserLogByDatasetId(datasetId, userId) {
-  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
 
   const UpdateChatLog = db.prepare("update chatlog set current = 0 where appId = ? and userId = ?");
   UpdateChatLog.run(datasetId, userId);
@@ -542,7 +542,7 @@ export const isEmailValid = (email) => {
 };
 
 export async function wholeSiteStatics() {
-  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
 
   const NewUserPerDayData = await (getDbRecordALL)(`SELECT strftime('%Y-%m-%d', datetime(createtime / 1000, 'unixepoch')) AS date, count(*) AS NUM from user group by date order by date asc`);
   const NewUserPerDay = NewUserPerDayData.map(Item => Item.NUM)
@@ -575,7 +575,7 @@ export async function wholeSiteStatics() {
 }
 
 export async function getAllImages(userId, pageid, pagesize) {
-  const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
 
   const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
   const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;

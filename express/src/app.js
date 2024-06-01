@@ -6,7 +6,7 @@ import cron from 'node-cron';
 import dotenv from 'dotenv';
 import { dirname, join } from 'path';
 
-import { initChatBookDbExec } from './utils/db.js';
+import { ChatBookDbInit, initChatBookSetting } from './utils/db.js';
 import { parseFilesAndWeb, vectorDdProcess } from './utils/llms.js';
 
 //import { downloadVideoFromAPI } from './utils/Backup/stability.js';
@@ -32,9 +32,17 @@ app.use(cors());
 app.use(bodyParser.json());
 dotenv.config();
 
-
 //Initial Database and Folder
-initChatBookDbExec()
+
+function isElectron() {
+  return typeof process !== 'undefined' && !!(process.versions).electron;
+}
+
+//Running in express, not in electron
+if(isElectron() == false) {
+  initChatBookSetting({NodeStorageDirectory: './data'})
+  ChatBookDbInit()
+}
 
 //Schedule Task for Parse Upload Files
 cron.schedule('*/3 * * * *', () => {

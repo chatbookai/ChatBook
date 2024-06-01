@@ -1,10 +1,10 @@
 
-import { initChatBookDb } from './db.js'
+import { ChatBookDbPool } from './db.js'
 import { filterString, log, getNanoid } from './utils.js'
 
 
   export async function addDataset(Params) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     try{
       Params._id = filterString(Params._id)
@@ -29,7 +29,7 @@ import { filterString, log, getNanoid } from './utils.js'
   }
   
   export async function editDataset(Params) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     try{
       Params._id = filterString(Params._id)
@@ -54,7 +54,7 @@ import { filterString, log, getNanoid } from './utils.js'
   }
   
   export async function deleteDataset(Params) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     try{
       Params._id = filterString(Params.datasetId)
@@ -72,7 +72,7 @@ import { filterString, log, getNanoid } from './utils.js'
   }
   
   export async function getDataset(id, userId) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const idFilter = filterString(id)
     const userIdFilter = Number(userId)
@@ -90,7 +90,7 @@ import { filterString, log, getNanoid } from './utils.js'
   }
 
   export async function getDatasetPage(pageid, pagesize, userId) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
@@ -114,7 +114,7 @@ import { filterString, log, getNanoid } from './utils.js'
   }
 
   export async function getCollectionPageByDataset(datasetId, pageid, pagesize, userId) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const datasetIdFileter = filterString(datasetId)
     const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
@@ -139,7 +139,7 @@ import { filterString, log, getNanoid } from './utils.js'
   }
 
   export async function getCollectionAll(pageid, pagesize) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
     const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
@@ -166,7 +166,7 @@ import { filterString, log, getNanoid } from './utils.js'
   }
 
   export async function addCollection(Params) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     try{
       Params._id = getNanoid(32)
@@ -202,7 +202,7 @@ import { filterString, log, getNanoid } from './utils.js'
   }
 
   export async function editCollection(Params) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     try{
       Params._id = filterString(Params._id)
@@ -227,7 +227,7 @@ import { filterString, log, getNanoid } from './utils.js'
   }
 
   export async function uploadCollection(Params) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     try{
       const type = filterString(Params.type)
@@ -282,7 +282,7 @@ import { filterString, log, getNanoid } from './utils.js'
   }
 
   export async function deleteCollection(Params) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     try{
       Params._id = filterString(Params._id)
@@ -301,7 +301,7 @@ import { filterString, log, getNanoid } from './utils.js'
   }
   
   export async function getCollection(id, userId) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   
     const idFilter = filterString(id)
     const userIdFilter = Number(userId)

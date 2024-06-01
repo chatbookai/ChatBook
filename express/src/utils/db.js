@@ -11,15 +11,15 @@ let getDbRecord = null
 let getDbRecordALL = null
 
 export function initChatBookSetting(Data) {
-    console.log("ChatBookSettingChatBookSetting", ChatBookSetting)
+    console.log("ChatBookSettingChatBookSetting", Data)
     ChatBookSetting = Data
 }
 
-export function initChatBookDb() {
+export function ChatBookDbPool() {
 
-    const DataDir = ChatBookSetting && ChatBookSetting.NodeStorageDirectory ? ChatBookSetting.NodeStorageDirectory : "D:\\GitHub\\ChatBook\\express\\data";
+    const DataDir = ChatBookSetting?.NodeStorageDirectory;
     
-    if(!isDirectorySync(DataDir)) {
+    if(DataDir == undefined || DataDir == null || !isDirectorySync(DataDir)) {
         return {DataDir: null, db: null, getDbRecord: null, getDbRecordALL: null}
     }
     
@@ -38,16 +38,16 @@ export function initChatBookDb() {
     return {DataDir, db, getDbRecord, getDbRecordALL}
 }
 
-export async function initChatBookDbExec() {
+export function ChatBookDbInit() {
   let exeStatus = 0  
   if (!initialized) {
-    const { DataDir, db, getDbRecord, getDbRecordALL } = initChatBookDb()
+    const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
     
     if(!isDirectorySync(DataDir)) {
         return {DataDir: null, db: null, getDbRecord: null, getDbRecordALL: null}
     }
 
-    console.log("dbdbdbdbdbdbdb", db, DataDir)
+    console.log("ChatBookDbInit", db, DataDir)
 
     enableDir(DataDir);
     enableDir(DataDir + '/audio/');
@@ -333,12 +333,15 @@ export async function initChatBookDbExec() {
     initialized = true;
     exeStatus = 1
   }
-  console.log("initChatBookDbExec exeStatus", exeStatus)
-  console.log("initChatBookDbExec initialized", initialized)
+  console.log("ChatBookDbInit exeStatus", exeStatus)
+  console.log("ChatBookDbInit initialized", initialized)
 }
 
 function isDirectorySync(path) {
     try {
+        if(path == undefined || path == null) {
+            return false
+        }
         const stats = fs.statSync(path);
         return stats.isDirectory();
     } catch (err) {

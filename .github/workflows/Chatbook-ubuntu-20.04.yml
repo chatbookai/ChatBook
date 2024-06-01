@@ -40,4 +40,4 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: Chatbook 0.1.0.deb
-        path: dist/*.deb
+        path: express/dist/*.deb

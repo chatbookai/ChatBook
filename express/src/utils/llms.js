@@ -3,7 +3,6 @@ import * as fs from 'fs'
 import path from 'path'
 import axios from 'axios';
 import os from "node:os";
-import sharp from 'sharp';
 
 import { OpenAI } from "openai";
 import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
@@ -738,7 +737,7 @@ let ChatBaiduWenxinModel = null
     if(!isFile(FileNameNew) && isFile(FileName))   {
       const quality = 80;
       try { 
-        await sharp(FileName).resize({ fit: 'inside', width: 800, withoutEnlargement: true }).png({ quality }).toFile(FileNameNew);
+        //await sharp(FileName).resize({ fit: 'inside', width: 800, withoutEnlargement: true }).png({ quality }).toFile(FileNameNew);
       }
       catch(error) {
         console.log("compressPng", file, error.message)

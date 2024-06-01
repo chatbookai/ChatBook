@@ -41,6 +41,7 @@
     "@types/useragent": "^2.3.4",
     "@types/validator": "^13.11.8",
     "ai": "^3.1.5",
+    "apache-arrow": "^16.1.0",
     "arbundles": "^0.10.1",
     "arweave": "^1.14.4",
     "axios": "^1.6.2",

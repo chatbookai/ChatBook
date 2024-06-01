@@ -1,19 +1,19 @@
 {
-  "name": "chives-light-node",
-  "version": "0.1.8",
-  "description": "Chivesweave Light Node",
+  "name": "chatbook",
+  "version": "0.1.0",
+  "description": "ChatBook AI",
   "email": "reactchives@gmail.com",
-  "url": "https://github.com/chives-network/ChivesLightNode",
+  "url": "https://github.com/chatbookai/ChatBook",
   "main": "main.js",
   "type": "module",
   "scripts": {
     "start": "npm run electron",
     "electron": "electron --max-old-space-size=8096  main.js",
-    "express": "nodemon expressApp.js",
+    "express": "nodemon src/app.js",
     "build": "electron-builder"
   },
   "keywords": [],
-  "author": "Chivesweave <reactchives@gmail.com> (https://github.com/chives-network/ChivesLightNode)",
+  "author": "ChatBook AI <chatbookai@gmail.com> (https://github.com/chatbookai/ChatBook)",
   "license": "GPL",
   "dependencies": {
     "@google/generative-ai": "^0.2.0",
@@ -33,10 +33,8 @@
     "@types/validator": "^13.11.8",
     "ai": "^3.1.5",
     "bcrypt": "^5.1.1",
-    "canvas": "^2.11.2",
     "cheerio": "^1.0.0-rc.12",
     "cron": "^3.1.6",
-    "d3-dsv": "^2.0.0",
     "dotenv": "^16.4.1",
     "iconv-lite": "^0.6.3",
     "jsonwebtoken": "^9.0.2",
@@ -90,9 +88,9 @@
     "electron-builder": "^24.9.1"
   },
   "build": {
-    "appId": "org.chivesweave.lightnode",
-    "productName": "Chives Light Node",
-    "copyright": "Chives Network",
+    "appId": "org.chatbook.ai",
+    "productName": "ChatBook",
+    "copyright": "ChatBook",
     "directories": {
       "output": "dist"
     },

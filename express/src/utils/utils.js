@@ -2,7 +2,6 @@ import * as fs from 'fs'
 import multer from 'multer'
 import path from 'path'
 import * as crypto from 'crypto'
-import sqlite3 from 'sqlite3';
 import validator from 'validator';
 import { promisify } from 'util';
 import { DataDir, CONDENSE_TEMPLATE_INIT, QA_TEMPLATE_INIT } from './const.js';

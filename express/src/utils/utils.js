@@ -7,6 +7,10 @@ import { randomBytes } from 'crypto';
 import { ChatBookDbPool } from './db.js'
 import iconv from 'iconv-lite';
 
+export function isElectron() {
+  return typeof process !== 'undefined' && !!(process.versions).electron;
+}
+
 export function base64Encode(str) {
   return Buffer.from(str).toString('base64');
 }

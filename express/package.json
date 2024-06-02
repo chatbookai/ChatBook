@@ -116,10 +116,10 @@
     },
     "win": {
       "icon": "public/chives.png",
-      "createDesktopShortcut": true,
       "target": [
         {
           "target": "nsis",
+          "createDesktopShortcut": true,
           "arch": [
             "x64"
           ]

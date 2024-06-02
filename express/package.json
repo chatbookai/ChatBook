@@ -119,7 +119,6 @@
       "target": [
         {
           "target": "nsis",
-          "createDesktopShortcut": true,
           "arch": [
             "x64"
           ]

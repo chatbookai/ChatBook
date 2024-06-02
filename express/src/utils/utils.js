@@ -30,6 +30,49 @@ export function enableDir(directoryPath) {
   }
 }
 
+export function copyFolderRecursiveSync(source, target) {
+  let files = [];
+
+  const targetFolder = path.join(target, path.basename(source));
+  if (!fs.existsSync(targetFolder)) {
+    fs.mkdirSync(targetFolder);
+  }
+
+  if (fs.lstatSync(source).isDirectory()) {
+    files = fs.readdirSync(source);
+    files.forEach((file) => {
+      const curSource = path.join(source, file);
+      if (fs.lstatSync(curSource).isDirectory()) {
+        copyFolderRecursiveSync(curSource, targetFolder);
+      } else {
+        copyFileSync2(curSource, targetFolder);
+      }
+    });
+  }
+}
+
+export function isFolderEmptySync(folderPath) {
+  try {
+    const files = fs.readdirSync(folderPath);
+    return files.length === 0;
+  } catch (err) {
+    console.error('Error reading the folder:', err);
+    return false;
+  }
+}
+
+function copyFileSync2(source, target) {
+  let targetFile = target;
+
+  if (fs.existsSync(target)) {
+    if (fs.lstatSync(target).isDirectory()) {
+      targetFile = path.join(target, path.basename(source));
+    }
+  }
+
+  fs.writeFileSync(targetFile, fs.readFileSync(source));
+}
+
 export async function getLLMSSetting(datasetId) {
   const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
 
@@ -105,6 +148,7 @@ export async function setTemplate(Params) {
 }
 
 export function uploadfiles() {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, DataDir + '/uploadfiles/'); // 设置上传文件保存的目录
@@ -121,6 +165,7 @@ export function uploadfiles() {
 }
 
 export function uploadavatar() {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, DataDir + '/avatarforapp/'); // 设置上传文件保存的目录
@@ -138,6 +183,7 @@ export function uploadavatar() {
 }
 
 export function uploadAvatarForDataset() {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, DataDir + '/avatarfordataset/'); // 设置上传文件保存的目录
@@ -155,6 +201,7 @@ export function uploadAvatarForDataset() {
 }
 
 export function uploadImageForVideo() {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, DataDir + '/imageforvideo/'); // 设置上传文件保存的目录
@@ -172,6 +219,7 @@ export function uploadImageForVideo() {
 }
 
 export function uploadImageForImageGenerateImage() {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   const storage = multer.diskStorage({
     destination: (req, file, cb) => {
       cb(null, DataDir + '/imageforimage/'); // 设置上传文件保存的目录
@@ -189,6 +237,7 @@ export function uploadImageForImageGenerateImage() {
 }
 
 export async function uploadfilesInsertIntoDb(files, datasetId, userId) {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   const filesInfo = files.map((file) => {
     const filePath = path.join(DataDir, 'uploadfiles', file.filename);
     const fileHash = calculateFileHashSync(filePath);
@@ -424,6 +473,7 @@ export function calculateFileHashSync(filePath) {
 }
 
 export function readFile(Dir, FileName, Mark, OpenFormat) {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   const filePath = DataDir + '/' + Dir + '/' + FileName;
   if(isFile(filePath)) {
     console.log("filePath", filePath)
@@ -439,6 +489,7 @@ export function readFile(Dir, FileName, Mark, OpenFormat) {
 }
 
 export function writeFile(Dir, FileName, FileContent, Mark) {
+  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
   const directoryPath = DataDir + '/' + Dir;
   enableDir(directoryPath)
   const TxFilePath = directoryPath + "/" + FileName

@@ -126,245 +126,289 @@ import { filterString, log, getNanoid, base64Encode, base64Decode } from './util
   
   export async function getApp(id, userId) {
     const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
-  
-    const idFilter = filterString(id)
+    try{
+      const idFilter = filterString(id)
+      
+      const SettingRS = await (getDbRecordALL)(`SELECT data, avatar, name, intro, type, groupTwo, permission from app where _id = ? `, [idFilter]);
+      
+      let Template = {}
+      if(SettingRS)  {
+        SettingRS.map((Item)=>{
+          const TemplateTemp = JSON.parse(base64Decode(Item.data))
+          Template = {...TemplateTemp, avatar: Item.avatar, name: Item.name, intro: Item.intro, type: Item.type, groupTwo: Item.groupTwo, permission: Item.permission}
+        })
+      }
     
-    const SettingRS = await (getDbRecordALL)(`SELECT data, avatar, name, intro, type, groupTwo, permission from app where _id = ? `, [idFilter]);
-    
-    let Template = {}
-    if(SettingRS)  {
-      SettingRS.map((Item)=>{
-        const TemplateTemp = JSON.parse(base64Decode(Item.data))
-        Template = {...TemplateTemp, avatar: Item.avatar, name: Item.name, intro: Item.intro, type: Item.type, groupTwo: Item.groupTwo, permission: Item.permission}
-      })
+      return Template
     }
-  
-    return Template
+    catch (error) {
+      return {"status":"error", "msg":error.message}
+    }
   }
 
   export async function getAppById(_id, id) {
     const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
-  
-    const _idFilter = filterString(_id)
-    const idFilter = filterString(id)
+    try{
+      const _idFilter = filterString(_id)
+      const idFilter = filterString(id)
+      
+      const SettingRS = await (getDbRecordALL)(`SELECT data, avatar, name, intro, type, groupTwo, permission from app where _id = ? and id = ? `, [_idFilter, idFilter]);
+      
+      let Template = {}
+      if(SettingRS)  {
+        SettingRS.map((Item)=>{
+          const TemplateTemp = JSON.parse(base64Decode(Item.data))
+          Template = {...TemplateTemp, avatar: Item.avatar, name: Item.name, intro: Item.intro, type: Item.type, groupTwo: Item.groupTwo, permission: Item.permission}
+        })
+      }
     
-    const SettingRS = await (getDbRecordALL)(`SELECT data, avatar, name, intro, type, groupTwo, permission from app where _id = ? and id = ? `, [_idFilter, idFilter]);
-    
-    let Template = {}
-    if(SettingRS)  {
-      SettingRS.map((Item)=>{
-        const TemplateTemp = JSON.parse(base64Decode(Item.data))
-        Template = {...TemplateTemp, avatar: Item.avatar, name: Item.name, intro: Item.intro, type: Item.type, groupTwo: Item.groupTwo, permission: Item.permission}
-      })
+      return Template
     }
-  
-    return Template
+    catch (error) {
+      log('getAppById Error', error.message);
+      return {"status":"error", "msg":error.message}
+    }
   }
 
   export async function getAppByPublishId(id) {
     const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
-  
-    const idFilter = filterString(id)
-    
-    const PublishApp = await (getDbRecordALL)(`SELECT * from publish where _id = ?`, [idFilter]);
-    if(PublishApp && PublishApp[0] && PublishApp[0].appId)  {
-      const appid = PublishApp[0].appId
-      const userId = PublishApp[0].userId
-      const SettingRS = await (getDbRecordALL)(`SELECT data from app where _id = ? and userId = ? `, [appid, userId]);
-      let Template = {}
-      if(SettingRS)  {
-        SettingRS.map((Item)=>{
-          Template = JSON.parse(base64Decode(Item.data))
-        })
+    try{
+      const idFilter = filterString(id)
+      
+      const PublishApp = await (getDbRecordALL)(`SELECT * from publish where _id = ?`, [idFilter]);
+      if(PublishApp && PublishApp[0] && PublishApp[0].appId)  {
+        const appid = PublishApp[0].appId
+        const userId = PublishApp[0].userId
+        const SettingRS = await (getDbRecordALL)(`SELECT data from app where _id = ? and userId = ? `, [appid, userId]);
+        let Template = {}
+        if(SettingRS)  {
+          SettingRS.map((Item)=>{
+            Template = JSON.parse(base64Decode(Item.data))
+          })
+        }
+        return {...Template, PublishApp: PublishApp[0]}
       }
-      return {...Template, PublishApp: PublishApp[0]}
+      else {
+        return {}
+      }
     }
-    else {
-      return {}
+    catch (error) {
+      log('getAppByPublishId Error', error.message);
+      return {"status":"error", "msg":error.message}
     }
   }
 
   export async function getAppPage(pageid, pagesize, userId) {
     const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
-  
-    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
-    const From = pageidFiler * pagesizeFiler;
-    console.log("pageidFiler", pageidFiler)
-    console.log("pagesizeFiler", pagesizeFiler)
+      try{
+      const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+      const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
+      const From = pageidFiler * pagesizeFiler;
+      console.log("pageidFiler", pageidFiler)
+      console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from app where userId = ?", [userId]);
-    const RecordsTotal = Records ? Records.NUM : 0;  
-    const RecordsAll = await (getDbRecordALL)(`SELECT * from app where userId = ? order by id desc limit ? OFFSET ? `, [userId, pagesizeFiler, From]);
-    
-    const RS = {};
-    RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
-    RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
-    RS['from'] = From;
-    RS['pageid'] = pageidFiler;
-    RS['pagesize'] = pagesizeFiler;
-    RS['total'] = RecordsTotal;
+      const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from app where userId = ?", [userId]);
+      const RecordsTotal = Records ? Records.NUM : 0;  
+      const RecordsAll = await (getDbRecordALL)(`SELECT * from app where userId = ? order by id desc limit ? OFFSET ? `, [userId, pagesizeFiler, From]);
+      
+      const RS = {};
+      RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
+      RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
+      RS['from'] = From;
+      RS['pageid'] = pageidFiler;
+      RS['pagesize'] = pagesizeFiler;
+      RS['total'] = RecordsTotal;
 
-    return RS;
+      return RS;
+    }
+    catch (error) {
+      log('getAppPage Error', error.message);
+      return {"status":"error", "msg":error.message}
+    }
   }
 
   export async function getAppPageAll(pageid, pagesize, data) {
     const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
-  
-    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
-    const From = pageidFiler * pagesizeFiler;
-    console.log("getAppPageAll************", data)
-    console.log("pagesizeFiler", pagesizeFiler)
+    try{
+      const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+      const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
+      const From = pageidFiler * pagesizeFiler;
+      console.log("getAppPageAll************", data)
+      console.log("pagesizeFiler", pagesizeFiler)
 
-    let Records = null;
-    let RecordsAll = []
-    if(data && (data.name || data.intro)) {
-      Records = await (getDbRecord)(`
-                      SELECT COUNT(*) AS NUM
-                      FROM app 
-                      WHERE name LIKE '%' || ? || '%' 
-                      AND intro LIKE '%' || ? || '%' 
-                    `, [data.name || '', data.intro || ''])
-      RecordsAll = await (getDbRecordALL)(`
-                      SELECT *
-                      FROM app 
-                      WHERE name LIKE '%' || ? || '%' 
-                      AND intro LIKE '%' || ? || '%' 
-                      ORDER BY id DESC 
-                      LIMIT ? OFFSET ?
-                    `, [data.name || '', data.intro || '', pagesizeFiler, From]) || [];
-    }
-    else {
-      Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from app where permission = ? ", ['public']);
-      RecordsAll = await (getDbRecordALL)(`SELECT * from app where permission = ? order by id desc limit ? OFFSET ? `, ['public', pagesizeFiler, From]);
-    }
-    const RecordsTotal = Records ? Records.NUM : 0;  
-    
-    const RS = {};
-    RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
-    RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
-    RS['from'] = From;
-    RS['pageid'] = pageidFiler;
-    RS['pagesize'] = pagesizeFiler;
-    RS['total'] = RecordsTotal;
+      let Records = null;
+      let RecordsAll = []
+      if(data && (data.name || data.intro)) {
+        Records = await (getDbRecord)(`
+                        SELECT COUNT(*) AS NUM
+                        FROM app 
+                        WHERE name LIKE '%' || ? || '%' 
+                        AND intro LIKE '%' || ? || '%' 
+                      `, [data.name || '', data.intro || ''])
+        RecordsAll = await (getDbRecordALL)(`
+                        SELECT *
+                        FROM app 
+                        WHERE name LIKE '%' || ? || '%' 
+                        AND intro LIKE '%' || ? || '%' 
+                        ORDER BY id DESC 
+                        LIMIT ? OFFSET ?
+                      `, [data.name || '', data.intro || '', pagesizeFiler, From]) || [];
+      }
+      else {
+        Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from app where permission = ? ", ['public']);
+        RecordsAll = await (getDbRecordALL)(`SELECT * from app where permission = ? order by id desc limit ? OFFSET ? `, ['public', pagesizeFiler, From]);
+      }
+      const RecordsTotal = Records ? Records.NUM : 0;  
+      
+      const RS = {};
+      RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
+      RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
+      RS['from'] = From;
+      RS['pageid'] = pageidFiler;
+      RS['pagesize'] = pagesizeFiler;
+      RS['total'] = RecordsTotal;
 
-    return RS;
+      return RS;
+    }
+    catch (error) {
+      log('getAppPageAll Error', error.message);
+      return {"status":"error", "msg":error.message}
+    }
   }
 
   export async function getChatlogPageByApp(appId, pageid, pagesize, userId) {
     const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
-  
-    const appIdFileter = filterString(appId)
-    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
-    const From = pageidFiler * pagesizeFiler;
-    console.log("pageidFiler", pageidFiler)
-    console.log("pagesizeFiler", pagesizeFiler)
+    try{
+      const appIdFileter = filterString(appId)
+      const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+      const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
+      const From = pageidFiler * pagesizeFiler;
+      console.log("pageidFiler", pageidFiler)
+      console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from appchatlog where appId = ? and userId = ?", [appIdFileter, userId]);
-    const RecordsTotal = Records ? Records.NUM : 0;  
-    const RecordsAll = await (getDbRecordALL)(`SELECT * from appchatlog where appId = ? and userId = ? order by id desc limit ? OFFSET ? `, [appIdFileter, userId, pagesizeFiler, From]);
-    
-    const RS = {};
-    RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
-    RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
-    RS['from'] = From;
-    RS['pageid'] = pageidFiler;
-    RS['pagesize'] = pagesizeFiler;
-    RS['total'] = RecordsTotal;
+      const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from appchatlog where appId = ? and userId = ?", [appIdFileter, userId]);
+      const RecordsTotal = Records ? Records.NUM : 0;  
+      const RecordsAll = await (getDbRecordALL)(`SELECT * from appchatlog where appId = ? and userId = ? order by id desc limit ? OFFSET ? `, [appIdFileter, userId, pagesizeFiler, From]);
+      
+      const RS = {};
+      RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
+      RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
+      RS['from'] = From;
+      RS['pageid'] = pageidFiler;
+      RS['pagesize'] = pagesizeFiler;
+      RS['total'] = RecordsTotal;
 
-    return RS;
+      return RS;
+    }
+    catch (error) {
+      log('getChatlogPageByApp Error', error.message);
+      return {"status":"error", "msg":error.message}
+    }
   }
 
   export async function getChatlogStaticPageByApp(appId, pageid, pagesize) {
     const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
-  
-    const appIdFileter = filterString(appId)
-    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
-    const From = pageidFiler * pagesizeFiler;
-    console.log("pageidFiler", pageidFiler)
-    console.log("pagesizeFiler", pagesizeFiler)
+    try{
+      const appIdFileter = filterString(appId)
+      const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+      const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
+      const From = pageidFiler * pagesizeFiler;
+      console.log("pageidFiler", pageidFiler)
+      console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records = await (getDbRecord)("SELECT COUNT(DISTINCT userid) as totalRecords FROM chatlog WHERE appId = ?", [appIdFileter]);
-    const RecordsTotal = Records ? Records.NUM : 0;  
-    const RecordsAll = await (getDbRecordALL)(`select id, userid, count(*) as chatCount, publishId, timestamp from chatlog where appId = ? group by userid order by timestamp desc limit ? OFFSET ?`, [appIdFileter, pagesizeFiler, From]);
+      const Records = await (getDbRecord)("SELECT COUNT(DISTINCT userid) as totalRecords FROM chatlog WHERE appId = ?", [appIdFileter]);
+      const RecordsTotal = Records ? Records.NUM : 0;  
+      const RecordsAll = await (getDbRecordALL)(`select id, userid, count(*) as chatCount, publishId, timestamp from chatlog where appId = ? group by userid order by timestamp desc limit ? OFFSET ?`, [appIdFileter, pagesizeFiler, From]);
 
-    const allPublishIdList = RecordsAll.map((item)=> item.publishId)
-    const allPublishIdListNotNull = allPublishIdList.filter(item => item!=null && item!='')
-    const RecordsAllPublish = await (getDbRecordALL)(`select name, _id from publish where _id IN (${allPublishIdListNotNull.map(() => '?').join(', ')})`, [...allPublishIdListNotNull]);
-    const RecordsAllPublishMap = {}
-    RecordsAllPublish.map((item)=>{
-      RecordsAllPublishMap[item._id] = item.name
-    })
-    console.log("RecordsAllPublish", RecordsAllPublishMap)
+      const allPublishIdList = RecordsAll.map((item)=> item.publishId)
+      const allPublishIdListNotNull = allPublishIdList.filter(item => item!=null && item!='')
+      const RecordsAllPublish = await (getDbRecordALL)(`select name, _id from publish where _id IN (${allPublishIdListNotNull.map(() => '?').join(', ')})`, [...allPublishIdListNotNull]);
+      const RecordsAllPublishMap = {}
+      RecordsAllPublish.map((item)=>{
+        RecordsAllPublishMap[item._id] = item.name
+      })
+      console.log("RecordsAllPublish", RecordsAllPublishMap)
 
-    const RecordsAllFilter = RecordsAll.map((item)=>{
-      return {...item, publishName: RecordsAllPublishMap[item.publishId] || ''}
-    })
-    
-    const RS = {};
-    RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
-    RS['data'] = RecordsAllFilter;
-    RS['from'] = From;
-    RS['pageid'] = pageidFiler;
-    RS['pagesize'] = pagesizeFiler;
-    RS['total'] = RecordsTotal;
+      const RecordsAllFilter = RecordsAll.map((item)=>{
+        return {...item, publishName: RecordsAllPublishMap[item.publishId] || ''}
+      })
+      
+      const RS = {};
+      RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
+      RS['data'] = RecordsAllFilter;
+      RS['from'] = From;
+      RS['pageid'] = pageidFiler;
+      RS['pagesize'] = pagesizeFiler;
+      RS['total'] = RecordsTotal;
 
-    return RS;
+      return RS;
+    }
+    catch (error) {
+      log('getChatlogStaticPageByApp Error', error.message);
+      return {"status":"error", "msg":error.message}
+    }
   }
   
   export async function getPublishsPageByApp(appId, pageid, pagesize, userId) {
     const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
-  
-    const appIdFileter = filterString(appId)
-    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
-    const From = pageidFiler * pagesizeFiler;
-    console.log("pageidFiler", pageidFiler)
-    console.log("pagesizeFiler", pagesizeFiler)
+    try{
+      const appIdFileter = filterString(appId)
+      const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+      const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
+      const From = pageidFiler * pagesizeFiler;
+      console.log("pageidFiler", pageidFiler)
+      console.log("pagesizeFiler", pagesizeFiler)
 
-    const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from publish where appId = ? and userId = ?", [appIdFileter, userId]);
-    const RecordsTotal = Records ? Records.NUM : 0;  
-    const RecordsAll = await (getDbRecordALL)(`SELECT * from publish where appId = ? and userId = ? order by id desc limit ? OFFSET ? `, [appIdFileter, userId, pagesizeFiler, From]);
-    
-    const RS = {};
-    RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
-    RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
-    RS['from'] = From;
-    RS['pageid'] = pageidFiler;
-    RS['pagesize'] = pagesizeFiler;
-    RS['total'] = RecordsTotal;
+      const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from publish where appId = ? and userId = ?", [appIdFileter, userId]);
+      const RecordsTotal = Records ? Records.NUM : 0;  
+      const RecordsAll = await (getDbRecordALL)(`SELECT * from publish where appId = ? and userId = ? order by id desc limit ? OFFSET ? `, [appIdFileter, userId, pagesizeFiler, From]);
+      
+      const RS = {};
+      RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
+      RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
+      RS['from'] = From;
+      RS['pageid'] = pageidFiler;
+      RS['pagesize'] = pagesizeFiler;
+      RS['total'] = RecordsTotal;
 
-    return RS;
+      return RS;
+    }
+    catch (error) {
+      log('getPublishsPageByApp Error', error.message);
+      return {"status":"error", "msg":error.message}
+    }
   }
 
   export async function getPublishsAll(pageid, pagesize) {
     const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
-  
-    const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
-    const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
-    const From = pageidFiler * pagesizeFiler;
-    console.log("pageidFiler", pageidFiler)
-    console.log("pagesizeFiler", pagesizeFiler)
+    try{
+      const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
+      const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
+      const From = pageidFiler * pagesizeFiler;
+      console.log("pageidFiler", pageidFiler)
+      console.log("pagesizeFiler", pagesizeFiler)
 
-    let Records = null;
-    let RecordsTotal = Records ? Records.NUM : 0;  
-    let RecordsAll = [];
-    Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from publish");
-    RecordsTotal = Records ? Records.NUM : 0;  
-    RecordsAll = await (getDbRecordALL)(`SELECT * from publish order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]);
-    
-    const RS = {};
-    RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
-    RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
-    RS['from'] = From;
-    RS['pageid'] = pageidFiler;
-    RS['pagesize'] = pagesizeFiler;
-    RS['total'] = RecordsTotal;
+      let Records = null;
+      let RecordsTotal = Records ? Records.NUM : 0;  
+      let RecordsAll = [];
+      Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from publish");
+      RecordsTotal = Records ? Records.NUM : 0;  
+      RecordsAll = await (getDbRecordALL)(`SELECT * from publish order by id desc limit ? OFFSET ? `, [pagesizeFiler, From]);
+      
+      const RS = {};
+      RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
+      RS['data'] = RecordsAll.filter(element => element !== null && element !== undefined && element !== '');
+      RS['from'] = From;
+      RS['pageid'] = pageidFiler;
+      RS['pagesize'] = pagesizeFiler;
+      RS['total'] = RecordsTotal;
 
-    return RS;
+      return RS;
+    }
+    catch (error) {
+      log('getPublishsAll Error', error.message);
+      return {"status":"error", "msg":error.message}
+    }
   }
 
   export async function addPublish(Params) {

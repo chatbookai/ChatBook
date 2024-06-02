@@ -202,7 +202,7 @@ let ChatBaiduWenxinModel = null
         ChatOpenAIModel = new ChatOpenAI({ 
           modelName: "gpt-3.5-turbo",
           openAIApiKey: OPENAI_API_KEY, 
-          temperature: temperature(temperature ?? 0.5),
+          temperature: temperature ?? 0.5,
           streaming: true,
          });    
       }

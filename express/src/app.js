@@ -25,6 +25,7 @@ const __dirname = dirname(__filename);
 //import getimgRouter from './router/Backup/getimg'
 //import seaartRouter from './router/seaart'
 
+
 //Start Express Server
 const app = express();
 const port = 1988;
@@ -32,7 +33,7 @@ app.use(cors());
 app.use(bodyParser.json());
 dotenv.config();
 
-console.log("process.env: ", process.env);
+// console.log("process.env: ", process.env);
 
 //Initial Database and Folder
 

@@ -51,7 +51,7 @@ import { createEmbeddingsFromList, getWebsiteUrlContext, formatMessage, rephrase
 import dotenv from 'dotenv';
 dotenv.config();
 
-console.log("process.env: ", process.env);
+// console.log("process.env: ", process.env);
 
 const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL ?? "https://openkey.cloud/v1";
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "sk-Bm6p9ej7BIZU3F5tFe2e1f899097474aBeA3E7E034A723B8";

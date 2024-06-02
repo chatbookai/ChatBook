@@ -1,9 +1,12 @@
 import { app, BrowserWindow, Menu, ipcMain, dialog } from 'electron';
 import isDev from 'electron-is-dev'
 import settings from 'electron-settings';
+import os from 'os';
 
 import { server, getPort } from './src/app.js';
 import { initChatBookSetting, ChatBookDbInit } from './src/utils/db.js';
+import { enableDir } from './src/utils/utils.js';
+
 
 const PORT = getPort();
 
@@ -21,7 +24,12 @@ function createMainWindow() {
   });
 
   //Start Setting Page
-  mainWindow.loadFile('src/settings/index.html');
+  //mainWindow.loadFile('src/settings/index.html');
+  const userHomeDir = os.homedir()
+  enableDir(userHomeDir + '/ChatBookData')
+  initChatBookSetting({NodeStorageDirectory: userHomeDir + '/ChatBookData'})
+  ChatBookDbInit();
+  mainWindow.loadURL('http://localhost:' + PORT);
 
   ipcMain.on('start-chatbook', async (event, data) => {
     ChatBookSetting = await settings.get('chatbook');

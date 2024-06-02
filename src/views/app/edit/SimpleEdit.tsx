@@ -19,6 +19,7 @@ import authConfig from 'src/configs/auth'
 
 // ** Axios Imports
 import { useRouter } from 'next/router'
+import { AppAvatar } from 'src/functions/ChatBook'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -126,7 +127,7 @@ const SimpleEdit = (props: any) => {
                                                 </Box>
                                             ) : (
                                                 <Box sx={{alignItems: 'center'}}>
-                                                    <Img alt={`${t(`Upload Avatar image`)}`} src={authConfig.backEndApiChatBook + '/api/avatarforapp/' + app.avatar} sx={{width: '100%', borderRadius: '25px'}}/>
+                                                    <Img alt={`${t(`Upload Avatar image`)}`} src={AppAvatar(authConfig.backEndApiChatBook, app.avatar)} sx={{width: '100%', borderRadius: '25px'}}/>
                                                 </Box>
                                             )}
                                         </Box>

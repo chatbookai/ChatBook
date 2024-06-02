@@ -26,6 +26,7 @@ import { useRouter } from 'next/router'
 import Icon from 'src/@core/components/icon'
 
 import { useTranslation } from 'react-i18next'
+import { AppAvatar } from 'src/functions/ChatBook'
 
 
 const AppModel = (props: any) => {
@@ -144,7 +145,7 @@ const AppModel = (props: any) => {
                             sx={{cursor: 'pointer'}}
                           >
                             <Box display="flex" alignItems="center">
-                              <Avatar src={authConfig.backEndApiChatBook + '/api/avatarforapp/' + item.avatar} sx={{ mr: 3, width: 35, height: 35 }} />
+                              <Avatar src={AppAvatar(authConfig.backEndApiChatBook, item.avatar)} sx={{ mr: 3, width: 35, height: 35 }} />
                               <Typography 
                                   sx={{
                                       fontWeight: 500,

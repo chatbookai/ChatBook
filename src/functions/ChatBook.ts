@@ -611,7 +611,6 @@ export function downloadJson(JsonData: any, FileName: string) {
 }
 
 export function AppAvatar(backEndApiChatBook: string, avatar: string) {
-    console.log("backEndApiChatBook", avatar)
     if(avatar.startsWith('http')) {
 
         return avatar

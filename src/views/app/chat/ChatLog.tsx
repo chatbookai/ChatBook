@@ -32,6 +32,7 @@ import PerfectScrollbarComponent, { ScrollBarProps } from 'react-perfect-scrollb
 
 // ** Custom Components Imports
 import CustomAvatar from 'src/@core/components/mui/avatar'
+import { AppAvatar } from 'src/functions/ChatBook'
 
 // ** Types Imports
 import {
@@ -337,7 +338,7 @@ const ChatLog = (props: any) => {
                 fontSize: '0.875rem',
               }}
               {...{
-                src: app.avatar? authConfig.backEndApiChatBook + '/api/avatarforapp/' + app.avatar : '/images/avatars/1.png',
+                src: app.avatar? AppAvatar(authConfig.backEndApiChatBook, app.avatar) : '/images/avatars/1.png',
                 alt: chatName
               }}
             >

@@ -13,6 +13,7 @@ import authConfig from 'src/configs/auth'
 import ChatLog from './ChatLog'
 import { useTranslation } from 'react-i18next'
 import SendMsgForm from 'src/views/app/chat/SendMsgForm'
+import { AppAvatar } from 'src/functions/ChatBook'
 
 const ChatContent = (props: any) => {
   // ** Props
@@ -93,7 +94,7 @@ const ChatContent = (props: any) => {
                       }
                     >
                       <MuiAvatar
-                        src={authConfig.backEndApiChatBook + '/api/avatarforapp/' + app.avatar}
+                        src={AppAvatar(authConfig.backEndApiChatBook, app.avatar)}
                         alt={chatName}
                         sx={{ width: '2rem', height: '2rem' }}
                       />

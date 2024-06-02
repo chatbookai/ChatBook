@@ -24,6 +24,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 // ** Next Import
 import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
+import { AppAvatar } from 'src/functions/ChatBook'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -166,7 +167,7 @@ const Applications = () => {
       filterable: false,
       renderCell: ({ row }: any) => {
         return (
-          <Avatar src={authConfig.backEndApiChatBook + '/api/avatarforapp/' + row.avatar} variant="rounded" sx={{ width: '38px', height: '38px', borderRadius: '25px'}} />
+          <Avatar src={AppAvatar(authConfig.backEndApiChatBook, row.avatar)} variant="rounded" sx={{ width: '38px', height: '38px', borderRadius: '25px'}} />
         )
       }
     },

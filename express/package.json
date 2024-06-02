@@ -101,6 +101,10 @@
     "directories": {
       "output": "dist"
     },
+    "files": [
+      "demo/**/*",
+      ".env"
+    ],
     "linux": {
       "target": [
         "deb",

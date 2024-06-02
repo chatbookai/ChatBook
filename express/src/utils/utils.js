@@ -545,7 +545,7 @@ export async function wholeSiteStatics() {
   const Records3 = await (getDbRecord)("SELECT COUNT(*) AS NUM from user");
   const TotalUsers = Records3 ? Records3.NUM : 0;
 
-  return {NewUserPerDay, NewImagesPerDay, NewActivitesPerDay, DateList, TotalImages, TotalActivites, TotalUsers, TotalFiles}
+  return {NewUserPerDay, NewImagesPerDay, NewActivitesPerDay, DateList, TotalImages, TotalActivites, TotalUsers}
 }
 
 export async function getAllImages(userId, pageid, pagesize) {

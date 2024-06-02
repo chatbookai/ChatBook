@@ -609,3 +609,15 @@ export function downloadJson(JsonData: any, FileName: string) {
     a.click();
     URL.revokeObjectURL(url);
 }
+
+export function AppAvatar(backEndApiChatBook: string, avatar: string) {
+    console.log("backEndApiChatBook", avatar)
+    if(avatar.startsWith('http')) {
+
+        return avatar
+    }
+    else {
+
+        return backEndApiChatBook + '/api/avatarforapp/' + avatar
+    }
+}

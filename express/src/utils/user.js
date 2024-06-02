@@ -12,7 +12,7 @@
 
   import { ChatBookDbPool } from './db.js'
   
-  const secretKey = process.env.JWT_TOKEN_SECRET_KEY || "ChatBookAI"; 
+  const secretKey = process.env.JWT_TOKEN_SECRET_KEY || "ChatBookAI@20240602!@#$"; 
 
   export const createJwtToken = (userId, email, role) => {
     const token = jwt.sign({ id: userId, email, role }, secretKey, { expiresIn: '30d' });

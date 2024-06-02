@@ -61,8 +61,8 @@ function createMainWindow() {
   Menu.setApplicationMenu(menu);
 
   if (isDev) {
+    mainWindow.webContents.openDevTools();
   }
-  mainWindow.webContents.openDevTools();
 
   mainWindow.on('closed', () => {
     mainWindow = null;

@@ -366,16 +366,3 @@ export function ChatBookDbInit() {
   console.log("ChatBookDbInit exeStatus", exeStatus)
   console.log("ChatBookDbInit initialized 2 ", initialized)
 }
-
-function isDirectorySync(path) {
-    try {
-        if(path == undefined || path == null) {
-            return false
-        }
-        const stats = fs.statSync(path);
-        return stats.isDirectory();
-    } catch (err) {
-        console.error('isDirectorySync Error checking if path is a directory:', err);
-        return false;
-    }
-  }

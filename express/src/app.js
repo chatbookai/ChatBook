@@ -9,8 +9,6 @@ import { dirname, join } from 'path';
 import { ChatBookDbInit, initChatBookSetting } from './utils/db.js';
 import { parseFilesAndWeb, vectorDdProcess } from './utils/llms.js';
 
-//import { downloadVideoFromAPI } from './utils/Backup/stability.js';
-
 import userRouter from './router/user.js'
 import llmsRouter from './router/llms.js'
 import utilsRouter from './router/utils.js'
@@ -20,10 +18,6 @@ import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
-//import stabilityRouter from './router/Backup/stability'
-//import getimgRouter from './router/Backup/getimg'
-//import seaartRouter from './router/seaart'
 
 
 //Start Express Server

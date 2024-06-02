@@ -53,7 +53,9 @@ dotenv.config();
 
 // console.log("process.env: ", process.env);
 
-const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL ?? "https://openkey.cloud/v1";
+if(process.env.OPENAI_API_KEY == null) {
+  process.env.OPENAI_BASE_URL = "https://openkey.cloud/v1";
+}
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? "sk-Bm6p9ej7BIZU3F5tFe2e1f899097474aBeA3E7E034A723B8";
 
 let getLLMSSettingData = null

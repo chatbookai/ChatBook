@@ -830,7 +830,17 @@ let ChatBaiduWenxinModel = null
         console.log("FileName Exist: ", FileName)
       }
       else {
-        res.status(200).json({ error: 'File not exist' })
+        const FileName = path.join('demo', "/avatarforapp/"+ file);
+        if(isFile(FileName))   {
+          compressPng(file);
+          const readStream = fs.createReadStream(FileName);
+          res.setHeader('Content-Type', 'image/png');
+          readStream.pipe(res);
+          console.log("FileName Exist: ", FileName)
+        }
+        else {
+          res.status(200).json({ error: 'File not exist' })
+        }
       }
     } 
     catch (error) {

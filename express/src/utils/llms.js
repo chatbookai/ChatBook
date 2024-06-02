@@ -322,7 +322,7 @@ let ChatBaiduWenxinModel = null
           if( chunk && chunk != 'data: [DONE]' && chunk != 'data: [DONE]\n' && !chunk.startsWith('data: [DONE]') )  {
             const cleanedChunk = chunk.replace(/^data: /, '');
             try {
-              //console.log('cleanedChunk cleanedChunk:', cleanedChunk);
+              console.log('cleanedChunk cleanedChunk:', cleanedChunk);
               const chunkData = JSON.parse(cleanedChunk);
               if (chunkData && chunkData.choices && Array.isArray(chunkData.choices)) {
                 chunkData.choices.forEach((choice) => {

@@ -77,6 +77,16 @@ function copyFileSync2(source, target) {
   fs.writeFileSync(targetFile, fs.readFileSync(source));
 }
 
+export function isDirectorySync(filePath) {
+  try {
+    const stats = fs.statSync(filePath);
+    return stats.isDirectory();
+  } catch (error) {
+    console.error(`Error checking if directory: ${error.message}`);
+    return false;
+  }
+}
+
 export async function getLLMSSetting(datasetId) {
   const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
 

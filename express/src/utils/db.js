@@ -2,7 +2,7 @@
 import fs from 'fs'
 import sqlite3 from 'sqlite3';
 import { promisify } from 'util';
-import { enableDir, copyFolderRecursiveSync, isFolderEmptySync } from './utils.js';
+import { enableDir, copyFolderRecursiveSync, isFolderEmptySync, isDirectorySync } from './utils.js';
 
 let initialized = false;
 let ChatBookSetting = null
@@ -64,7 +64,7 @@ export function ChatBookDbInit() {
     enableDir(DataDir + '/video/');
 
     const isFolderEmptySyncData = isFolderEmptySync(DataDir + '/avatarforapp/');
-    if(isFolderEmptySyncData) {
+    if(isFolderEmptySyncData && isDirectorySync('demo/avatarforapp/')) {
         copyFolderRecursiveSync('demo/avatarforapp/', DataDir);
     }
 

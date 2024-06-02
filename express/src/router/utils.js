@@ -4,7 +4,7 @@
 
   import { MenuListAdmin, MenuListUser } from '../utils/const.js';
   import { checkUserToken } from '../utils/user.js';
-  import { getLogsPage, clearShortLogs, clearAllLogs, getTemplate, getLLMSSetting, getFilesPage, getFilesDatasetId, getChatLogByDatasetIdAndUserId, setOpenAISetting, setTemplate, wholeSiteStatics, getAllImages, deleteUserLogByDatasetId } from '../utils/utils.js';
+  import { getLogsPage, clearShortLogs, clearAllLogs, getTemplate, getLLMSSetting, getChatLogByDatasetIdAndUserId, setOpenAISetting, setTemplate, wholeSiteStatics, getAllImages, deleteUserLogByDatasetId } from '../utils/utils.js';
 
   const app = express();
 
@@ -62,33 +62,6 @@
     res.end();
   });
   
-  app.get('/api/files/:pageid/:pagesize', async (req, res) => {
-    const { pageid, pagesize } = req.params;
-    const { authorization } = req.headers;
-    const checkUserTokenData = await checkUserToken(authorization);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
-        const getFilesPageData = await getFilesPage(Number(pageid), Number(pagesize));
-        res.status(200).json(getFilesPageData);
-    }
-    else {
-        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
-    }
-    res.end();
-  });
-  
-  app.get('/api/files/:datasetId/:pageid/:pagesize', async (req, res) => {
-    const { datasetId, pageid, pagesize } = req.params;
-    const { authorization } = req.headers;
-    const checkUserTokenData = await checkUserToken(authorization);
-    if(checkUserTokenData && checkUserTokenData.data && checkUserTokenData.data.email && checkUserTokenData.data.role == 'admin') {
-        const getFilesPageData = await getFilesDatasetId(datasetId, Number(pageid), Number(pagesize));
-        res.status(200).json(getFilesPageData);
-    }
-    else {
-        res.status(200).json({"status":"error", "msg":"Token is invalid", "data": null});
-    }
-    res.end();
-  });
   
   app.get('/api/getopenai/:id', async (req, res) => {
     const { id } = req.params;

@@ -272,98 +272,6 @@ export async function uploadfilesInsertIntoDb(files, datasetId, userId) {
   
 }
 
-export async function getFilesPage(pageid, pagesize) {
-  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
-
-  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
-  const From = pageidFiler * pagesizeFiler;
-  
-  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from files");
-  const RecordsTotal = Records ? Records.NUM : 0;  
-  const RecordsAll = await (getDbRecordALL)(`SELECT * from files where 1=1 order by status desc, timestamp desc limit ? OFFSET ? `, [pagesizeFiler, From]);
-  let RSDATA = []
-  if(RecordsAll != undefined) {
-    RSDATA = await Promise.all(
-      RecordsAll.map(async (Item)=>{
-          let ItemStatus = "Ready To Parse"
-          switch(Item.status) {
-            case 1:
-              ItemStatus = 'Finished'
-              break;
-            case -1:
-              ItemStatus = 'File Not Exist'
-              break;
-          }
-
-          return {...Item, status:ItemStatus, timestamp: formatDateFromTimestamp(Item.timestamp)}
-        })
-    );
-    
-    //log("getFilesPage", RSDATA)
-  }
-  const RS = {};
-  RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
-  RS['data'] = RSDATA.filter(element => element !== null && element !== undefined && element !== '');
-  RS['from'] = From;
-  RS['pageid'] = pageidFiler;
-  RS['pagesize'] = pagesizeFiler;
-  RS['total'] = RecordsTotal;
-
-  return RS;
-}
-
-export async function getFilesDatasetId(datasetId, pageid, pagesize) {
-  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
-
-  const datasetIdFiler = Number(datasetId) < 0 ? 0 : datasetId;
-  const pageidFiler = Number(pageid) < 0 ? 0 : pageid;
-  const pagesizeFiler = Number(pagesize) < 5 ? 5 : pagesize;
-  const From = pageidFiler * pagesizeFiler;
-  
-  
-  const Records = await (getDbRecord)("SELECT COUNT(*) AS NUM from files where datasetId = ?", [datasetIdFiler]);
-  const RecordsTotal = Records ? Records.NUM : 0;  
-  const RecordsAll = await (getDbRecordALL)(`SELECT * from files where datasetId = ? order by status desc, timestamp desc limit ? OFFSET ? `, [datasetIdFiler, pagesizeFiler, From]);
-
-  let RSDATA = []
-  if(RecordsAll != undefined) {
-    RSDATA = await Promise.all(
-      RecordsAll.map(async (Item)=>{
-          let ItemStatus = "Ready To Parse"
-          switch(Item.status) {
-            case 1:
-              ItemStatus = 'Finished'
-              break;
-            case -1:
-              ItemStatus = 'File Not Exist'
-              break;
-          }
-
-          return {...Item, status:ItemStatus, timestamp: formatDateFromTimestamp(Item.timestamp)}
-        })
-    );
-  }
-  const RS = {};
-  RS['allpages'] = Math.ceil(RecordsTotal/pagesizeFiler);
-  RS['data'] = RSDATA.filter(element => element !== null && element !== undefined && element !== '');
-  RS['from'] = From;
-  RS['pageid'] = pageidFiler;
-  RS['pagesize'] = pagesizeFiler;
-  RS['total'] = RecordsTotal;
-
-  return RS;
-}
-
-export async function getFilesNotParsed() {
-  const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
-
-  
-  const RecordsAll = await (getDbRecordALL)(`SELECT * from files where status = '0' order by timestamp asc limit 10 `);
-
-  return RecordsAll;
-}
-
 export async function getChatLogByDatasetIdAndUserId(datasetId, userId, pageid, pagesize) {
   const { DataDir, db, getDbRecord, getDbRecordALL } = ChatBookDbPool()
 
@@ -621,9 +529,6 @@ export async function wholeSiteStatics() {
 
   const NewImagesPerDayData = await (getDbRecordALL)(`SELECT strftime('%Y-%m-%d', datetime(createtime / 1000, 'unixepoch')) AS date, count(*) AS NUM from userimages group by date order by date asc`);
   const NewImagesPerDay = NewImagesPerDayData.map(Item => Item.NUM)
-
-  const NewFilesPerDayData = await (getDbRecordALL)(`SELECT strftime('%Y-%m-%d', datetime(timestamp / 1000, 'unixepoch')) AS date, count(*) AS NUM from files group by date order by date asc`);
-  const NewFilesPerDay = NewFilesPerDayData.map(Item => Item.NUM)
 
   const NewActivitesPerDayData = await (getDbRecordALL)(`SELECT strftime('%Y-%m-%d', datetime(timestamp / 1000, 'unixepoch')) AS date, count(*) AS NUM from chatlog group by date order by date asc`);
   const NewActivitesPerDay = NewActivitesPerDayData.map(Item => Item.NUM)

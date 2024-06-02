@@ -3,22 +3,31 @@ import fs from 'fs'
 import sqlite3 from 'sqlite3';
 import { promisify } from 'util';
 import { enableDir, copyFolderRecursiveSync, isFolderEmptySync, isDirectorySync } from './utils.js';
+import os from 'os';
 
 let initialized = false;
-let ChatBookSetting = null
 let db = null
 let getDbRecord = null
 let getDbRecordALL = null
 
-export function initChatBookSetting(Data) {
-    console.log("ChatBookSettingChatBookSetting", Data)
-    ChatBookSetting = Data
+export function isElectron() {
+    return typeof process !== 'undefined' && !!(process.versions).electron;
+}
+
+export function getChatBookDir() {
+    if(isElectron() == false) {
+        return './data'
+    }
+    else {
+        const userHomeDir = os.homedir()
+        return userHomeDir + '/ChatBookData'
+    }
 }
 
 export function ChatBookDbPool() {
 
     //此处不能设置一个默认值,这个操作会在app.js中进行初始化 ChatBookDbInit()
-    const DataDir = ChatBookSetting?.NodeStorageDirectory;
+    const DataDir = getChatBookDir();
     
     if(DataDir == undefined || DataDir == null || !isDirectorySync(DataDir)) {
         return {DataDir: null, db: null, getDbRecord: null, getDbRecordALL: null}

@@ -6,7 +6,7 @@ import cron from 'node-cron';
 import dotenv from 'dotenv';
 import { dirname, join } from 'path';
 
-import { ChatBookDbInit, initChatBookSetting } from './utils/db.js';
+import { ChatBookDbInit, isElectron } from './utils/db.js';
 import { parseFilesAndWeb, vectorDdProcess } from './utils/llms.js';
 
 import userRouter from './router/user.js'
@@ -31,13 +31,8 @@ dotenv.config();
 
 //Initial Database and Folder
 
-function isElectron() {
-  return typeof process !== 'undefined' && !!(process.versions).electron;
-}
-
 //Running in express, not in electron
 if(isElectron() == false) {
-  initChatBookSetting({NodeStorageDirectory: './data'})
   ChatBookDbInit()
 }
 

@@ -8,6 +8,8 @@
 
   dotenv.config();
 
+  console.log("process.env: ", process.env);
+
   import { ChatBookDbPool } from './db.js'
   
   const secretKey = process.env.JWT_TOKEN_SECRET_KEY || "ChatBookAI"; 

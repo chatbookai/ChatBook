@@ -12,6 +12,8 @@ import { DataDir } from './const.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
+console.log("process.env: ", process.env);
+
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY ?? ''
 
 

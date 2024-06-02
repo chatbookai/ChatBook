@@ -51,6 +51,8 @@ import { createEmbeddingsFromList, getWebsiteUrlContext, formatMessage, rephrase
 import dotenv from 'dotenv';
 dotenv.config();
 
+console.log("process.env: ", process.env);
+
 const OPENAI_BASE_URL = process.env.OPENAI_BASE_URL;
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 

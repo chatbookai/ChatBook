@@ -32,6 +32,8 @@ app.use(cors());
 app.use(bodyParser.json());
 dotenv.config();
 
+console.log("process.env: ", process.env);
+
 //Initial Database and Folder
 
 function isElectron() {

@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'express/**'
+      - 'express/**/*'
 
 jobs:
   build:

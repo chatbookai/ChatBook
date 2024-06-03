@@ -1,6 +1,6 @@
 {
-  "name": "materio-mui-react-nextjs-admin-template",
-  "version": "2.2.0",
+  "name": "chatbook",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -93,6 +93,7 @@
     "payment": "2.4.6",
     "pdf-parse": "^1.1.1",
     "pdfjs-dist": "^4.0.379",
+    "pptxgenjs": "^3.12.0",
     "prismjs": "1.29.0",
     "react": "18.2.0",
     "react-apexcharts": "1.4.0",
@@ -122,6 +123,7 @@
     "sqlite3": "^5.1.6",
     "stylis": "4.1.4",
     "stylis-plugin-rtl": "2.1.1",
+    "tinycolor2": "^1.6.0",
     "useragent": "^2.3.0",
     "uuid": "^9.0.1",
     "validator": "^13.11.0",

@@ -85,7 +85,7 @@ const RegisterV1 = () => {
   // ** Hook
   const { t } = useTranslation()
 
-  const [rememberMe, setRememberMe] = useState<boolean>(true)
+  const [acceptAgreement, setAcceptAgreement] = useState<boolean>(false)
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
   // ** Hook
@@ -123,7 +123,7 @@ const RegisterV1 = () => {
       return
     }
 
-    if(!rememberMe) {
+    if(!acceptAgreement) {
       toast.error(t("Must agree to the agreement") as string, { duration: 4000 })
       
       return
@@ -285,13 +285,12 @@ const RegisterV1 = () => {
                 )}
               </FormControl>
               <FormControlLabel
-                control={<Checkbox checked={rememberMe} onChange={e => setRememberMe(e.target.checked)} />}
+                control={<Checkbox checked={acceptAgreement} onChange={e => setAcceptAgreement(e.target.checked)} />}
                 label={
                   <Fragment>
                     <span>{`${t(`I agree to`)}`} </span>
-                    <LinkStyled href='/' onClick={(e: MouseEvent<HTMLElement>) => e.preventDefault()}>
-                    {`${t(`privacy policy & terms`)}`}
-                    </LinkStyled>
+                    <LinkStyled href='/PrivacyPolicy' target="_blank" sx={{mx: 1}}>{t('Privacy Policy')}</LinkStyled>
+                    <LinkStyled href='/TermsofUse' target="_blank" sx={{mx: 1}}>{t('Terms of Use')}</LinkStyled>
                   </Fragment>
                 }
               />

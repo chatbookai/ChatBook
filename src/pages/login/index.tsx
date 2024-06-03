@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState, MouseEvent } from 'react'
+import { useState, MouseEvent, Fragment } from 'react'
 
 // ** Next Imports
 import Link from 'next/link'
@@ -8,6 +8,7 @@ import Link from 'next/link'
 import Box from '@mui/material/Box'
 import Button from '@mui/material/Button'
 import Divider from '@mui/material/Divider'
+import Checkbox from '@mui/material/Checkbox'
 import TextField from '@mui/material/TextField'
 import Typography from '@mui/material/Typography'
 import InputLabel from '@mui/material/InputLabel'
@@ -19,6 +20,7 @@ import { styled, useTheme } from '@mui/material/styles'
 import MuiCard, { CardProps } from '@mui/material/Card'
 import InputAdornment from '@mui/material/InputAdornment'
 import FormHelperText from '@mui/material/FormHelperText'
+import MuiFormControlLabel, { FormControlLabelProps } from '@mui/material/FormControlLabel'
 
 // ** Icon Imports
 import Icon from 'src/@core/components/icon'
@@ -68,11 +70,18 @@ interface FormData {
   password: string
 }
 
+const FormControlLabel = styled(MuiFormControlLabel)<FormControlLabelProps>(({ theme }) => ({
+  '& .MuiFormControlLabel-label': {
+    fontSize: '0.875rem',
+    color: theme.palette.text.secondary
+  }
+}))
+
 const RegisterV1 = () => {
   // ** Hook
   const { t } = useTranslation()
 
-  const [rememberMe, setRememberMe] = useState<boolean>(true)
+  const [acceptAgreement, setAcceptAgreement] = useState<boolean>(false)
   const [showPassword, setShowPassword] = useState<boolean>(false)
 
   // ** Hook
@@ -110,13 +119,13 @@ const RegisterV1 = () => {
       return
     }
 
-    if(!rememberMe) {
+    if(!acceptAgreement) {
       toast.error(t("Must agree to the agreement") as string, { duration: 4000 })
       
       return
     }
-    setRememberMe(true)
-    auth.login({ email, password, rememberMe })
+    setAcceptAgreement(true)
+    auth.login({ email, password, rememberMe: true })
 
   }
 
@@ -260,6 +269,16 @@ const RegisterV1 = () => {
                   </FormHelperText>
                 )}
               </FormControl>
+              <FormControlLabel
+                control={<Checkbox checked={acceptAgreement} onChange={e => setAcceptAgreement(e.target.checked)} />}
+                label={
+                  <Fragment>
+                    <span>{`${t(`I agree to`)}`} </span>
+                    <LinkStyled href='/PrivacyPolicy' target="_blank" sx={{mx: 1}}>{t('Privacy Policy')}</LinkStyled>
+                    <LinkStyled href='/TermsofUse' target="_blank" sx={{mx: 1}}>{t('Terms of Use')}</LinkStyled>
+                  </Fragment>
+                }
+              />
               <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', justifyContent: 'center' }}>
                 <Typography variant='body2' sx={{ mr: 2 }}>
                 {`${t(`New on our platform?`)}`}

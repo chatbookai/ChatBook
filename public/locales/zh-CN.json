@@ -533,7 +533,11 @@
   "REPHRASE_TEMPLATE": "改述模板",
   "QA_TEMPLATE": "问答模板",
   "REPHRASE_TEMPLATE_CONTENT": "重新表述后续问题，使其成为一个独立的询问，保持原始语言。您将会收到一段对话历史和一个后续问题。\n\n说明：\n1. 请查看以下提供的对话，包括用户和AI的消息。\n2. 检查对话中包含的后续问题。\n3. 重新构建后续问题，使其能够独立存在，不需要依赖于先前对话的上下文。确保保持与原始语言相同。\n\n对话：\n###\n{chatHistory}\n###\n\n用户的后续问题：\n###\n{input}\n###\n\n您的回答：",
-  "QA_TEMPLATE_CONTENT": "您是一位专业的研究员。使用以下上下文片段来回答最后的问题。\n如果您不知道答案，只需说不知道。请不要编造答案。\n如果问题与上下文或聊天历史无关，请礼貌地回答您只回答与上下文相关的问题。\n\n<context>\n{context}\n</context>\n\n<chatHistory>\n{chatHistory}\n</chatHistory>\n\n问题：{input}\n以 Markdown 格式提供有帮助的回答："
+  "QA_TEMPLATE_CONTENT": "您是一位专业的研究员。使用以下上下文片段来回答最后的问题。\n如果您不知道答案，只需说不知道。请不要编造答案。\n如果问题与上下文或聊天历史无关，请礼貌地回答您只回答与上下文相关的问题。\n\n<context>\n{context}\n</context>\n\n<chatHistory>\n{chatHistory}\n</chatHistory>\n\n问题：{input}\n以 Markdown 格式提供有帮助的回答：",
+  "I have read and agree": "我已阅读并同意",
+  "Privacy Policy": "隐私政策",
+  "Terms of Use": "使用条款"
+
 
 
 

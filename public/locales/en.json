@@ -533,6 +533,9 @@
     "REPHRASE_TEMPLATE": "Rephrase Template",
     "QA_TEMPLATE": "QA Template",
     "REPHRASE_TEMPLATE_CONTENT": "Rephrase the subsequent question to make it a standalone inquiry, maintaining the original language. You will receive a conversation history and a subsequent question.\n\nInstructions:\n1. Review the provided conversation, including messages from the user and AI.\n2. Identify the subsequent question in the conversation.\n3. Reconstruct the subsequent question to make it standalone, without relying on the previous conversation context. Ensure it maintains the same original language.\n\nConversation:\n###\n{chatHistory}\n###\n\nUser's subsequent question:\n###\n{input}\n###\n\nYour answer:",
-    "QA_TEMPLATE_CONTENT": "You are a professional researcher. Use the following context fragments to answer the final question.\nIf you do not know the answer, simply say you do not know. Do not fabricate an answer.\nIf the question is unrelated to the context or chat history, politely respond that you only answer questions related to the context.\n\n<context>\n{context}\n</context>\n\n<chatHistory>\n{chatHistory}\n</chatHistory>\n\nQuestion: {input}\nProvide a helpful answer in Markdown format:"
+    "QA_TEMPLATE_CONTENT": "You are a professional researcher. Use the following context fragments to answer the final question.\nIf you do not know the answer, simply say you do not know. Do not fabricate an answer.\nIf the question is unrelated to the context or chat history, politely respond that you only answer questions related to the context.\n\n<context>\n{context}\n</context>\n\n<chatHistory>\n{chatHistory}\n</chatHistory>\n\nQuestion: {input}\nProvide a helpful answer in Markdown format:",
+    "I have read and agree": "I have read and agree",
+    "Privacy Policy": "Privacy Policy",
+    "Terms of Use": "Terms of Use"
     
 }

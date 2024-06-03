@@ -6,10 +6,12 @@ import CardContent from '@mui/material/CardContent'
 
 import { layouts } from 'src/functions/pptx/data/layouts'
 
+import { exportPPTX } from 'src/functions/pptx/Export'
+
 const RegisterV1 = () => {
   // ** Hook
   
-  console.log("layouts", layouts)
+  exportPPTX(layouts, false, true)
 
   return (
       <Box className='content-center'>

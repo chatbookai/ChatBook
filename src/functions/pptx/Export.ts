@@ -10,23 +10,47 @@ import { type SvgPoints, toPoints } from './utils/svgPathParser'
 import { encrypt } from './utils/crypto'
 import { svg2Base64 } from './utils/svg2Base64'
 
-const INCH_PX_RATIO = 100
-const PT_PX_RATIO = 0.75
+  const INCH_PX_RATIO = 100
+  const PT_PX_RATIO = 0.75
 
-interface ExportImageConfig {
-  quality: number
-  width: number
-  fontEmbedCSS?: string
-}
+  interface ExportImageConfig {
+    quality: number
+    width: number
+    fontEmbedCSS?: string
+  }
 
-export default () => {
+  //slides: any, theme: any, viewportRatio: any, title: any
 
-  const { slides, theme, viewportRatio, title } : any = null
+  const viewportRatio: any = {}
+  viewportRatio.value = 0.5625
+  const title: any = {}
+  title.value = "ChatBook PPTX"
+  const slides: any= {}
+  const theme: any = {}
+  theme.value = {
+    "themeColor": "#5b9bd5",
+    "fontColor": "#333",
+    "fontName": "Microsoft Yahei",
+    "backgroundColor": "#fff",
+    "shadow": {
+        "h": 3,
+        "v": 3,
+        "blur": 2,
+        "color": "#808080"
+    },
+    "outline": {
+        "width": 2,
+        "color": "#525252",
+        "style": "solid"
+    }
+  }
+
+
 
   const exporting: any = {}
 
   // 导出图片
-  const exportImage = (domRef: HTMLElement, format: string, quality: number, ignoreWebfont = true) => {
+  export const exportImage = (domRef: HTMLElement, format: string, quality: number, ignoreWebfont = true) => {
     exporting.value = true
     const toImage = format === 'png' ? toPng : toJpeg
 
@@ -53,19 +77,19 @@ export default () => {
   }
   
   // 导出ChatPPT文件（特有 .Ai-to-pptx 后缀文件）
-  const exportSpecificFile = (_slides: Slide[]) => {
+  export const exportSpecificFile = (_slides: Slide[]) => {
     const blob = new Blob([encrypt(JSON.stringify(_slides))], { type: '' })
     saveAs(blob, `${title.value}.Ai-to-pptx`)
   }
   
   // 导出JSON文件
-  const exportJSON = () => {
-    const blob = new Blob([JSON.stringify(slides.value)], { type: '' })
-    saveAs(blob, `${title.value}.json`)
+  export const exportJSON = (_slides: Slide[], title: string) => {
+    const blob = new Blob([JSON.stringify(_slides)], { type: '' })
+    saveAs(blob, `${title}.json`)
   }
 
   // 格式化颜色值为 透明度 + HexString，供pptxgenjs使用
-  const formatColor = (_color: string) => {
+  export const formatColor = (_color: string) => {
     const c = tinycolor(_color)
     const alpha = c.getAlpha()
     const color = alpha === 0 ? '#ffffff' : c.setAlpha(1).toHexString()
@@ -80,7 +104,7 @@ export default () => {
 
   // 将HTML字符串格式化为pptxgenjs所需的格式
   // 核心思路：将HTML字符串按样式分片平铺，每个片段需要继承祖先元素的样式信息，遇到块级元素需要换行
-  const formatHTML = (html: string) => {
+  export const formatHTML = (html: string) => {
     const ast = toAST(html)
     let bulletFlag = false
     let indent = 0
@@ -103,7 +127,7 @@ export default () => {
           const styleArr = styleAttr.value.split(';')
           for (const styleItem of styleArr) {
             const [_key, _value] = styleItem.split(': ')
-            const [key, value] = [_key.trim(), _value.trim()]
+            const [key, value] = [_key.trim(), _value]
             if (key && value) styleObj[key] = value
           }
         }
@@ -224,7 +248,7 @@ export default () => {
   >
 
   // 将SVG路径信息格式化为pptxgenjs所需要的格式
-  const formatPoints = (points: SvgPoints, scale = { x: 1, y: 1 }): Points => {
+  export const formatPoints = (points: SvgPoints, scale = { x: 1, y: 1 }): Points => {
     return points.map(point => {
       if (point.close !== undefined) {
         return { close: true }
@@ -271,7 +295,7 @@ export default () => {
   }
 
   // 获取阴影配置
-  const getShadowOption = (shadow: PPTElementShadow): pptxgen.ShadowProps => {
+  export const getShadowOption = (shadow: PPTElementShadow): pptxgen.ShadowProps => {
     const c = formatColor(shadow.color)
     const { h, v } = shadow
 
@@ -330,7 +354,7 @@ export default () => {
   }
 
   // 获取边框配置
-  const getOutlineOption = (outline: PPTElementOutline): pptxgen.ShapeLineProps => {
+  export const getOutlineOption = (outline: PPTElementOutline): pptxgen.ShapeLineProps => {
     const c = formatColor(outline?.color || '#000000')
 
     return {
@@ -342,7 +366,7 @@ export default () => {
   }
 
   // 获取超链接配置
-  const getLinkOption = (link: PPTElementLink): pptxgen.HyperlinkProps | null => {
+  export const getLinkOption = (link: PPTElementLink): pptxgen.HyperlinkProps | null => {
     const { type, target } = link
     if (type === 'web') return { url: target }
     if (type === 'slide') {
@@ -354,14 +378,14 @@ export default () => {
   }
 
   // 判断是否为Base64图片地址
-  const isBase64Image = (url: string) => {
+  export const isBase64Image = (url: string) => {
     const regex = /^data:image\/[^;]+;base64,/
 
     return url.match(regex) !== null
   }
 
   // 导出PPTX文件
-  const exportPPTX = (_slides: Slide[], masterOverwrite: boolean, ignoreMedia: boolean) => {
+  export const exportPPTX = (_slides: Slide[], masterOverwrite: boolean, ignoreMedia: boolean) => {
     exporting.value = true
     const pptx = new pptxgen()
 
@@ -791,12 +815,3 @@ export default () => {
       })
     }, 200)
   }
-
-  return {
-    exporting,
-    exportImage,
-    exportJSON,
-    exportSpecificFile,
-    exportPPTX,
-  }
-}

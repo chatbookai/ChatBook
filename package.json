@@ -121,6 +121,7 @@
     "sqlite3": "^5.1.6",
     "stylis": "4.1.4",
     "stylis-plugin-rtl": "2.1.1",
+    "svg-pathdata": "^6.0.3",
     "tinycolor2": "^1.6.0",
     "useragent": "^2.3.0",
     "uuid": "^9.0.1",

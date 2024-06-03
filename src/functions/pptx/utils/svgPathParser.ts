@@ -1,5 +1,4 @@
-// @ts-ignore
-import { SVGPathData } from 'svg-pathdata'
+import { SVGPathData as SVGPathData2 } from 'svg-pathdata'
 import arcToBezier from 'svg-arc-to-cubic-bezier'
 
 type CommandM = {
@@ -111,7 +110,7 @@ const typeMap = {
  * @param d SVG path d属性
  */
 export const parseSvgPath = (d: string) => {
-  const pathData = new SVGPathData(d)
+  const pathData = new SVGPathData2(d)
 
   const ret = pathData.commands.map(item => {
 
@@ -128,7 +127,7 @@ export type SvgPath = ReturnType<typeof parseSvgPath>
  * @param d SVG path d属性
  */
 export const toPoints = (d: string) => {
-  const pathData = new SVGPathData(d)
+  const pathData = new SVGPathData2(d)
   
   const points = []
   for (const item of pathData.commands) {

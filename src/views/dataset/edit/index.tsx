@@ -60,9 +60,9 @@ const EditDataSet = (props: any) => {
       
       const formData = new FormData();
       for (const key in appNew) {
-        if (appNew.hasOwnProperty(key)) {
-          const value = appNew[key];
-          formData.append(key, value);
+        if (Object.prototype.hasOwnProperty.call(appNew, key)) {
+            const value = appNew[key];
+            formData.append(key, value);
         }
       }
 

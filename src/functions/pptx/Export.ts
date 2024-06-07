@@ -31,7 +31,7 @@ import { svg2Base64 } from './utils/svg2Base64'
     "themeColor": "#5b9bd5",
     "fontColor": "#333",
     "fontName": "Microsoft Yahei",
-    "backgroundColor": "#fff",
+    "backgroundColor": "#ffffff",
     "shadow": {
         "h": 3,
         "v": 3,
@@ -44,7 +44,6 @@ import { svg2Base64 } from './utils/svg2Base64'
         "style": "solid"
     }
   }
-
 
 
   const exporting: any = {}

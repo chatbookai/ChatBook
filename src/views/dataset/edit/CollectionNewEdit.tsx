@@ -273,7 +273,7 @@ const CollectionNewEdit = (props: any) => {
                                 onChange={(e: any) => {
                                     setPageData( (prevState: any) => ({ ...prevState, CollectionName: e.target.value }) )
                                 }}
-                                />
+                            />
                         </Grid>
                     </Grid>
                 </Grid>

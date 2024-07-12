@@ -70,6 +70,7 @@ const PPTXModel = () => {
   const [pptxOutlineError, setPptxOutlineError] = useState<string>('');
   const [pptxRandomTemplates, setPptxRandomTemplates] = useState<any[]>([]);
   const [pptxObj, setPptxObj] = useState<any>({});
+  const [pages, setPages] = useState<number>(0);
 
   const handleGetRandomTemplates = async () => {
     const url = 'https://docmee.cn/api/public/ppt/randomTemplates?apiKey=' + apiKey
@@ -187,6 +188,11 @@ const PPTXModel = () => {
     source.stream()
   }
 
+  const handleSetPptxPage = (pageId: number) => {
+    const painter = new window.Ppt2Svg("right_canvas",undefined, undefined, pptxObj);
+    painter.drawPptx(pptxObj, pageId)
+  }
+
   useEffect(() => {
     console.log("pptxAllPages", pptxAllPages);
     let gzip = base64js.toByteArray(pptxAllPages)
@@ -198,21 +204,14 @@ const PPTXModel = () => {
     painter.drawPptx(pptxAllPageData, 21)
     
     setPptxObj(pptxAllPageData)
+    setPages(pptxAllPageData.pages.length)
 
     //const canvas = painter.svgNode();
     painter.setMode("edit");
 
     if(pptxAllPageData && pptxAllPageData.pages) {
-      let html = ''
       for (let i = 0; i < pptxAllPageData.pages.length; i++) {
-          html += '<div class="left_div_item">'
-          html += '<div class="left_div_item_index">' + (i + 1) + '</div>'
-          html += '<canvas id="img_' + i + '" width="288" height="162" style="width: 144px;height: 81px;" class="left_div_item_img" />'
-          html += '</div>'
-      }
-      document.getElementById('left_image_list').innerHTML = html
-      for (let i = 0; i < pptxAllPageData.pages.length; i++) {
-          let imgCanvas = document.getElementById('img_' + i)
+          let imgCanvas = document.getElementById('image_' + i)
           if (!imgCanvas) {
               continue
           }
@@ -230,15 +229,19 @@ const PPTXModel = () => {
   }, []);
 
 
-  console.log("pptxOutlineResult", pptxOutlineResult)
+  // console.log("pptxOutlineResult", pptxOutlineResult)
 
   //, textAlign: 'center'
 
   return (
     <Grid container spacing={3}>
 
-      <Grid item xs={3} sx={{ mt: 3 }}>
-        <div id="left_image_list"></div>
+      <Grid item xs={2} sx={{ mt: 3 }}>
+        {pages && Array.from({ length: pages }).map((_, index) => (
+            <div key={index} id={`left_image_${index}`} onClick={()=>handleSetPptxPage(index)}>
+              <canvas id={`image_${index}`} width="146" height="83" />
+            </div>
+        ))}
       </Grid>
       <Grid item xs={9} sx={{ mt: 3 }}>
         <svg id="right_canvas"></svg>

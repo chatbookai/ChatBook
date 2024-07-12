@@ -26,7 +26,6 @@ import { useAuth } from 'src/hooks/useAuth'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 import { CheckPermission } from 'src/functions/ChatBook'
-//import { Ppt2Canvas } from 'src/functions/ppt2canvas'
 import { SSE } from 'src/functions/sse'
 import base64js from 'base64-js'
 import pako from 'pako'
@@ -40,7 +39,7 @@ import "./lib/pako.js";
 import "./lib/ppt2canvas.js";
 import "./lib/ppt2svg.js";
 import "./lib/sse.js";
-import { pptxObj, pageOne } from './data/pptx'
+import { pptxAllPages } from './data/pptx'
 
 
 const apiKey = '9664f0ea9a4cee65c'
@@ -59,7 +58,7 @@ const PPTXModel = () => {
   const router = useRouter()
   useEffect(() => {
     CheckPermission(auth, router, false)
-    handleGetRandomTemplates()
+    //handleGetRandomTemplates()
   }, [])
   
   const { id } = router.query
@@ -70,6 +69,7 @@ const PPTXModel = () => {
   const [pptxOutlineResult, setPptxOutlineResult] = useState<string>('');
   const [pptxOutlineError, setPptxOutlineError] = useState<string>('');
   const [pptxRandomTemplates, setPptxRandomTemplates] = useState<any[]>([]);
+  const [pptxObj, setPptxObj] = useState<any>({});
 
   const handleGetRandomTemplates = async () => {
     const url = 'https://docmee.cn/api/public/ppt/randomTemplates?apiKey=' + apiKey
@@ -128,20 +128,107 @@ const PPTXModel = () => {
 
   }
   
+  const handleGeneratePPTX = async (templateId: string) => {
+
+    var markdownRenderer = new marked.Renderer()
+      marked.setOptions({
+          renderer: markdownRenderer,
+          async: false, // 是否异步渲染
+          gfm: true, // 运行github标准的markdown
+          tables: true, // 表格
+          breaks: false, // 回车换行
+          pedantic: false, // 兼容隐晦部分
+          silent: true // 错误时不抛异常
+      })
+
+    // canvas
+    // var painter = new Ppt2Canvas('right_canvas')
+    // var canvas = painter.getCanvas()
+
+    // svg
+    var painter: any = new Ppt2Svg('right_canvas')
+    var canvas = painter.svgNode()
+    painter.setMode('edit')
+
+    var count = 0
+    var timer = setInterval(() => {
+        count = count + 1
+        //document.getElementById('desc').style.display = 'block'
+        //document.getElementById('desc_time').innerHTML = count + '秒'
+    }, 1000)
+    const url = 'https://docmee.cn/api/public/ppt/generateContent?apiKey=' + apiKey
+    var source: any = new SSE(url, {
+        method: 'POST',
+        // withCredentials: true,
+        headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache'
+        },
+        payload: JSON.stringify({ outlineMarkdown: pptxOutlineResult, asyncGenPptx: true, templateId }),
+    })
+    source.onmessage = function (data: any) {
+        let json = JSON.parse(data.data)
+        if (json.pptId) {
+            //document.getElementById('desc_msg').innerText = `正在生成中，进度 ${json.current}/${json.total}，请稍后...`
+            //asyncGenPptxInfo(json.pptId)
+        }
+    }
+    source.onend = function (data: any) {
+        clearInterval(timer)
+        //document.getElementById('desc').style.display = 'none'
+        //document.getElementById('pptDownload').style.display = 'inline-block'
+        //drawPptxList()
+    }
+    source.onerror = function (err: any) {
+        clearInterval(timer)
+        console.error('生成内容异常', err)
+        alert('生成内容异常')
+    }
+    source.stream()
+  }
+
   useEffect(() => {
-    console.log("pageOne", pageOne);
-    let gzip = base64js.toByteArray(pageOne)
+    console.log("pptxAllPages", pptxAllPages);
+    let gzip = base64js.toByteArray(pptxAllPages)
     let json = pako.ungzip(gzip, { to: 'string' })
     const pptxAllPageData = JSON.parse(json)
     console.log("pptxAllPageData", pptxAllPageData);
 
     const painter = new window.Ppt2Svg("right_canvas",undefined, undefined, pptxAllPageData);
     painter.drawPptx(pptxAllPageData, 21)
+    
+    setPptxObj(pptxAllPageData)
 
     //const canvas = painter.svgNode();
     painter.setMode("edit");
 
+    if(pptxAllPageData && pptxAllPageData.pages) {
+      let html = ''
+      for (let i = 0; i < pptxAllPageData.pages.length; i++) {
+          html += '<div class="left_div_item">'
+          html += '<div class="left_div_item_index">' + (i + 1) + '</div>'
+          html += '<canvas id="img_' + i + '" width="288" height="162" style="width: 144px;height: 81px;" class="left_div_item_img" />'
+          html += '</div>'
+      }
+      document.getElementById('left_image_list').innerHTML = html
+      for (let i = 0; i < pptxAllPageData.pages.length; i++) {
+          let imgCanvas = document.getElementById('img_' + i)
+          if (!imgCanvas) {
+              continue
+          }
+          try {
+              let _ppt2Canvas = new window.Ppt2Canvas(imgCanvas)
+              _ppt2Canvas.drawPptx(pptxAllPageData, i)
+              console.log("_ppt2Canvas", i, _ppt2Canvas);
+          } catch(e) {
+              console.log('渲染第' + (i + 1) + '页封面异常', e)
+          }
+      }
+      painter.drawPptx(pptxAllPageData, 1)
+    }
+
   }, []);
+
 
   console.log("pptxOutlineResult", pptxOutlineResult)
 

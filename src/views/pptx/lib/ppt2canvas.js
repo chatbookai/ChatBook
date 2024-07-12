@@ -1317,3 +1317,7 @@ function Ppt2Canvas(_canvas, imageCrossOrigin) {
     this.text = text
 
 }
+
+if (typeof window !== 'undefined') {
+    window.Ppt2Canvas = Ppt2Canvas
+}

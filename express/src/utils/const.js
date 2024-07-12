@@ -44,6 +44,11 @@ export const MenuListAdmin = [
     path: '/dataset/my'
   },
   {
+    title: 'PPTX',
+    icon: 'ri:file-ppt-2-fill',
+    path: '/pptx'
+  },
+  {
     title: 'Account',
     icon: 'mdi:user-box-outline',
     path: '/user/account'
@@ -76,6 +81,11 @@ export const MenuListUser = [
     title: 'Dataset',
     icon: 'mdi:database',
     path: '/dataset/my'
+  },
+  {
+    title: 'PPTX',
+    icon: 'ri:file-ppt-2-fill',
+    path: '/pptx'
   },
   {
     title: 'Account',

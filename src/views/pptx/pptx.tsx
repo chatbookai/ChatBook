@@ -32,17 +32,25 @@ import base64js from 'base64-js'
 import pako from 'pako'
 import marked from 'marked'
 
-import 'src/functions/ppt2svg.js';
-import 'src/functions/ppt2canvas.js';
+import "./lib/base64js.js";
+import "./lib/chart.js";
+import "./lib/geometry.js";
+import "./lib/marked.js";
+import "./lib/pako.js";
+import "./lib/ppt2canvas.js";
+import "./lib/ppt2svg.js";
+import "./lib/sse.js";
+import { pptxObj, pageOne } from './data/pptx'
+
 
 const apiKey = '9664f0ea9a4cee65c'
 
 var pptxId = ''
 var outline = ''
 var templateId = ''
-var pptxObj: any = null
 let selectIdx = 0
 var mTimer: any = null
+
 
 const PPTXModel = () => {
   // ** Hook
@@ -118,156 +126,22 @@ const PPTXModel = () => {
     }
     source.stream()
 
-
   }
+  
+  useEffect(() => {
+    console.log("pageOne", pageOne);
+    let gzip = base64js.toByteArray(pageOne)
+    let json = pako.ungzip(gzip, { to: 'string' })
+    const pptxAllPageData = JSON.parse(json)
+    console.log("pptxAllPageData", pptxAllPageData);
 
-  const handleGeneratePPTX = async (templateId: string) => {
+    const painter = new window.Ppt2Svg("right_canvas",undefined, undefined, pptxAllPageData);
+    painter.drawPptx(pptxAllPageData, 21)
 
-    var markdownRenderer = new marked.Renderer()
-      marked.setOptions({
-          renderer: markdownRenderer,
-          async: false, // 是否异步渲染
-          gfm: true, // 运行github标准的markdown
-          tables: true, // 表格
-          breaks: false, // 回车换行
-          pedantic: false, // 兼容隐晦部分
-          silent: true // 错误时不抛异常
-      })
+    //const canvas = painter.svgNode();
+    painter.setMode("edit");
 
-    // canvas
-    // var painter = new Ppt2Canvas('right_canvas')
-    // var canvas = painter.getCanvas()
-
-    // svg
-    var painter: any = new Ppt2Svg('right_canvas')
-    var canvas = painter.svgNode()
-    painter.setMode('edit')
-
-    var count = 0
-    var timer = setInterval(() => {
-        count = count + 1
-        //document.getElementById('desc').style.display = 'block'
-        //document.getElementById('desc_time').innerHTML = count + '秒'
-    }, 1000)
-    const url = 'https://docmee.cn/api/public/ppt/generateContent?apiKey=' + apiKey
-    var source: any = new SSE(url, {
-        method: 'POST',
-        // withCredentials: true,
-        headers: {
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-cache'
-        },
-        payload: JSON.stringify({ outlineMarkdown: pptxOutlineResult, asyncGenPptx: true, templateId }),
-    })
-    source.onmessage = function (data: any) {
-        let json = JSON.parse(data.data)
-        if (json.pptId) {
-            //document.getElementById('desc_msg').innerText = `正在生成中，进度 ${json.current}/${json.total}，请稍后...`
-            asyncGenPptxInfo(json.pptId)
-        }
-    }
-    source.onend = function (data: any) {
-        clearInterval(timer)
-        //document.getElementById('desc').style.display = 'none'
-        //document.getElementById('pptDownload').style.display = 'inline-block'
-        drawPptxList()
-    }
-    source.onerror = function (err: any) {
-        clearInterval(timer)
-        console.error('生成内容异常', err)
-        alert('生成内容异常')
-    }
-    source.stream()
-  }
-  function asyncGenPptxInfo(id: string) {
-      const pptxId = id
-      let url = `https://docmee.cn/api/public/ppt/asyncPptInfo?apiKey=${apiKey}&pptId=${pptxId}`
-      let xhr = new XMLHttpRequest()
-      xhr.open('GET', url, true)
-      xhr.send()
-      xhr.onreadystatechange = function () {
-          if (xhr.readyState === 4) {
-              if (xhr.status === 200) {
-                  let resp = JSON.parse(xhr.responseText)
-                  let gzipBase64 = resp.data.pptxProperty
-        let gzip = base64js.toByteArray(gzipBase64)
-        let json = pako.ungzip(gzip, { to: 'string' })
-                  pptxObj = JSON.parse(json)
-                  drawPptxList(resp.data.current - 1, true)
-              }
-          }
-      }
-      xhr.onerror = function (e) {
-          console.error(e)
-          //document.getElementById('desc').style.display = 'none'
-      }
-  }
-  async function drawPptxList(idx: number, asyncGen: boolean) {
-      if (idx == null || document.getElementById('img_' + idx) == null) {
-          let html = ''
-          for (let i = 0; i < pptxObj.pages.length; i++) {
-              if (asyncGen && i > idx) {
-                  break
-              }
-              html += '<div class="left_div_item" onclick="drawPptx(' + i + ')">'
-              html += '<div class="left_div_item_index">' + (i + 1) + '</div>'
-              html += '<canvas id="img_' + i + '" width="288" height="162" style="width: 144px;height: 81px;" class="left_div_item_img" />'
-              html += '</div>'
-          }
-          //document.getElementById('left_image_list').innerHTML = html
-          for (let i = 0; i < pptxObj.pages.length; i++) {
-              let imgCanvas: any = document.getElementById('img_' + i)
-              if (!imgCanvas) {
-                  continue
-              }
-              try {
-                  let _ppt2Canvas: any = new Ppt2Canvas(imgCanvas, 'anonymous')
-                  await _ppt2Canvas.drawPptx(pptxObj, i)
-              } catch(e) {
-                  console.log('渲染第' + (i + 1) + '页封面异常', e)
-              }
-          }
-      } else if (idx != null) {
-          try {
-              let imgCanvas: any = document.getElementById('img_' + i) = document.getElementById('img_' + idx)
-              let _ppt2Canvas: any = new Ppt2Canvas(imgCanvas, 'anonymous')
-              await _ppt2Canvas.drawPptx(pptxObj, idx)
-          } catch(e) {
-              console.log('渲染第' + (idx + 1) + '页封面异常', e)
-          }
-      }
-
-      drawPptx(idx || 0)
-  }
-  function drawPptx(idx: any) {
-      let lastSelect = document.getElementById('img_' + selectIdx)
-      lastSelect && lastSelect.classList.remove('item_select')
-      //document.getElementById('right_canvas').style.display = 'block'
-      selectIdx = idx
-      let current: any = document.getElementById('img_' + idx)
-      current.classList.add('item_select')
-      painter.drawPptx(pptxObj, idx)
-  }
-  function downloadPptx() {
-      let xhr = new XMLHttpRequest()
-      xhr.responseType = 'blob'
-      xhr.open('POST', 'https://docmee.cn/api/public/ppt/json2ppt?apiKey=' + apiKey)
-      xhr.setRequestHeader('Content-Type', 'application/json')
-      xhr.onload = function() {
-          if (this.status == 200) {
-              let blob = this.response
-              let a = document.createElement('a')
-              a.href = window.URL.createObjectURL(blob)
-              let name = 'download'
-              a.download = name + '.pptx'
-              a.click()
-          }
-      }
-      xhr.onerror = function (e) {
-          console.error(e)
-      }
-      xhr.send(JSON.stringify(pptxObj))
-  }
+  }, []);
 
   console.log("pptxOutlineResult", pptxOutlineResult)
 
@@ -275,42 +149,54 @@ const PPTXModel = () => {
 
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} sx={{ mt: 3, ml: 3 }}>
-        <TextField
-          rows={10}
-          size="small"
-          label={`${t('PPTX Submit')}`}
-          placeholder={pptxOutlineError}
-          value={pptxOutline}
-          onChange={(e) => setPptxOutline(e.target.value)}
-          error={!!pptxOutlineError}
-        />
-        <Button size="small" variant='contained' sx={{ ml: 3 }} onClick={handleGeneratePPTXOutline}>
-          {t("Generate PPTX outline")}
-        </Button>
-        <FormHelperText sx={{ color: 'error.main', ml: 3 }}>{pptxOutlineError}</FormHelperText>
+
+      <Grid item xs={3} sx={{ mt: 3 }}>
+        <div id="left_image_list"></div>
+      </Grid>
+      <Grid item xs={9} sx={{ mt: 3 }}>
+        <svg id="right_canvas"></svg>
       </Grid>
 
-      <Grid item xs={6} sx={{ mt: 3 }}>
-        <Box sx={{ 
-                pl: 3,
-                borderRadius: 1,
-                border: `2px dashed ${theme.palette.mode === 'light' ? 'rgba(93, 89, 98, 0.22)' : 'rgba(247, 244, 254, 0.14)'}`,
-                }}>
-          <ReactMarkdown>{pptxOutlineResult}</ReactMarkdown>
-        </Box>
-      </Grid>
-      <Grid item xs={6} sx={{ mt: 3 }}>
-        <Grid container spacing={2}>
-          {pptxRandomTemplates && pptxRandomTemplates.length > 0 && pptxRandomTemplates.map((item, index) => (
-            <Grid item xs={10} sm={6} md={6} lg={6} key={index}>
-              <Box position="relative" sx={{ mb: 2, mr: 2 }}>
-                <CardMedia image={`${item.coverUrl}`} onClick={()=>handleGeneratePPTX(item.id)} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1 }} />
-              </Box>
+      {false && (
+        <Fragment>
+          <Grid item xs={12} sx={{ mt: 3, ml: 3 }}>
+            <TextField
+              rows={10}
+              size="small"
+              label={`${t('PPTX Submit')}`}
+              placeholder={pptxOutlineError}
+              value={pptxOutline}
+              onChange={(e) => setPptxOutline(e.target.value)}
+              error={!!pptxOutlineError}
+            />
+            <Button size="small" variant='contained' sx={{ ml: 3 }} onClick={handleGeneratePPTXOutline}>
+              {t("Generate PPTX outline")}
+            </Button>
+            <FormHelperText sx={{ color: 'error.main', ml: 3 }}>{pptxOutlineError}</FormHelperText>
+          </Grid>
+          <Grid item xs={6} sx={{ mt: 3 }}>
+            <Box sx={{ 
+                    pl: 3,
+                    borderRadius: 1,
+                    border: `2px dashed ${theme.palette.mode === 'light' ? 'rgba(93, 89, 98, 0.22)' : 'rgba(247, 244, 254, 0.14)'}`,
+                    }}>
+              <ReactMarkdown>{pptxOutlineResult}</ReactMarkdown>
+            </Box>
+          </Grid>
+          <Grid item xs={6} sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+              {pptxRandomTemplates && pptxRandomTemplates.length > 0 && pptxRandomTemplates.map((item, index) => (
+                <Grid item xs={10} sm={6} md={6} lg={6} key={index}>
+                  <Box position="relative" sx={{ mb: 2, mr: 2 }}>
+                    <CardMedia image={`${item.coverUrl}`} onClick={()=>handleGeneratePPTX(item.id)} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1 }} />
+                  </Box>
+                </Grid>
+              ))}
             </Grid>
-          ))}
-        </Grid>
-      </Grid>
+          </Grid>
+        </Fragment>
+      )}
+
     </Grid>
   )
 }

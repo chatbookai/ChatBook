@@ -53,4 +53,9 @@ declare class Ppt2Canvas {
     // 添加其他方法和属性的声明
 }
 
+interface Window {
+    Ppt2Svg: class;
+    geometryPaths(property: unknown): void;
+}
+  
 

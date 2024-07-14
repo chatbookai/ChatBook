@@ -1,18 +1,12 @@
 // ** React Imports
-import { useState, useEffect, Fragment, ReactNode } from 'react'
+import { useState, useEffect, Fragment } from 'react'
 
 // ** Axios Imports
 import axios from 'axios'
-import authConfig from 'src/configs/auth'
-import { saveAs } from 'file-saver'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
-import Card from '@mui/material/Card'
 import Grid from '@mui/material/Grid'
-import Divider from '@mui/material/Divider'
-import Typography from '@mui/material/Typography'
-import CardHeader from '@mui/material/CardHeader'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
 import FormHelperText from '@mui/material/FormHelperText'
@@ -24,45 +18,32 @@ import { useTheme } from '@mui/material/styles'
 import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
 
-import PerfectScrollbar from 'react-perfect-scrollbar'
-
-
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 import { CheckPermission, downloadJson } from 'src/functions/ChatBook'
 import { SSE } from 'src/functions/sse'
 import base64js from 'base64-js'
 import pako from 'pako'
-import marked from 'marked'
-import { useSettings } from 'src/@core/hooks/useSettings'
 
+// @ts-ignore
 import "./lib/base64js.js";
-import "./lib/chart.js";
-import "./lib/geometry.js";
-import "./lib/marked.js";
-import "./lib/pako.js";
-import "./lib/ppt2canvas.js";
-import "./lib/ppt2svg.js";
-import "./lib/sse.js";
-import { pptxAllPages } from './data/pptx'
 
+// @ts-ignore
+import "./lib/chart.js";
+
+// @ts-ignore
+import "./lib/geometry.js";
+
+// @ts-ignore
+import "./lib/ppt2canvas.js";
+
+// @ts-ignore
+import "./lib/ppt2svg.js";
+
+// @ts-ignore
+import "./lib/sse.js";
 
 const apiKey = '9664f0ea9a4cee65c'
-
-var pptxId = ''
-var outline = ''
-var templateId = ''
-let selectIdx = 0
-var mTimer: any = null
-
-
-const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: boolean }) => {
-  if (hidden) {
-    return <Box sx={{ height: '100%', overflowY: 'auto', overflowX: 'hidden' }}>{children}</Box>
-  } else {
-    return <PerfectScrollbar options={{ wheelPropagation: false, suppressScrollX: true }}>{children}</PerfectScrollbar>
-  }
-}
 
 const PPTXModel = () => {
   // ** Hook
@@ -71,10 +52,9 @@ const PPTXModel = () => {
   const router = useRouter()
   useEffect(() => {
     CheckPermission(auth, router, false)
-    //handleGetRandomTemplates()
+    handleGetRandomTemplates()
   }, [])
   
-  const { id } = router.query
   const theme = useTheme()
   
   // ** State
@@ -82,12 +62,48 @@ const PPTXModel = () => {
   const [pptxOutlineResult, setPptxOutlineResult] = useState<string>('');
   const [pptxOutlineError, setPptxOutlineError] = useState<string>('');
   const [pptxRandomTemplates, setPptxRandomTemplates] = useState<any[]>([]);
+  const [pptxRandomTemplates6, setPptxRandomTemplates6] = useState<any[]>([]);
   const [pptxObj, setPptxObj] = useState<any>({});
   const [pages, setPages] = useState<number>(0);
-  const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [isDisabledText, setIsDisabledText] = useState<string>(t('Download PPTX') as string);
   const [step, setStep] = useState<number>(0);
 
+
+  useEffect(() => {
+    if(pptxObj && pptxObj.pages) {
+      const renderPages = () => {
+          const painter = new window.Ppt2Svg("right_canvas",undefined, undefined, pptxObj);
+          for (let i = 0; i < pptxObj.pages.length; i++) {
+            const imgCanvas = document.getElementById('image_' + i)
+              if (!imgCanvas) {
+                  continue
+              }
+              try {
+                const _ppt2Canvas = new window.Ppt2Canvas(imgCanvas)
+                  _ppt2Canvas.drawPptx(pptxObj, i)
+              } catch(e) {
+                  console.log('渲染第' + (i + 1) + '页封面异常', e)
+              }
+              painter.drawPptx(pptxObj, i)
+              painter.svgNode();
+              painter.setMode("edit");
+          }
+      }
+
+      if (document.readyState === 'complete') {
+          renderPages();
+      } else {
+          window.addEventListener('load', renderPages);
+      }
+
+      return () => {
+          window.removeEventListener('load', renderPages);
+      };
+    }
+  }, [pptxObj])
+  
+  
   const handleGetRandomTemplates = async () => {
     const url = 'https://docmee.cn/api/public/ppt/randomTemplates?apiKey=' + apiKey
     const data = {page: 1, size: 10, filters: {type: 1} }
@@ -95,11 +111,13 @@ const PPTXModel = () => {
     console.log("GetRandomTemplatesData", GetRandomTemplatesData)
     if(GetRandomTemplatesData && GetRandomTemplatesData.data && GetRandomTemplatesData.data.length > 0) {
       setPptxRandomTemplates(GetRandomTemplatesData.data)
+      setPptxRandomTemplates6(GetRandomTemplatesData.data.splice(0, 6))
     }
   }
-  console.log("pptxRandomTemplates", pptxRandomTemplates)
 
-  const handleGeneratePPTXOutline = async () => {
+  const handleGenerateOutline = async () => {
+    setIsDisabled(true)
+    setStep(0)
     if(pptxOutline == '') {
       setPptxOutlineError('PPTX Outline must input')
 
@@ -114,9 +132,8 @@ const PPTXModel = () => {
 
     const url = 'https://docmee.cn/api/public/ppt/generateOutline?apiKey=' + apiKey
     let outline = ''
-    var source: any = new SSE(url, {
+    const source: any = new SSE(url, {
       method: 'POST',
-      // withCredentials: true,
       headers: {
           'Content-Type': 'application/json',
           'Cache-Control': 'no-cache'
@@ -125,17 +142,18 @@ const PPTXModel = () => {
     })
     console.log("source", source)
     source.onmessage = function (data: any) {
-        console.log("data", data)
-        let json = JSON.parse(data.data)
-        outline += json.text
-        setPptxOutlineResult(outline)
-        //document.getElementById('outline').innerHTML = window.marked.marked(outline)
-        window.scrollTo({ behavior: 'smooth', top: document.body.scrollHeight })
+        try {
+          const json = JSON.parse(data.data)
+          outline += json.text
+          setPptxOutlineResult(outline)
+          window.scrollTo({ behavior: 'smooth', top: document.body.scrollHeight })
+        }
+        catch(e: any) {
+          console.log("handleGenerateOutline Error", e)
+        }
     }
     source.onend = function (data: any) {
         console.log("onend", data.data)
-        //document.getElementById('nextTo2').style.display = 'inline-block'
-        //window.scrollTo(0, 0)
         console.log("pptxOutlineResult", pptxOutlineResult)
     }
     source.onerror = function (err: any) {
@@ -146,37 +164,13 @@ const PPTXModel = () => {
   }
   
   const handleGeneratePPTX = async (templateId: string) => {
-
-    var markdownRenderer = new marked.Renderer()
-      marked.setOptions({
-          renderer: markdownRenderer,
-          async: false, // 是否异步渲染
-          gfm: true, // 运行github标准的markdown
-          tables: true, // 表格
-          breaks: false, // 回车换行
-          pedantic: false, // 兼容隐晦部分
-          silent: true // 错误时不抛异常
-      })
-
-    // canvas
-    // var painter = new Ppt2Canvas('right_canvas')
-    // var canvas = painter.getCanvas()
-
-    // svg
-    var painter: any = new Ppt2Svg('right_canvas')
-    var canvas = painter.svgNode()
-    painter.setMode('edit')
-
-    var count = 0
-    var timer = setInterval(() => {
-        count = count + 1
-        //document.getElementById('desc').style.display = 'block'
-        //document.getElementById('desc_time').innerHTML = count + '秒'
-    }, 1000)
+    console.log("templateId", templateId)
+    setStep(1)
+    setIsDisabled(true)
+    setIsDisabledText(t('Gegerating...') as string)
     const url = 'https://docmee.cn/api/public/ppt/generateContent?apiKey=' + apiKey
-    var source: any = new SSE(url, {
+    const source: any = new SSE(url, {
         method: 'POST',
-        // withCredentials: true,
         headers: {
             'Content-Type': 'application/json',
             'Cache-Control': 'no-cache'
@@ -184,24 +178,58 @@ const PPTXModel = () => {
         payload: JSON.stringify({ outlineMarkdown: pptxOutlineResult, asyncGenPptx: true, templateId }),
     })
     source.onmessage = function (data: any) {
-        let json = JSON.parse(data.data)
+      try{
+        const json = JSON.parse(data.data)
         if (json.pptId) {
-            //document.getElementById('desc_msg').innerText = `正在生成中，进度 ${json.current}/${json.total}，请稍后...`
-            //asyncGenPptxInfo(json.pptId)
+            console.log(`正在生成中，进度 ${json.current}/${json.total}，请稍后...`)
+            asyncGenPptxInfo(json.pptId, json.current)
         }
+      }
+      catch(e: any) {
+        console.log("handleGeneratePPTX Error", e)
+      }
+        
     }
     source.onend = function (data: any) {
-        clearInterval(timer)
-        //document.getElementById('desc').style.display = 'none'
-        //document.getElementById('pptDownload').style.display = 'inline-block'
-        //drawPptxList()
+        console.log('handleGeneratePPTX onend', data)
+        setIsDisabled(false)
+        setIsDisabledText(t('Download PPTX') as string)
     }
     source.onerror = function (err: any) {
-        clearInterval(timer)
         console.error('生成内容异常', err)
         alert('生成内容异常')
     }
     source.stream()
+  }
+
+  const asyncGenPptxInfo = (id: string, pageId: number) => {
+    const pptxId = id
+    const url = `https://docmee.cn/api/public/ppt/asyncPptInfo?apiKey=${apiKey}&pptId=${pptxId}`
+    const xhr = new XMLHttpRequest()
+    xhr.open('GET', url, true)
+    xhr.send()
+    xhr.onreadystatechange = function () {
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          try {
+            const resp = JSON.parse(xhr.responseText)
+            const gzipBase64 = resp.data.pptxProperty
+            const gzip = base64js.toByteArray(gzipBase64)
+            const json = pako.ungzip(gzip, { to: 'string' })
+            const pptxObjTemp = JSON.parse(json)
+            setPptxObj(pptxObjTemp)
+            setPages(pageId)
+            console.log("asyncGenPptxInfo pptxObj", pptxObjTemp)
+          }
+          catch(e: any) {
+            console.log("asyncGenPptxInfo Error", e)
+          }
+        }
+      }
+    }
+    xhr.onerror = function (e) {
+        console.error("asyncGenPptxInfo:", e)
+    }
   }
 
   const handleSetPptxPage = (pageId: number) => {
@@ -209,12 +237,6 @@ const PPTXModel = () => {
     painter.drawPptx(pptxObj, pageId)
     painter.svgNode();
     painter.setMode("edit");
-  }
-
-  const handleSaveJson = () => {
-    setIsDisabled(true)
-    downloadJson(pptxObj, pptxOutline + "000")
-    setIsDisabled(false)
   }
 
   const handleDownloadJson = () => {
@@ -226,16 +248,16 @@ const PPTXModel = () => {
   const handleDownloadPPTX = async () => {
     setIsDisabled(true)
     setIsDisabledText(t('Downloading...') as string)
-    let xhr = new XMLHttpRequest()
+    const xhr = new XMLHttpRequest()
     xhr.responseType = 'blob'
     xhr.open('POST', 'https://docmee.cn/api/public/ppt/json2ppt?apiKey=' + apiKey)
     xhr.setRequestHeader('Content-Type', 'application/json')
     xhr.onload = function() {
         if (this.status == 200) {
-            let blob = this.response
-            let a = document.createElement('a')
+            const blob = this.response
+            const a = document.createElement('a')
             a.href = window.URL.createObjectURL(blob)
-            let name = 'download'
+            const name = 'download'
             a.download = name + '.pptx'
             a.click()
         }
@@ -248,81 +270,65 @@ const PPTXModel = () => {
     xhr.send(JSON.stringify(pptxObj))
   }
 
-  useEffect(() => {
-    let gzip = base64js.toByteArray(pptxAllPages)
-    let json = pako.ungzip(gzip, { to: 'string' })
-    const pptxAllPageData = JSON.parse(json)
-    console.log("pptxAllPageData", pptxAllPageData);
-      
-    setPptxObj(pptxAllPageData)
-    setPages(pptxAllPageData.pages.length)
-
-    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
-      const painter = new window.Ppt2Svg("right_canvas",undefined, undefined, pptxAllPageData);
-      painter.drawPptx(pptxAllPageData, 1)
-      painter.svgNode();
-      painter.setMode("edit");
-
-      if(pptxAllPageData && pptxAllPageData.pages) {
-        const renderPages = () => {
-            for (let i = 0; i < pptxAllPageData.pages.length; i++) {
-                let imgCanvas = document.getElementById('image_' + i)
-                if (!imgCanvas) {
-                    continue
-                }
-                try {
-                    let _ppt2Canvas = new window.Ppt2Canvas(imgCanvas)
-                    _ppt2Canvas.drawPptx(pptxAllPageData, i)
-                } catch(e) {
-                    console.log('渲染第' + (i + 1) + '页封面异常', e)
-                }
-            }
-        }
-
-        if (document.readyState === 'complete') {
-            renderPages();
-        } else {
-            window.addEventListener('load', renderPages);
-        }
-
-        return () => {
-            window.removeEventListener('load', renderPages);
-        };
-
-      }
-    }
-
-  }, [pptxAllPages]);
-
-
-  // console.log("pptxOutlineResult", pptxOutlineResult)
-
-  //, textAlign: 'center'
-
-  const hidden = true
-  
-  const { settings } = useSettings()
-  const { skin, direction } = settings
-
   return (
     <Grid container spacing={3}>
-      <Grid item xs={12} sx={{ mt: 3,  height: '50px' }}>
-        <Box sx={{ml: 3,  height: '1rem'}}>
-          <Button variant='outlined' size="small" disabled={isDisabled} sx={{mr: 3}} onClick={() => handleSaveJson()}>
-            Save Json
+      <Grid item xs={12} sx={{ mt: 3, ml: 3 }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <TextField
+              size="small"
+              label={`${t('Subject')}`}
+              placeholder={pptxOutlineError}
+              value={pptxOutline}
+              onChange={(e) => setPptxOutline(e.target.value)}
+              error={!!pptxOutlineError}
+          />
+          <Button size="small" variant='contained' style={{ marginLeft: '10px' }} onClick={() => handleGenerateOutline()}>
+              {t("Generate")}
           </Button>
-          <Button variant='outlined' size="small" disabled={isDisabled} sx={{mr: 3}} onClick={() => handleDownloadJson()}>
-            Download Json
+          <FormHelperText style={{ color: 'error.main', marginLeft: '10px' }}>{pptxOutlineError}</FormHelperText>
+          <Button variant='outlined' size="small" disabled={isDisabled} style={{ marginLeft: '10px' }} onClick={() => handleDownloadJson()}>
+              Download Json
           </Button>
-          <Button variant='contained' size="small" disabled={isDisabled} sx={{mr: 3}} onClick={() => handleDownloadPPTX()}>
-            {isDisabledText}
+          <Button variant='contained' size="small" disabled={isDisabled} style={{ marginLeft: '10px' }} onClick={() => handleDownloadPPTX()}>
+              {isDisabledText}
           </Button>
-        </Box>
+        </div>
       </Grid>
+
       {step == 0 && (
         <Fragment>
-          <Grid item xs={2} sx={{ mt: 3 }}>
-            <Box sx={{ p: 0, position: 'absolute', top: '55px', overflowX: 'hidden', height: 'calc(100% - 1rem)'}}>
+          <Grid item xs={6} sx={{ mt: 3 }}>
+            <Box sx={{ 
+                    m: 3,
+                    p: 3,
+                    borderRadius: 1,
+                    border: `2px dashed ${theme.palette.mode === 'light' ? 'rgba(93, 89, 98, 0.22)' : 'rgba(247, 244, 254, 0.14)'}`,
+                    top: '55px', 
+                    overflowX: 'hidden', 
+                    position: 'absolute',
+                    height: 'calc(100% - 5rem)',
+                    width: '40%'
+                    }}>
+              <ReactMarkdown>{pptxOutlineResult.replaceAll('```', '')}</ReactMarkdown>
+            </Box>
+          </Grid>
+          <Grid item xs={6} sx={{ mt: 3 }}>
+            <Grid container spacing={2}>
+              {pptxRandomTemplates && pptxRandomTemplates.length > 0 && pptxRandomTemplates.map((item, index) => (
+                <Grid item xs={10} sm={6} md={6} lg={6} key={index}>
+                  <Box position="relative" sx={{ mb: 2, mr: 2 }}>
+                    <CardMedia image={`${item.coverUrl}`} onClick={()=>handleGeneratePPTX(item.id)} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1 }} />
+                  </Box>
+                </Grid>
+              ))}
+            </Grid>
+          </Grid>
+        </Fragment>
+      )}
+      {step == 1 && (
+        <Fragment>
+          <Grid item xs={2} sx={{ mt: 6 }}>
+            <Box sx={{ p: 0, position: 'absolute', top: '60px', overflowX: 'hidden', height: 'calc(100% - 4rem)'}}>
               <Box sx={{
                 height: '100%',
                 overflowY: 'auto',
@@ -354,9 +360,24 @@ const PPTXModel = () => {
               </Box>
             </Box>
           </Grid>
-          <Grid item xs={9} sx={{ mt: 3 }}>
-            <Box sx={{ p: 0, position: 'absolute', top: '55px', overflowX: 'hidden', height: 'calc(100% - 1rem)'}}>
+          <Grid item xs={9} sx={{ mt: 6 }}>
+            <Box sx={{ p: 0, position: 'absolute', top: '60px', overflowX: 'hidden', height: 'calc(100% - 4rem)'}}>
               <svg id="right_canvas"></svg>
+              <Grid container spacing={2}>
+                {pptxRandomTemplates6 && pptxRandomTemplates6.length > 0 && (
+                  <Grid item xs={12} sx={{my: 3}}>
+                    Using other templates:
+                  </Grid>
+                )}
+                
+                {pptxRandomTemplates6 && pptxRandomTemplates6.length > 0 && pptxRandomTemplates6.map((item, index) => (
+                  <Grid item xs={10} sm={4} md={4} lg={4} key={index}>
+                    <Box position="relative" sx={{ mb: 2, mr: 2 }}>
+                      <CardMedia image={`${item.coverUrl}`} onClick={()=>handleGeneratePPTX(item.id)} sx={{ height: '6.25rem', objectFit: 'contain', borderRadius: 1 }} />
+                    </Box>
+                  </Grid>
+                ))}
+              </Grid>
             </Box>
           </Grid>
         </Fragment>

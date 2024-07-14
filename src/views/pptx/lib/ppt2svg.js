@@ -1,3 +1,5 @@
+/* eslint-disable newline-before-return */
+
 function D3Element(element) {
     this.attr = function (k, v) {
         if (v == undefined) {

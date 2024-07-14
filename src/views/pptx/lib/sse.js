@@ -1,3 +1,5 @@
+/* eslint-disable newline-before-return */
+
 var SSE = function (url, options) {
 	if (!(this instanceof SSE)) {
 	  return new SSE(url, options);

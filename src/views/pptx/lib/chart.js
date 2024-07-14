@@ -1,3 +1,5 @@
+/* eslint-disable newline-before-return */
+
 async function drawChart(chart, anchor, canvas, ctx) {
     if (!canvas) {
         canvas = document.createElement('canvas')

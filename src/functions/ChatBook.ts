@@ -620,3 +620,8 @@ export function AppAvatar(backEndApiChatBook: string, avatar: string) {
         return backEndApiChatBook + '/api/avatarforapp/' + avatar
     }
 }
+
+export const sleep = (ms: number) => {
+
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

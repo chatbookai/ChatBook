@@ -1,3 +1,6 @@
+/* eslint-disable newline-before-return */
+// eslint-disable @typescript-eslint/no-unused-vars
+
 function Ppt2Canvas(_canvas, imageCrossOrigin) {
     var canvas = (typeof _canvas == 'string') ? document.getElementById(_canvas) : _canvas
 	var ctx = canvas.getContext('2d')

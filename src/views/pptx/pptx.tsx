@@ -1,9 +1,10 @@
 // ** React Imports
-import { useState, useEffect, Fragment } from 'react'
+import { useState, useEffect, Fragment, ReactNode } from 'react'
 
 // ** Axios Imports
 import axios from 'axios'
 import authConfig from 'src/configs/auth'
+import { saveAs } from 'file-saver'
 
 // ** MUI Imports
 import Box from '@mui/material/Box'
@@ -23,13 +24,17 @@ import { useTheme } from '@mui/material/styles'
 import { useRouter } from 'next/router'
 import { useAuth } from 'src/hooks/useAuth'
 
+import PerfectScrollbar from 'react-perfect-scrollbar'
+
+
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
-import { CheckPermission } from 'src/functions/ChatBook'
+import { CheckPermission, downloadJson } from 'src/functions/ChatBook'
 import { SSE } from 'src/functions/sse'
 import base64js from 'base64-js'
 import pako from 'pako'
 import marked from 'marked'
+import { useSettings } from 'src/@core/hooks/useSettings'
 
 import "./lib/base64js.js";
 import "./lib/chart.js";
@@ -51,6 +56,14 @@ let selectIdx = 0
 var mTimer: any = null
 
 
+const ScrollWrapper = ({ children, hidden }: { children: ReactNode; hidden: boolean }) => {
+  if (hidden) {
+    return <Box sx={{ height: '100%', overflowY: 'auto', overflowX: 'hidden' }}>{children}</Box>
+  } else {
+    return <PerfectScrollbar options={{ wheelPropagation: false, suppressScrollX: true }}>{children}</PerfectScrollbar>
+  }
+}
+
 const PPTXModel = () => {
   // ** Hook
   const { t } = useTranslation()
@@ -71,6 +84,9 @@ const PPTXModel = () => {
   const [pptxRandomTemplates, setPptxRandomTemplates] = useState<any[]>([]);
   const [pptxObj, setPptxObj] = useState<any>({});
   const [pages, setPages] = useState<number>(0);
+  const [isDisabled, setIsDisabled] = useState<boolean>(false);
+  const [isDisabledText, setIsDisabledText] = useState<string>(t('Download PPTX') as string);
+  const [step, setStep] = useState<number>(0);
 
   const handleGetRandomTemplates = async () => {
     const url = 'https://docmee.cn/api/public/ppt/randomTemplates?apiKey=' + apiKey
@@ -191,102 +207,161 @@ const PPTXModel = () => {
   const handleSetPptxPage = (pageId: number) => {
     const painter = new window.Ppt2Svg("right_canvas",undefined, undefined, pptxObj);
     painter.drawPptx(pptxObj, pageId)
+    painter.svgNode();
+    painter.setMode("edit");
+  }
+
+  const handleSaveJson = () => {
+    setIsDisabled(true)
+    downloadJson(pptxObj, pptxOutline + "000")
+    setIsDisabled(false)
+  }
+
+  const handleDownloadJson = () => {
+    setIsDisabled(true)
+    downloadJson(pptxObj, pptxOutline + "000")
+    setIsDisabled(false)
+  }
+
+  const handleDownloadPPTX = async () => {
+    setIsDisabled(true)
+    setIsDisabledText(t('Downloading...') as string)
+    let xhr = new XMLHttpRequest()
+    xhr.responseType = 'blob'
+    xhr.open('POST', 'https://docmee.cn/api/public/ppt/json2ppt?apiKey=' + apiKey)
+    xhr.setRequestHeader('Content-Type', 'application/json')
+    xhr.onload = function() {
+        if (this.status == 200) {
+            let blob = this.response
+            let a = document.createElement('a')
+            a.href = window.URL.createObjectURL(blob)
+            let name = 'download'
+            a.download = name + '.pptx'
+            a.click()
+        }
+        setIsDisabled(false)
+        setIsDisabledText(t('Download PPTX') as string)
+    }
+    xhr.onerror = function (e) {
+        console.error(e)
+    }
+    xhr.send(JSON.stringify(pptxObj))
   }
 
   useEffect(() => {
-    console.log("pptxAllPages", pptxAllPages);
     let gzip = base64js.toByteArray(pptxAllPages)
     let json = pako.ungzip(gzip, { to: 'string' })
     const pptxAllPageData = JSON.parse(json)
     console.log("pptxAllPageData", pptxAllPageData);
-
-    const painter = new window.Ppt2Svg("right_canvas",undefined, undefined, pptxAllPageData);
-    painter.drawPptx(pptxAllPageData, 21)
-    
+      
     setPptxObj(pptxAllPageData)
     setPages(pptxAllPageData.pages.length)
 
-    //const canvas = painter.svgNode();
-    painter.setMode("edit");
-
-    if(pptxAllPageData && pptxAllPageData.pages) {
-      for (let i = 0; i < pptxAllPageData.pages.length; i++) {
-          let imgCanvas = document.getElementById('image_' + i)
-          if (!imgCanvas) {
-              continue
-          }
-          try {
-              let _ppt2Canvas = new window.Ppt2Canvas(imgCanvas)
-              _ppt2Canvas.drawPptx(pptxAllPageData, i)
-              console.log("_ppt2Canvas", i, _ppt2Canvas);
-          } catch(e) {
-              console.log('渲染第' + (i + 1) + '页封面异常', e)
-          }
-      }
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      const painter = new window.Ppt2Svg("right_canvas",undefined, undefined, pptxAllPageData);
       painter.drawPptx(pptxAllPageData, 1)
+      painter.svgNode();
+      painter.setMode("edit");
+
+      if(pptxAllPageData && pptxAllPageData.pages) {
+        const renderPages = () => {
+            for (let i = 0; i < pptxAllPageData.pages.length; i++) {
+                let imgCanvas = document.getElementById('image_' + i)
+                if (!imgCanvas) {
+                    continue
+                }
+                try {
+                    let _ppt2Canvas = new window.Ppt2Canvas(imgCanvas)
+                    _ppt2Canvas.drawPptx(pptxAllPageData, i)
+                } catch(e) {
+                    console.log('渲染第' + (i + 1) + '页封面异常', e)
+                }
+            }
+        }
+
+        if (document.readyState === 'complete') {
+            renderPages();
+        } else {
+            window.addEventListener('load', renderPages);
+        }
+
+        return () => {
+            window.removeEventListener('load', renderPages);
+        };
+
+      }
     }
 
-  }, []);
+  }, [pptxAllPages]);
 
 
   // console.log("pptxOutlineResult", pptxOutlineResult)
 
   //, textAlign: 'center'
 
+  const hidden = true
+  
+  const { settings } = useSettings()
+  const { skin, direction } = settings
+
   return (
     <Grid container spacing={3}>
-
-      <Grid item xs={2} sx={{ mt: 3 }}>
-        {pages && Array.from({ length: pages }).map((_, index) => (
-            <div key={index} id={`left_image_${index}`} onClick={()=>handleSetPptxPage(index)}>
-              <canvas id={`image_${index}`} width="146" height="83" />
-            </div>
-        ))}
+      <Grid item xs={12} sx={{ mt: 3,  height: '50px' }}>
+        <Box sx={{ml: 3,  height: '1rem'}}>
+          <Button variant='outlined' size="small" disabled={isDisabled} sx={{mr: 3}} onClick={() => handleSaveJson()}>
+            Save Json
+          </Button>
+          <Button variant='outlined' size="small" disabled={isDisabled} sx={{mr: 3}} onClick={() => handleDownloadJson()}>
+            Download Json
+          </Button>
+          <Button variant='contained' size="small" disabled={isDisabled} sx={{mr: 3}} onClick={() => handleDownloadPPTX()}>
+            {isDisabledText}
+          </Button>
+        </Box>
       </Grid>
-      <Grid item xs={9} sx={{ mt: 3 }}>
-        <svg id="right_canvas"></svg>
-      </Grid>
-
-      {false && (
+      {step == 0 && (
         <Fragment>
-          <Grid item xs={12} sx={{ mt: 3, ml: 3 }}>
-            <TextField
-              rows={10}
-              size="small"
-              label={`${t('PPTX Submit')}`}
-              placeholder={pptxOutlineError}
-              value={pptxOutline}
-              onChange={(e) => setPptxOutline(e.target.value)}
-              error={!!pptxOutlineError}
-            />
-            <Button size="small" variant='contained' sx={{ ml: 3 }} onClick={handleGeneratePPTXOutline}>
-              {t("Generate PPTX outline")}
-            </Button>
-            <FormHelperText sx={{ color: 'error.main', ml: 3 }}>{pptxOutlineError}</FormHelperText>
-          </Grid>
-          <Grid item xs={6} sx={{ mt: 3 }}>
-            <Box sx={{ 
-                    pl: 3,
-                    borderRadius: 1,
-                    border: `2px dashed ${theme.palette.mode === 'light' ? 'rgba(93, 89, 98, 0.22)' : 'rgba(247, 244, 254, 0.14)'}`,
-                    }}>
-              <ReactMarkdown>{pptxOutlineResult}</ReactMarkdown>
+          <Grid item xs={2} sx={{ mt: 3 }}>
+            <Box sx={{ p: 0, position: 'absolute', top: '55px', overflowX: 'hidden', height: 'calc(100% - 1rem)'}}>
+              <Box sx={{
+                height: '100%',
+                overflowY: 'auto',
+                overflowX: 'hidden',
+                ml: 2,
+                mr: 2,
+                scrollbarWidth: 'thin',
+                scrollbarColor: 'rgba(155, 155, 155, 0.5) rgba(255, 255, 255, 0.2)',
+                '&::-webkit-scrollbar': {
+                  width: '8px',
+                },
+                '&::-webkit-scrollbar-track': {
+                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                },
+                '&::-webkit-scrollbar-thumb': {
+                  backgroundColor: 'rgba(155, 155, 155, 0.5)',
+                  borderRadius: '8px',
+                },
+                '&::-webkit-scrollbar-thumb:hover': {
+                  backgroundColor: 'rgba(155, 155, 155, 0.8)',
+                },
+              }}
+              >
+                {pages && Array.from({ length: pages }).map((_, index) => (
+                  <div key={index} id={`left_image_${index}`} style={{cursor: 'pointer'}} onClick={() => handleSetPptxPage(index)}>
+                    <canvas id={`image_${index}`} width="146" height="83" />
+                  </div>
+                ))}
+              </Box>
             </Box>
           </Grid>
-          <Grid item xs={6} sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              {pptxRandomTemplates && pptxRandomTemplates.length > 0 && pptxRandomTemplates.map((item, index) => (
-                <Grid item xs={10} sm={6} md={6} lg={6} key={index}>
-                  <Box position="relative" sx={{ mb: 2, mr: 2 }}>
-                    <CardMedia image={`${item.coverUrl}`} onClick={()=>handleGeneratePPTX(item.id)} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1 }} />
-                  </Box>
-                </Grid>
-              ))}
-            </Grid>
+          <Grid item xs={9} sx={{ mt: 3 }}>
+            <Box sx={{ p: 0, position: 'absolute', top: '55px', overflowX: 'hidden', height: 'calc(100% - 1rem)'}}>
+              <svg id="right_canvas"></svg>
+            </Box>
           </Grid>
         </Fragment>
-      )}
 
+      )}
     </Grid>
   )
 }

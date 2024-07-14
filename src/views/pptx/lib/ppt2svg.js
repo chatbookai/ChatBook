@@ -1,4 +1,6 @@
 /* eslint-disable newline-before-return */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-this-alias */
 
 function D3Element(element) {
     this.attr = function (k, v) {
@@ -184,6 +186,7 @@ function Ppt2Svg(svgId, svgWidth, svgHeight, pptxObj) {
                 }
             }
         }
+
         // 嵌套容器 Group
         let interior = property.interiorAnchor
         if (interior && interior.length > 0) {
@@ -458,6 +461,7 @@ function Ppt2Svg(svgId, svgWidth, svgHeight, pptxObj) {
         let y = anchor[1] - 1
         let endY = anchor[1] + anchor[3] + 1
         let borders = property.borders // top/left/bottom/right
+
         // top
         let top = borders[0]
         let lineWidth = top.lineWidth
@@ -466,6 +470,7 @@ function Ppt2Svg(svgId, svgWidth, svgHeight, pptxObj) {
               .attr('x1', x).attr('y1', y)
               .attr('x2', endX).attr('y2', y)
               .attr('style', `stroke: ${stroke};stroke-width: ${lineWidth}`)
+
         // right
         let right = borders[3]
         lineWidth = right.lineWidth
@@ -474,6 +479,7 @@ function Ppt2Svg(svgId, svgWidth, svgHeight, pptxObj) {
                   .attr('x1',endX).attr('y1', y)
                   .attr('x2', endX).attr('y2', endY)
                   .attr('style', `stroke: ${stroke};stroke-width: ${lineWidth}`)
+
         // bottom
         let bottom = borders[2]
         lineWidth = bottom.lineWidth
@@ -482,6 +488,7 @@ function Ppt2Svg(svgId, svgWidth, svgHeight, pptxObj) {
                   .attr('x1',endX).attr('y1', endY)
                   .attr('x2', x).attr('y2', endY)
                   .attr('style', `stroke: ${stroke};stroke-width: ${lineWidth}`)
+                  
         // left
         let left = borders[1]
         lineWidth = left.lineWidth
@@ -712,12 +719,15 @@ function Ppt2Svg(svgId, svgWidth, svgHeight, pptxObj) {
         if (!paint) {
             return 'transparent'
         } else if (paint.type == 'noFill') {
+
             // 无填充
             return 'transparent'
         } else if (paint.type == 'color') {
+
             // 颜色
             return toColor(paint.color)
         } else if (paint.type == 'bgFill') {
+
             // 背景填充
             if (ctx.bgFillStyle) {
                 return toPaint(ctx.bgFillStyle, ctx.bgAnchor || anchor, params)
@@ -725,15 +735,18 @@ function Ppt2Svg(svgId, svgWidth, svgHeight, pptxObj) {
                 return 'transparent'
             }
         } else if (paint.type == 'groupFill') {
+
             // 组合背景
             let groupFillStyle = paint.parentGroupFillStyle || ctx.groupFillStyle
             if (groupFillStyle) {
+
                 // return toPaint(groupFillStyle, anchor || groupFillStyle.groupAnchor, params)
                 return toPaint(groupFillStyle, groupFillStyle.groupAnchor || anchor, params)
             } else {
                 return 'transparent'
             }
         } else if (paint.type == 'gradient') {
+
             // 渐变
             let gradient = paint.gradient
             let x = 0, y = 0
@@ -741,17 +754,21 @@ function Ppt2Svg(svgId, svgWidth, svgHeight, pptxObj) {
             let centerX = x + width / 2
             let centerY = y + height / 2
             let gradientNode
+
             // linear,circular,rectangular,shape
             if (gradient.gradientType == 'circular') {
+
                 // 射线
                 let cx = centerX + width * (gradient.insets[1] - gradient.insets[3]) / 2
                 let cy = centerY + height * (gradient.insets[0] - gradient.insets[2]) / 2
+
                 // let radius = Math.sqrt(width * width + height * height) * (gradient.insets[1] == 0.5 ? 0.5 : 1)
                 let _cx = ((cx / width) * 100).toFixed(0) + '%'
                 let _cy = ((cy / height) * 100).toFixed(0) + '%'
                 let _r = (gradient.insets[1] * 100).toFixed(0) + '%'
                 gradientNode = defs.append('radialGradient').attr('cx', _cx).attr('cy', _cy).attr('r', _r).attr('fx', _cx).attr('fy', _cy)
             } else {
+
                 // 线性
                 let startX = x
                 let startY = centerY
@@ -787,6 +804,7 @@ function Ppt2Svg(svgId, svgWidth, svgHeight, pptxObj) {
         } else if (anchor && anchor[2] == 0 && anchor[3] == 0) {
             return 'transparent'
         } else if (paint.type == 'texture') {
+
             // 图片或纹理
             let texture = paint.texture
             let patternId = 'pattern' + (++counter)
@@ -815,6 +833,7 @@ function Ppt2Svg(svgId, svgWidth, svgHeight, pptxObj) {
             })
             return `url(#${patternId})`
         } else if (paint.type == 'pattern') {
+
             // 图案
             let pattern = paint.pattern
             let prst = pattern.prst
@@ -831,12 +850,14 @@ function Ppt2Svg(svgId, svgWidth, svgHeight, pptxObj) {
             let line = 0
             for (let i = 0; i < imgData.data.length; i += 4) {
               if (++line % 16 == 0) {
+
                   // 前景
                 imgData.data[i + 0] = (fgColor >> 16) & 255
                 imgData.data[i + 1] = (fgColor >> 8) & 255
                 imgData.data[i + 2] = (fgColor >> 0) & 255
                 imgData.data[i + 3] = (fgColor >> 24) & 255
               } else {
+
                   // 背景
                 imgData.data[i + 0] = (bgColor >> 16) & 255
                 imgData.data[i + 1] = (bgColor >> 8) & 255
@@ -941,6 +962,7 @@ function Ppt2Svg(svgId, svgWidth, svgHeight, pptxObj) {
         }
         if (texture.duoTone && texture.duoTone.length > 0 && texture.duoTonePrst) {
             try {
+
                 // 重新着色
                 let color = texture.duoTone[0].realColor
                 let r = (color >> 16) & 255
@@ -950,6 +972,7 @@ function Ppt2Svg(svgId, svgWidth, svgHeight, pptxObj) {
                 let data = imageData.data
                 for(var i = 0; i < data.length; i += 4) {
                     let gray = (data[i] * 0.3 + data[i + 1] * 0.59 + data[i + 2] * 0.11) / 255
+
                     // black / white
                     let prst = texture.duoTonePrst == 'white' ? 255 : 0
                     data[i] = gray * r + (1 - gray) * prst
@@ -959,6 +982,7 @@ function Ppt2Svg(svgId, svgWidth, svgHeight, pptxObj) {
                 patternCtx.putImageData(imageData, 0, 0)
             } catch(e) {}
         }
+
         // let mode = texture.alignment ? 'repeat' : 'no-repeat'
         let imgSrc = patternCanvas.toDataURL('image/png')
         patternNode.append('image')
@@ -1137,6 +1161,7 @@ function Ppt2Svg(svgId, svgWidth, svgHeight, pptxObj) {
         let node = gNode.node()
         node.addEventListener('click', function (e) {
             if (currentPoint && currentPoint.obj.id != elementObj.id && currentPoint.obj.type == 'text') {
+
                 // 文本被遮挡处理
                 let rId = null
                 for (let i = 0; i < currentPoint.obj.children.length; i++) {
@@ -1196,7 +1221,7 @@ function Ppt2Svg(svgId, svgWidth, svgHeight, pptxObj) {
                 ty = e2.clientY - y
                 g.attr('transform', `translate(${tx}, ${ty})`)
             }
-            document.onmouseup = function (e) {
+            document.onmouseup = function () {
                 document.onmousemove = null
                 document.onmouseup = null
                 if (tx || ty) {
@@ -1219,6 +1244,7 @@ function Ppt2Svg(svgId, svgWidth, svgHeight, pptxObj) {
         node.addEventListener('mouseleave', function () {
             node.style.outline = null
         })
+
         // dblclick
         node.addEventListener('click', function (e) {
             editRunText(rId, textObj)

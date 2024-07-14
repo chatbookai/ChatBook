@@ -1,4 +1,7 @@
 /* eslint-disable newline-before-return */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-this-alias */
+/* eslint-disable lines-around-comment */
 
 async function drawChart(chart, anchor, canvas, ctx) {
     if (!canvas) {

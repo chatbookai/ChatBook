@@ -1,5 +1,6 @@
 /* eslint-disable newline-before-return */
-// eslint-disable @typescript-eslint/no-unused-vars
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-this-alias */
 
 function Ppt2Canvas(_canvas, imageCrossOrigin) {
     var canvas = (typeof _canvas == 'string') ? document.getElementById(_canvas) : _canvas
@@ -602,6 +603,8 @@ function Ppt2Canvas(_canvas, imageCrossOrigin) {
 	}
 
 	async function drawTable(obj) {
+
+		// @ts-ignore
 		let property = obj.extInfo.property
 		for (let i = 0; i < obj.children.length; i++) {
 			let row = obj.children[i]
@@ -610,6 +613,8 @@ function Ppt2Canvas(_canvas, imageCrossOrigin) {
 	}
 
 	async function drawTableRow(table, row) {
+
+		// @ts-ignore
 		let property = row.extInfo.property
 		for (let i = 0; i < row.children.length; i++) {
 			let column = row.children[i]
@@ -641,6 +646,7 @@ function Ppt2Canvas(_canvas, imageCrossOrigin) {
 	async function drawPaths(paths, property, anchor, real_anchor) {
 		for (let i = 0; i < paths.length; i++) {
 			let path = paths[i]
+
 			// console.log('path: ', path)
 			ctx.save()
 			let scaleX = path.scaleX
@@ -777,9 +783,11 @@ function Ppt2Canvas(_canvas, imageCrossOrigin) {
                 }
             }
         }
+
 		// 嵌套容器 Group
 		let interior = property.interiorAnchor
 		if (interior && interior.length > 0) {
+
 			/*
 			// 缩放
 			let scaleX = interior[2] == 0 || anchor[2] == interior[2] ? 1 : anchor[2] / interior[2]
@@ -869,15 +877,19 @@ function Ppt2Canvas(_canvas, imageCrossOrigin) {
 			if (!paint) {
 				resolve(defaultColor || 'transparent')
 			} else if (paint.type == 'noFill') {
+
 				// 无填充
 				resolve('transparent')
 			} else if (paint.type == 'color') {
+
 				// 颜色
 				resolve(toColor(paint.color, defaultColor))
 			} else if (paint.type == 'bgFill') {
+
 				// 背景填充
 				resolve(ctx.bgFillStyle || defaultColor || 'transparent')
 			} else if (paint.type == 'groupFill') {
+
 				// 组合背景
 				let groupFillStyle = paint.parentGroupFillStyle || ctx.groupFillStyle
 				if (groupFillStyle) {
@@ -888,20 +900,24 @@ function Ppt2Canvas(_canvas, imageCrossOrigin) {
 					resolve(defaultColor || 'transparent')
 				}
 			} else if (paint.type == 'gradient') {
+
 				// 渐变
 				let gradient = paint.gradient
 				let x = anchor[0], y = anchor[1], width = anchor[2], height = anchor[3]
 				let centerX = x + width / 2
 				let centerY = y + height / 2
 				let gradientObj
+
 				// linear,circular,rectangular,shape
 				if (gradient.gradientType == 'circular') {
+
 					// 射线
 					let radius = Math.sqrt(width * width + height * height) * (gradient.insets[1] == 0.5 ? 0.5 : 1)
 					let cx = centerX + width * (gradient.insets[1] - gradient.insets[3]) / 2
     				let cy = centerY + height * (gradient.insets[0] - gradient.insets[2]) / 2
 					gradientObj = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius)
 				} else {
+
 					// 线性
 					let startX = x
 					let startY = centerY
@@ -930,6 +946,7 @@ function Ppt2Canvas(_canvas, imageCrossOrigin) {
 			} else if (anchor && anchor[2] == 0 && anchor[3] == 0) {
 				resolve('transparent')
 			} else if (paint.type == 'texture') {
+
 				// 图片或纹理
 				let texture = paint.texture
 				let anonymous = texture.duoTone && texture.duoTone.length > 0 && texture.duoTonePrst
@@ -942,6 +959,7 @@ function Ppt2Canvas(_canvas, imageCrossOrigin) {
 					}
 				})
 			} else if (paint.type == 'pattern') {
+
 				// 图案
 				let pattern = paint.pattern
 				let prst = pattern.prst
@@ -958,12 +976,14 @@ function Ppt2Canvas(_canvas, imageCrossOrigin) {
 				let line = 0
 				for (let i = 0; i < imgData.data.length; i += 4) {
 				  if (++line % 16 == 0) {
+
 				  	// 前景
 					imgData.data[i + 0] = (fgColor >> 16) & 255
 					imgData.data[i + 1] = (fgColor >> 8) & 255
 					imgData.data[i + 2] = (fgColor >> 0) & 255
 					imgData.data[i + 3] = (fgColor >> 24) & 255
 				  } else {
+
 				  	// 背景
 					imgData.data[i + 0] = (bgColor >> 16) & 255
 					imgData.data[i + 1] = (bgColor >> 8) & 255
@@ -1051,6 +1071,7 @@ function Ppt2Canvas(_canvas, imageCrossOrigin) {
 		}
 		if (texture.duoTone && texture.duoTone.length > 0 && texture.duoTonePrst) {
 		    try {
+
                 // 重新着色
                 let color = texture.duoTone[0].realColor
                 let r = (color >> 16) & 255
@@ -1060,6 +1081,7 @@ function Ppt2Canvas(_canvas, imageCrossOrigin) {
                 let data = imageData.data
                 for(var i = 0; i < data.length; i += 4) {
                     let gray = (data[i] * 0.3 + data[i + 1] * 0.59 + data[i + 2] * 0.11) / 255
+
                     // black / white
                     let prst = texture.duoTonePrst == 'white' ? 255 : 0
                     data[i] = gray * r + (1 - gray) * prst
@@ -1129,6 +1151,7 @@ function Ppt2Canvas(_canvas, imageCrossOrigin) {
 				if (imageCrossOrigin || anonymous) {
                     let eqOrigin = src.startsWith('data:') || src.startsWith(document.location.origin) || (src.startsWith('//') && (document.location.protocol + src).startsWith(document.location.origin))
                     if (!eqOrigin) {
+
                         // anonymous / use-credentials
                         img.crossOrigin = imageCrossOrigin || 'anonymous'
                     }
@@ -1148,6 +1171,7 @@ function Ppt2Canvas(_canvas, imageCrossOrigin) {
 		})
 	}
 
+	// @ts-ignore
 	function value2px(v, isEmu) {
 		if (isEmu) {
 			return +v / 12700
@@ -1156,10 +1180,12 @@ function Ppt2Canvas(_canvas, imageCrossOrigin) {
 		}
 	}
 
+	// @ts-ignore
 	function value2emu(v) {
 		return +v * 12700
 	}
 
+	// @ts-ignore
 	function getTfx(x, div) {
 		if (div) {
 			return x / (ctx.getTransform().a / ctx.scaleX)
@@ -1168,6 +1194,7 @@ function Ppt2Canvas(_canvas, imageCrossOrigin) {
 		}
 	}
 
+	// @ts-ignore
 	function getTfy(y, div) {
 		if (div) {
 			return y / (ctx.getTransform().d / ctx.scaleY)

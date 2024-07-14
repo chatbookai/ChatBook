@@ -21,12 +21,8 @@ import { useAuth } from 'src/hooks/useAuth'
 // ** Third Party Import
 import { useTranslation } from 'react-i18next'
 import { CheckPermission, downloadJson } from 'src/functions/ChatBook'
-import { SSE } from 'src/functions/sse'
 import base64js from 'base64-js'
 import pako from 'pako'
-
-// @ts-ignore
-import "./lib/base64js.js";
 
 // @ts-ignore
 import "./lib/chart.js";

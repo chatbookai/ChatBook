@@ -1,4 +1,6 @@
 /* eslint-disable newline-before-return */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-this-alias */
 
 var SSE = function (url, options) {
 	if (!(this instanceof SSE)) {
@@ -93,7 +95,7 @@ var SSE = function (url, options) {
 	  this.close();
 	};
 
-	this._onStreamAbort = function (e) {
+	this._onStreamAbort = function () {
 	  this.dispatchEvent(new CustomEvent('abort'));
 	  this.close();
 	};

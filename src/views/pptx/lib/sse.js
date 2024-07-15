@@ -217,6 +217,10 @@ var SSE = function (url, options) {
 	};
 };
 
+if (typeof window !== 'undefined') {
+    window.SSE = SSE
+}
+
 /*
 const url = 'https://xxx/chat';
 var source = new SSE(url, {

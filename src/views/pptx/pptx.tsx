@@ -128,7 +128,7 @@ const PPTXModel = () => {
 
     const url = 'https://docmee.cn/api/public/ppt/generateOutline?apiKey=' + apiKey
     let outline = ''
-    const source: any = new SSE(url, {
+    const source: any = new window.SSE(url, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json',
@@ -165,7 +165,7 @@ const PPTXModel = () => {
     setIsDisabled(true)
     setIsDisabledText(t('Gegerating...') as string)
     const url = 'https://docmee.cn/api/public/ppt/generateContent?apiKey=' + apiKey
-    const source: any = new SSE(url, {
+    const source: any = new window.SSE(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',

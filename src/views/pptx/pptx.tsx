@@ -39,7 +39,8 @@ import "./lib/ppt2svg.js";
 // @ts-ignore
 import "./lib/sse.js";
 
-const apiKey = '9664f0ea9a4cee65c'
+const apiKey = 'ak_6J7pisEET3pvE914YC'
+const uid = 'test'
 
 const PPTXModel = () => {
   // ** Hook
@@ -48,7 +49,7 @@ const PPTXModel = () => {
   const router = useRouter()
   useEffect(() => {
     CheckPermission(auth, router, false)
-    handleGetRandomTemplates()
+    //handleGetRandomTemplates()
   }, [])
   
   const theme = useTheme()
@@ -64,6 +65,37 @@ const PPTXModel = () => {
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [isDisabledText, setIsDisabledText] = useState<string>(t('Download PPTX') as string);
   const [step, setStep] = useState<number>(0);
+  
+  const [token, setToken] = useState<string>('')
+
+  async function createApiToken() {
+    try {
+      const url = 'https://docmee.cn/api/user/createApiToken'
+      const resp = await (await fetch(url, {
+        method: 'POST',
+        headers: {
+          'Api-Key': apiKey,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          uid,
+          limit: null
+        })
+      })).json()
+      
+      console.log("resp", resp)
+      if(resp && resp.data && resp.data.token)  {
+        setToken(resp.data.token)
+      }
+    }
+    catch(Error: any) {
+      console.log("createApiToken Error", Error)
+    }
+  }
+
+  useEffect(() => {
+    createApiToken()
+  }, [])
 
 
   useEffect(() => {
@@ -99,132 +131,164 @@ const PPTXModel = () => {
     }
   }, [pptxObj])
   
-  
   const handleGetRandomTemplates = async () => {
-    const url = 'https://docmee.cn/api/public/ppt/randomTemplates?apiKey=' + apiKey
-    const data = {page: 1, size: 10, filters: {type: 1} }
-    const GetRandomTemplatesData = await axios.post(url, data, { headers: { Authorization: apiKey, 'Content-Type': 'application/json'} }).then(res=>res.data)
-    console.log("GetRandomTemplatesData", GetRandomTemplatesData)
-    if(GetRandomTemplatesData && GetRandomTemplatesData.data && GetRandomTemplatesData.data.length > 0) {
-      setPptxRandomTemplates(GetRandomTemplatesData.data)
-      setPptxRandomTemplates6(GetRandomTemplatesData.data.splice(0, 6))
+    try {
+      
+      const url = 'https://docmee.cn/api/ppt/randomTemplates'
+      const GetRandomTemplatesData = await axios.post(url, {
+          page: 1,
+          size: 28,
+          filters: { type: 1 }
+      }, {
+          headers: {
+              'token': token,
+              'Content-Type': 'application/json'
+          }
+      }).then(res=>res.data);
+      console.log("GetRandomTemplatesData", GetRandomTemplatesData)
+      if(GetRandomTemplatesData && GetRandomTemplatesData.data && GetRandomTemplatesData.data.length > 0) {
+        setPptxRandomTemplates(GetRandomTemplatesData.data)
+        setPptxRandomTemplates6(GetRandomTemplatesData.data.splice(0, 6))
+      }
+    }
+    catch(Error: any) {
+      console.log("handleGetRandomTemplates Error", Error)
     }
   }
 
   const handleGenerateOutline = async () => {
-    setIsDisabled(true)
-    setStep(0)
-    if(pptxOutline == '') {
-      setPptxOutlineError('PPTX Outline must input')
+    try {
+      handleGetRandomTemplates()
 
-      return
-    }
-    if(pptxOutline.length < 3) {
-      setPptxOutlineError('PPTX Outline subject is too short')
+      setIsDisabled(true)
+      setStep(0)
+      if(pptxOutline == '') {
+        setPptxOutlineError('PPTX Outline must input')
 
-      return
-    }
-    setPptxOutlineError('')
+        return
+      }
+      if(pptxOutline.length < 3) {
+        setPptxOutlineError('PPTX Outline subject is too short')
 
-    const url = 'https://docmee.cn/api/public/ppt/generateOutline?apiKey=' + apiKey
-    let outline = ''
-    const source: any = new window.SSE(url, {
-      method: 'POST',
-      headers: {
-          'Content-Type': 'application/json',
-          'Cache-Control': 'no-cache'
-      },
-      payload: JSON.stringify({ subject: pptxOutline }),
-    })
-    console.log("source", source)
-    source.onmessage = function (data: any) {
-        try {
-          const json = JSON.parse(data.data)
-          outline += json.text
-          setPptxOutlineResult(outline)
-          window.scrollTo({ behavior: 'smooth', top: document.body.scrollHeight })
-        }
-        catch(e: any) {
-          console.log("handleGenerateOutline Error", e)
-        }
+        return
+      }
+      setPptxOutlineError('')
+
+      const url = 'https://docmee.cn/api/ppt/generateOutline'
+      let outline = ''
+      const source: any = new window.SSE(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache',
+            'token': token
+        },
+        payload: JSON.stringify({ subject: pptxOutline }),
+      })
+      console.log("source", source)
+      source.onmessage = function (data: any) {
+          try {
+            const json = JSON.parse(data.data)
+            outline += json.text
+            setPptxOutlineResult(outline)
+            window.scrollTo({ behavior: 'smooth', top: document.body.scrollHeight })
+          }
+          catch(e: any) {
+            console.log("handleGenerateOutline Error", e)
+          }
+      }
+      source.onend = function (data: any) {
+          console.log("onend", data.data)
+          console.log("pptxOutlineResult", pptxOutlineResult)
+      }
+      source.onerror = function (err: any) {
+          console.error('生成大纲异常', err)
+      }
+      source.stream()
     }
-    source.onend = function (data: any) {
-        console.log("onend", data.data)
-        console.log("pptxOutlineResult", pptxOutlineResult)
+    catch(Error: any) {
+      console.log("handleGenerateOutline Error", Error)
     }
-    source.onerror = function (err: any) {
-        console.error('生成大纲异常', err)
-    }
-    source.stream()
 
   }
   
   const handleGeneratePPTX = async (templateId: string) => {
-    console.log("templateId", templateId)
-    setStep(1)
-    setIsDisabled(true)
-    setIsDisabledText(t('Gegerating...') as string)
-    const url = 'https://docmee.cn/api/public/ppt/generateContent?apiKey=' + apiKey
-    const source: any = new window.SSE(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Cache-Control': 'no-cache'
-        },
-        payload: JSON.stringify({ outlineMarkdown: pptxOutlineResult, asyncGenPptx: true, templateId }),
-    })
-    source.onmessage = function (data: any) {
-      try{
-        const json = JSON.parse(data.data)
-        if (json.pptId) {
-            console.log(`正在生成中，进度 ${json.current}/${json.total}，请稍后...`)
-            asyncGenPptxInfo(json.pptId, json.current)
+    try {
+      console.log("templateId", templateId)
+      setStep(1)
+      setIsDisabled(true)
+      setIsDisabledText(t('Gegerating...') as string)
+      const url = 'https://docmee.cn/api/ppt/generateContent'
+      const source: any = new window.SSE(url, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+              'Cache-Control': 'no-cache',
+              'token': token
+          },
+          payload: JSON.stringify({ outlineMarkdown: pptxOutlineResult, asyncGenPptx: true, templateId }),
+      })
+      source.onmessage = function (data: any) {
+        try{
+          const json = JSON.parse(data.data)
+          if (json.pptId) {
+              console.log(`正在生成中，进度 ${json.current}/${json.total}，请稍后...`)
+              asyncGenPptxInfo(json.pptId, json.current)
+          }
         }
+        catch(e: any) {
+          console.log("handleGeneratePPTX Error", e)
+        }
+          
       }
-      catch(e: any) {
-        console.log("handleGeneratePPTX Error", e)
+      source.onend = function (data: any) {
+          console.log('handleGeneratePPTX onend', data)
+          setIsDisabled(false)
+          setIsDisabledText(t('Download PPTX') as string)
       }
-        
+      source.onerror = function (err: any) {
+          console.error('生成内容异常', err)
+          alert('生成内容异常')
+      }
+      source.stream()
     }
-    source.onend = function (data: any) {
-        console.log('handleGeneratePPTX onend', data)
-        setIsDisabled(false)
-        setIsDisabledText(t('Download PPTX') as string)
+    catch(Error: any) {
+      console.log("handleGeneratePPTX Error", Error)
     }
-    source.onerror = function (err: any) {
-        console.error('生成内容异常', err)
-        alert('生成内容异常')
-    }
-    source.stream()
   }
 
   const asyncGenPptxInfo = (id: string, pageId: number) => {
-    const pptxId = id
-    const url = `https://docmee.cn/api/public/ppt/asyncPptInfo?apiKey=${apiKey}&pptId=${pptxId}`
-    const xhr = new XMLHttpRequest()
-    xhr.open('GET', url, true)
-    xhr.send()
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          try {
-            const resp = JSON.parse(xhr.responseText)
-            const gzipBase64 = resp.data.pptxProperty
-            const gzip = base64js.toByteArray(gzipBase64)
-            const json = pako.ungzip(gzip, { to: 'string' })
-            const pptxObjTemp = JSON.parse(json)
-            setPptxObj(pptxObjTemp)
-            setPages(pageId)
-            console.log("asyncGenPptxInfo pptxObj", pptxObjTemp)
-          }
-          catch(e: any) {
-            console.log("asyncGenPptxInfo Error", e)
+    try {
+      const pptxId = id
+      const url = `https://docmee.cn/api/public/ppt/asyncPptInfo?apiKey=${apiKey}&pptId=${pptxId}`
+      const xhr = new XMLHttpRequest()
+      xhr.open('GET', url, true)
+      xhr.send()
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200) {
+            try {
+              const resp = JSON.parse(xhr.responseText)
+              const gzipBase64 = resp.data.pptxProperty
+              const gzip = base64js.toByteArray(gzipBase64)
+              const json = pako.ungzip(gzip, { to: 'string' })
+              const pptxObjTemp = JSON.parse(json)
+              setPptxObj(pptxObjTemp)
+              setPages(pageId)
+              console.log("asyncGenPptxInfo pptxObj", pptxObjTemp)
+            }
+            catch(e: any) {
+              console.log("asyncGenPptxInfo Error", e)
+            }
           }
         }
       }
+      xhr.onerror = function (e) {
+          console.error("asyncGenPptxInfo:", e)
+      }
     }
-    xhr.onerror = function (e) {
-        console.error("asyncGenPptxInfo:", e)
+    catch(Error: any) {
+      console.log("asyncGenPptxInfo Error", Error)
     }
   }
 
@@ -242,28 +306,33 @@ const PPTXModel = () => {
   }
 
   const handleDownloadPPTX = async () => {
-    setIsDisabled(true)
-    setIsDisabledText(t('Downloading...') as string)
-    const xhr = new XMLHttpRequest()
-    xhr.responseType = 'blob'
-    xhr.open('POST', 'https://docmee.cn/api/public/ppt/json2ppt?apiKey=' + apiKey)
-    xhr.setRequestHeader('Content-Type', 'application/json')
-    xhr.onload = function() {
-        if (this.status == 200) {
-            const blob = this.response
-            const a = document.createElement('a')
-            a.href = window.URL.createObjectURL(blob)
-            const name = 'download'
-            a.download = name + '.pptx'
-            a.click()
-        }
-        setIsDisabled(false)
-        setIsDisabledText(t('Download PPTX') as string)
+    try {
+      setIsDisabled(true)
+      setIsDisabledText(t('Downloading...') as string)
+      const xhr = new XMLHttpRequest()
+      xhr.responseType = 'blob'
+      xhr.open('POST', 'https://docmee.cn/api/public/ppt/json2ppt?apiKey=' + apiKey)
+      xhr.setRequestHeader('Content-Type', 'application/json')
+      xhr.onload = function() {
+          if (this.status == 200) {
+              const blob = this.response
+              const a = document.createElement('a')
+              a.href = window.URL.createObjectURL(blob)
+              const name = 'download'
+              a.download = name + '.pptx'
+              a.click()
+          }
+          setIsDisabled(false)
+          setIsDisabledText(t('Download PPTX') as string)
+      }
+      xhr.onerror = function (e) {
+          console.error(e)
+      }
+      xhr.send(JSON.stringify(pptxObj))
     }
-    xhr.onerror = function (e) {
-        console.error(e)
+    catch(Error: any) {
+      console.log("handleDownloadPPTX Error", Error)
     }
-    xhr.send(JSON.stringify(pptxObj))
   }
 
   return (
@@ -313,7 +382,7 @@ const PPTXModel = () => {
               {pptxRandomTemplates && pptxRandomTemplates.length > 0 && pptxRandomTemplates.map((item, index) => (
                 <Grid item xs={10} sm={6} md={6} lg={6} key={index}>
                   <Box position="relative" sx={{ mb: 2, mr: 2 }}>
-                    <CardMedia image={`${item.coverUrl}`} onClick={()=>handleGeneratePPTX(item.id)} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1 }} />
+                    <CardMedia image={`${item.coverUrl + '?token=' + token}`} onClick={()=>handleGeneratePPTX(item.id)} sx={{ height: '11.25rem', objectFit: 'contain', borderRadius: 1 }} />
                   </Box>
                 </Grid>
               ))}
@@ -369,7 +438,7 @@ const PPTXModel = () => {
                 {pptxRandomTemplates6 && pptxRandomTemplates6.length > 0 && pptxRandomTemplates6.map((item, index) => (
                   <Grid item xs={10} sm={4} md={4} lg={4} key={index}>
                     <Box position="relative" sx={{ mb: 2, mr: 2 }}>
-                      <CardMedia image={`${item.coverUrl}`} onClick={()=>handleGeneratePPTX(item.id)} sx={{ height: '6.25rem', objectFit: 'contain', borderRadius: 1 }} />
+                      <CardMedia image={`${item.coverUrl + '?token=' + token}`} onClick={()=>handleGeneratePPTX(item.id)} sx={{ height: '6.25rem', objectFit: 'contain', borderRadius: 1 }} />
                     </Box>
                   </Grid>
                 ))}
